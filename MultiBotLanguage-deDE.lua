@@ -2440,6 +2440,529 @@ MultiBot.tips.every.talent =
 "|cffff0000Linksklicken um das Talente zu öffnen oder schließen|r\n"..
 "|cff999999(Execution-Order: Bot)|r";
 
+-- WIPE COMMAND --
+
+MultiBot.tips.every.wipe = 
+"Wipe|cffffffff\n"..
+"Setzt den Bot vollständig zurück, indem er getötet und wiederbelebt wird,\n".. 
+"nützlich zum Zurücksetzen seines Zustands (Position, Gesundheit, Mana usw.).|r\n\n"..
+"|cffff0000Linksklick: sendet den Wipe-Befehl an den ausgewählten Bot|r\n"..
+"|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+-- SET TALENTS -- 
+
+MultiBot.tips.every.settalent =
+"Talente festlegen|cffffffff\n"..
+"Zeigt ein Menü der verfügbaren Spezialisierungen (PvE/PvP) für den ausgewählten Bot.\n"..
+"Die Zweitspezialisierung wird ab Stufe 40 freigeschaltet.|r\n\n"..
+"|cffff0000Linksklick, um die Hauptspezialisierung festzulegen|r\n"..
+"|cffff0000Rechtsklick, um die Zweitspezialisierung festzulegen|r\n"..
+"|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.dkbloodpve =
+  "Blut – PvE|cffffffff\n"..
+  "Spezialisiert auf Selbstheilung und Überleben im PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.dkbloodpvp =
+  "Blut – PvP|cffffffff\n"..
+  "Ideal für Flaggenträger und hohe Widerstandskraft im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.dkbfrostpve =
+  "Frost – PvE|cffffffff\n"..
+  "Optimiert für Burst und Verlangsamungen im PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.dkbfrostpvp =
+  "Frost – PvP|cffffffff\n"..
+  "Schneller Burst und Kontrolle für PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.dkunhopve =
+  "Unheilig – PvE|cffffffff\n"..
+  "AoE-Spezialisierung mit Begleitersynergie im PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.dkunhopvp =
+  "Unheilig – PvP|cffffffff\n"..
+  "Permanenter DoT-Druck für PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.dkdoublepve =
+  "Doppel-Template – PvE|cffffffff\n"..
+  "Ermöglicht schnelles Testen von zwei PvE-Builds.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.druidbalpve =
+  "Gleichgewicht – PvE|cffffffff\n"..
+  "Magischer Burst und optimierte Eclipse-Phasen für PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.druidbalpvp =
+  "Gleichgewicht – PvP|cffffffff\n"..
+  "Sternenregen und Wurzeln zur Kontrolle im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.druidcatpve =
+  "Wildheit (Katze) – PvE|cffffffff\n"..
+  "Nahkampf-Hybridspezialisierung mit hohem Schaden für Raids.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.druidcatpvp =
+  "Wildheit (Katze) – PvP|cffffffff\n"..
+  "Blutungen und starker Burst für PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.druidbearpve =
+  "Wildheit (Bär) – PvE|cffffffff\n"..
+  "Solider Raid-Tank mit hoher Überlebensfähigkeit.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.druidrestopve =
+  "Wiederherstellung – PvE|cffffffff\n"..
+  "Starke HoT-Heilungen für Raids.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.druidrestopvp =
+  "Wiederherstellung – PvP|cffffffff\n"..
+  "Kontrolle und Überleben im PvP durch Heilung und Schilde.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.huntbmpve =
+  "Tierherrschaft – PvE|cffffffff\n"..
+  "Fokus auf Begleiter für Schaden und Nutzen im PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.huntbmpvp =
+  "Tierherrschaft – PvP|cffffffff\n"..
+  "Burst und CC-Immunität durch den Begleiter im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.huntmarkpve =
+  "Treffsicherheit – PvE|cffffffff\n"..
+  "Starker Schuss und optimierter Einzelzielschaden.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.huntmarkpvp =
+  "Treffsicherheit – PvP|cffffffff\n"..
+  "Schneller Burst und Fallen im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.huntsurvpve =
+  "Überleben – PvE|cffffffff\n"..
+  "Nützlichkeit und DoTs für PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.huntsurvpvp =
+  "Überleben – PvP|cffffffff\n"..
+  "Fallen und Kontrolle für PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.magearcapve =
+  "Arkan – PvE|cffffffff\n"..
+  "Magischer Burst und Manamanagement im PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.magearcapvp =
+  "Arkan – PvP|cffffffff\n"..
+  "Mobilität und Schilde im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.magefirepve =
+  "Feuer – PvE|cffffffff\n"..
+  "Zündungen und AoE für PvE optimiert.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.magefirepvp =
+  "Feuer – PvP|cffffffff\n"..
+  "Feuerschlag und Kontrolle für PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.magefrostfirepve =
+  "Frostfeuer – PvE|cffffffff\n"..
+  "Kombiniert Feuer und Frost für einzigartigen Burst.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.magefrostpve =
+  "Frost – PvE|cffffffff\n"..
+  "Frostfinger und Verlangsamungen im PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.magefrostpvp =
+  "Frost – PvP|cffffffff\n"..
+  "Shatter-Kombos und Kontrolle für PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.paladinholypve =
+  "Heilig – PvE|cffffffff\n"..
+  "Starke Heilungen für Raids.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.paladinholypvp =
+  "Heilig – PvP|cffffffff\n"..
+  "Bubbles und Dispels für PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.paladinprotpve =
+  "Schutz – PvE|cffffffff\n"..
+  "Haupttank für Raids.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.paladinprotpvp =
+  "Schutz – PvP|cffffffff\n"..
+  "Flaggenträger und Überleben im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.paladinretpve =
+  "Vergeltung – PvE|cffffffff\n"..
+  "Burst und Offensivunterstützung.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.paladinretpvp =
+  "Vergeltung – PvP|cffffffff\n"..
+  "Kontrolle und Burst für PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.priestdiscipve =
+  "Disziplin – PvE|cffffffff\n"..
+  "Absorptionen und Schilde für den Raid.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.priestdiscipvp =
+  "Disziplin – PvP|cffffffff\n"..
+  "Burst-Heal und Buße für PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.priestholypve =
+  "Heilig – PvE|cffffffff\n"..
+  "Heiliger Boden und Gruppenheilung für Raids.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.priestholypvp =
+  "Heilig – PvP|cffffffff\n"..
+  "Schutzgeist und Burst-Heilung im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.priestshadowpve =
+  "Schatten – PvE|cffffffff\n"..
+  "DoT-Druck und Wahnsinn für PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.priestshadowpvp =
+  "Schatten – PvP|cffffffff\n"..
+  "Stille und DoT-Druck im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.rogassapve =
+  "Meucheln – PvE|cffffffff\n"..
+  "Gifte und DoTs für konstanten Schaden.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.rogassapvp =
+  "Meucheln – PvP|cffffffff\n"..
+  "Vendetta und Burst-Schaden für PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.rogcombatpve =
+  "Kampf – PvE|cffffffff\n"..
+  "Flächenschaden und konstante Energie.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.rogcombatpvp =
+  "Kampf – PvP|cffffffff\n"..
+  "Lang anhaltender Burst für PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.rogsubtipve =
+  "Täuschung – PvE|cffffffff\n"..
+  "Meucheln und Energie für hohen DPS.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.rogsubtipvp =
+  "Täuschung – PvP|cffffffff\n"..
+  "Schattentanz und Kontrolle im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.shamanelempve =
+  "Elementar – PvE|cffffffff\n"..
+  "Lavaeruption und Mahlstrom-Effizienz im PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.shamanelempvp =
+  "Elementar – PvP|cffffffff\n"..
+  "Burst und Rückstoß im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.shamanenhpve =
+  "Verstärkung – PvE|cffffffff\n"..
+  "Doppelwaffen und Mahlstrom im PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.shamanenhpvp =
+  "Verstärkung – PvP|cffffffff\n"..
+  "Geisterwölfe und Burst im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.shamanrestopve =
+  "Wiederherstellung – PvE|cffffffff\n"..
+  "Kettenheilung und Raid-Support im PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.shamanrestopvp =
+  "Wiederherstellung – PvP|cffffffff\n"..
+  "Erdschild und Überleben im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.warlockafflipve =
+  "Gebrechen – PvE|cffffffff\n"..
+  "Lang anhaltende DoTs für PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.warlockafflipvp =
+  "Gebrechen – PvP|cffffffff\n"..
+  "Konstanter DoT-Druck im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.warlockdemonopve =
+  "Dämonologie – PvE|cffffffff\n"..
+  "Metamorphose und Begleiter für PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.warlockdemonopvp =
+  "Dämonologie – PvP|cffffffff\n"..
+  "Teufelswache und Burst-Schaden im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.warlockdestrupve =
+  "Zerstörung – PvE|cffffffff\n"..
+  "Chaosblitz und Burst-Schaden im PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.warlockdestrupvp =
+  "Zerstörung – PvP|cffffffff\n"..
+  "Burst und Furcht im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.warriorarmspve =
+  "Waffen – PvE|cffffffff\n"..
+  "Hinrichten und Burst-Schaden im PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.warriorarmspvp =
+  "Waffen – PvP|cffffffff\n"..
+  "Tödlicher Stoß und Kontrolle im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.warriorfurypve =
+  "Furor – PvE|cffffffff\n"..
+  "Wirbelwind und Wut für PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.warriorfurypvp =
+  "Furor – PvP|cffffffff\n"..
+  "Durchhaltevermögen und Selbstheilung im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.warriorprotecpve =
+  "Schutz – PvE|cffffffff\n"..
+  "Tanking und Überleben im PvE.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.spec.warriorprotecpvp =
+  "Schutz – PvP|cffffffff\n"..
+  "Kontrolle und Widerstand im PvP.\n"..
+  "Zweitspezialisierung ab Stufe 40 freigeschaltet.|r\n\n"..
+  "|cffff0000Linksklick: als Hauptspezialisierung festlegen|r\n"..
+  "|cffff0000Rechtsklick: als Zweitspezialisierung festlegen|r\n"..
+  "|cff999999(Ausführungsreihenfolge: Bot)|r";
+
 -- RTSC --
 
 MultiBot.tips.rtsc = {}

@@ -7,6 +7,7 @@
 ## SavedVariables: MultiBotGlobalSave
 
 MultiBot.lua
+
 MultiBotLanguage-deDE.lua
 MultiBotLanguage-enGB.lua
 MultiBotLanguage-enUS.lua
@@ -32,8 +33,10 @@ MultiBotStats.lua
 MultiBotSpell.lua
 MultiBotItem.lua
 MultiBotInit.lua
-MultiBotItemus.lua
 MultiBotIconos.lua
+MultiBotSpecUI.lua
+MultiBotItemus.lua
+
 MultiBotTalent.lua
 MultiBotReward.lua
 MultiBotNecronet.lua

@@ -2394,7 +2394,12 @@ MultiBot.tips.warrior.tank =
 "|cf9999999(Execution-Order: Bot)|r";
 
 -- EVERY --
-MultiBot.tips.every = {}       -- ← nouvelle ligne
+MultiBot.tips.every.autogear =
+"AutoGear|cffffffff\n"..
+"Equipa automáticamente este Bot según\n"..
+"tus límites de AutoGear (calidad / Puntuación de equipo).|r\n\n"..
+"|cffff0000Clic izquierdo para iniciar AutoGear|r\n"..
+"|cff999999(Orden de ejecución: Bot)|r";
 
 MultiBot.tips.every.summon =
 "Summon|cffffffff\n".. 
@@ -2452,6 +2457,530 @@ MultiBot.tips.every.talent =
 "Se abre con un retardo mientras el sistema carga los valores de talentos.|r\n\n".. 
 "|cffff0000Clic izquierdo para abrir o cerrar los talentos|r\n".. 
 "|cff999999(Execution-Order: Bot)|r";
+
+-- WIPE COMMAND --
+
+MultiBot.tips.every.wipe = 
+"Wipe|cffffffff\n"..
+"Restablece completamente el bot matándolo y resucitándolo,\n".. 
+"útil para limpiar su estado (posición, salud, maná, etc.).|r\n\n"..
+"|cffff0000Clic izquierdo: envía el comando wipe al bot seleccionado|r\n"..
+"|cff999999(Orden de ejecución: Bot)|r";
+
+
+-- SET TALENTS -- 
+
+MultiBot.tips.every.settalent =
+"Asignar talentos|cffffffff\n"..
+"Muestra un menú con las especializaciones disponibles (PvE/PvP) para el bot seleccionado.\n"..
+"La especialización secundaria se desbloquea a partir del nivel 40.|r\n\n"..
+"|cffff0000Clic izquierdo para abrir el selector de plantillas del bot|r\n"..
+"|cffff0000Clic derecho para cerrar el selector de plantillas del bot|r\n"..
+"|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.dkbloodpve =
+  "Sangre – PvE|cffffffff\n"..
+  "Especialización centrada en la autocuración y la supervivencia en PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.dkbloodpvp =
+  "Sangre – PvP|cffffffff\n"..
+  "Ideal para controlar la bandera y resistir en JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.dkbfrostpve =
+  "Escarcha – PvE|cffffffff\n"..
+  "Optimizada para ráfagas y ralentizaciones en PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.dkbfrostpvp =
+  "Escarcha – PvP|cffffffff\n"..
+  "Ráfagas rápidas y control para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.dkunhopve =
+  "Profano – PvE|cffffffff\n"..
+  "Especialización de área y sinergia con mascota en PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.dkunhopvp =
+  "Profano – PvP|cffffffff\n"..
+  "Presión constante de DoTs en JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.dkdoublepve =
+  "Doble plantilla – PvE|cffffffff\n"..
+  "Permite probar rápidamente dos builds en PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.druidbalpve =
+  "Equilibrio – PvE|cffffffff\n"..
+  "Explosión mágica y fases de Eclipse optimizadas para PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.druidbalpvp =
+  "Equilibrio – PvP|cffffffff\n"..
+  "Lluvia de estrellas y raíces para el control en JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.druidcatpve =
+  "Feral (Gato) – PvE|cffffffff\n"..
+  "Híbrido de daño cuerpo a cuerpo feroz para bandas.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.druidcatpvp =
+  "Feral (Gato) – PvP|cffffffff\n"..
+  "Sangrados y ráfagas para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.druidbearpve =
+  "Feral (Oso) – PvE|cffffffff\n"..
+  "Tanque sólido para bandas y gran supervivencia.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.druidrestopve =
+  "Restauración – PvE|cffffffff\n"..
+  "Curaciones HoT potentes para bandas.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.druidrestopvp =
+  "Restauración – PvP|cffffffff\n"..
+  "Control y supervivencia en JcJ gracias a curas y escudos.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.huntbmpve =
+  "Dominio de bestias – PvE|cffffffff\n"..
+  "Enfocado en la mascota para daño y utilidad en PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.huntbmpvp =
+  "Dominio de bestias – PvP|cffffffff\n"..
+  "Ráfaga y control gracias a la mascota en JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.huntmarkpve =
+  "Puntería – PvE|cffffffff\n"..
+  "Disparos potentes y daño a un solo objetivo optimizado.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.huntmarkpvp =
+  "Puntería – PvP|cffffffff\n"..
+  "Ráfagas rápidas y trampas para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.huntsurvpve =
+  "Supervivencia – PvE|cffffffff\n"..
+  "Utilidad y daño en el tiempo para PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.huntsurvpvp =
+  "Supervivencia – PvP|cffffffff\n"..
+  "Trampas y control en JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.magearcapve =
+  "Arcanos – PvE|cffffffff\n"..
+  "Ráfagas mágicas y gestión de maná para PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.magearcapvp =
+  "Arcanos – PvP|cffffffff\n"..
+  "Movilidad y escudos para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.magefirepve =
+  "Fuego – PvE|cffffffff\n"..
+  "Igniciones y AoE optimizadas para PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.magefirepvp =
+  "Fuego – PvP|cffffffff\n"..
+  "Bola de fuego rápida y control para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.magefrostfirepve =
+  "Frostfire – PvE|cffffffff\n"..
+  "Fusión de fuego y escarcha para ráfagas únicas.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.magefrostpve =
+  "Escarcha – PvE|cffffffff\n"..
+  "Dedos de escarcha y ralentizaciones en PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.magefrostpvp =
+  "Escarcha – PvP|cffffffff\n"..
+  "Shatter y raíces para el control en JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.paladinholypve =
+  "Sagrado – PvE|cffffffff\n"..
+  "Sanaciones poderosas para el grupo en PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.paladinholypvp =
+  "Sagrado – PvP|cffffffff\n"..
+  "Burbuja y disipaciones para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.paladinprotpve =
+  "Protección – PvE|cffffffff\n"..
+  "Tanque principal para bandas y mazmorras.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.paladinprotpvp =
+  "Protección – PvP|cffffffff\n"..
+  "Portador de bandera y supervivencia en JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.paladinretpve =
+  "Reprensión – PvE|cffffffff\n"..
+  "Ráfagas y apoyo ofensivo.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.paladinretpvp =
+  "Reprensión – PvP|cffffffff\n"..
+  "Control y ráfagas en JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.priestdiscipve =
+  "Disciplina – PvE|cffffffff\n"..
+  "Absorciones y escudos para el grupo.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.priestdiscipvp =
+  "Disciplina – PvP|cffffffff\n"..
+  "Sanación explosiva y Penitencia en JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.priestholypve =
+  "Sagrado – PvE|cffffffff\n"..
+  "Santuarios y sanación en área para el grupo.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.priestholypvp =
+  "Sagrado – PvP|cffffffff\n"..
+  "Espíritu guardián y sanación intensa en JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.priestshadowpve =
+  "Sombra – PvE|cffffffff\n"..
+  "Presión de DoTs y demencia para PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.priestshadowpvp =
+  "Sombra – PvP|cffffffff\n"..
+  "Silencio y presión continua en JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.rogassapve =
+  "Asesinato – PvE|cffffffff\n"..
+  "Venenos y DoTs para daño constante.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.rogassapvp =
+  "Asesinato – PvP|cffffffff\n"..
+  "Vendetta y daño explosivo para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.rogcombatpve =
+  "Combate – PvE|cffffffff\n"..
+  "Cleave y energía para daño sostenido.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.rogcombatpvp =
+  "Combate – PvP|cffffffff\n"..
+  "Daño prolongado en ráfagas para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.rogsubtipve =
+  "Sutileza – PvE|cffffffff\n"..
+  "Backstab y energía para alto DPS.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.rogsubtipvp =
+  "Sutileza – PvP|cffffffff\n"..
+  "Danza de las sombras y control para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.shamanelempve =
+  "Elemental – PvE|cffffffff\n"..
+  "Explosión de lava y oleada de maná para PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.shamanelempvp =
+  "Elemental – PvP|cffffffff\n"..
+  "Ráfagas y retrocesos para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.shamanenhpve =
+  "Mejora – PvE|cffffffff\n"..
+  "Doble arma y oleadas de hechizos para PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.shamanenhpvp =
+  "Mejora – PvP|cffffffff\n"..
+  "Lobos y ráfagas para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.shamanrestopve =
+  "Restauración – PvE|cffffffff\n"..
+  "Sanación en cadena y apoyo al grupo.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.shamanrestopvp =
+  "Restauración – PvP|cffffffff\n"..
+  "Escudo de tierra y supervivencia en JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.warlockafflipve =
+  "Aflicción – PvE|cffffffff\n"..
+  "DoTs prolongados y presión constante en PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.warlockafflipvp =
+  "Aflicción – PvP|cffffffff\n"..
+  "Presión constante con DoTs en JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.warlockdemonopve =
+  "Demonología – PvE|cffffffff\n"..
+  "Metamorfosis y mascotas para PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.warlockdemonopvp =
+  "Demonología – PvP|cffffffff\n"..
+  "Guardia vil y ráfagas para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.warlockdestrupve =
+  "Destrucción – PvE|cffffffff\n"..
+  "Descarga de caos y daño explosivo para PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.warlockdestrupvp =
+  "Destrucción – PvP|cffffffff\n"..
+  "Ráfagas y miedo para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.warriorarmspve =
+  "Armas – PvE|cffffffff\n"..
+  "Ejecutar y daño explosivo para PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.warriorarmspvp =
+  "Armas – PvP|cffffffff\n"..
+  "Golpe mortal y control para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.warriorfurypve =
+  "Furia – PvE|cffffffff\n"..
+  "Torbellino y generación de ira para PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.warriorfurypvp =
+  "Furia – PvP|cffffffff\n"..
+  "Sostenimiento y autocuración en JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.warriorprotecpve =
+  "Protección – PvE|cffffffff\n"..
+  "Tanking y supervivencia para PvE.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.spec.warriorprotecpvp =
+  "Protección – PvP|cffffffff\n"..
+  "Control y resistencia para JcJ.\n"..
+  "Secundaria desbloqueada al nivel 40.|r\n\n"..
+  "|cffff0000Clic izquierdo: establecer como especialización principal|r\n"..
+  "|cffff0000Clic derecho: establecer como especialización secundaria|r\n"..
+  "|cff999999(Orden de ejecución: Bot)|r";
 
 -- RTSC --
 

@@ -2395,6 +2395,12 @@ MultiBot.tips.warrior.tank =
 
 -- EVERY --
 
+MultiBot.tips.every.autogear =
+"AutoGear|cffffffff\n"..
+"Automatically equips this Bot based on\n"..
+"your AutoGear limits (quality / GearScore).|r\n\n"..
+"|cffff0000Left-click to start AutoGear|r\n"..
+"|cff999999(Execution order: Bot)|r";
 MultiBot.tips.every.summon =
 "Summon|cffffffff\n"..
 "Summons this Bot to your Position.|r\n\n"..
@@ -2452,6 +2458,548 @@ MultiBot.tips.every.talent =
 "|cffff0000Left-Click to open or close the Talents|r\n"..
 "|cff999999(Execution-Order: Bot)|r";
 
+-- WIPE COMMAND --
+
+MultiBot.tips.every.wipe = 
+"Wipe|cffffffff\n"..
+"Fully resets the bot by killing it and resurrecting it,\n".. 
+"useful to clear its state (position, health, mana, etc.).|r\n\n"..
+"|cffff0000Left-click: sends the wipe command to the selected bot|r\n"..
+"|cff999999(Execution order: Bot)|r";
+
+-- SET TALENTS -- 
+
+MultiBot.tips.every.settalent =
+"Set-Talents|cffffffff\n"..
+"Displays a menu of available specializations (PvE/PvP) for the selected bot.\n"..
+"Secondary specialization unlocks at level 40.|r\n\n"..
+"|cffff0000Left-click to open the bot's template selector|r\n"..
+"|cffff0000Right-click to close the bot's template selector|r\n"..
+"|cff999999(Execution order: Bot)|r";
+ 
+-- DeathKnight
+MultiBot.tips.spec.dkbloodpve =
+  "Blood – PvE|cffffffff\n"..
+  "Focused on self-healing and survivability in PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.dkbloodpvp =
+  "Blood – PvP|cffffffff\n"..
+  "Ideal for flag control and durability in PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.dkbfrostpve =
+  "Frost – PvE|cffffffff\n"..
+  "Optimized for burst damage and slows in PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.dkbfrostpvp =
+  "Frost – PvP|cffffffff\n"..
+  "High burst and crowd control for PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.dkunhopve =
+  "Unholy – PvE|cffffffff\n"..
+  "Strong AoE and pet synergy in PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.dkunhopvp =
+  "Unholy – PvP|cffffffff\n"..
+  "Persistent DOT pressure in PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.dkdoublepve =
+  "Double Template – PvE|cffffffff\n"..
+  "Quickly test two builds in PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+
+-- Druid
+MultiBot.tips.spec.druidbalpve =
+  "Balance – PvE|cffffffff\n"..
+  "Eclipse bursts and magic damage optimized for PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.druidbalpvp =
+  "Balance – PvP|cffffffff\n"..
+  "Starfall and roots for PvP crowd control.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.druidcatpve =
+  "Feral (Cat) – PvE|cffffffff\n"..
+  "Hybrid melee DPS for raid contributions.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.druidcatpvp =
+  "Feral (Cat) – PvP|cffffffff\n"..
+  "Bleeds and burst for PvP skirmishes.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.druidbearpve =
+  "Feral (Bear) – PvE|cffffffff\n"..
+  "Primary raid tank with high survivability.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.druidrestopve =
+  "Restoration – PvE|cffffffff\n"..
+  "Powerful HoTs for raid healing.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.druidrestopvp =
+  "Restoration – PvP|cffffffff\n"..
+  "Shields and CC to survive in PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+
+-- Hunter
+MultiBot.tips.spec.huntbmpve =
+  "Beast Mastery – PvE|cffffffff\n"..
+  "Pet-focused damage and utility in PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.huntbmpvp =
+  "Beast Mastery – PvP|cffffffff\n"..
+  "Burst and CC immunity via your pet in PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.huntmarkpve =
+  "Marksmanship – PvE|cffffffff\n"..
+  "High single-target burst with precision shots.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.huntmarkpvp =
+  "Marksmanship – PvP|cffffffff\n"..
+  "Burst damage and traps for PvP control.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.huntsurvpve =
+  "Survival – PvE|cffffffff\n"..
+  "Utility and DoTs in PvE encounters.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.huntsurvpvp =
+  "Survival – PvP|cffffffff\n"..
+  "Traps and crowd control for PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+
+-- Mage
+MultiBot.tips.spec.magearcapve =
+  "Arcane – PvE|cffffffff\n"..
+  "Mana management and burst spells for PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.magearcapvp =
+  "Arcane – PvP|cffffffff\n"..
+  "Mobility and shields for PvP skirmishes.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.magefirepve =
+  "Fire – PvE|cffffffff\n"..
+  "Ignites and AoE flame bursts for PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.magefirepvp =
+  "Fire – PvP|cffffffff\n"..
+  "Scorch and crowd control for PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.magefrostfirepve =
+  "Frostfire – PvE|cffffffff\n"..
+  "Combines fire and frost for unique burst.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.magefrostpve =
+  "Frost – PvE|cffffffff\n"..
+  "Fingers of Frost and slows for PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.magefrostpvp =
+  "Frost – PvP|cffffffff\n"..
+  "Shatter combos and roots for PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+
+-- Paladin
+MultiBot.tips.spec.paladinholypve =
+  "Holy – PvE|cffffffff\n"..
+  "Powerful raid healing.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.paladinholypvp =
+  "Holy – PvP|cffffffff\n"..
+  "Bubble and dispels for PvP survival.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.paladinprotpve =
+  "Protection – PvE|cffffffff\n"..
+  "Main raid tanking.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.paladinprotpvp =
+  "Protection – PvP|cffffffff\n"..
+  "Flag carrying and durability in PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.paladinretpve =
+  "Retribution – PvE|cffffffff\n"..
+  "Offensive burst and support.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.paladinretpvp =
+  "Retribution – PvP|cffffffff\n"..
+  "Control and burst in PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+
+-- Priest
+MultiBot.tips.spec.priestdiscipve =
+  "Discipline – PvE|cffffffff\n"..
+  "Absorbs and shields for raid support.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"..
+  "|cffff0000Right-click to set as secondary spec|r\n"..
+  "|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.priestdiscipvp =
+  "Discipline – PvP|cffffffff\n"..
+  "Burst healing and Penances for PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.priestholypve =
+  "Holy – PvE|cffffffff\n"..
+  "Sanctuary and CoH for raid healing.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.priestholypvp =
+  "Holy – PvP|cffffffff\n"..
+  "Guardian Spirit and burst heal in PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.priestshadowpve =
+  "Shadow – PvE|cffffffff\n"..
+  "DOT pressure and Insanity for PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.priestshadowpvp =
+  "Shadow – PvP|cffffffff\n"..
+  "Silence and pressure in PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+
+-- Rogue
+MultiBot.tips.spec.rogassapve =
+  "Assassination – PvE|cffffffff\n"..
+  "Poisons and DOTs for sustained DPS.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.rogassapvp =
+  "Assassination – PvP|cffffffff\n"..
+  "Vendetta and burst for PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.rogcombatpve =
+  "Combat – PvE|cffffffff\n"..
+  "Cleave and energy for sustained DPS.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.rogcombatpvp =
+  "Combat – PvP|cffffffff\n"..
+  "Extended burst for PvP skirmishes.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.rogsubtipve =
+  "Subtlety – PvE|cffffffff\n"..
+  "Backstab and energy for intense DPS.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.rogsubtipvp =
+  "Subtlety – PvP|cffffffff\n"..
+  "Shadowdance and control for PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+
+-- Shaman
+MultiBot.tips.spec.shamanelempve =
+  "Elemental – PvE|cffffffff\n"..
+  "Lava Burst and Maelstrom optimized for PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.shamanelempvp =
+  "Elemental – PvP|cffffffff\n"..
+  "Burst and knockbacks for PvP skirmishes.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.shamanenhpve =
+  "Enhancement – PvE|cffffffff\n"..
+  "Dual-wield and Maelstrom for PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.shamanenhpvp =
+  "Enhancement – PvP|cffffffff\n"..
+  "Wolves and burst damage for PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.shamanrestopve =
+  "Restoration – PvE|cffffffff\n"..
+  "Chain Heal and raid support in PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.shamanrestopvp =
+  "Restoration – PvP|cffffffff\n"..
+  "Earth Shield and survival in PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+
+-- Warlock
+MultiBot.tips.spec.warlockafflipve =
+  "Affliction – PvE|cffffffff\n"..
+  "Long-duration DOTs for PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.warlockafflipvp =
+  "Affliction – PvP|cffffffff\n"..
+  "Constant pressure DOTs in PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.warlockdemonopve =
+  "Demonology – PvE|cffffffff\n"..
+  "Metamorphosis and pets for PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.warlockdemonopvp =
+  "Demonology – PvP|cffffffff\n"..
+  "Felguard and burst for PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.warlockdestrupve =
+  "Destruction – PvE|cffffffff\n"..
+  "Chaos Bolt and heavy burst in PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.warlockdestrupvp =
+  "Destruction – PvP|cffffffff\n"..
+  "Burst and fear control for PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+
+-- Warrior
+MultiBot.tips.spec.warriorarmspve =
+  "Arms – PvE|cffffffff\n"..
+  "Execute and burst for PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.warriorarmspvp =
+  "Arms – PvP|cffffffff\n"..
+  "Mortal Strike and control for PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.warriorfurypve =
+  "Fury – PvE|cffffffff\n"..
+  "Whirlwind and rage for sustained DPS.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.warriorfurypvp =
+  "Fury – PvP|cffffffff\n"..
+  "Sustain and self-healing in PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.warriorprotecpve =
+  "Protection – PvE|cffffffff\n"..
+  "Tanking and toughness for PvE.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.spec.warriorprotecpvp =
+  "Protection – PvP|cffffffff\n"..
+  "Control and resilience in PvP.\n"..
+  "Secondary spec unlocked at level 40.|r\n\n"..
+  "|cffff0000Left-click to set as primary spec|r\n"
+  .."|cffff0000Right-click to set as secondary spec|r\n"
+  .."|cff999999(Execution order: Bot)|r";
+  
 -- RTSC --
 
 MultiBot.tips.rtsc.master = 

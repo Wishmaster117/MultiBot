@@ -1,6 +1,29 @@
+-- ------------------------------------------------------------------
+--  Helper universel : TimerAfter 
+-- ------------------------------------------------------------------
+if not TimerAfter then
+    function TimerAfter(delay, callback)
+        if C_Timer and C_Timer.After then
+            return C_Timer.After(delay, callback)
+        end
+        local f = CreateFrame("Frame")
+        f.elapsed = 0
+        f:SetScript("OnUpdate", function(self, dt)
+            self.elapsed = self.elapsed + dt
+            if self.elapsed >= delay then
+                self:SetScript("OnUpdate", nil)
+                if callback then pcall(callback) end
+            end
+        end)
+    end
+    -- rendez-la accessible ailleurs
+    MultiBot    = _G.MultiBot or {}
+    MultiBot.TimerAfter = TimerAfter
+end
+
 -- MULTIBAR --
 
-local tMultiBar = MultiBot.addFrame("MultiBar", -262, 144, 36)
+local tMultiBar = MultiBot.addFrame("MultiBar", -322, 144, 36)
 tMultiBar:SetMovable(true)
 
 -- LEFT --
@@ -2728,48 +2751,104 @@ MultiBot.talent.addValue = function(pTab, pID, piX, piY, pRank, pMax)
 end
 
 MultiBot.talent.setTalents = function()
-	local tClass = MultiBot.data.talent.talents[MultiBot.talent.class]
-	local tArrow = MultiBot.data.talent.arrows[MultiBot.talent.class]
+    --------------------------------------------------------------------
+    -- 0) Vérifications des données
+    --------------------------------------------------------------------
+    local tClass = MultiBot.data.talent.talents[ MultiBot.talent.class ]
+    if not tClass then
+        print("|cffff0000[MultiBot] Aucune build trouvée pour la classe "
+              .. tostring(MultiBot.talent.class) .. "!|r")
+        return
+    end
+
+    local tArrow = MultiBot.data.talent.arrows[ MultiBot.talent.class ]
+    if not tArrow then
+        print("|cffff0000[MultiBot] Aucun schéma de flèches pour la classe "
+              .. tostring(MultiBot.talent.class) .. "!|r")
+        return
+    end
+
+	local activeGroup = GetActiveTalentGroup(true) or 1
 	
-	MultiBot.talent.points = tonumber(GetUnspentTalentPoints(true))
-	MultiBot.talent.setText("Points", MultiBot.info.talent["Points"] .. MultiBot.talent.points)
-	MultiBot.talent.setText("Title", MultiBot.doReplace(MultiBot.info.talent["Title"], "NAME", MultiBot.talent.name))
-	
-	for i = 1, 3 do
-		local tMarker = MultiBot.talent.class .. i
-		local tTab = MultiBot.talent.setGrid(MultiBot.talent.frames["Tab" .. i])
-		tTab.setTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_" .. tMarker .. ".blp")
-		tTab.value = 0
-		tTab.id = i
-		
-		for j = 1, table.getn(tArrow[i]) do
-			local tData = MultiBot.doSplit(tArrow[i][j], ", ")
-			local tNeed = tonumber(tData[1])
-			tTab.arrows[j] = MultiBot.talent.addArrow(tTab, j, tNeed, tData[2], tData[3], tData[4])
-		end
-		
-		for j = 1, table.getn(tClass[i]) do
-			local tTale = MultiBot.doSplit(MultiBot.doSplit(GetTalentLink(i, j, true), "|")[3], ":")[2]
-			local iName, iIcon, iTier, iColumn, iRank = GetTalentInfo(i, j, true)
-			local tData = MultiBot.doSplit(tClass[i][j], ", ")
-			local tMaxi = table.getn(tData) - 4
-			local tNeed = tonumber(tData[1])
-			local tRank = tonumber(iRank)
-			local tTips = {}
-			
-			tTab.value = tTab.value + tRank
-			table.insert(tTips, "|cff4e96f7|Htalent:" .. tTale ..":-1|h[" .. iName .. "]|h|r")
-			for k = 5, table.getn(tData) do	table.insert(tTips, "|cff4e96f7|Htalent:" .. tTale ..":" .. (k - 5) .. "|h[" .. iName .. "]|h|r") end
-			
-			MultiBot.talent.addTalent(tTab, j, tNeed, tRank, tMaxi, tData[2], tData[3], tData[4], tTips)
-			MultiBot.talent.addValue(tTab, j, tData[2], tData[3], tRank, tMaxi)
-		end
-		
-		tTab.setText("Title", MultiBot.info.talent[tMarker] .. " (" .. tTab.value .. ")")
-	end
-	
-	MultiBot.talent.doState()
-	MultiBot.talent:Show()
+    --------------------------------------------------------------------
+    -- 1) Talents encore absents ? → on retente dans 0,1 s
+    --------------------------------------------------------------------
+    if not GetTalentInfo(1, 1, true) then      -- le tout premier talent
+        TimerAfter(0.1, MultiBot.talent.setTalents)
+        return
+    end
+
+    --------------------------------------------------------------------
+    -- 2) Mise à jour de la frame
+    --------------------------------------------------------------------
+    MultiBot.talent.points = tonumber(GetUnspentTalentPoints(true))
+    MultiBot.talent.setText("Points",
+        MultiBot.info.talent["Points"] .. MultiBot.talent.points)
+    MultiBot.talent.setText("Title",
+        MultiBot.doReplace(MultiBot.info.talent["Title"], "NAME",
+                           MultiBot.talent.name))
+
+    for i = 1, 3 do
+        local tMarker = MultiBot.talent.class .. i
+        local tTab    = MultiBot.talent.setGrid(
+                            MultiBot.talent.frames["Tab" .. i])
+        tTab.setTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_" ..
+                        tMarker .. ".blp")
+        tTab.value, tTab.id = 0, i
+
+        -- flèches -----------------------------------------------------
+        for j = 1, #tArrow[i] do
+            local tData = MultiBot.doSplit(tArrow[i][j], ", ")
+            local tNeed = tonumber(tData[1])
+            tTab.arrows[j] = MultiBot.talent.addArrow(
+                                 tTab, j, tNeed, tData[2], tData[3], tData[4])
+        end
+
+        -- talents -----------------------------------------------------
+        for j = 1, #tClass[i] do
+            local link = GetTalentLink(i,j,true,nil,activeGroup)
+            
+            local tTale = MultiBot.doSplit(MultiBot.doSplit(link, "|")[3], ":")[2]
+
+            local iName, iIcon, iTier, iColumn, iRank = GetTalentInfo(i, j, true, nil, activeGroup)
+            -- si iName est quand même nil, on replanifie et on quitte
+            if not iName then
+                TimerAfter(0.1, MultiBot.talent.setTalents)
+                return
+            end
+
+            local tData = MultiBot.doSplit(tClass[i][j], ", ")
+            local tMax  = #tData - 4
+            local tNeed = tonumber(tData[1])
+            local tRank = tonumber(iRank)
+            local tTips = {}
+
+            tTab.value = tTab.value + tRank
+            table.insert(tTips,
+                "|cff4e96f7|Htalent:" .. tTale ..":-1|h[" .. iName .. "]|h|r")
+            for k = 5, #tData do
+                table.insert(tTips,
+                    "|cff4e96f7|Htalent:" .. tTale ..":" .. (k - 5) ..
+                    "|h[" .. iName .. "]|h|r")
+            end
+
+            MultiBot.talent.addTalent(
+                tTab, j, tNeed, tRank, tMax,
+                tData[2], tData[3], tData[4], tTips)
+            MultiBot.talent.addValue(
+                tTab, j, tData[2], tData[3], tRank, tMax)
+        end
+
+        tTab.setText("Title",
+            MultiBot.info.talent[tMarker] .. " (" .. tTab.value .. ")")
+    end
+
+    --------------------------------------------------------------------
+    -- 3) Affichage final
+    --------------------------------------------------------------------
+    MultiBot.talent.doState()
+	MultiBot.talent:Show()          -- ← affiche systématiquement
+	MultiBot.auto.talent = false    -- ← reset du drapeau interne
 end
 
 MultiBot.talent.doState = function()

@@ -2393,7 +2393,15 @@ MultiBot.tips.warrior.tank =
 "|cffff0000左键点击启用或禁用坦克辅助|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
+
 -- 所有的 --
+
+MultiBot.tips.every.autogear =
+"自动装备|cffffffff\n"..
+"根据你的AutoGear设置（品质 / 装备评分）\n"..
+"自动为该机器人装备物品。|r\n\n"..
+"|cffff0000左键点击启动自动装备|r\n"..
+"|cff999999（执行顺序：机器人）|r";
 
 MultiBot.tips.every.summon =
 "召唤 |cffffffff\n"..
@@ -2451,6 +2459,532 @@ MultiBot.tips.every.talent =
 "在系统加载天赋值时会有时间延迟地打开。|r\n\n"..
 "|cffff0000鼠标左键单击打开或关闭天赋|r\n"..
 "|cff999999(执行命令: 机器人)|r";
+
+-- WIPE COMMAND --
+
+MultiBot.tips.every.wipe = 
+"Wipe|cffffffff\n"..
+"通过击杀并复活来完全重置机器人，\n".. 
+"有助于清除其状态（位置、生命值、法力值等）。|r\n\n"..
+"|cffff0000左键单击：向所选机器人发送wipe命令|r\n"..
+"|cff999999(执行顺序：Bot)|r";
+
+-- SET TALENTS -- 
+
+MultiBot.tips.every.settalent =
+"设置天赋|cffffffff\n"..
+"显示所选机器人可用的专精菜单（PvE/PvP）。\n"..
+"第二专精在40级时解锁。|r\n\n"..
+"|cffff0000左键点击：打开机器人的模板选择器|r\n"..
+"|cffff0000右键点击：关闭机器人的模板选择器|r\n"..
+"|cff999999（执行顺序：Bot）|r";
+
+MultiBot.tips.spec.dkbloodpve =
+  "鲜血 – PvE|cffffffff\n"..
+  "专注于自我治疗和在PvE环境中生存的专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.dkbloodpvp =
+  "鲜血 – PvP|cffffffff\n"..
+  "适合控旗和PvP耐久的专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.dkbfrostpve =
+  "冰霜 – PvE|cffffffff\n"..
+  "在PvE中优化爆发和减速能力。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.dkbfrostpvp =
+  "冰霜 – PvP|cffffffff\n"..
+  "快速爆发和控制适用于PvP。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.dkunhopve =
+  "邪恶 – PvE|cffffffff\n"..
+  "以范围伤害和宠物协同为主的PvE专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.dkunhopvp =
+  "邪恶 – PvP|cffffffff\n"..
+  "持续伤害压制适用于PvP环境。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.dkdoublepve =
+  "双天赋模板 – PvE|cffffffff\n"..
+  "允许快速测试两个PvE构建。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.druidbalpve =
+  "平衡 – PvE|cffffffff\n"..
+  "以魔法爆发和日月蚀为核心的PvE专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.druidbalpvp =
+  "平衡 – PvP|cffffffff\n"..
+  "PvP中通过星辰坠落和缠绕提供控制能力。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.druidcatpve =
+  "野性（猫）– PvE|cffffffff\n"..
+  "适合团队战斗的近战混合输出。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.druidcatpvp =
+  "野性（猫）– PvP|cffffffff\n"..
+  "流血和爆发伤害适用于PvP场景。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.druidbearpve =
+  "野性（熊）– PvE|cffffffff\n"..
+  "可靠的坦克，适合团队作战和生存能力强。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.druidrestopve =
+  "恢复 – PvE|cffffffff\n"..
+  "提供强大的持续治疗，适合团队。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.druidrestopvp =
+  "恢复 – PvP|cffffffff\n"..
+  "依靠治疗与护盾在PvP中生存与控制。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.huntbmpve =
+  "野兽掌握 – PvE|cffffffff\n"..
+  "以宠物为核心的输出与功能型专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.huntbmpvp =
+  "野兽掌握 – PvP|cffffffff\n"..
+  "通过宠物提供爆发和免控能力。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.huntmarkpve =
+  "射击 – PvE|cffffffff\n"..
+  "强大的单体爆发与远程伤害。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.huntmarkpvp =
+  "射击 – PvP|cffffffff\n"..
+  "适合爆发快速和陷阱控制。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.huntsurvpve =
+  "生存 – PvE|cffffffff\n"..
+  "以功能和持续伤害为主。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.huntsurvpvp =
+  "生存 – PvP|cffffffff\n"..
+  "陷阱和控制手段优秀的PvP专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.magearcapve =
+  "奥术 – PvE|cffffffff\n"..
+  "以魔法爆发与法力管理为核心。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.magearcapvp =
+  "奥术 – PvP|cffffffff\n"..
+  "高机动性与护盾为主。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.magefirepve =
+  "火焰 – PvE|cffffffff\n"..
+  "燃烧与范围伤害适合团队输出。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.magefirepvp =
+  "火焰 – PvP|cffffffff\n"..
+  "灼烧和控场为主要特性。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.magefrostfirepve =
+  "霜火 – PvE|cffffffff\n"..
+  "火与冰融合，形成独特爆发组合。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.magefrostpve =
+  "冰霜 – PvE|cffffffff\n"..
+  "冰指与减速在PvE中表现出色。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.magefrostpvp =
+  "冰霜 – PvP|cffffffff\n"..
+  "破碎效果和冰冻控制最为关键。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.paladinholypve =
+  "神圣 – PvE|cffffffff\n"..
+  "强力的团队治疗专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.paladinholypvp =
+  "神圣 – PvP|cffffffff\n"..
+  "气泡和驱散适用于PvP生存。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.paladinprotpve =
+  "防护 – PvE|cffffffff\n"..
+  "团队主坦，强大的生存能力。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.paladinprotpvp =
+  "防护 – PvP|cffffffff\n"..
+  "扛旗与生存导向。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.paladinretpve =
+  "惩戒 – PvE|cffffffff\n"..
+  "爆发与攻击性支援。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.paladinretpvp =
+  "惩戒 – PvP|cffffffff\n"..
+  "控制与爆发兼备。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.priestdiscipve =
+  "戒律 – PvE|cffffffff\n"..
+  "护盾吸收为主的团队治疗。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.priestdiscipvp =
+  "戒律 – PvP|cffffffff\n"..
+  "爆发治疗与惩戒之力。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.priestholypve =
+  "神圣 – PvE|cffffffff\n"..
+  "团队治疗技能如圣言术与祈祷。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.priestholypvp =
+  "神圣 – PvP|cffffffff\n"..
+  "守护之魂与快速治疗。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.priestshadowpve =
+  "暗影 – PvE|cffffffff\n"..
+  "以伤害持续性和疯狂机制为主。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.priestshadowpvp =
+  "暗影 – PvP|cffffffff\n"..
+  "沉默与持续压制。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.rogassapve =
+  "刺杀 – PvE|cffffffff\n"..
+  "毒药与持续伤害输出。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.rogassapvp =
+  "刺杀 – PvP|cffffffff\n"..
+  "迅猛爆发与暗杀风格。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.rogcombatpve =
+  "战斗 – PvE|cffffffff\n"..
+  "顺劈与能量循环的持续输出。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.rogcombatpvp =
+  "战斗 – PvP|cffffffff\n"..
+  "延长爆发，持续压力。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.rogsubtipve =
+  "敏锐 – PvE|cffffffff\n"..
+  "背刺与高能量循环输出。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.rogsubtipvp =
+  "敏锐 – PvP|cffffffff\n"..
+  "暗影之舞与控制手段。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+-- Shaman
+MultiBot.tips.spec.shamanelempve =
+  "元素 – PvE|cffffffff\n"..
+  "熔岩爆裂与漩涡武器为核心。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.shamanelempvp =
+  "元素 – PvP|cffffffff\n"..
+  "爆发与击退效果适合PvP。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.shamanenhpve =
+  "增强 – PvE|cffffffff\n"..
+  "双持与漩涡爆发适合PvE。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.shamanenhpvp =
+  "增强 – PvP|cffffffff\n"..
+  "幽魂狼与爆发性伤害。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.shamanrestopve =
+  "恢复 – PvE|cffffffff\n"..
+  "治疗链与团队支援。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.shamanrestopvp =
+  "恢复 – PvP|cffffffff\n"..
+  "大地之盾与生存能力优异。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+-- Warlock
+MultiBot.tips.spec.warlockafflipve =
+  "痛苦 – PvE|cffffffff\n"..
+  "持续伤害为主的高效专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warlockafflipvp =
+  "痛苦 – PvP|cffffffff\n"..
+  "维持压力与持续Dot输出。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warlockdemonopve =
+  "恶魔学识 – PvE|cffffffff\n"..
+  "变形与宠物配合输出。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warlockdemonopvp =
+  "恶魔学识 – PvP|cffffffff\n"..
+  "恶魔卫士与爆发搭配控制。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warlockdestrupve =
+  "毁灭 – PvE|cffffffff\n"..
+  "混乱箭与强力爆发。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warlockdestrupvp =
+  "毁灭 – PvP|cffffffff\n"..
+  "爆发与恐惧控制。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+-- Warrior
+MultiBot.tips.spec.warriorarmspve =
+  "武器 – PvE|cffffffff\n"..
+  "斩杀与爆发输出强劲。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warriorarmspvp =
+  "武器 – PvP|cffffffff\n"..
+  "致死打击与控制组合。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warriorfurypve =
+  "狂怒 – PvE|cffffffff\n"..
+  "旋风斩与怒气驱动的爆发。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warriorfurypvp =
+  "狂怒 – PvP|cffffffff\n"..
+  "续航与自我治疗增强。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warriorprotecpve =
+  "防护 – PvE|cffffffff\n"..
+  "坦克和生存能力最强专精之一。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warriorprotecpvp =
+  "防护 – PvP|cffffffff\n"..
+  "控制与耐久的PvP坦克专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
 
 -- RTSC --
 

@@ -898,10 +898,10 @@ MultiBot.tips.main.rtsc =
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.main.raidus =
-"Raidus-Switch\n|cffffffff"..
-"This Switch will open or close the Raid-Composer.|r\n\n"..
-"|cffff0000Left-Click to open or close the Raid-Composer|r\n"..
-"|cff999999(Execution-Order: System)|r";
+"Raidus-Switch\n|cffffffff"..  
+"Ce bouton ouvrira ou fermera le compositeur de raid.|r\n\n"..  
+"|cffff0000Clic gauche pour ouvrir ou fermer le compositeur de raid|r\n"..  
+"|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.main.creator =
 "Switch Créateur\n|cffffffff"..
@@ -1154,7 +1154,6 @@ MultiBot.tips.inventory.open =
 "|cffff0000Clic gauche pour ouvrir un sac de butin|r\n"..
 "|cff999999(Ordre d'exécution : Bot)|r";
 
-
 -- ITEMUS:NIVEAU --
 
 MultiBot.tips.itemus.level.master =
@@ -1267,7 +1266,6 @@ MultiBot.tips.itemus.rare.R07 =
 "Affiche les objets de qualité héritage.|r\n\n"..
 "|cffff0000Clic gauche pour définir le filtre|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
-
 
 -- ITEMUS:EMPLACEMENT --
 
@@ -2418,6 +2416,13 @@ MultiBot.tips.warrior.tank =
 
 -- EVERY --
 
+MultiBot.tips.every.autogear =
+"AutoGear|cffffffff\n"..
+"Équipe automatiquement ce Bot en fonction\n"..
+"de vos limites AutoGear (qualité / Score d'équipement).|r\n\n"..
+"|cffff0000Clic gauche pour lancer AutoGear|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
 MultiBot.tips.every.summon =
 "Invocation|cffffffff\n"..
 "Fait apparaître ce Bot à votre position.|r\n\n"..
@@ -2475,6 +2480,548 @@ MultiBot.tips.every.talent =
 "|cffff0000Clic gauche pour ouvrir ou fermer les talents|r\n"..
 "|cff999999(Ordre d'exécution : Bot)|r";
 
+-- WIPE COMMAND --
+
+MultiBot.tips.every.wipe = 
+"Wipe|cffffffff\n"..
+"Réinitialise complètement le bot en le faisant mourir puis ressusciter,\n".. 
+"utile pour débloquer son état (position, vie, mana, etc.).|r\n\n"..
+"|cffff0000Clic gauche : envoie la commande wipe au bot sélectionné|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+-- SET Talents --
+
+MultiBot.tips.every.settalent =
+"Set-Talents|cffffffff\n"..
+"Affiche un menu des spécialisations (PvE/PvP) disponibles pour le bot sélectionné.\n"..
+"La spécialisation secondaire est débloquée à partir du niveau 40.|r\n\n"..
+"|cffff0000Clic gauche pour ouvrir le sélécteur de templatesdu bot|r\n"..
+"|cffff0000Clic droit pour fermer le sélécteur de templatesdu bot|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+-- DeathKnight
+MultiBot.tips.spec.dkbloodpve =
+  "Sang – PvE|cffffffff\n"..
+  "Spécialisation axée sur l’auto-soin et la survie en environnement PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.dkbloodpvp =
+  "Sang – PvP|cffffffff\n"..
+  "Idéale pour le contrôle de drapeau et la résistance en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.dkbfrostpve =
+  "Givre – PvE|cffffffff\n"..
+  "Optimisée pour burst et ralentissements en PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.dkbfrostpvp =
+  "Givre – PvP|cffffffff\n"..
+  "Burst rapide et contrôles pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.dkunhopve =
+  "Impie – PvE|cffffffff\n"..
+  "Spécialisation AoE et synergie avec le pet en PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.dkunhopvp =
+  "Impie – PvP|cffffffff\n"..
+  "Pression permanente de dots pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.dkdoublepve =
+  "Double Template – PvE|cffffffff\n"..
+  "Permet de tester rapidement deux builds en PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Druid
+MultiBot.tips.spec.druidbalpve =
+  "Équilibre – PvE|cffffffff\n"..
+  "Burst magique et phases Eclipse optimisées pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.druidbalpvp =
+  "Équilibre – PvP|cffffffff\n"..
+  "Starfall et roots pour le contrôle en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.druidcatpve =
+  "Féral (Chat) – PvE|cffffffff\n"..
+  "Hybride dégâts mêlée féroce pour raids.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.druidcatpvp =
+  "Féral (Chat) – PvP|cffffffff\n"..
+  "Saignements et burst pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.druidbearpve =
+  "Féral (Ours) – PvE|cffffffff\n"..
+  "Tank raid solide et survie accrue.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.druidrestopve =
+  "Restauration – PvE|cffffffff\n"..
+  "Soins HoT puissants pour les raids.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.druidrestopvp =
+  "Restauration – PvP|cffffffff\n"..
+  "Contrôles et survie en JcJ grâce aux soins et shields.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Hunter
+MultiBot.tips.spec.huntbmpve =
+  "Maîtrise des bêtes – PvE|cffffffff\n"..
+  "Focalisé sur le pet pour dégâts et utilité en PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.huntbmpvp =
+  "Maîtrise des bêtes – PvP|cffffffff\n"..
+  "Burst et immunité CC grâce au pet en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.huntmarkpve =
+  "Précision – PvE|cffffffff\n"..
+  "Tir surpuissant et dégâts monocible optimisés.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.huntmarkpvp =
+  "Précision – PvP|cffffffff\n"..
+  "Burst rapide et pièges pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.huntsurvpve =
+  "Survie – PvE|cffffffff\n"..
+  "Utilité et DoT pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.huntsurvpvp =
+  "Survie – PvP|cffffffff\n"..
+  "Pièges et contrôle pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Mage
+MultiBot.tips.spec.magearcapve =
+  "Arcanes – PvE|cffffffff\n"..
+  "Burst magique et gestion de mana pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.magearcapvp =
+  "Arcanes – PvP|cffffffff\n"..
+  "Mobilité et boucliers pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.magefirepve =
+  "Feu – PvE|cffffffff\n"..
+  "Ignites et AoE optimisés pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.magefirepvp =
+  "Feu – PvP|cffffffff\n"..
+  "Scorch et contrôle pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.magefrostfirepve =
+  "Frostfire – PvE|cffffffff\n"..
+  "Fusion des brûlure et gel pour un burst unique.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.magefrostpve =
+  "Givre – PvE|cffffffff\n"..
+  "Fingers of Frost et ralentissements en PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.magefrostpvp =
+  "Givre – PvP|cffffffff\n"..
+  "Shatter et roots pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Paladin
+MultiBot.tips.spec.paladinholypve =
+  "Sacré – PvE|cffffffff\n"..
+  "Soins raid puissants.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.paladinholypvp =
+  "Sacré – PvP|cffffffff\n"..
+  "Bubble et dispels pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.paladinprotpve =
+  "Protection – PvE|cffffffff\n"..
+  "Tank principal pour les raids.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.paladinprotpvp =
+  "Protection – PvP|cffffffff\n"..
+  "Portage de drapeau et survie en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.paladinretpve =
+  "Vindicte – PvE|cffffffff\n"..
+  "Burst et soutien offensif.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.paladinretpvp =
+  "Vindicte – PvP|cffffffff\n"..
+  "Contrôle et burst en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Priest
+MultiBot.tips.spec.priestdiscipve =
+  "Discipline – PvE|cffffffff\n"..
+  "Absorptions et boucliers pour le raid.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.priestdiscipvp =
+  "Discipline – PvP|cffffffff\n"..
+  "Burst heal et Penitences pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.priestholypve =
+  "Sacré – PvE|cffffffff\n"..
+  "Sanctuaire et coh pour soigner le raid.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.priestholypvp =
+  "Sacré – PvP|cffffffff\n"..
+  "Guardian spirit et burst heal en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.priestshadowpve =
+  "Ombre – PvE|cffffffff\n"..
+  "Pression de dots et Insanity pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.priestshadowpvp =
+  "Ombre – PvP|cffffffff\n"..
+  "Silence et pression pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Rogue
+MultiBot.tips.spec.rogassapve =
+  "Assassinat – PvE|cffffffff\n"..
+  "Poisons et dots pour dégâts constants.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.rogassapvp =
+  "Assassinat – PvP|cffffffff\n"..
+  "Vendetta et burst pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.rogcombatpve =
+  "Combat – PvE|cffffffff\n"..
+  "Cleave et énergie pour dégâts soutenus.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.rogcombatpvp =
+  "Combat – PvP|cffffffff\n"..
+  "Burst prolongé pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.rogsubtipve =
+  "Finesse – PvE|cffffffff\n"..
+  "Backstab et énergie pour DPS intense.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.rogsubtipvp =
+  "Finesse – PvP|cffffffff\n"..
+  "Shadowdance et contrôle pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Shaman
+MultiBot.tips.spec.shamanelempve =
+  "Élémentaire – PvE|cffffffff\n"..
+  "Lava Burst et Maelstrom optimisés pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.shamanelempvp =
+  "Élémentaire – PvP|cffffffff\n"..
+  "Burst et knockback pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.shamanenhpve =
+  "Amélioration – PvE|cffffffff\n"..
+  "Double armes et Maelstrom pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.shamanenhpvp =
+  "Amélioration – PvP|cffffffff\n"..
+  "Loups et burst pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.shamanrestopve =
+  "Restauration – PvE|cffffffff\n"..
+  "Chain Heal et soutien raid en PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.shamanrestopvp =
+  "Restauration – PvP|cffffffff\n"..
+  "Earth Shield et survie en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Warlock
+MultiBot.tips.spec.warlockafflipve =
+  "Affliction – PvE|cffffffff\n"..
+  "DoTs prolongés pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warlockafflipvp =
+  "Affliction – PvP|cffffffff\n"..
+  "Pression permanente en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warlockdemonopve =
+  "Démonologie – PvE|cffffffff\n"..
+  "Métamorphose et pets pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warlockdemonopvp =
+  "Démonologie – PvP|cffffffff\n"..
+  "Felguard et burst pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warlockdestrupve =
+  "Destruction – PvE|cffffffff\n"..
+  "Chaos Bolt et burst en PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warlockdestrupvp =
+  "Destruction – PvP|cffffffff\n"..
+  "Burst et fear pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Warrior
+MultiBot.tips.spec.warriorarmspve =
+  "Armes – PvE|cffffffff\n"..
+  "Execute et burst pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warriorarmspvp =
+  "Armes – PvP|cffffffff\n"..
+  "Mortal Strike et contrôle pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warriorfurypve =
+  "Fureur – PvE|cffffffff\n"..
+  "Whirlwind et rage pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warriorfurypvp =
+  "Fureur – PvP|cffffffff\n"..
+  "Sustain et auto-soin pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warriorprotecpve =
+  "Protection – PvE|cffffffff\n"..
+  "Tanking et survie pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warriorprotecpvp =
+  "Protection – PvP|cffffffff\n"..
+  "Contrôle et résistance pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+  
 -- RTSC --
 
 MultiBot.tips.rtsc.master = 
@@ -2608,4 +3155,5 @@ MultiBot.tips.rtsc.browse =
 "|cff999999(Ordre d'exécution : Raid, Groupe)|r\n\n"..
 "|cffff0000Clic droit pour annuler la sélection|r\n"..
 "|cff999999(Ordre d'exécution : Raid, Groupe)|r";
+
 end

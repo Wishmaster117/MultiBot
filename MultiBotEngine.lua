@@ -67,6 +67,9 @@ MultiBot.doDotWithTarget = function(pCommand, oArguments)
 end
 
 MultiBot.doSplit = function(pString, pPattern)
+    if not pString or pString == "" then -- Secure function if pString empty
+        return {}
+    end
 	local tResult = {}
 	local tStart = 1
 	local tFrom, tTo = string.find(pString, pPattern, tStart)

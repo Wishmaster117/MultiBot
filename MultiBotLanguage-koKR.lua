@@ -1,4 +1,4 @@
-if(GetLocale() == "koKR") then
+ if(GetLocale() == "koKR") then
 MultiBot.data.classes.input = {
 [1] = "죽음의 기사",
 [2] = "드루이드",
@@ -2382,6 +2382,12 @@ MultiBot.tips.warrior.tank =
 
 -- EVERY --
 
+MultiBot.tips.every.autogear =
+"자동 장비|cffffffff\n"..
+"이 봇을 자동 장비 설정(품질 / 장비 점수)\n"..
+"기준에 따라 자동으로 장착합니다.|r\n\n"..
+"|cffff0000왼쪽 클릭으로 자동 장비 시작|r\n"..
+"|cff999999(실행 순서: 봇)|r";
 MultiBot.tips.every.summon =
 "소환|cffffffff\n"..
 "이 로봇을 당신의 위치로 소환합니다.|r\n\n"..
@@ -2438,6 +2444,482 @@ MultiBot.tips.every.talent =
 "시스템이 재능 값을 로드하여 열 때 시간 지연이 발생합니다.|r\n\n"..
 "|cffff0000 재능을 켜거나 끄려면 마우스 왼쪽 버튼을 클릭하세요|r\n"..
 "|cff999999(명령 실행: 로봇)|r";
+
+-- WIPE COMMAND --
+
+MultiBot.tips.every.wipe = 
+"Wipe|cffffffff\n"..
+"봇을 죽였다가 부활시켜 완전히 초기화합니다,\n".. 
+"위치, 생명력, 마나 등 상태를 초기화하는 데 유용합니다.|r\n\n"..
+"|cffff0000왼쪽 클릭: 선택된 봇에게 wipe 명령을 보냅니다|r\n"..
+"|cff999999(실행 순서: 봇)|r";
+
+
+-- SET TALENTS -- 
+
+MultiBot.tips.every.settalent =
+"특성 설정|cffffffff\n"..
+"선택한 봇의 사용 가능한 전문화(PvE/PvP) 메뉴를 표시합니다.\n"..
+"보조 전문화는 40레벨부터 해제됩니다.|r\n\n"..
+"|cffff0000좌클릭: 봇의 템플릿 선택기 열기|r\n"..
+"|cffff0000우클릭: 봇의 템플릿 선택기 닫기|r\n"..
+"|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.dkbloodpve =
+  "혈기 – PvE|cffffffff\n"..
+  "PvE 환경에서 자가 치유와 생존에 중점을 둔 전문화입니다.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.dkbloodpvp =
+  "혈기 – PvP|cffffffff\n"..
+  "깃발 방어 및 PvP 생존에 이상적입니다.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.dkbfrostpve =
+  "냉기 – PvE|cffffffff\n"..
+  "PvE에서 폭발 피해와 느려짐에 최적화되었습니다.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.dkbfrostpvp =
+  "냉기 – PvP|cffffffff\n"..
+  "빠른 폭발 공격과 강력한 제어를 제공합니다.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.dkunhopve =
+  "부정 – PvE|cffffffff\n"..
+  "광역 공격(AoE)과 소환수 시너지에 중점합니다.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.dkunhopvp =
+  "부정 – PvP|cffffffff\n"..
+  "지속적인 DoT 압박에 특화되었습니다.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.dkdoublepve =
+  "이중 템플릿 – PvE|cffffffff\n"..
+  "PvE에서 두 개의 빌드를 빠르게 테스트할 수 있습니다.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.druidbalpve =
+  "조화 – PvE|cffffffff\n"..
+  "PvE용 마법 폭발과 이클립스 단계에 최적화됨.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.druidbalpvp =
+  "조화 – PvP|cffffffff\n"..
+  "성운비(Sunfall)와 뿌리(Roots)로 PvP 제어에 특화됨.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.druidcatpve =
+  "야성 (표범) – PvE|cffffffff\n"..
+  "레이드에 특화된 근접 하이브리드 피해.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.druidcatpvp =
+  "야성 (표범) – PvP|cffffffff\n"..
+  "PvP에 강력한 출혈과 폭발 피해.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.druidbearpve =
+  "야성 (곰) – PvE|cffffffff\n"..
+  "레이드에 적합한 탱킹과 높은 생존력.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.druidrestopve =
+  "수양 – PvE|cffffffff\n"..
+  "강력한 HoT 힐로 레이드 지원.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.druidrestopvp =
+  "수양 – PvP|cffffffff\n"..
+  "힐과 보호막으로 PvP에서 제어와 생존력 상승.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.huntbmpve =
+  "야수 조련 – PvE|cffffffff\n"..
+  "애완동물 기반 피해 및 PvE 유틸리티.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.huntbmpvp =
+  "야수 조련 – PvP|cffffffff\n"..
+  "PvP에서 반응형 폭발과 군중 제어 면역 제공.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.huntmarkpve =
+  "사격 – PvE|cffffffff\n"..
+  "강력한 단일 대상 사격 최적화.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.huntmarkpvp =
+  "사격 – PvP|cffffffff\n"..
+  "PvP에 트랩과 빠른 폭발 공격 결합.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.huntsurvpve =
+  "생존 – PvE|cffffffff\n"..
+  "PvE에서 유틸과 DoT에 중점.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.huntsurvpvp =
+  "생존 – PvP|cffffffff\n"..
+  "PvP를 위한 트랩 및 군중 제어.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.magearcapve =
+  "비전 전문화 – PvE|cffffffff\n"..
+  "PvE를 위한 마력 폭발 및 마나 관리.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.magearcapvp =
+  "비전 전문화 – PvP|cffffffff\n"..
+  "PvP에서 이동성과 보호막 제공.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.magefirepve =
+  "화염 – PvE|cffffffff\n"..
+  "PvE 최적화를 위한 불꽃 폭발 및 범위 공격.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.magefirepvp =
+  "화염 – PvP|cffffffff\n"..
+  "PvP에서 빠른 화염공과 제어 가능.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.magefrostfirepve =
+  "눈과 불의 융합 – PvE|cffffffff\n"..
+  "PvE에서 고유한 눈-불 폭발 제공.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.paladinholypve =
+  "성스러움 – PvE|cffffffff\n"..
+  "전투단을 위한 강력한 치유.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.paladinholypvp =
+  "성스러움 – PvP|cffffffff\n"..
+  "버블(무적) 및 해제기 제공.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.paladinprotpve =
+  "보호 – PvE|cffffffff\n"..
+  "레이드의 주요 탱커 역할 수행.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.paladinprotpvp =
+  "보호 – PvP|cffffffff\n"..
+  "깃발 수송 및 생존형 플레이.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.paladinretpve =
+  "징벌 – PvE|cffffffff\n"..
+  "폭발적인 피해 및 공격 지원.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.paladinretpvp =
+  "징벌 – PvP|cffffffff\n"..
+  "제압기와 폭발 피해 중심.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.priestdiscipve =
+  "수양 – PvE|cffffffff\n"..
+  "흡수 및 보호막 중심 힐링.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.priestdiscipvp =
+  "수양 – PvP|cffffffff\n"..
+  "폭발적 치유와 속죄 기술.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.priestholypve =
+  "신성 – PvE|cffffffff\n"..
+  "치유와 군중 지원 시너지.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.priestholypvp =
+  "신성 – PvP|cffffffff\n"..
+  "수호의 영혼 및 강력 폭발 치유.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.priestshadowpve =
+  "어둠 – PvE|cffffffff\n"..
+  "지속 데미지 및 광기 메커니즘.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.priestshadowpvp =
+  "어둠 – PvP|cffffffff\n"..
+  "침묵과 지속 압박 기반 플레이.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.rogassapve =
+  "암살 – PvE|cffffffff\n"..
+  "독과 지속 데미지로 안정적인 형태.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.rogassapvp =
+  "암살 – PvP|cffffffff\n"..
+  "복수 칼날과 폭발 공격 중심.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.shamanelempve =
+  "정기 – PvE|cffffffff\n"..
+  "PvE에 최적화된 화염 폭발 및 마력 소모.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.shamanelempvp =
+  "정기 – PvP|cffffffff\n"..
+  "PvP용 폭발 및 넉백 제공.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.shamanenhpve =
+  "고양 – PvE|cffffffff\n"..
+  "양손 무기와 마나 흐름 최적화.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.shamanenhpvp =
+  "고양 – PvP|cffffffff\n"..
+  "PvP에서 늑대 소환 및 폭발 사용.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.shamanrestopve =
+  "복원 – PvE|cffffffff\n"..
+  "연쇄 치유 및 그룹 지원에 특화됨.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.shamanrestopvp =
+  "복원 – PvP|cffffffff\n"..
+  "대지의 보호막 및 생존 특화.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.warlockafflipve =
+  "고통 – PvE|cffffffff\n"..
+  "PvE에서 지속적인 DoT 압박.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.warlockafflipvp =
+  "고통 – PvP|cffffffff\n"..
+  "PvP에 특화된 DoT 압박을 제공.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.warlockdemonopve =
+  "악마 – PvE|cffffffff\n"..
+  "PvE에서 변신 및 소환수 중심 플레이.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.warlockdemonopvp =
+  "악마 – PvP|cffffffff\n"..
+  "PvP에 펠가드 소환 및 폭발 공격 제공.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.warlockdestrupve =
+  "파괴 – PvE|cffffffff\n"..
+  "혼돈의 화살과 폭발 피해.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.warlockdestrupvp =
+  "파괴 – PvP|cffffffff\n"..
+  "PvP에서 폭발 및 공포 사용.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.warriorarmspve =
+  "무기 – PvE|cffffffff\n"..
+  "PvE에서 처형 및 폭발 피해 수행.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.warriorarmspvp =
+  "무기 – PvP|cffffffff\n"..
+  "PvP에 치명타 및 제압 제공.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.warriorfurypve =
+  "분노 – PvE|cffffffff\n"..
+  "PvE에서 회전 공격 및 분노 생성.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.warriorfurypvp =
+  "분노 – PvP|cffffffff\n"..
+  "PvP에서 지속력 및 자가 치유 제공.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.warriorprotecpve =
+  "방어 – PvE|cffffffff\n"..
+  "PvE에서 탱킹과 생존력 제공.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.spec.warriorprotecpvp =
+  "방어 – PvP|cffffffff\n"..
+  "PvP에서 제어 및 저항 중심.\n"..
+  "보조 전문화는 40레벨부터 잠금 해제됩니다.|r\n\n"..
+  "|cffff0000왼쪽 클릭: 주 전문화로 설정|r\n"..
+  "|cffff0000오른쪽 클릭: 보조 전문화로 설정|r\n"..
+  "|cff999999(실행 순서: 봇)|r";
 
 -- RTSC --
 
