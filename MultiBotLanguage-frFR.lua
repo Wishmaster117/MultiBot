@@ -1,5 +1,5 @@
 if(GetLocale() == "frFR") then
-MultiBot.data.classes.input = {
+--[[MultiBot.data.classes.input = {
 [1] = "Chevalier de la mort",
 [2] = "Druide",
 [3] = "Chasseur",
@@ -10,7 +10,58 @@ MultiBot.data.classes.input = {
 [8] = "Chaman",
 [9] = "Démoniste",
 [10] = "Guerrier"
-}
+}]]--
+
+-- GLYPHS
+MultiBot.info.glyphssocketnotunlocked =
+"Ce socket n’est pas encore débloqué.";
+
+MultiBot.info.glyphswrongclass =
+"Cette glyphe n’est pas pour la classe du bot.";
+
+MultiBot.info.glyphsunknowglyph =
+"Impossible d’identifier cette glyphe.";
+
+MultiBot.info.glyphsglyphtype =
+"Type de glyphe ";
+
+MultiBot.info.glyphsglyphsocket =
+"socket incorrect.";
+
+MultiBot.info.glyphsleveltoolow =
+"Niveau trop bas pour cette glyphe.";
+
+MultiBot.info.glyphscustomglyphsfor =
+"Glyphes personnalisées pour";
+
+MultiBot.info.glyphsglyphsfor =
+"Glyphes pour";
+
+MultiBot.info.talentscustomtalentsfor =
+"Talents personnalisés pour";
+
+
+-- Hunters --
+
+MultiBot.info.hunterpeteditentervalue =
+"Saisir une valeur";
+
+MultiBot.info.hunterpetcreaturelist =
+"Liste des familiers par nom";
+
+MultiBot.info.hunterpetnewname =
+"Nouveau nom du familier";
+
+MultiBot.info.hunterpetid =
+"ID du familier";
+
+MultiBot.info.hunterpetentersomething =
+"Saisissez quelque chose ici...";
+
+MultiBot.info.hunterpetrandomfamily =
+"Aléatoire par famille";
+
+-- End Hunters --
 
 -- INFO --
 
@@ -571,7 +622,7 @@ MultiBot.tips.beast.call =
 MultiBot.tips.creator.master = 
 "Contrôle du créateur\n|cffffffff"..
 "Ce contrôle vous permet de créer des Bots par classe.\n"..
-"La limite par défaut est de 40 Bots aléatoires par compte.\n"..
+"La limite par défaut est de 40 Bots par compte.\n"..
 "Il n'existe pas de commande pour les supprimer après utilisation.\n"..
 "Invitez-les donc dans votre liste d'amis pour les réutiliser.\n"..
 "L'ordre d'exécution montre les destinataires des commandes.|r\n\n"..
@@ -579,63 +630,84 @@ MultiBot.tips.creator.master =
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.creator.warrior =
-"Créer un guerrier\n|cffffffff"..
-"Ce bouton créera un Bot Guerrier.|r\n\n"..
-"|cffff0000Clic gauche pour créer un guerrier|r\n"..
+"Créer-Guerrier\n|cffffffff"..
+"Ce bouton créera un bot Guerrier.|r\n\n"..
+"|cffff0000Clic-Gauche pour choisir le sexe de votre Guerrier.|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.creator.warlock =
-"Créer un démoniste\n|cffffffff"..
-"Ce bouton créera un Bot Démoniste.|r\n\n"..
-"|cffff0000Clic gauche pour créer un démoniste|r\n"..
+"Créer-Démoniste\n|cffffffff"..
+"Ce bouton créera un bot Démoniste.|r\n\n"..
+"|cffff0000Clic-Gauche pour choisir le sexe de votre Démoniste.|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.creator.shaman =
-"Créer un chaman\n|cffffffff"..
-"Ce bouton créera un Bot Chaman.|r\n\n"..
-"|cffff0000Clic gauche pour créer un chaman|r\n"..
+"Créer-Chaman\n|cffffffff"..
+"Ce bouton créera un bot Chaman.|r\n\n"..
+"|cffff0000Clic-Gauche pour choisir le sexe de votre Chaman.|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.creator.rogue =
-"Créer un voleur\n|cffffffff"..
-"Ce bouton créera un Bot Voleur.|r\n\n"..
-"|cffff0000Clic gauche pour créer un voleur|r\n"..
+"Créer-Voleur\n|cffffffff"..
+"Ce bouton créera un bot Voleur.|r\n\n"..
+"|cffff0000Clic-Gauche pour choisir le sexe de votre Voleur.|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.creator.priest =
-"Créer un prêtre\n|cffffffff"..
-"Ce bouton créera un Bot Prêtre.|r\n\n"..
-"|cffff0000Clic gauche pour créer un prêtre|r\n"..
+"Créer-Prêtre\n|cffffffff"..
+"Ce bouton créera un bot Prêtre.|r\n\n"..
+"|cffff0000Clic-Gauche pour choisir le sexe de votre Prêtre.|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.creator.paladin =
-"Créer un paladin\n|cffffffff"..
-"Ce bouton créera un Bot Paladin.|r\n\n"..
-"|cffff0000Clic gauche pour créer un paladin|r\n"..
+"Créer-Paladin\n|cffffffff"..
+"Ce bouton créera un bot Paladin.|r\n\n"..
+"|cffff0000Clic-Gauche pour choisir le sexe de votre Paladin|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.creator.mage =
-"Créer un mage\n|cffffffff"..
-"Ce bouton créera un Bot Mage.|r\n\n"..
-"|cffff0000Clic gauche pour créer un mage|r\n"..
+"Créer-Mage\n|cffffffff"..
+"Ce bouton créera un bot Mage.|r\n\n"..
+"|cffff0000Clic-Gauche pour choisir le sexe de votre Mage.|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.creator.hunter =
-"Créer un chasseur\n|cffffffff"..
-"Ce bouton créera un Bot Chasseur.|r\n\n"..
-"|cffff0000Clic gauche pour créer un chasseur|r\n"..
+"Créer-Chasseur\n|cffffffff"..
+"Ce bouton créera un bot Chasseur.|r\n\n"..
+"|cffff0000Clic-Gauche pour choisir le sexe de votre Chasseur.|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.creator.druid =
-"Créer un druide\n|cffffffff"..
-"Ce bouton créera un Bot Druide.|r\n\n"..
-"|cffff0000Clic gauche pour créer un druide|r\n"..
+"Créer-Druide\n|cffffffff"..
+"Ce bouton créera un bot Druide.|r\n\n"..
+"|cffff0000Clic-Gauche pour choisir le sexe de votre Druide.|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.creator.deathknight =
-"Créer un DK\n|cffffffff"..
-"Ce bouton créera un Bot DK.|r\n\n"..
-"|cffff0000Clic gauche pour créer un DK|r\n"..
+"Créer-Chevalier de la mort\n|cffffffff"..
+"Ce bouton créera un bot Chevalier de la mort.|r\n\n"..
+"|cffff0000Clic-Gauche pour choisir le sexe de votre Chevalier de la mort.|r\n"..
+"|cff999999(Ordre d'exécution : Système)|r";
+
+MultiBot.tips.creator.notarget = 
+"Je n'ai pas de cible.";
+
+MultiBot.tips.creator.gendermale = 
+"Crée un compagnon masculin.\n|cffffffff"..
+"Fort, courageux, toujours prêt pour la bataille... ou une chope.|r\n\n"..
+"|cffff0000Clic-Gauche pour créer|r\n"..
+"|cff999999(Ordre d'exécution : Système)|r";
+
+MultiBot.tips.creator.genderfemale = 
+"Crée un compagnon féminin.\n|cffffffff"..
+"Gracieuse, redoutable, et à ne jamais sous-estimer.|r\n\n"..
+"|cffff0000Clic-Gauche pour créer|r\n"..
+"|cff999999(Ordre d'exécution : Système)|r";
+
+MultiBot.tips.creator.genderrandom = 
+"Crée un bot avec un sexe aléatoire.\n|cffffffff"..
+"Les vents du destin en décideront !|r\n\n"..
+"|cffff0000Clic-Gauche pour créer|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.creator.inspect =
@@ -856,17 +928,49 @@ MultiBot.tips.units.inviteRaid40 =
 
 -- UNITS:ALL --
 
-MultiBot.tips.units.alliance = 
-"Alliance\n|cffffffff"..
-"Avec ce bouton, vous pouvez mettre en ligne ou hors ligne tous les membres de votre groupe.\n"..
-"Il se peut que MultiBot ne réagisse pas assez rapidement et n'affiche pas toutes les Botbars.\n\n"..
-"|cffff0000Clic gauche pour mettre en ligne tous les membres du groupe|r\n"..
-"|cff999999(Ordre d'exécution : Système)|r\n\n"..
-"|cffff0000Clic droit pour mettre hors ligne tous les membres du groupe|r\n"..
-"|cff999999(Ordre d'exécution : Système)|r";
+MultiBot.tips.units.alliance =
+"Connexion/Déconnexion de tous les PlayerBots\n|cffffffff"..
+"Connecte ou déconnecte tous les PlayerBots auxquels vous avez accès.\n"..
+"Cette fonction peut prendre du temps pour remplir les barres de boutons de chaque PlayerBot,\n"..
+"en fonction du nombre total de PlayerBots.\n\n"..
+"|cffff0000Clic gauche pour connecter tous les PlayerBots|r\n"..
+"|cff999999(Exécuté par : Système)|r\n\n"..
+"|cffff0000Clic droit pour déconnecter tous les PlayerBots|r\n"..
+"|cff999999(Exécuté par : Système)|r";
 
+-- SLIDERS INTERFACE --
 
--- PRINCIPAL --
+MultiBot.tips.sliders.throttleinstalled =
+"Limitation MultiBot installée";
+
+MultiBot.tips.sliders.frametitle =
+"MultiBot — Options";
+
+MultiBot.tips.sliders.actionsinter =
+"Intervalles des actions automatiques";
+
+MultiBot.tips.sliders.statsinter =
+"Intervalle ping des stats";
+
+MultiBot.tips.sliders.talentsinter =
+"Intervalle d’attribution auto des talents";
+
+MultiBot.tips.sliders.invitsinter =
+"Intervalle de la boucle d’invitations";
+
+MultiBot.tips.sliders.sortinter =
+"Intervalle de tri/rafraîchissement";
+
+MultiBot.tips.sliders.messpersec =
+"Messages par seconde";
+
+MultiBot.tips.sliders.maxburst =
+"Rafale maximale";
+
+MultiBot.tips.sliders.rstbutn =
+"Réinitialiser";
+
+-- MAIN --
 
 MultiBot.tips.main.master =
 "Contrôle Principal\n|cffffffff"..
@@ -876,6 +980,14 @@ MultiBot.tips.main.master =
 "|cff999999(Ordre d'exécution : Système)|r\n\n"..
 "|cffff0000Clic droit pour faire glisser et déplacer MultiBot|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
+
+MultiBot.tips.main.options =
+"Options-Switch\n|cffffffff"..
+"Ouvre le panneau des paramètres MultiBot avec des curseurs pour les intervalles d’actions.\n"..
+"(Stats / Talents / Invitation / Tri) et la limitation du chat (Messages par seconde / Rafale).\n"..
+"Les paramètres sont enregistrés par personnage.|r\n\n"..
+"|cffff0000Clic gauche pour ouvrir ou fermer le panneau d’options|r\n"..
+"|cff999999(Ordre d’exécution : Interface)|r";
 
 MultiBot.tips.main.coords =
 "Réinitialiser les Coordonnées\n|cffffffff"..
@@ -898,10 +1010,10 @@ MultiBot.tips.main.rtsc =
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.main.raidus =
-"Raidus-Switch\n|cffffffff"..
-"This Switch will open or close the Raid-Composer.|r\n\n"..
-"|cffff0000Left-Click to open or close the Raid-Composer|r\n"..
-"|cff999999(Execution-Order: System)|r";
+"Raidus-Switch\n|cffffffff"..  
+"Ce bouton ouvrira ou fermera le compositeur de raid.|r\n\n"..  
+"|cffff0000Clic gauche pour ouvrir ou fermer le compositeur de raid|r\n"..  
+"|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.main.creator =
 "Switch Créateur\n|cffffffff"..
@@ -1050,24 +1162,134 @@ MultiBot.tips.game.appear =
 "|cffff0000Clic gauche pour apparaître à votre cible|r\n"..
 "|cff999999(Ordre d'exécution : Cible)|r";
 
--- QUESTS --
+MultiBot.tips.game.delsvwarning = 
+"|cffff4444ATTENTION|r : vous allez effacer TOUTES les saved variables de MultiBot.\nCette action est irréversible.\n\nSouhaitez-vous continuer ?";
 
-MultiBot.tips.quests.master = 
+MultiBot.tips.game.delsv =
+"Supprimer les variables sauvegardées\n|cffffffff"..
+"Ce bouton effacera définitivement toutes les données du fichier MultiBot SavedVariables (MultiBot.lua).\n"..
+"Cette action est irréversible. Utilisez avec précaution !|r\n\n"..
+"|cffff0000Clic gauche pour supprimer|r\n"..
+"|cff999999(Exécuté au niveau système)|r";
+
+-- QUÊTES --
+
+MultiBot.tips.quests.master =
 "Contrôle des Quêtes\n|cffffffff"..
 "Ce contrôle affiche la liste actuelle des quêtes.\n"..
-"Clic gauche sur les pages pour partager la quête avec vos bots.\n"..
-"Clic droit sur les pages pour abandonner votre quête et celle de vos bots.\n"..
-"L'ordre d'exécution montre le destinataire des commandes.|r\n\n"..
-"|cffff0000Clic gauche pour afficher ou masquer les options|r\n"..
+"Clic-Gauche sur les pages pour partager la quête avec vos bots.\n"..
+"Clic-Droit sur les pages pour abandonner votre quête et celle de vos bots.\n"..
+"L'ordre d'exécution indique le destinataire des commandes.|r\n\n"..
+"|cffff0000Clic-Gauche pour afficher ou cacher les options|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r\n\n"..
-"|cffff0000Clic droit pour actualiser les options|r\n"..
+"|cffff0000Clic-Droit pour rafraîchir les options|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.quests.accept =
-"Acceptation des Quêtes\n|cffffffff"..
-"Ce bouton ordonne aux bots d'accepter toutes les quêtes du PNJ ciblé.\n\n"..
-"|cffff0000Clic gauche pour accepter toutes les quêtes|r\n"..
+"Accepter Quêtes\n|cffffffff"..
+"Ce bouton ordonne aux bots de prendre toutes les quêtes du PNJ ciblé.\n\n"..
+"|cffff0000Clic-Gauche pour tout accepter|r\n"..
 "|cff999999(Ordre d'exécution : Raid, Groupe)|r";
+
+MultiBot.tips.quests.main =
+"Ouvrir le Menu Quêtes\n|cffffffff"..
+"Ce bouton ouvre le menu des quêtes.\n\n"..
+"|cffff0000Clic-Gauche pour ouvrir|r\n"..
+"|cff999999(Ordre d'exécution : Système)|r";
+
+MultiBot.tips.quests.talk =
+"Parler au PNJ\n|cffffffff"..
+"Ce bouton demande aux bots de parler au PNJ sélectionné pour prendre ou rendre une quête.\n\n"..
+"|cffff0000Clic-Gauche pour ordonner|r\n"..
+"|cff999999(Ordre d'exécution : Raid, Groupe)|r";
+
+MultiBot.tips.quests.talkerror =
+"Veuillez sélectionner un PNJ à qui parler.";
+
+MultiBot.tips.quests.questcomperror = 
+"Veuillez cibler un bot pour interroger ses quêtes.";
+
+MultiBot.tips.quests.sendwhisp =
+"Demander au bot";
+
+MultiBot.tips.quests.sendpartyraid = 
+"Demander au groupe ou raid.";
+
+MultiBot.tips.quests.completed = 
+"Quêtes Terminées\n|cffffffff"..
+"Ce bouton vous permet de demander la liste des quêtes terminées à un bot ou à tous les bots.\n\n"..
+"|cffff0000Clic-Gauche pour ouvrir le sous-menu|r\n"..
+"|cff999999(Ordre d'exécution : Raid, Groupe, bot)|r";
+
+MultiBot.tips.quests.incompleted = 
+"Quêtes Incomplètes\n|cffffffff"..
+"Ce bouton vous permet de demander la liste des quêtes non terminées à un bot ou à tous les bots.\n\n"..
+"|cffff0000Clic-Gauche pour ouvrir le sous-menu|r\n"..
+"|cff999999(Ordre d'exécution : Raid, Groupe, bot)|r";
+
+MultiBot.tips.quests.allcompleted = 
+"Toutes les quêtes\n|cffffffff"..
+"Ce bouton vous permet de demander à un bot ou à tous les bots la liste de toutes les quêtes.\n\n"..
+"|cffff0000Clic-Gauche pour ouvrir le sous-menu|r\n"..
+"|cff999999(Ordre d'exécution : Raid, Groupe, bot)|r";
+
+MultiBot.tips.quests.incomplist = 
+"Quêtes en cours du/des bot(s)";
+
+MultiBot.tips.quests.complist = 
+"Liste des quêtes terminées du/des bot(s)";
+
+MultiBot.tips.quests.alllist = 
+"Toutes les quêtes du/des bot(s)";
+
+MultiBot.tips.quests.compheader = 
+"** Quêtes Terminées **";
+
+MultiBot.tips.quests.incompheader = 
+"** Quêtes Incomplètes **";
+
+MultiBot.tips.quests.botsword = 
+"Bots : ";
+
+-- UTILISER GOBs --
+MultiBot.tips.quests.gobsmaster =
+"Menu Objets du Jeu\n|cffffffff"..
+"Ce bouton ouvre le menu pour utiliser des objets du jeu.|r\n\n"..
+"|cffff0000Clic-Gauche pour ouvrir|r\n"..
+"|cff999999(Ordre d'exécution : Système)|r";
+
+MultiBot.tips.quests.gobenter = 
+"Utiliser un Objet du Jeu\n|cffffffff"..
+"Ce bouton ouvre une fenêtre pour entrer le nom de l'objet du jeu.\n\n"..
+"|cffff0000Clic-Gauche pour ouvrir la fenêtre|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.quests.gobsearch = 
+"Rechercher un Objet du Jeu\n|cffffffff"..
+"Ce bouton ouvre une fenêtre listant les objets du jeu utilisables par les bots.\n\n"..
+"|cffff0000Clic-Gauche pour ouvrir la fenêtre|r\n"..
+"|cff999999(Ordre d'exécution : Système)|r";
+
+MultiBot.tips.quests.goberrorname = 
+"Veuillez entrer un nom d'objet du jeu valide.";
+
+MultiBot.tips.quests.gobselectboterror = 
+"Veuillez sélectionner le bot à qui envoyer la commande.";
+
+MultiBot.tips.quests.gobsnameerror =
+"Veuillez entrer un nom.";
+
+MultiBot.tips.quests.gobctrlctocopy =
+"CTRL + C pour copier";
+
+MultiBot.tips.quests.gobselectall = 
+"Tout sélectionner";
+
+MultiBot.tips.quests.gobsfound = 
+"Objets du Jeu trouvés";
+
+MultiBot.tips.quests.gobpromptname = 
+"Nom de l'objet du jeu";
 
 -- BOIRE --
 
@@ -1153,7 +1375,6 @@ MultiBot.tips.inventory.open =
 "Le contenu sera automatiquement placé dans l'inventaire.|r\n\n"..
 "|cffff0000Clic gauche pour ouvrir un sac de butin|r\n"..
 "|cff999999(Ordre d'exécution : Bot)|r";
-
 
 -- ITEMUS:NIVEAU --
 
@@ -1267,7 +1488,6 @@ MultiBot.tips.itemus.rare.R07 =
 "Affiche les objets de qualité héritage.|r\n\n"..
 "|cffff0000Clic gauche pour définir le filtre|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
-
 
 -- ITEMUS:EMPLACEMENT --
 
@@ -1634,6 +1854,14 @@ MultiBot.tips.druid.dps.dps =
 "|cffff0000Clic gauche pour activer ou désactiver DPS|r\n"..
 "|cff9999999(Ordre d'exécution : Bot)|r";
 
+MultiBot.tips.druid.dps.offheal =
+"OffHeal|cffffffff\n"..
+"Désactive le mode DPS et active le mode OffHeal,\n"..
+"Les bots se concentreront sur les dégâts mais soigneront si nécessaire.\n"..
+"Uniquement pour les druides farouches.|r\n\n"..
+"|cffff0000Clic gauche pour activer ou désactiver OffHeal|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
 MultiBot.tips.druid.tankAssist = 
 "Assistance Tank|cffffffff\n"..
 "Ceci active les stratégies d'assistance Tank.\n"..
@@ -1653,6 +1881,36 @@ MultiBot.tips.druid.tank =
 
 
 -- HUNTER --
+
+MultiBot.tips.hunter.pet.master = 
+"Commandes du familier|cffffffff\n"..
+"Ouvre une barre avec plusieurs options d’invocation de familiers.|r\n\n"..
+"|cffff0000Clic gauche pour afficher les options|r\n"..
+"|cff999999(Ordre d’exécution : Système)|r";
+
+MultiBot.tips.hunter.pet.name = 
+"Invoquer un familier par |cff00ff00son nom|r\n"..
+"|cffffffffOuvre une liste des familiers disponibles, cliquez sur un nom pour l’invoquer.|r\n\n"..
+"|cffff0000Clic gauche pour ouvrir la liste|r\n"..
+"|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.hunter.pet.id = 
+"Invoquer un familier par |cff00ff00ID BDD|r\n"..
+"|cffffffffUtilisez l’ID base de données d’une créature pour l’invoquer directement.|r\n\n"..
+"|cffff0000Clic gauche pour entrer une ID|r\n"..
+"|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.hunter.pet.family = 
+"Invoquer un familier aléatoire par |cff00ff00FAMILLE|r\n"..
+"|cffffffffChoisissez une famille pour invoquer un familier aléatoire de ce type.|r\n\n"..
+"|cffff0000Clic gauche pour sélectionner une famille|r\n"..
+"|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.hunter.pet.rename = 
+"Renommer votre familier actuel\n"..
+"|cffffffffOuvre une fenêtre pour définir un nouveau nom pour votre familier actif.|r\n\n"..
+"|cffff0000Clic gauche pour renommer|r\n"..
+"|cff999999(Ordre d’exécution : Bot)|r";
 
 MultiBot.tips.hunter.naspect.master =
 "Buff Non-Combat|cffffffff\n"..
@@ -2034,6 +2292,14 @@ MultiBot.tips.paladin.dps.dps =
 "|cffff0000Clic gauche pour activer ou désactiver DPS|r\n"..
 "|cff999999(Ordre d'exécution : Bot)|r";
 
+MultiBot.tips.paladin.dps.offheal =
+"OffHeal|cffffffff\n"..
+"Désactive le mode DPS et active le mode OffHeal,\n"..
+"Les bots se concentreront sur les dégâts mais soigneront si nécessaire.\n"..
+"Uniquement pour les paladins.|r\n\n"..
+"|cffff0000Clic gauche pour activer ou désactiver OffHeal|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
 MultiBot.tips.paladin.tankAssist = 
 "Assistance Tank|cffffffff\n"..
 "Ceci active les stratégies d'assistance Tank.\n"..
@@ -2298,6 +2564,139 @@ MultiBot.tips.shaman.tankAssist =
 
 -- WARLOCK --
 
+-- NEW
+MultiBot.tips.warlock.curses = {}
+MultiBot.tips.warlock.stones = {}
+MultiBot.tips.warlock.pets = {}
+
+MultiBot.tips.warlock.stones.master = 
+"Sélection de pierre d'arme|cffffffff\n"..
+"Choisissez quelle pierre d'arme le bot appliquera.|r\n\n"..
+"|cffff0000Clic gauche pour ouvir le menu|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.stones.spellstone = 
+"Pierre de sort|cffffffff\n"..
+"Applique Pierre de sort (stratégie hors-combat)|r\n\n"..
+"|cffff0000Clic gauche pour appliquer|r\n"..
+"|cffff0000Clic gauche à nouveau pour retirer|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.stones.firestone = 
+"Pierre de feu|cffffffff\n"..
+"Applique Pierre de feu (stratégie hors-combat)|r\n\n"..
+"|cffff0000Clic gauche pour appliquer|r\n"..
+"|cffff0000Clic gauche à nouveau pour retirer|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.soulstones.masterbutton = 
+"Menu Pierre d’âme NC|cffffffff\n"..
+"Désigner le bot sur lequel poser la Pierre d’âme.|r\n\n"..
+"|cffff0000Clic gauche pour ouvrir le menu|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.soulstones.self = 
+"Soi-même|cffffffff\n"..
+"Le bot appliquera la Pierre d’âme sur lui-même (stratégie hors-combat)|r\n\n"..
+"|cffff0000Clic gauche pour activer|r\n"..
+"|cffff0000Clic gauche à nouveau pour désactiver|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.soulstones.master = 
+"Maître|cffffffff\n"..
+"Le bot appliquera la Pierre d’âme sur vous (stratégie hors-combat)|r\n\n"..
+"|cffff0000Clic gauche pour activer|r\n"..
+"|cffff0000Clic gauche à nouveau pour désactiver|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.soulstones.tank = 
+"Tank|cffffffff\n"..
+"Le bot appliquera la Pierre d’âme sur le tank (stratégie hors-combat)|r\n\n"..
+"|cffff0000Clic gauche pour activer|r\n"..
+"|cffff0000Clic gauche à nouveau pour désactiver|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.soulstones.healer = 
+"Healer|cffffffff\n"..
+"Le bot appliquera la Pierre d’âme sur le soigneur (stratégie hors-combat)|r\n\n"..
+"|cffff0000Clic gauche pour activer|r\n"..
+"|cffff0000Clic gauche à nouveau pour désactiver|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.pets.master = 
+"Sélection de familier|cffffffff\n"..
+"Choisissez quel démon le bot doit invoquer.|r\n\n"..
+"|cffff0000Clic gauche pour appliquer|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.pets.imp = 
+"Diablotin|cffffffff\n"..
+"Invoquer Diablotin|r\n\n"..
+"|cffff0000Clic gauche pour invoquer|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.pets.voidwalker = 
+"Marche-vide|cffffffff\n"..
+"Invoquer Marche-vide|r\n\n"..
+"|cffff0000Clic gauche pour invoquer|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.pets.succubus = 
+"Séductrice|cffffffff\n"..
+"Invoquer Séductrice|r\n\n"..
+"|cffff0000Clic gauche pour invoquer|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.pets.felhunter = 
+"Chasseur corrompu|cffffffff\n"..
+"Invoquer Chasseur corrompu|r\n\n"..
+"|cffff0000Clic gauche pour invoquer|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.pets.felguard = 
+"Garde-corrompu|cffffffff\n"..
+"Invoquer Garde-corrompu|r\n\n"..
+"|cffff0000Clic gauche pour invoquer|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.curses.master =
+"Sélection de malédiction|cffffffff\n"..
+"Ce contrôle permet de sélectionner la malédiction à appliquer.|r\n\n"..
+"|cffff0000Clic gauche pour ouvrir le menu des malédictions\n"..
+"et choisir celle que le bot appliquera.\n"..
+"La malédiction active est affichée en gris.|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.curses.agony = 
+"Malédiction d'Agonie|cffffffff|r\n\n"..
+"|cffff0000Clic gauche pour appliquer cette malédiction.|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.curses.elements = 
+"Malédiction des Éléments|cffffffff|r\n\n"..
+"|cffff0000Clic gauche pour appliquer cette malédiction.|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.curses.exhaustion = 
+"Malédiction d'Épuisement|cffffffff|r\n\n"..
+"|cffff0000Clic gauche pour appliquer cette malédiction.|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.curses.doom = 
+"Malédiction Funeste|cffffffff|r\n\n"..
+"|cffff0000Clic gauche pour appliquer cette malédiction.|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.curses.weakness = 
+"Malédiction de Faiblesse|cffffffff|r\n\n"..
+"|cffff0000Clic gauche pour appliquer cette malédiction.|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.warlock.curses.tongues = 
+"Malédiction des Langues|cffffffff|r\n\n"..
+"|cffff0000Clic gauche pour appliquer cette malédiction.|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
 MultiBot.tips.warlock.buff.master =
 "Buff|cffffffff\n"..
 "Ce contrôle vous permet de sélectionner, d'activer ou de désactiver le Buff par défaut.|r\n\n"..
@@ -2418,6 +2817,27 @@ MultiBot.tips.warrior.tank =
 
 -- EVERY --
 
+MultiBot.tips.every.misc =
+"Divers|cffffffff\n"..
+"Ouvre le menu des actions diverses.\n"..
+"Comprend : Wipe, Autogear, etc.|r\n\n"..
+"|cffff0000Clic gauche pour afficher/masquer ce menu|r\n"..
+"|cff999999(Ordre d'exécution : Système)|r"
+
+MultiBot.tips.every.autogear =
+"AutoGear|cffffffff\n"..
+"Équipe automatiquement ce Bot en fonction\n"..
+"de vos limites AutoGear (qualité / Score d'équipement).|r\n\n"..
+"|cffff0000Clic gauche pour lancer AutoGear|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+MultiBot.tips.every.maintenance =
+"Maintenance|cffffffff\n"..
+"Active le bot pour apprendre tous les sorts et compétences disponibles,\n"..
+"recharger les consommables, enchanter l'équipement et réparer.|r\n\n"..
+"|cffff0000Clic gauche pour lancer la maintenance|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
 MultiBot.tips.every.summon =
 "Invocation|cffffffff\n"..
 "Fait apparaître ce Bot à votre position.|r\n\n"..
@@ -2475,6 +2895,547 @@ MultiBot.tips.every.talent =
 "|cffff0000Clic gauche pour ouvrir ou fermer les talents|r\n"..
 "|cff999999(Ordre d'exécution : Bot)|r";
 
+-- WIPE COMMAND --
+
+MultiBot.tips.every.wipe = 
+"Wipe|cffffffff\n"..
+"Réinitialise complètement le bot en le faisant mourir puis ressusciter,\n".. 
+"utile pour débloquer son état (position, vie, mana, etc.).|r\n\n"..
+"|cffff0000Clic gauche : envoie la commande wipe au bot sélectionné|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r";
+
+-- SET Talents --
+
+MultiBot.tips.every.settalent =
+"Sélection des talents|cffffffff\n"..
+"Affiche un menu des spécialisations disponibles (PvE/PvP) pour le bot sélectionné.\n"..
+"La spécialisation secondaire se débloque au niveau 40.|r\n\n"..
+"|cffff0000Clic gauche pour afficher/masquer le sélecteur de modèles de talents du bot|r\n"..
+"|cff999999(Ordre d'exécution : Bot)|r"
+
+-- DeathKnight
+MultiBot.tips.spec.dkbloodpve =
+  "Sang – PvE|cffffffff\n"..
+  "Spécialisation axée sur l’auto-soin et la survie en environnement PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.dkbloodpvp =
+  "Sang – PvP|cffffffff\n"..
+  "Idéale pour le contrôle de drapeau et la résistance en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.dkbfrostpve =
+  "Givre – PvE|cffffffff\n"..
+  "Optimisée pour burst et ralentissements en PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.dkbfrostpvp =
+  "Givre – PvP|cffffffff\n"..
+  "Burst rapide et contrôles pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.dkunhopve =
+  "Impie – PvE|cffffffff\n"..
+  "Spécialisation AoE et synergie avec le pet en PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.dkunhopvp =
+  "Impie – PvP|cffffffff\n"..
+  "Pression permanente de dots pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.dkdoublepve =
+  "Double Template – PvE|cffffffff\n"..
+  "Permet de tester rapidement deux builds en PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Druid
+MultiBot.tips.spec.druidbalpve =
+  "Équilibre – PvE|cffffffff\n"..
+  "Burst magique et phases Eclipse optimisées pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.druidbalpvp =
+  "Équilibre – PvP|cffffffff\n"..
+  "Starfall et roots pour le contrôle en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.druidcatpve =
+  "Féral (Chat) – PvE|cffffffff\n"..
+  "Hybride dégâts mêlée féroce pour raids.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.druidcatpvp =
+  "Féral (Chat) – PvP|cffffffff\n"..
+  "Saignements et burst pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.druidbearpve =
+  "Féral (Ours) – PvE|cffffffff\n"..
+  "Tank raid solide et survie accrue.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.druidrestopve =
+  "Restauration – PvE|cffffffff\n"..
+  "Soins HoT puissants pour les raids.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.druidrestopvp =
+  "Restauration – PvP|cffffffff\n"..
+  "Contrôles et survie en JcJ grâce aux soins et shields.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Hunter
+MultiBot.tips.spec.huntbmpve =
+  "Maîtrise des bêtes – PvE|cffffffff\n"..
+  "Focalisé sur le pet pour dégâts et utilité en PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.huntbmpvp =
+  "Maîtrise des bêtes – PvP|cffffffff\n"..
+  "Burst et immunité CC grâce au pet en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.huntmarkpve =
+  "Précision – PvE|cffffffff\n"..
+  "Tir surpuissant et dégâts monocible optimisés.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.huntmarkpvp =
+  "Précision – PvP|cffffffff\n"..
+  "Burst rapide et pièges pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.huntsurvpve =
+  "Survie – PvE|cffffffff\n"..
+  "Utilité et DoT pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.huntsurvpvp =
+  "Survie – PvP|cffffffff\n"..
+  "Pièges et contrôle pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Mage
+MultiBot.tips.spec.magearcapve =
+  "Arcanes – PvE|cffffffff\n"..
+  "Burst magique et gestion de mana pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.magearcapvp =
+  "Arcanes – PvP|cffffffff\n"..
+  "Mobilité et boucliers pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.magefirepve =
+  "Feu – PvE|cffffffff\n"..
+  "Ignites et AoE optimisés pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.magefirepvp =
+  "Feu – PvP|cffffffff\n"..
+  "Scorch et contrôle pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.magefrostfirepve =
+  "Frostfire – PvE|cffffffff\n"..
+  "Fusion des brûlure et gel pour un burst unique.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.magefrostpve =
+  "Givre – PvE|cffffffff\n"..
+  "Fingers of Frost et ralentissements en PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.magefrostpvp =
+  "Givre – PvP|cffffffff\n"..
+  "Shatter et roots pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Paladin
+MultiBot.tips.spec.paladinholypve =
+  "Sacré – PvE|cffffffff\n"..
+  "Soins raid puissants.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.paladinholypvp =
+  "Sacré – PvP|cffffffff\n"..
+  "Bubble et dispels pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.paladinprotpve =
+  "Protection – PvE|cffffffff\n"..
+  "Tank principal pour les raids.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.paladinprotpvp =
+  "Protection – PvP|cffffffff\n"..
+  "Portage de drapeau et survie en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.paladinretpve =
+  "Vindicte – PvE|cffffffff\n"..
+  "Burst et soutien offensif.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.paladinretpvp =
+  "Vindicte – PvP|cffffffff\n"..
+  "Contrôle et burst en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Priest
+MultiBot.tips.spec.priestdiscipve =
+  "Discipline – PvE|cffffffff\n"..
+  "Absorptions et boucliers pour le raid.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.priestdiscipvp =
+  "Discipline – PvP|cffffffff\n"..
+  "Burst heal et Penitences pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.priestholypve =
+  "Sacré – PvE|cffffffff\n"..
+  "Sanctuaire et coh pour soigner le raid.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.priestholypvp =
+  "Sacré – PvP|cffffffff\n"..
+  "Guardian spirit et burst heal en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.priestshadowpve =
+  "Ombre – PvE|cffffffff\n"..
+  "Pression de dots et Insanity pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.priestshadowpvp =
+  "Ombre – PvP|cffffffff\n"..
+  "Silence et pression pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Rogue
+MultiBot.tips.spec.rogassapve =
+  "Assassinat – PvE|cffffffff\n"..
+  "Poisons et dots pour dégâts constants.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.rogassapvp =
+  "Assassinat – PvP|cffffffff\n"..
+  "Vendetta et burst pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.rogcombatpve =
+  "Combat – PvE|cffffffff\n"..
+  "Cleave et énergie pour dégâts soutenus.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.rogcombatpvp =
+  "Combat – PvP|cffffffff\n"..
+  "Burst prolongé pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.rogsubtipve =
+  "Finesse – PvE|cffffffff\n"..
+  "Backstab et énergie pour DPS intense.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.rogsubtipvp =
+  "Finesse – PvP|cffffffff\n"..
+  "Shadowdance et contrôle pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Shaman
+MultiBot.tips.spec.shamanelempve =
+  "Élémentaire – PvE|cffffffff\n"..
+  "Lava Burst et Maelstrom optimisés pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.shamanelempvp =
+  "Élémentaire – PvP|cffffffff\n"..
+  "Burst et knockback pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.shamanenhpve =
+  "Amélioration – PvE|cffffffff\n"..
+  "Double armes et Maelstrom pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.shamanenhpvp =
+  "Amélioration – PvP|cffffffff\n"..
+  "Loups et burst pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.shamanrestopve =
+  "Restauration – PvE|cffffffff\n"..
+  "Chain Heal et soutien raid en PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.shamanrestopvp =
+  "Restauration – PvP|cffffffff\n"..
+  "Earth Shield et survie en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Warlock
+MultiBot.tips.spec.warlockafflipve =
+  "Affliction – PvE|cffffffff\n"..
+  "DoTs prolongés pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warlockafflipvp =
+  "Affliction – PvP|cffffffff\n"..
+  "Pression permanente en JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warlockdemonopve =
+  "Démonologie – PvE|cffffffff\n"..
+  "Métamorphose et pets pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warlockdemonopvp =
+  "Démonologie – PvP|cffffffff\n"..
+  "Felguard et burst pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warlockdestrupve =
+  "Destruction – PvE|cffffffff\n"..
+  "Chaos Bolt et burst en PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warlockdestrupvp =
+  "Destruction – PvP|cffffffff\n"..
+  "Burst et fear pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+
+-- Warrior
+MultiBot.tips.spec.warriorarmspve =
+  "Armes – PvE|cffffffff\n"..
+  "Execute et burst pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warriorarmspvp =
+  "Armes – PvP|cffffffff\n"..
+  "Mortal Strike et contrôle pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warriorfurypve =
+  "Fureur – PvE|cffffffff\n"..
+  "Whirlwind et rage pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warriorfurypvp =
+  "Fureur – PvP|cffffffff\n"..
+  "Sustain et auto-soin pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warriorprotecpve =
+  "Protection – PvE|cffffffff\n"..
+  "Tanking et survie pour le PvE.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.spec.warriorprotecpvp =
+  "Protection – PvP|cffffffff\n"..
+  "Contrôle et résistance pour le JcJ.\n"..
+  "Secondaire débloquée au niveau 40.|r\n\n"..
+  "|cffff0000Clic gauche : définir comme spé principale|r\n"..
+  "|cffff0000Clic droit  : définir comme spé secondaire|r\n"..
+  "|cff999999(Ordre d’exécution : Bot)|r";
+  
 -- RTSC --
 
 MultiBot.tips.rtsc.master = 
@@ -2608,4 +3569,5 @@ MultiBot.tips.rtsc.browse =
 "|cff999999(Ordre d'exécution : Raid, Groupe)|r\n\n"..
 "|cffff0000Clic droit pour annuler la sélection|r\n"..
 "|cff999999(Ordre d'exécution : Raid, Groupe)|r";
+
 end

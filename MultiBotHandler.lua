@@ -122,11 +122,25 @@ MultiBot:SetScript("OnEvent", function()
 	
 	-- ADDON:LOADED --
 	
-	if(event == "ADDON_LOADED" and arg1 == "MultiBot") then
+	--[[if(event == "ADDON_LOADED" and arg1 == "MultiBot") then
 		if(MultiBotSave["MultiBarPoint"] ~= nil) then
 			local tPoint = MultiBot.doSplit(MultiBotSave["MultiBarPoint"], ", ")
 			MultiBot.frames["MultiBar"].setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
-		end
+		end]]--
+    if(event == "ADDON_LOADED" and arg1 == "MultiBot") then
+	-- print("MultiBot: ADDON_LOADED fired")
+	-- print("BuildOptionsPanel type:", type(MultiBot.BuildOptionsPanel))
+        -- [AJOUT] init config + applique timers + enregistre le panneau d'options
+        if MultiBot.Config_Ensure then MultiBot.Config_Ensure() end
+        if MultiBot.ApplyTimersToRuntime then MultiBot.ApplyTimersToRuntime() end
+        if MultiBot.BuildOptionsPanel then MultiBot.BuildOptionsPanel() end
+		if MultiBot.Throttle_Init then MultiBot.Throttle_Init() end
+    
+        -- [EXISTANT] restauration des positions / états
+        if(MultiBotSave["MultiBarPoint"] ~= nil) then
+            local tPoint = MultiBot.doSplit(MultiBotSave["MultiBarPoint"], ", ")
+            MultiBot.frames["MultiBar"].setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
+        end	
 		
 		if(MultiBotSave["InventoryPoint"] ~= nil) then
 			local tPoint = MultiBot.doSplit(MultiBotSave["InventoryPoint"], ", ")
@@ -336,12 +350,20 @@ MultiBot:SetScript("OnEvent", function()
 	-- CHAT:SYSTEM --
 	
 	if(event == "CHAT_MSG_SYSTEM") then
-		if(MultiBot.isInside(arg1, "Accountlevel", "account level", "niveau de compte", "等级")) then
+		--[[if(MultiBot.isInside(arg1, "Accountlevel", "account level", "niveau de compte", "等级")) then
 			local tLevel = tonumber(MultiBot.doSplit(arg1, ": ")[2])
 			if(tLevel ~= nil) then MultiBot.GM = tLevel > 1 end
 			MultiBot.RaidPool("player")
-		end
-		
+		end]]--
+
+		-- Détection générique du niveau de compte (toutes langues prises en charge via patrons)
+        do
+          local msg = arg1
+          if MultiBot.GM_DetectFromSystem and type(msg) == "string" then
+            MultiBot.GM_DetectFromSystem(msg)
+          end
+        end
+
 		if(MultiBot.isInside(arg1, "Possible strategies")) then
 			local tStrategies = MultiBot.doSplit(arg1, ", ")
 			SendChatMessage("=== STRATEGIES ===", "SAY")
@@ -369,6 +391,27 @@ MultiBot:SetScript("OnEvent", function()
 		end
 		
 		if(string.sub(arg1, 1, 12) == "Bot roster: ") then
+        -- ------------------------------------------------------------
+        -- SECURITY : wait to MultiBar construction
+        -- ------------------------------------------------------------
+        if not (MultiBot.frames and MultiBot.frames["MultiBar"]
+                and MultiBot.frames["MultiBar"].frames
+                and MultiBot.frames["MultiBar"].frames["Units"]) then
+            -- we retry 0,1 s later
+            local df = CreateFrame("Frame")
+            df.t = 0
+            df:SetScript("OnUpdate", function(self, elapsed)
+                self.t = self.t + elapsed
+                if self.t > 0.1 then
+                    self:SetScript("OnUpdate", nil)
+                    if MultiBot.handler and MultiBot.handler["CHAT_MSG_SYSTEM"] then
+                        MultiBot.handler["CHAT_MSG_SYSTEM"](arg1)
+                    end
+                end
+            end)
+            return
+        end
+		
 			local tLocClass, tClass, tLocRace, tRace, tSex, tName = GetPlayerInfoByGUID(UnitGUID("player"))
 			tClass = MultiBot.toClass(tClass)
 			
@@ -582,10 +625,301 @@ MultiBot:SetScript("OnEvent", function()
 			return
 		end
 	end
+
+    -- ADDED FOR QUESTS --
+	-- INITI TABLES & FLAGS
+	MultiBot.BotQuestsIncompleted        = MultiBot.BotQuestsIncompleted        or {}
+	MultiBot.BotQuestsCompleted          = MultiBot.BotQuestsCompleted          or {}
+	MultiBot.BotQuestsAll                = MultiBot.BotQuestsAll                or {}
+	MultiBot._awaitingQuestsIncompleted  = MultiBot._awaitingQuestsIncompleted  or {}
+	MultiBot._awaitingQuestsCompleted    = MultiBot._awaitingQuestsCompleted    or {}
+	MultiBot.LastGameObjectSearch        = MultiBot.LastGameObjectSearch        or {}
+	MultiBot._GameObjCaptureInProgress   = MultiBot._GameObjCaptureInProgress   or {}
+	MultiBot._questAllBuffer             = MultiBot._questAllBuffer             or {}
+	-- MultiBot._awaitingQuestsAll          = MultiBot._awaitingQuestsAll          or {}
+
+
+	local function FillQuestTable(tbl, author, msg)
+		MultiBot[tbl] = MultiBot[tbl] or {}
+		MultiBot[tbl][author] = MultiBot[tbl][author] or {}
+		for link in msg:gmatch("|Hquest:[^|]+|h%[[^%]]+%]|h") do
+			local id   = tonumber(link:match("|Hquest:(%d+):"))
+			local name = link:match("%[([^%]]+)%]")
+			if id and name then
+				MultiBot[tbl][author][id] = name
+			end
+		end
+	end
+
+	-- Function read whisps for Incomp and comp quests
+	local function HandleQuestResponse(rawMsg, author)
 	
+		if MultiBot._awaitingQuestsAll or MultiBot._blockOtherQuests then
+			print("SKIP HandleQuestResponse (awaitingQuestsAll)")
+			return
+		end
+	
+		-- GUARD : if message are not for quests we skip
+		local hasKeyword = rawMsg:find("quest") or rawMsg:find("Summary")
+		local awaiting   = MultiBot._awaitingQuestsIncompleted[author]
+					or MultiBot._awaitingQuestsCompleted[author]
+		if not hasKeyword and not awaiting then
+			--[[DEFAULT_CHAT_FRAME:AddMessage(
+			"|cff00ff00[DBG]|r Skip non-quest whisper"
+			)]]--
+			return
+		end
+	
+		-- Incomp Quests
+		if rawMsg:find("Incompleted quests") then
+			--[[DEFAULT_CHAT_FRAME:AddMessage(
+			"|cff00ff00[DBG]|r Début Incompleted de "..author
+			)]]--
+			MultiBot.BotQuestsIncompleted[author]       = {}  -- reset pour ce bot
+			MultiBot._awaitingQuestsIncompleted[author] = true
+			return
+		end
+	
+		-- COLLECT Incompleted
+		if MultiBot._awaitingQuestsIncompleted[author] then
+			FillQuestTable("BotQuestsIncompleted", author, rawMsg)
+			if rawMsg:find("Summary") then
+				MultiBot._awaitingQuestsIncompleted[author] = nil
+	
+				if MultiBot.tBotPopup and not MultiBot.tBotPopup:IsShown() then
+					MultiBot.tBotPopup:Show()
+				end
+				MultiBot.TimerAfter(0.1, function()
+					if MultiBot._lastIncMode == "GROUP" then
+						MultiBot.BuildAggregatedQuestList()
+					else
+						MultiBot.BuildBotQuestList(author)
+					end
+				end)
+			end
+			return
+		end
+	
+		-- Comp Quests
+		if rawMsg:find("Completed quests") then
+			--[[DEFAULT_CHAT_FRAME:AddMessage(
+			"|cff00ff00[DBG]|r Début Completed de "..author
+			)]]--
+			MultiBot.BotQuestsCompleted[author]       = {}  -- reset pour ce bot
+			MultiBot._awaitingQuestsCompleted[author] = true
+			return
+		end
+	
+		-- COLLECT Completed
+		if MultiBot._awaitingQuestsCompleted[author] then
+			FillQuestTable("BotQuestsCompleted", author, rawMsg)
+			if rawMsg:find("Summary") then
+				MultiBot._awaitingQuestsCompleted[author] = nil
+	
+				if MultiBot.tBotCompPopup and not MultiBot.tBotCompPopup:IsShown() then
+					MultiBot.tBotCompPopup:Show()
+				end
+				MultiBot.TimerAfter(0.1, function()
+					if MultiBot._lastCompMode == "GROUP" then
+						MultiBot.BuildAggregatedCompletedList()
+					else
+						MultiBot.BuildBotCompletedList(author)
+					end
+				end)
+			end
+			return
+		end
+	end
+
+	-- Function for QuestsAll
+	function HandleQuestsAllResponse(rawMsg, author)
+		MultiBot._questAllBuffer[author] = MultiBot._questAllBuffer[author] or {}
+		table.insert(MultiBot._questAllBuffer[author], rawMsg)
+	
+		if rawMsg:find("Summary") then
+			-- Concatène toutes les lignes reçues
+			local allLines = table.concat(MultiBot._questAllBuffer[author], "\n")
+			-- print("==== PARSE DU BUFFER POUR", author)
+			-- print(allLines)
+	
+			MultiBot.BotQuestsAll[author] = {}
+			MultiBot.BotQuestsCompleted[author] = {}
+			MultiBot.BotQuestsIncompleted[author] = {}
+	
+			local mode = nil
+			for line in allLines:gmatch("[^\n]+") do
+				-- print("Line:", line)
+				if line:find("Incompleted quests") then
+					mode = "incomplete"
+					-- print(">> MODE incompleted <<")
+				elseif line:find("Completed quests") then
+					mode = "complete"
+					-- print(">> MODE completed <<")
+				elseif line:find("Summary") then
+					-- print(">> MODE nil (summary reached)")
+					mode = nil
+				else
+					local id = tonumber(line:match("|Hquest:(%d+):"))
+					local name = line:match("%[([^%]]+)%]")
+					-- print("Parsing quest line: id=", id, " name=", name, " mode=", mode)
+					if id and name then
+						table.insert(MultiBot.BotQuestsAll[author], line)
+						if mode == "incomplete" then
+							-- print("Insert in BotQuestsIncompleted:", author, id, name)
+							MultiBot.BotQuestsIncompleted[author][id] = name
+						elseif mode == "complete" then
+							-- print("Insert in BotQuestsCompleted:", author, id, name)
+							MultiBot.BotQuestsCompleted[author][id] = name
+						end
+					end
+				end
+			end
+	
+			-- On marque comme répondu
+			if MultiBot._awaitingQuestsAllBots then
+				MultiBot._awaitingQuestsAllBots[author] = true
+			end
+	
+			-- Vide le buffer
+			MultiBot._questAllBuffer[author] = nil
+	
+			-- Vérifie si tous les bots ont répondu
+			local allOk = true
+			for name, ok in pairs(MultiBot._awaitingQuestsAllBots or {}) do
+				-- print("Waiting bots:", name, ok)
+				if not ok then allOk = false break end
+			end
+	
+			if allOk then
+				-- print("Tous les bots ont répondu, on affiche la popup triée !")
+				MultiBot._awaitingQuestsAll = false
+				MultiBot._blockOtherQuests = false
+				MultiBot._awaitingQuestsAllBots = nil
+				if MultiBot.tBotAllPopup and MultiBot.BuildAggregatedAllList then
+					MultiBot.tBotAllPopup:Show()
+					MultiBot.BuildAggregatedAllList()
+				end
+			else
+				print("Still not finished...")
+			end
+		end
+	end
+    -- END ADD FOR QUESTS --
+	
+	-- GOB CAPTURE --
+	
+	function MultiBot.HandleGameObjectWhisper(rawMsg, author) -- Fonction to read GOB in chat
+		local header = "--- Game objects ---"
+		if rawMsg:find(header, 1, true) then -- Capture Detection
+			MultiBot.LastGameObjectSearch[author] = {}
+			MultiBot._GameObjCaptureInProgress[author] = true
+			return true
+		end
+		
+		if MultiBot._GameObjCaptureInProgress[author] then -- check if still in capture mod
+			if rawMsg:find("^%s*-+%s*[%w%s]+%-+$") or rawMsg == "" then
+				MultiBot._GameObjCaptureInProgress[author] = nil
+				MultiBot.ShowGameObjectPopup()
+				return true
+			end
+			table.insert(MultiBot.LastGameObjectSearch[author], rawMsg)
+			return true
+		end
+	
+		return false
+	end
+	-- FIN GOB CAPTURE
+
 	-- CHAT:WHISPER --
-	
 	if(event == "CHAT_MSG_WHISPER") then
+    
+		-- Glyphs start
+		local rawMsg, author = arg1, arg2
+		-- Add for QUESTS
+		--[[DEFAULT_CHAT_FRAME:AddMessage(
+		"|cff00ff00[DBG]|r WHISPER reçu de "..author.." → "..rawMsg
+		)]]--
+	
+		if MultiBot._awaitingQuestsAll then -- QuestsAll
+			HandleQuestsAllResponse(rawMsg, author)
+			return
+		end
+		
+		HandleQuestResponse(rawMsg, author) -- Incomp and Comp Quests
+			
+		if MultiBot.HandleGameObjectWhisper(rawMsg, author) then -- Use GOB
+			return
+		end
+		
+		--[[-- debug d’entrée
+		DEFAULT_CHAT_FRAME:AddMessage(
+		"|cff00ff00[DBG]|r CHAT_MSG_WHISPER reçu from="..
+		tostring(author).." msg="..tostring(rawMsg)
+		)]]--
+	
+		if MultiBot.awaitGlyphs and author == MultiBot.awaitGlyphs then
+			--[[DEFAULT_CHAT_FRAME:AddMessage("|cff66ccff[DBG]|r Section GLYPHS start")]]--
+	
+			-- On ne traite que les réponses commençant par "Glyphs:" ou "No glyphs"
+			if not rawMsg:match("^[Gg]lyphs:") and not rawMsg:match("^[Nn]o glyphs") then
+				DEFAULT_CHAT_FRAME:AddMessage("|cff66ccff[ERROR]|r Ignored non-glyphs msg")
+				return
+			end
+	
+			-- On extrait tout ce qui suit "Glyphs:"
+			local rest = rawMsg:match("^[Gg]lyphs:%s*(.*)") or ""
+			local ids = {}
+	
+			if rest:lower():match("^no glyphs") then
+				-- pas de glyphe → on met 6 zéros
+				for i = 1, 6 do ids[i] = 0 end
+			else
+				-- on récupère directement chaque ID depuis les liens cliquables
+				for id in rest:gmatch("|Hitem:(%d+):") do
+					table.insert(ids, tonumber(id))
+				end
+				-- on complète si moins de 6
+				for i = #ids + 1, 6 do
+					ids[i] = 0
+				end
+			end
+	
+			--[[DEFAULT_CHAT_FRAME:AddMessage(
+			"|cff66ccff[DBG]|r IDs extraits : "..table.concat(ids, ",")
+			)]]--
+	
+			-- On stocke cette liste pour le rafraîchissement
+			MultiBot.receivedGlyphs = MultiBot.receivedGlyphs or {}
+			MultiBot.receivedGlyphs[author] = {}
+	
+			-- Détermination du type Major/Minor et remplissage
+			local unit = MultiBot.toUnit(author)
+			local _, cf = UnitClass(unit or "player")
+			local classKey = (cf == "DEATHKNIGHT")
+							and "DeathKnight"
+							or cf:sub(1,1)..cf:sub(2):lower()
+			local glyphDB = MultiBot.data.talent.glyphs[classKey] or {}
+	
+			-- Mappage des sockets
+			local map = { 1, 2, 5, 6, 4, 3 }
+			for idx, id in ipairs(ids) do
+				local sock = map[idx]                    -- n° de socket cible
+				local typ  = (glyphDB.Major and glyphDB.Major[id]) and "Major" or "Minor"
+				MultiBot.receivedGlyphs[author][sock] = { id = id, type = typ }
+			end
+	
+			-- Si l'onglet Glyphes est ouvert, on force son rafraîchissement
+			local tab4 = MultiBot.talent.frames["Tab4"]
+			if tab4 and tab4:IsShown() then
+				--[[DEFAULT_CHAT_FRAME:AddMessage("|cff66ccff[DBG]|r Refresh FillDefaultGlyphs")]]--
+				MultiBot.FillDefaultGlyphs()
+			end
+	
+			MultiBot.awaitGlyphs = nil
+			return
+		end
+		-- END GLYPHES --
+			
 		if(MultiBot.auto.release == true) then
 			-- Graveyard not ready to talk Bot in the chinese Version --
 			if(arg1 == "在墓地见我") then
@@ -624,9 +958,18 @@ MultiBot:SetScript("OnEvent", function()
 		end
 		
 		if(MultiBot.isInside(arg1, "Hello", "你好") and tButton == nil) then
-			local tUnit = MultiBot.toUnit(arg2)
-			local tLocClass, tClass = UnitClass(tUnit)
-			local tLevel = UnitLevel(tUnit)
+			-- local tUnit = MultiBot.toUnit(arg2)
+			-- local tLocClass, tClass = UnitClass(tUnit)
+			-- local tLevel = UnitLevel(tUnit)
+			-- Added to avoid error \MultiBotHandler.lua:940: Usage: UnitClass("unit") If toUnit don't found the author (bot still charging, not yet grouped, etc.), it send nil, and this call break.
+            local tUnit = MultiBot.toUnit(arg2)
+            if not (tUnit and UnitExists(tUnit)) then
+               -- Bot is still not in party/raid we stop
+               return
+            end
+
+            local _, tClass = UnitClass(tUnit)
+            local tLevel    = UnitLevel(tUnit)			
 			
 			tButton = MultiBot.addActive(tClass, tLevel, arg2).setDisable()
 			
@@ -939,4 +1282,118 @@ SlashCmdList["MULTIBOT"] = function()
 		for key, value in pairs(MultiBot.frames) do value:Show() end
 		MultiBot.state = true
 	end
+end
+
+SLASH_MULTIBOTOPTIONS1 = "/mbopt"
+SlashCmdList["MULTIBOTOPTIONS"] = function()
+    if InterfaceOptionsFrame_OpenToCategory then
+        InterfaceOptionsFrame_OpenToCategory("MultiBot")
+        InterfaceOptionsFrame_OpenToCategory("MultiBot") -- double appel: comportement connu 3.3.5
+    end
+end
+
+--[[-- ==== TESTS MULTIBOT ====
+
+-- /mbdump  -> affiche les intervalles et le throttle actuels
+SLASH_MBDUMP1 = "/mbdump"
+SlashCmdList["MBDUMP"] = function()
+  local t = MultiBotDB and MultiBotDB.timers or {}
+  local rate  = MultiBot.GetThrottleRate and MultiBot.GetThrottleRate() or 5
+  local burst = MultiBot.GetThrottleBurst and MultiBot.GetThrottleBurst() or 8
+  DEFAULT_CHAT_FRAME:AddMessage(string.format(
+    "[MultiBot] Timers: stats=%.2fs, talent=%.2fs, invite=%.2fs, sort=%.2fs | Throttle: rate=%d/s, burst=%d",
+    t.stats or -1, t.talent or -1, t.invite or -1, t.sort or -1, rate, burst
+  ))
+end
+
+-- /mbset <stats> <talent> <invite> <sort>  -> règle les 4 sliders par script
+-- ex: /mbset 10 2 3 0.5
+SLASH_MBSET1 = "/mbset"
+SlashCmdList["MBSET"] = function(msg)
+  local a,b,c,d = string.match(msg or "", "([%d%.]+)%s+([%d%.]+)%s+([%d%.]+)%s+([%d%.]+)")
+  if a then
+    MultiBot.SetTimer("stats",  tonumber(a))
+    MultiBot.SetTimer("talent", tonumber(b))
+    MultiBot.SetTimer("invite", tonumber(c))
+    MultiBot.SetTimer("sort",   tonumber(d))
+    DEFAULT_CHAT_FRAME:AddMessage("[MultiBot] MBSET ok."); SlashCmdList["MBDUMP"]()
+  else
+    DEFAULT_CHAT_FRAME:AddMessage("|cffff5555Usage: /mbset <stats> <talent> <invite> <sort>|r")
+  end
+end
+
+-- /mbspam <n> -> enfile n messages SAY pour tester le throttle (par défaut 20)
+-- ex: /mbspam 30
+SLASH_MBSPAM1 = "/mbspam"
+SlashCmdList["MBSPAM"] = function(msg)
+  local n = tonumber(msg) or 20
+  if n > 200 then n = 200 end
+  for i=1,n do
+    -- Préfixe reconnaissable pour le log throttle facultatif
+    SendChatMessage(string.format("[MB_TEST] #%d", i), "SAY")
+  end
+  DEFAULT_CHAT_FRAME:AddMessage(string.format("[MultiBot] Spam enfile %d messages (throttle actif).", n))
+end
+
+-- /mbautostats on|off  -> active/désactive le ping stats auto (pratique pour mesurer l’intervalle)
+SLASH_MBAUTOSTATS1 = "/mbautostats"
+SlashCmdList["MBAUTOSTATS"] = function(msg)
+  local on = string.lower(tostring(msg or "")) == "on"
+  MultiBot.auto = MultiBot.auto or {}
+  MultiBot.auto.stats = on
+  DEFAULT_CHAT_FRAME:AddMessage("[MultiBot] Auto stats: "..(on and "ON" or "OFF"))
+end
+
+-- /mbreset -> remet les valeurs d'origine (timers + throttle)
+SLASH_MBRESET1 = "/mbreset"
+SlashCmdList["MBRESET"] = function()
+  MultiBot.SetTimer("stats",  45)
+  MultiBot.SetTimer("talent", 3)
+  MultiBot.SetTimer("invite", 5)
+  MultiBot.SetTimer("sort",   1)
+  if MultiBot.SetThrottleRate then MultiBot.SetThrottleRate(5) end
+  if MultiBot.SetThrottleBurst then MultiBot.SetThrottleBurst(8) end
+  DEFAULT_CHAT_FRAME:AddMessage("[MultiBot] Reset valeurs par défaut."); SlashCmdList["MBDUMP"]()
+end
+
+SLASH_MBCHECK1 = "/mbcheck"
+SlashCmdList["MBCHECK"] = function()
+  local wrapped = (SendChatMessage ~= MultiBot._throttleOrig)
+  DEFAULT_CHAT_FRAME:AddMessage(string.format("[MultiBot] Throttle actif: %s | SendChatMessage=%s",
+    wrapped and "OUI" or "NON",
+    tostring(SendChatMessage)
+  ))
+end]]--
+
+SLASH_MBFAKEGM1 = "/mbfakegm"
+SlashCmdList["MBFAKEGM"] = function(msg)
+  local n = tonumber(msg or "") or 0
+  MultiBot.GM_DetectFromSystem(("Account level: %d"):format(n))
+  DEFAULT_CHAT_FRAME:AddMessage(("GM now: %s (lvl=%d, threshold=%d)"):format(tostring(MultiBot.GM), n, MultiBot.GM_THRESHOLD))
+end
+
+SLASH_MBCLASS1 = "/mbclass"
+SlashCmdList["MBCLASS"] = function(msg)
+  local canon = MultiBot.NormalizeClass(msg)
+  if canon then
+    DEFAULT_CHAT_FRAME:AddMessage(("Input='%s' -> Canon='%s' | Display='%s'"):format(
+      tostring(msg), canon, MultiBot.GetClassDisplay(canon) or "?"))
+  else
+    DEFAULT_CHAT_FRAME:AddMessage(("Input='%s' -> (no match)"):format(tostring(msg)))
+  end
+end
+
+-- /mbclasstest -> batterie de cas utiles (aliases + localisés FR si ton client est frFR)
+SLASH_MBCLASSTEST1 = "/mbclasstest"
+SlashCmdList["MBCLASSTEST"] = function()
+  local samples = {
+    "dk","death knight","DeathKnight",
+    "lock","warlock",
+    "pala","paladin",
+    "sham","shaman",
+    "mage","priest","warrior","rogue","druid","hunter",
+  }
+  for _, s in ipairs(samples) do
+    DEFAULT_CHAT_FRAME:AddMessage(("[MB] '%s' -> %s"):format(s, tostring(MultiBot.toClass(s))))
+  end
 end

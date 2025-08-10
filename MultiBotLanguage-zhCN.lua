@@ -1,5 +1,5 @@
 if(GetLocale() == "zhCN") then
-MultiBot.data.classes.input = {
+--[[MultiBot.data.classes.input = {
 [1] = "死亡骑士",
 [2] = "德鲁伊",
 [3] = "猎人",
@@ -10,7 +10,54 @@ MultiBot.data.classes.input = {
 [8] = "萨满祭司",
 [9] = "术士",
 [10] = "战士"
-}
+}]]--
+
+-- GLYPHS
+MultiBot.info.glyphssocketnotunlocked =
+"该插槽尚未解锁。";
+
+MultiBot.info.glyphswrongclass =
+"该雕文不适用于该机器人职业。";
+
+MultiBot.info.glyphsunknowglyph =
+"无法识别该雕文。";
+
+MultiBot.info.glyphsglyphtype =
+"雕文类型 ";
+
+MultiBot.info.glyphsglyphsocket =
+"插槽错误。";
+
+MultiBot.info.glyphsleveltoolow =
+"等级过低，无法使用该雕文。";
+
+MultiBot.info.glyphscustomglyphsfor =
+"自定义雕文：";
+
+MultiBot.info.glyphsglyphsfor =
+"雕文：";
+
+MultiBot.info.talentscustomtalentsfor =
+"自定义天赋：";
+
+-- Hunter
+MultiBot.info.hunterpeteditentervalue =
+"输入数值";
+
+MultiBot.info.hunterpetcreaturelist =
+"按名称列出宠物";
+
+MultiBot.info.hunterpetnewname =
+"新的宠物名称";
+
+MultiBot.info.hunterpetid =
+"宠物ID";
+
+MultiBot.info.hunterpetentersomething =
+"在此输入内容...";
+
+MultiBot.info.hunterpetrandomfamily =
+"按类型随机宠物";
 
 -- INFO --
 
@@ -564,74 +611,95 @@ MultiBot.tips.beast.call =
 -- 创建机器人 --
 
 MultiBot.tips.creator.master = 
-"创造者控制\n|cffffffff".. 
-"使用此控制，你可以按职业创建随机机器人。\n".. 
-"默认限制是每个账号最多40个随机机器人。\n".. 
-"没有命令可以在使用后删除它们。\n".. 
-"所以将它们添加到你的好友列表中以便重用。\n".. 
-"执行命令时显示命令的接收者。|r\n\n".. 
-"|cffff0000左键点击显示或隐藏选项|r\n".. 
-"|cff999999(执行命令: 系统)|r";
+"创建控制台\n|cffffffff"..
+"这个控制器允许你按职业创建机器人。\n"..
+"每个账号默认最多可创建40个机器人。\n"..
+"创建后无法通过指令删除。\n"..
+"建议将它们添加为好友以便重复使用。\n"..
+"执行顺序将显示命令的接收者。|r\n\n"..
+"|cffff0000左键点击以展开或收起选项|r\n"..
+"|cff999999（执行顺序：系统）|r";
 
 MultiBot.tips.creator.warrior =
-"创建战士\n|cffffffff".. 
-"此按钮将创建一个作为战士的随机机器人。|r\n\n".. 
-"|cffff0000左键点击创建战士|r\n".. 
-"|cff999999(执行命令: 系统)|r";
+"创建-战士\n|cffffffff"..
+"这个按钮会创建一个战士机器人。|r\n\n"..
+"|cffff0000左键点击选择战士的性别。|r\n"..
+"|cff999999（执行顺序：系统）|r";
 
 MultiBot.tips.creator.warlock =
-"创建术士\n|cffffffff".. 
-"此按钮将创建一个作为术士的随机机器人。|r\n\n".. 
-"|cffff0000左键点击创建术士|r\n".. 
-"|cff999999(执行命令: 系统)|r";
+"创建-术士\n|cffffffff"..
+"这个按钮会创建一个术士机器人。|r\n\n"..
+"|cffff0000左键点击选择术士的性别。|r\n"..
+"|cff999999（执行顺序：系统）|r";
 
 MultiBot.tips.creator.shaman =
-"创建萨满\n|cffffffff".. 
-"此按钮将创建一个作为萨满的随机机器人。|r\n\n".. 
-"|cffff0000左键点击创建萨满|r\n".. 
-"|cff999999(执行命令: 系统)|r";
+"创建-萨满\n|cffffffff"..
+"这个按钮会创建一个萨满机器人。|r\n\n"..
+"|cffff0000左键点击选择萨满的性别。|r\n"..
+"|cff999999（执行顺序：系统）|r";
 
 MultiBot.tips.creator.rogue =
-"创建潜行者\n|cffffffff".. 
-"此按钮将创建一个作为潜行者的随机机器人。|r\n\n".. 
-"|cffff0000左键点击创建潜行者|r\n".. 
-"|cff999999(执行命令: 系统)|r";
+"创建-潜行者\n|cffffffff"..
+"这个按钮会创建一个潜行者机器人。|r\n\n"..
+"|cffff0000左键点击选择潜行者的性别。|r\n"..
+"|cff999999（执行顺序：系统）|r";
 
 MultiBot.tips.creator.priest =
-"创建牧师\n|cffffffff".. 
-"此按钮将创建一个作为牧师的随机机器人。|r\n\n".. 
-"|cffff0000左键点击创建牧师|r\n".. 
-"|cff999999(执行命令: 系统)|r";
+"创建-牧师\n|cffffffff"..
+"这个按钮会创建一个牧师机器人。|r\n\n"..
+"|cffff0000左键点击选择牧师的性别。|r\n"..
+"|cff999999（执行顺序：系统）|r";
 
 MultiBot.tips.creator.paladin =
-"创建圣骑士\n|cffffffff".. 
-"此按钮将创建一个作为圣骑士的随机机器人。|r\n\n".. 
-"|cffff0000左键点击创建圣骑士|r\n".. 
-"|cff999999(执行命令: 系统)|r";
+"创建-圣骑士\n|cffffffff"..
+"这个按钮会创建一个圣骑士机器人。|r\n\n"..
+"|cffff0000左键点击选择圣骑士的性别|r\n"..
+"|cff999999（执行顺序：系统）|r";
 
 MultiBot.tips.creator.mage =
-"创建法师\n|cffffffff".. 
-"此按钮将创建一个作为法师的随机机器人。|r\n\n".. 
-"|cffff0000左键点击创建法师|r\n".. 
-"|cff999999(执行命令: 系统)|r";
+"创建-法师\n|cffffffff"..
+"这个按钮会创建一个法师机器人。|r\n\n"..
+"|cffff0000左键点击选择法师的性别。|r\n"..
+"|cff999999（执行顺序：系统）|r";
 
 MultiBot.tips.creator.hunter =
-"创建猎人\n|cffffffff".. 
-"此按钮将创建一个作为猎人的随机机器人。|r\n\n".. 
-"|cffff0000左键点击创建猎人|r\n".. 
-"|cff999999(执行命令: 系统)|r";
+"创建-猎人\n|cffffffff"..
+"这个按钮会创建一个猎人机器人。|r\n\n"..
+"|cffff0000左键点击选择猎人的性别。|r\n"..
+"|cff999999（执行顺序：系统）|r";
 
 MultiBot.tips.creator.druid =
-"创建德鲁伊\n|cffffffff".. 
-"此按钮将创建一个作为德鲁伊的随机机器人。|r\n\n".. 
-"|cffff0000左键点击创建德鲁伊|r\n".. 
-"|cff999999(执行命令: 系统)|r";
+"创建-德鲁伊\n|cffffffff"..
+"这个按钮会创建一个德鲁伊机器人。|r\n\n"..
+"|cffff0000左键点击选择德鲁伊的性别。|r\n"..
+"|cff999999（执行顺序：系统）|r";
 
 MultiBot.tips.creator.deathknight =
-"创建死亡骑士\n|cffffffff".. 
-"此按钮将创建一个作为死亡骑士的随机机器人。|r\n\n".. 
-"|cffff0000左键点击创建死亡骑士|r\n".. 
-"|cff999999(执行命令: 系统)|r";
+"创建-死亡骑士\n|cffffffff"..
+"这个按钮会创建一个死亡骑士机器人。|r\n\n"..
+"|cffff0000左键点击选择死亡骑士的性别。|r\n"..
+"|cff999999（执行顺序：系统）|r";
+
+MultiBot.tips.creator.notarget = 
+"你没有目标。";
+
+MultiBot.tips.creator.gendermale = 
+"创建一位男性伙伴。\n|cffffffff"..
+"强壮、果断，总是准备战斗……或者喝酒。|r\n\n"..
+"|cffff0000左键点击以创建|r\n"..
+"|cff999999（执行顺序：系统）|r";
+
+MultiBot.tips.creator.genderfemale = 
+"创建一位女性伙伴。\n|cffffffff"..
+"优雅、致命，绝不可低估。|r\n\n"..
+"|cffff0000左键点击以创建|r\n"..
+"|cff999999（执行顺序：系统）|r";
+
+MultiBot.tips.creator.genderrandom = 
+"创建一个随机性别的机器人。\n|cffffffff"..
+"命运将做出选择！|r\n\n"..
+"|cffff0000左键点击以创建|r\n"..
+"|cff999999（执行顺序：系统）|r";
 
 MultiBot.tips.creator.inspect =
 "检查目标\n|cffffffff"..
@@ -849,16 +917,48 @@ MultiBot.tips.units.inviteRaid40 =
 
 -- UNITS:ALL --
 
-MultiBot.tips.units.alliance = 
-"Alliance\n|cffffffff"..
-"With this Button you can bring all you Group-Members online or offline.\n"..
-"Maybe MultiBot wont be able to react fast enough and will not show all Botbars.\n\n"..
-"|cffff0000Left-Click to bring all Group-Members online|r\n"..
-"|cff999999(Execution-Order: System)|r\n\n"..
-"|cffff0000Right-Click to bring all Group-Members offline|r\n"..
-"|cff999999(Execution-Order: System)|r";
+MultiBot.tips.units.alliance =
+"登录/登出所有 PlayerBot\n|cffffffff"..
+"登录或登出你有权限访问的所有 PlayerBot。\n"..
+"根据 PlayerBot 的总数量，此功能可能需要一些时间来填充每个 PlayerBot 的按钮栏。\n\n"..
+"|cffff0000左键点击：登录所有 PlayerBot|r\n"..
+"|cff999999（执行者：系统）|r\n\n"..
+"|cffff0000右键点击：登出所有 PlayerBot|r\n"..
+"|cff999999（执行者：系统）|r";
 
--- 主菜单 --
+-- SLIDERS INTERFACE --
+
+MultiBot.tips.sliders.throttleinstalled =
+"已安装 MultiBot 限速";
+
+MultiBot.tips.sliders.frametitle =
+"MultiBot — 选项";
+
+MultiBot.tips.sliders.actionsinter =
+"自动操作间隔";
+
+MultiBot.tips.sliders.statsinter =
+"统计延迟间隔";
+
+MultiBot.tips.sliders.talentsinter =
+"自动天赋间隔";
+
+MultiBot.tips.sliders.invitsinter =
+"邀请循环间隔";
+
+MultiBot.tips.sliders.sortinter =
+"排序/刷新间隔";
+
+MultiBot.tips.sliders.messpersec =
+"每秒消息数";
+
+MultiBot.tips.sliders.maxburst =
+"最大突发数";
+
+MultiBot.tips.sliders.rstbutn =
+"重置";
+
+-- MAIN --
 
 MultiBot.tips.main.master =
 "主控制面板\n|cffffffff"..
@@ -868,6 +968,14 @@ MultiBot.tips.main.master =
 "|cff999999(执行命令: 系统)|r\n\n"..
 "|cffff0000右键单击拖动和移动 MultiBot|r\n"..
 "|cff999999(执行命令: 系统)|r";
+
+MultiBot.tips.main.options =
+"选项切换\n|cffffffff"..
+"打开 MultiBot 设置面板，带有用于操作间隔的滑块。\n"..
+"(统计 / 天赋 / 邀请 / 排序) 以及聊天限速（每秒消息数 / 突发数）。\n"..
+"设置按角色单独保存。|r\n\n"..
+"|cffff0000左键单击以打开或关闭选项面板|r\n"..
+"|cff999999（执行顺序：界面）|r";
 
 MultiBot.tips.main.coords =
 "重置坐标\n|cffffffff"..
@@ -1040,24 +1148,134 @@ MultiBot.tips.game.appear =
 "|cffff0000左键单击传送到你的目标|r\n"..
 "|cff999999(执行命令: 目标)|r";
 
--- 任务 --
+MultiBot.tips.game.delsvwarning =
+"|cffff4444警告|r：您即将删除所有 MultiBot 的保存变量。\n此操作不可逆。\n\n您确定要继续吗？";
+
+MultiBot.tips.game.delsv =
+"删除保存变量\n|cffffffff"..
+"此按钮将永久删除 MultiBot 的保存变量文件（MultiBot.lua）中的所有数据。\n"..
+"此操作无法撤销，请谨慎操作！|r\n\n"..
+"|cffff0000左键点击以删除|r\n"..
+"|cff999999（系统级执行）|r";
+
+-- QUESTS --
 
 MultiBot.tips.quests.master =
 "任务控制\n|cffffffff"..
-"此控制功能会显示当前任务清单。\n"..
-"左键点击页面可将任务分享给你的机器人。\n"..
-"右键点击页面可放弃你以及你的机器人的任务。\n"..
-"执行命令显示队伍的接收者。|r\n\n"..
-"|cffff0000左键点击可显示或隐藏选项 |r\n"..
-"|cff999999(执行命令: 系统)|r\n\n"..
-"|cffff0000右键点击可刷新选项 |r\n"..
-"|cff999999(执行命令: 系统)|r";
+"此控件显示当前任务列表。\n"..
+"左键点击页面可以将任务共享给你的机器人。\n"..
+"右键点击页面可以让你和你的机器人放弃任务。\n"..
+"执行顺序显示命令接收者。|r\n\n"..
+"|cffff0000左键点击显示或隐藏选项|r\n"..
+"|cff999999（执行顺序：系统）|r\n\n"..
+"|cffff0000右键点击刷新选项|r\n"..
+"|cff999999（执行顺序：系统）|r";
 
 MultiBot.tips.quests.accept =
-"Quest-Accpet\n|cffffffff"..
-"This Button orders Bots to take every Quest of the targeted NPC.\n\n"..
-"|cffff0000Left-Click to take every Quest|r\n"..
-"|cff999999(Execution-Order: Raid, Party)|r";
+"接受任务\n|cffffffff"..
+"该按钮让机器人接受目标NPC的所有任务。\n\n"..
+"|cffff0000左键点击全部接受|r\n"..
+"|cff999999（执行顺序：团队、副本）|r";
+
+MultiBot.tips.quests.main =
+"打开任务菜单\n|cffffffff"..
+"该按钮打开任务菜单。\n\n"..
+"|cffff0000左键点击打开|r\n"..
+"|cff999999（执行顺序：系统）|r";
+
+MultiBot.tips.quests.talk =
+"与NPC对话\n|cffffffff"..
+"该按钮让机器人与选中的NPC对话以领取或交付任务。\n\n"..
+"|cffff0000左键点击执行|r\n"..
+"|cff999999（执行顺序：团队、副本）|r";
+
+MultiBot.tips.quests.talkerror =
+"请选择一个要对话的NPC。";
+
+MultiBot.tips.quests.questcomperror = 
+"请选择一个机器人以查询其任务。";
+
+MultiBot.tips.quests.sendwhisp =
+"向机器人询问";
+
+MultiBot.tips.quests.sendpartyraid = 
+"向队伍或团队询问。";
+
+MultiBot.tips.quests.completed = 
+"已完成任务\n|cffffffff"..
+"此按钮可让你向单个或所有机器人请求已完成任务列表。\n\n"..
+"|cffff0000左键点击打开子菜单|r\n"..
+"|cff999999（执行顺序：团队、副本、机器人）|r";
+
+MultiBot.tips.quests.incompleted = 
+"未完成任务\n|cffffffff"..
+"此按钮可让你向单个或所有机器人请求未完成任务列表。\n\n"..
+"|cffff0000左键点击打开子菜单|r\n"..
+"|cff999999（执行顺序：团队、副本、机器人）|r";
+
+MultiBot.tips.quests.allcompleted = 
+"所有任务\n|cffffffff"..
+"此按钮可让你向单个或所有机器人请求所有任务的列表。\n\n"..
+"|cffff0000左键点击打开子菜单|r\n"..
+"|cff999999（执行顺序：团队、副本、机器人）|r";
+
+MultiBot.tips.quests.incomplist = 
+"当前机器人任务列表";
+
+MultiBot.tips.quests.complist = 
+"机器人已完成任务列表";
+
+MultiBot.tips.quests.alllist = 
+"机器人所有任务";
+
+MultiBot.tips.quests.compheader = 
+"** 已完成任务 **";
+
+MultiBot.tips.quests.incompheader = 
+"** 未完成任务 **";
+
+MultiBot.tips.quests.botsword = 
+"机器人：";
+
+-- 使用GOBs --
+MultiBot.tips.quests.gobsmaster =
+"使用游戏对象菜单\n|cffffffff"..
+"此按钮打开使用游戏对象的菜单。|r\n\n"..
+"|cffff0000左键点击打开|r\n"..
+"|cff999999（执行顺序：系统）|r";
+
+MultiBot.tips.quests.gobenter = 
+"使用游戏对象\n|cffffffff"..
+"此按钮弹出窗口输入游戏对象名称。\n\n"..
+"|cffff0000左键点击打开输入窗口|r\n"..
+"|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.quests.gobsearch = 
+"搜索游戏对象\n|cffffffff"..
+"此按钮打开窗口，显示机器人可用的游戏对象。\n\n"..
+"|cffff0000左键点击打开窗口|r\n"..
+"|cff999999（执行顺序：系统）|r";
+
+MultiBot.tips.quests.goberrorname = 
+"请输入有效的游戏对象名称。";
+
+MultiBot.tips.quests.gobselectboterror = 
+"请选择一个机器人来发送指令。";
+
+MultiBot.tips.quests.gobsnameerror =
+"请输入名称。";
+
+MultiBot.tips.quests.gobctrlctocopy =
+"CTRL + C 复制";
+
+MultiBot.tips.quests.gobselectall = 
+"全选";
+
+MultiBot.tips.quests.gobsfound = 
+"找到的游戏对象";
+
+MultiBot.tips.quests.gobpromptname = 
+"游戏对象名称";
 
 -- 饮用 --
 
@@ -1620,6 +1838,14 @@ MultiBot.tips.druid.dps.dps =
 "|cffff0000左键单击以启用或禁用DPS策略|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
+MultiBot.tips.druid.dps.offheal =
+"辅助治疗|cffffffff\n"..
+"禁用输出模式并启用辅助治疗模式，\n"..
+"机器人将以造成伤害为主，但在必要时进行治疗。\n"..
+"仅适用于野性形态德鲁伊。|r\n\n"..
+"|cffff0000左键点击以启用或禁用辅助治疗|r\n"..
+"|cff999999（执行顺序：Bot）|r";
+
 MultiBot.tips.druid.tankAssist = 
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..
@@ -1637,7 +1863,37 @@ MultiBot.tips.druid.tank =
 "|cffff0000左键单击以启用或禁用坦克|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
--- 猎人 --
+-- HUNTER --
+
+MultiBot.tips.hunter.pet.master = 
+"宠物指令|cffffffff\n"..
+"打开一个包含多个召唤宠物选项的工具栏。|r\n\n"..
+"|cffff0000左键点击显示选项|r\n"..
+"|cff999999（执行顺序：系统）|r";
+
+MultiBot.tips.hunter.pet.name = 
+"通过 |cff00ff00名字|r 召唤宠物\n"..
+"|cffffffff打开可用宠物列表，点击名字进行召唤。|r\n\n"..
+"|cffff0000左键点击打开列表|r\n"..
+"|cff999999（执行顺序：Bot）|r";
+
+MultiBot.tips.hunter.pet.id = 
+"通过 |cff00ff00数据库ID|r 召唤宠物\n"..
+"|cffffffff使用生物的数据库ID直接召唤。|r\n\n"..
+"|cffff0000左键点击输入ID|r\n"..
+"|cff999999（执行顺序：Bot）|r";
+
+MultiBot.tips.hunter.pet.family = 
+"通过 |cff00ff00类型|r 随机召唤宠物\n"..
+"|cffffffff选择一个宠物类型，随机召唤该类型的宠物。|r\n\n"..
+"|cffff0000左键点击选择类型|r\n"..
+"|cff999999（执行顺序：Bot）|r";
+
+MultiBot.tips.hunter.pet.rename = 
+"重命名当前宠物\n"..
+"|cffffffff打开输入框为当前宠物设置新名字。|r\n\n"..
+"|cffff0000左键点击重命名|r\n"..
+"|cff999999（执行顺序：Bot）|r";
 
 MultiBot.tips.hunter.naspect.master =
 "非战斗增益|cffffffff\n"..
@@ -2017,6 +2273,14 @@ MultiBot.tips.paladin.dps.dps =
 "|cffff0000左键单击以启用或禁用DPS策略|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
+MultiBot.tips.paladin.dps.offheal =
+"辅助治疗|cffffffff\n"..
+"禁用输出模式并启用辅助治疗模式，\n"..
+"机器人将以造成伤害为主，但在必要时进行治疗。\n"..
+"仅适用于圣骑士。|r\n\n"..
+"|cffff0000左键点击以启用或禁用辅助治疗|r\n"..
+"|cff999999（执行顺序：Bot）|r";
+
 MultiBot.tips.paladin.tankAssist = 
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..
@@ -2393,7 +2657,29 @@ MultiBot.tips.warrior.tank =
 "|cffff0000左键点击启用或禁用坦克辅助|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
+
 -- 所有的 --
+
+MultiBot.tips.every.misc =
+"杂项|cffffffff\n"..
+"打开杂项操作菜单。\n"..
+"包括：Wipe、Autogear 等。|r\n\n"..
+"|cffff0000左键单击切换此菜单|r\n"..
+"|cff999999(执行顺序：系统)|r"
+
+MultiBot.tips.every.autogear =
+"自动装备|cffffffff\n"..
+"根据你的AutoGear设置（品质 / 装备评分）\n"..
+"自动为该机器人装备物品。|r\n\n"..
+"|cffff0000左键点击启动自动装备|r\n"..
+"|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.every.maintenance =
+"维护|cffffffff\n"..
+"启用机器人以学习所有可用的法术和技能，\n"..
+"补充消耗品，附魔装备并进行修理。|r\n\n"..
+"|cffff0000左键点击开始维护|r\n"..
+"|cff999999（执行顺序：Bot）|r";
 
 MultiBot.tips.every.summon =
 "召唤 |cffffffff\n"..
@@ -2451,6 +2737,666 @@ MultiBot.tips.every.talent =
 "在系统加载天赋值时会有时间延迟地打开。|r\n\n"..
 "|cffff0000鼠标左键单击打开或关闭天赋|r\n"..
 "|cff999999(执行命令: 机器人)|r";
+
+-- WIPE COMMAND --
+
+MultiBot.tips.every.wipe = 
+"Wipe|cffffffff\n"..
+"通过击杀并复活来完全重置机器人，\n".. 
+"有助于清除其状态（位置、生命值、法力值等）。|r\n\n"..
+"|cffff0000左键单击：向所选机器人发送wipe命令|r\n"..
+"|cff999999(执行顺序：Bot)|r";
+
+-- SET TALENTS -- 
+
+MultiBot.tips.every.settalent =
+"天赋选择|cffffffff\n"..
+"显示所选机器人可用的专业（PvE/PvP）菜单。\n"..
+"次要专业在40级解锁。|r\n\n"..
+"|cffff0000左键单击以显示/隐藏机器人天赋模板选择器|r\n"..
+"|cff999999(执行顺序：机器人)|r"
+
+MultiBot.tips.spec.dkbloodpve =
+  "鲜血 – PvE|cffffffff\n"..
+  "专注于自我治疗和在PvE环境中生存的专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.dkbloodpvp =
+  "鲜血 – PvP|cffffffff\n"..
+  "适合控旗和PvP耐久的专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.dkbfrostpve =
+  "冰霜 – PvE|cffffffff\n"..
+  "在PvE中优化爆发和减速能力。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.dkbfrostpvp =
+  "冰霜 – PvP|cffffffff\n"..
+  "快速爆发和控制适用于PvP。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.dkunhopve =
+  "邪恶 – PvE|cffffffff\n"..
+  "以范围伤害和宠物协同为主的PvE专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.dkunhopvp =
+  "邪恶 – PvP|cffffffff\n"..
+  "持续伤害压制适用于PvP环境。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.dkdoublepve =
+  "双天赋模板 – PvE|cffffffff\n"..
+  "允许快速测试两个PvE构建。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.druidbalpve =
+  "平衡 – PvE|cffffffff\n"..
+  "以魔法爆发和日月蚀为核心的PvE专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.druidbalpvp =
+  "平衡 – PvP|cffffffff\n"..
+  "PvP中通过星辰坠落和缠绕提供控制能力。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.druidcatpve =
+  "野性（猫）– PvE|cffffffff\n"..
+  "适合团队战斗的近战混合输出。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.druidcatpvp =
+  "野性（猫）– PvP|cffffffff\n"..
+  "流血和爆发伤害适用于PvP场景。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.druidbearpve =
+  "野性（熊）– PvE|cffffffff\n"..
+  "可靠的坦克，适合团队作战和生存能力强。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.druidrestopve =
+  "恢复 – PvE|cffffffff\n"..
+  "提供强大的持续治疗，适合团队。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.druidrestopvp =
+  "恢复 – PvP|cffffffff\n"..
+  "依靠治疗与护盾在PvP中生存与控制。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.huntbmpve =
+  "野兽掌握 – PvE|cffffffff\n"..
+  "以宠物为核心的输出与功能型专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.huntbmpvp =
+  "野兽掌握 – PvP|cffffffff\n"..
+  "通过宠物提供爆发和免控能力。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.huntmarkpve =
+  "射击 – PvE|cffffffff\n"..
+  "强大的单体爆发与远程伤害。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.huntmarkpvp =
+  "射击 – PvP|cffffffff\n"..
+  "适合爆发快速和陷阱控制。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.huntsurvpve =
+  "生存 – PvE|cffffffff\n"..
+  "以功能和持续伤害为主。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.huntsurvpvp =
+  "生存 – PvP|cffffffff\n"..
+  "陷阱和控制手段优秀的PvP专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.magearcapve =
+  "奥术 – PvE|cffffffff\n"..
+  "以魔法爆发与法力管理为核心。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.magearcapvp =
+  "奥术 – PvP|cffffffff\n"..
+  "高机动性与护盾为主。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.magefirepve =
+  "火焰 – PvE|cffffffff\n"..
+  "燃烧与范围伤害适合团队输出。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.magefirepvp =
+  "火焰 – PvP|cffffffff\n"..
+  "灼烧和控场为主要特性。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.magefrostfirepve =
+  "霜火 – PvE|cffffffff\n"..
+  "火与冰融合，形成独特爆发组合。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.magefrostpve =
+  "冰霜 – PvE|cffffffff\n"..
+  "冰指与减速在PvE中表现出色。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.magefrostpvp =
+  "冰霜 – PvP|cffffffff\n"..
+  "破碎效果和冰冻控制最为关键。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.paladinholypve =
+  "神圣 – PvE|cffffffff\n"..
+  "强力的团队治疗专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.paladinholypvp =
+  "神圣 – PvP|cffffffff\n"..
+  "气泡和驱散适用于PvP生存。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.paladinprotpve =
+  "防护 – PvE|cffffffff\n"..
+  "团队主坦，强大的生存能力。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.paladinprotpvp =
+  "防护 – PvP|cffffffff\n"..
+  "扛旗与生存导向。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.paladinretpve =
+  "惩戒 – PvE|cffffffff\n"..
+  "爆发与攻击性支援。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.paladinretpvp =
+  "惩戒 – PvP|cffffffff\n"..
+  "控制与爆发兼备。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.priestdiscipve =
+  "戒律 – PvE|cffffffff\n"..
+  "护盾吸收为主的团队治疗。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.priestdiscipvp =
+  "戒律 – PvP|cffffffff\n"..
+  "爆发治疗与惩戒之力。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.priestholypve =
+  "神圣 – PvE|cffffffff\n"..
+  "团队治疗技能如圣言术与祈祷。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.priestholypvp =
+  "神圣 – PvP|cffffffff\n"..
+  "守护之魂与快速治疗。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.priestshadowpve =
+  "暗影 – PvE|cffffffff\n"..
+  "以伤害持续性和疯狂机制为主。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.priestshadowpvp =
+  "暗影 – PvP|cffffffff\n"..
+  "沉默与持续压制。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.rogassapve =
+  "刺杀 – PvE|cffffffff\n"..
+  "毒药与持续伤害输出。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.rogassapvp =
+  "刺杀 – PvP|cffffffff\n"..
+  "迅猛爆发与暗杀风格。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.rogcombatpve =
+  "战斗 – PvE|cffffffff\n"..
+  "顺劈与能量循环的持续输出。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.rogcombatpvp =
+  "战斗 – PvP|cffffffff\n"..
+  "延长爆发，持续压力。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.rogsubtipve =
+  "敏锐 – PvE|cffffffff\n"..
+  "背刺与高能量循环输出。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.rogsubtipvp =
+  "敏锐 – PvP|cffffffff\n"..
+  "暗影之舞与控制手段。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+-- Shaman
+MultiBot.tips.spec.shamanelempve =
+  "元素 – PvE|cffffffff\n"..
+  "熔岩爆裂与漩涡武器为核心。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.shamanelempvp =
+  "元素 – PvP|cffffffff\n"..
+  "爆发与击退效果适合PvP。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.shamanenhpve =
+  "增强 – PvE|cffffffff\n"..
+  "双持与漩涡爆发适合PvE。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.shamanenhpvp =
+  "增强 – PvP|cffffffff\n"..
+  "幽魂狼与爆发性伤害。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.shamanrestopve =
+  "恢复 – PvE|cffffffff\n"..
+  "治疗链与团队支援。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.shamanrestopvp =
+  "恢复 – PvP|cffffffff\n"..
+  "大地之盾与生存能力优异。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+-- WARLOCK --
+
+-- NEW
+MultiBot.tips.warlock.curses = {}
+MultiBot.tips.warlock.stones = {}
+MultiBot.tips.warlock.pets = {}
+
+MultiBot.tips.warlock.stones.master = 
+"武器魔石选择|cffffffff\n"..
+"选择机器人将使用哪种武器魔石。|r\n\n"..
+"|cffff0000左键点击打开菜单|r\n"..
+"|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.warlock.stones.spellstone = 
+"法术石|cffffffff\n"..
+"应用法术石（非战斗策略）|r\n\n"..
+"|cffff0000左键点击以应用|r\n"..
+"|cffff0000再次左键点击以移除|r\n"..
+"|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.warlock.stones.firestone = 
+"火焰石|cffffffff\n"..
+"应用火焰石（非战斗策略）|r\n\n"..
+"|cffff0000左键点击以应用|r\n"..
+"|cffff0000再次左键点击以移除|r\n"..
+"|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.warlock.soulstones.masterbutton = 
+"灵魂石菜单（NC）|cffffffff\n"..
+"选择哪个机器人施放灵魂石。|r\n\n"..
+"|cffff0000左键点击打开菜单|r\n"..
+"|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.warlock.soulstones.self = 
+"自身|cffffffff\n"..
+"机器人将在自己身上施放灵魂石（非战斗策略）|r\n\n"..
+"|cffff0000左键点击启用|r\n"..
+"|cffff0000再次点击关闭|r\n"..
+"|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.warlock.soulstones.master = 
+"主人|cffffffff\n"..
+"机器人将在你身上施放灵魂石（非战斗策略）|r\n\n"..
+"|cffff0000左键点击启用|r\n"..
+"|cffff0000再次点击关闭|r\n"..
+"|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.warlock.soulstones.tank = 
+"坦克|cffffffff\n"..
+"机器人将在坦克身上施放灵魂石（非战斗策略）|r\n\n"..
+"|cffff0000左键点击启用|r\n"..
+"|cffff0000再次点击关闭|r\n"..
+"|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.warlock.soulstones.healer = 
+"治疗|cffffffff\n"..
+"机器人将在治疗者身上施放灵魂石（非战斗策略）|r\n\n"..
+"|cffff0000左键点击启用|r\n"..
+"|cffff0000再次点击关闭|r\n"..
+"|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.warlock.pets.master = 
+"宠物选择|cffffffff\n"..
+"选择机器人应召唤的恶魔。|r\n\n"..
+"|cffff0000左键点击应用|r\n"..
+"|cffff0000右键点击移除|r\n"..
+"|cff999999(执行顺序：机器人)|r";
+
+MultiBot.tips.warlock.pets.imp = 
+"小鬼|cffffffff\n"..
+"召唤小鬼|r\n\n"..
+"|cffff0000左键点击召唤|r\n"..
+"|cff999999(执行顺序：机器人)|r";
+
+MultiBot.tips.warlock.pets.voidwalker = 
+"虚空行者|cffffffff\n"..
+"召唤虚空行者|r\n\n"..
+"|cffff0000左键点击召唤|r\n"..
+"|cff999999(执行顺序：机器人)|r";
+
+MultiBot.tips.warlock.pets.succubus = 
+"魅魔|cffffffff\n"..
+"召唤魅魔|r\n\n"..
+"|cffff0000左键点击召唤|r\n"..
+"|cff999999(执行顺序：机器人)|r";
+
+MultiBot.tips.warlock.pets.felhunter = 
+"地狱猎犬|cffffffff\n"..
+"召唤地狱猎犬|r\n\n"..
+"|cffff0000左键点击召唤|r\n"..
+"|cff999999(执行顺序：机器人)|r";
+
+MultiBot.tips.warlock.pets.felguard = 
+"地狱守卫|cffffffff\n"..
+"召唤地狱守卫|r\n\n"..
+"|cffff0000左键点击召唤|r\n"..
+"|cff999999(执行顺序：机器人)|r";
+
+MultiBot.tips.warlock.curses.master =
+"诅咒选择|cffffffff\n"..
+"此控件用于选择要施放的诅咒。|r\n\n"..
+"|cffff0000左键点击打开诅咒菜单\n"..
+"并选择机器人将施放的诅咒。\n"..
+"当前激活的诅咒以灰色显示。|r\n"..
+"|cff999999(执行顺序：机器人)|r";
+
+MultiBot.tips.warlock.curses.agony = 
+"痛苦诅咒|cffffffff|r\n\n"..
+"|cffff0000左键点击施放此诅咒。|r\n"..
+"|cff999999(执行顺序：机器人)|r";
+
+MultiBot.tips.warlock.curses.elements = 
+"元素诅咒|cffffffff|r\n\n"..
+"|cffff0000左键点击施放此诅咒。|r\n"..
+"|cff999999(执行顺序：机器人)|r";
+
+MultiBot.tips.warlock.curses.exhaustion = 
+"疲劳诅咒|cffffffff|r\n\n"..
+"|cffff0000左键点击施放此诅咒。|r\n"..
+"|cff999999(执行顺序：机器人)|r";
+
+MultiBot.tips.warlock.curses.doom = 
+"末日诅咒|cffffffff|r\n\n"..
+"|cffff0000左键点击施放此诅咒。|r\n"..
+"|cff999999(执行顺序：机器人)|r";
+
+MultiBot.tips.warlock.curses.weakness = 
+"虚弱诅咒|cffffffff|r\n\n"..
+"|cffff0000左键点击施放此诅咒。|r\n"..
+"|cff999999(执行顺序：机器人)|r";
+
+MultiBot.tips.warlock.curses.tongues = 
+"语言诅咒|cffffffff|r\n\n"..
+"|cffff0000左键点击施放此诅咒。|r\n"..
+"|cff999999(执行顺序：机器人)|r";
+
+MultiBot.tips.spec.warlockafflipve =
+  "痛苦 – PvE|cffffffff\n"..
+  "持续伤害为主的高效专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warlockafflipvp =
+  "痛苦 – PvP|cffffffff\n"..
+  "维持压力与持续Dot输出。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warlockdemonopve =
+  "恶魔学识 – PvE|cffffffff\n"..
+  "变形与宠物配合输出。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warlockdemonopvp =
+  "恶魔学识 – PvP|cffffffff\n"..
+  "恶魔卫士与爆发搭配控制。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warlockdestrupve =
+  "毁灭 – PvE|cffffffff\n"..
+  "混乱箭与强力爆发。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warlockdestrupvp =
+  "毁灭 – PvP|cffffffff\n"..
+  "爆发与恐惧控制。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+-- Warrior
+MultiBot.tips.spec.warriorarmspve =
+  "武器 – PvE|cffffffff\n"..
+  "斩杀与爆发输出强劲。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warriorarmspvp =
+  "武器 – PvP|cffffffff\n"..
+  "致死打击与控制组合。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warriorfurypve =
+  "狂怒 – PvE|cffffffff\n"..
+  "旋风斩与怒气驱动的爆发。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warriorfurypvp =
+  "狂怒 – PvP|cffffffff\n"..
+  "续航与自我治疗增强。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warriorprotecpve =
+  "防护 – PvE|cffffffff\n"..
+  "坦克和生存能力最强专精之一。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.spec.warriorprotecpvp =
+  "防护 – PvP|cffffffff\n"..
+  "控制与耐久的PvP坦克专精。\n"..
+  "副专精将在40级解锁。|r\n\n"..
+  "|cffff0000左键点击：设置为主专精|r\n"..
+  "|cffff0000右键点击：设置为副专精|r\n"..
+  "|cff999999（执行顺序：机器人）|r";
 
 -- RTSC --
 
