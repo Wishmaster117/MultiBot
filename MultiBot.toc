@@ -3,10 +3,14 @@
 ## Title: MultiBot
 ## Notes: User Interface for Playerbot
 ## Author: Nico Löbbert
-## SavedVariablesPerCharacter: MultiBotSave
+## SavedVariablesPerCharacter: MultiBotSave, MultiBotDB
 ## SavedVariables: MultiBotGlobalSave
 
 MultiBot.lua
+MultiBotConfig.lua
+MultiBotOptions.lua
+MultiBotThrottle.lua
+
 MultiBotLanguage-deDE.lua
 MultiBotLanguage-enGB.lua
 MultiBotLanguage-enUS.lua
@@ -15,6 +19,11 @@ MultiBotLanguage-zhCN.lua
 MultiBotLanguage-koKR.lua
 MultiBotLanguage-ruRU.lua
 MultiBotLanguage-esES.lua
+Data\HunterPetFamily.lua
+Data\HunterPetList_1.lua
+Data\HunterPetList_2.lua
+Data\HunterPetList_3.lua
+Data\HunterPetList_4.lua
 MultiBotEngine.lua
 MultiBotHandler.lua
 MultiBotDeathKnight.lua
@@ -32,8 +41,9 @@ MultiBotStats.lua
 MultiBotSpell.lua
 MultiBotItem.lua
 MultiBotInit.lua
-MultiBotItemus.lua
 MultiBotIconos.lua
+MultiBotSpecUI.lua
+MultiBotItemus.lua
 MultiBotTalent.lua
 MultiBotReward.lua
 MultiBotNecronet.lua
