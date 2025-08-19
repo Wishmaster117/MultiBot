@@ -67,6 +67,9 @@ MultiBot.doDotWithTarget = function(pCommand, oArguments)
 end
 
 MultiBot.doSplit = function(pString, pPattern)
+    if not pString or pString == "" then -- Secure function if pString empty
+        return {}
+    end
 	local tResult = {}
 	local tStart = 1
 	local tFrom, tTo = string.find(pString, pPattern, tStart)
@@ -194,7 +197,7 @@ MultiBot.isUnit = function(pUnit)
 	return true
 end
 
-MultiBot.toClass = function(pClass)
+--[[MultiBot.toClass = function(pClass)
 	local pLower = string.lower(pClass)
 	local pStart = string.sub(pLower, 1, 5)
 	
@@ -222,6 +225,24 @@ MultiBot.toClass = function(pClass)
 	if(tClass == "ke" or tClass == "wr") then return "Warrior" end
 	if(pClass == "dk") then return "DeathKnight" end
 	return "Unknown"
+end]]--
+
+-- Classe refactor
+-- Sauvegarde l’ancienne version si elle existait avant refactor
+if not MultiBot._toClass_legacy and type(MultiBot.toClass) == "function" then
+  MultiBot._toClass_legacy = MultiBot.toClass
+end
+
+-- Nouvelle version avec fallback
+MultiBot.toClass = function(pClass)
+  if MultiBot.NormalizeClass then
+    local canon = MultiBot.NormalizeClass(pClass)
+    if canon then return canon end
+  end
+  if MultiBot._toClass_legacy then
+    return MultiBot._toClass_legacy(pClass)
+  end
+  return "Unknown"
 end
 
 MultiBot.toUnit = function(pName)
@@ -310,6 +331,25 @@ MultiBot.RaidPool = function(pUnit, oWho)
 		tTabs[3] = GetNumTalents(3)
 	end
 	 
+	   -- [SAFETY] tTabs doivent être numériques
+       tTabs[1] = tonumber(tTabs[1]) or 0
+       tTabs[2] = tonumber(tTabs[2]) or 0
+       tTabs[3] = tonumber(tTabs[3]) or 0
+       
+       -- [SAFETY] iLevel : toujours un nombre, même si tScore est vide ou textuel
+       local iLevel = nil
+       do
+         if type(tScore) == "number" then
+           iLevel = tScore
+           tScore = tostring(tScore)               -- on garde tScore chaîne pour l’enregistrement final
+         elseif type(tScore) == "string" then
+           -- prend le DERNIER nombre trouvé dans la chaîne (ex: "GS: 5120" -> 5120)
+           for d in string.gmatch(tScore, "(%d+)") do iLevel = tonumber(d) end
+         end
+         if not iLevel then iLevel = tonumber(tLevel) end
+         if not iLevel then iLevel = (UnitLevel and UnitLevel(pUnit)) or 0 end
+       end
+  
 	local tTabIndex = MultiBot.IF(tTabs[3] > tTabs[2] and tTabs[3] > tTabs[1], 3, MultiBot.IF(tTabs[2] > tTabs[3] and tTabs[2] > tTabs[1], 2, 1))
 	local tSpecial = MultiBot.CLEAR(MultiBot.info.talent[MultiBot.toClass(tClass) .. tTabIndex], 1)
 	

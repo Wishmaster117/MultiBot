@@ -130,6 +130,19 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 		end
 	end
 	
+    -- OFF-HEAL --
+    tFrame.addButton("OffHeal", 0, 104, "spell_nature_healingtouch", MultiBot.tips.druid.dps.offheal).setDisable()
+        .doLeft = function(pButton)
+            if (MultiBot.OnOffActionToTarget(
+                    pButton, "co +offheal,?", "co -offheal,?",
+                    pButton.getName())) then
+
+                -- Modes exclusifs
+                pButton.getButton("Dps").setDisable()
+                pButton.getButton("Heal").setDisable()
+            end
+        end
+		
 	-- ASSIST --
 	
 	pFrame.addButton("TankAssist", -120, 0, "ability_warrior_innerrage", MultiBot.tips.druid.tankAssist).setDisable()
