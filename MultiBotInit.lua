@@ -3105,7 +3105,7 @@ end
 
 -- ICONOS --
 
-MultiBot.iconos = MultiBot.newFrame(MultiBot, -860, -144, 32, 442, 884)
+--[[MultiBot.iconos = MultiBot.newFrame(MultiBot, -860, -144, 32, 442, 884)
 MultiBot.iconos.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Iconos.blp")
 MultiBot.iconos.addText("Title", "Iconos", "CENTER", -57, 429, 13)
 MultiBot.iconos.addText("Pages", "0/0", "CENTER", -57, 409, 13)
@@ -3133,6 +3133,48 @@ MultiBot.iconos.wowButton("X", -126, 862, 15, 18, 13)
 	MultiBot.iconos:Hide()
 end
 
+local tFrame = MultiBot.iconos.addFrame("Icons", -397, 807, 32)
+tFrame:Show()]]--
+
+-- ICONOS REFACTOR --
+
+-- ICONOS --
+
+MultiBot.iconos = MultiBot.newFrame(MultiBot, -860, -144, 32, 442, 884)
+MultiBot.iconos.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Iconos.blp")
+MultiBot.iconos.addText("Title", "Iconos", "CENTER", -57, 429, 13)
+MultiBot.iconos.addText("Pages", "0/0", "CENTER", -57, 409, 13)
+MultiBot.iconos.max = 1
+MultiBot.iconos.now = 1
+MultiBot.iconos:SetMovable(true)
+MultiBot.iconos:Hide()
+
+-- Bouton déplacer
+MultiBot.iconos.movButton("Move", -407, 850, 32, MultiBot.tips.move.iconos)
+
+-- Bouton page précédente
+local btnPrev = MultiBot.iconos.wowButton("<", -319, 841, 15, 18, 13)
+btnPrev.doHide()
+btnPrev.doLeft = function()
+	MultiBot.iconos.now = MultiBot.iconos.now - 1
+	MultiBot.iconos.addIcons()
+end
+
+-- Bouton page suivante
+local btnNext = MultiBot.iconos.wowButton(">", -225, 841, 15, 18, 13)
+btnNext.doHide()
+btnNext.doLeft = function()
+	MultiBot.iconos.now = MultiBot.iconos.now + 1
+	MultiBot.iconos.addIcons()
+end
+
+-- Bouton fermer
+local btnClose = MultiBot.iconos.wowButton("X", -126, 862, 15, 18, 13)
+btnClose.doLeft = function()
+	MultiBot.iconos:Hide()
+end
+
+-- Frame des icônes
 local tFrame = MultiBot.iconos.addFrame("Icons", -397, 807, 32)
 tFrame:Show()
 
