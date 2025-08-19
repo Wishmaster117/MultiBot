@@ -1897,6 +1897,46 @@ MultiBot.tips.hunter.pet.rename =
 "|cffff0000Linksklick, um umzubenennen|r\n"..
 "|cff999999(Ausführungsreihenfolge: Bot)|r";
 
+MultiBot.tips.hunter.pet.abandon =
+"Begleiter verstoßen\n"..
+"|cffffffffMit diesem Befehl könnt ihr euren Begleiter verstoßen.|r\n\n"..
+"|cffff0000Linksklick, um zu verstoßen|r\n"..
+"|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.hunter.ownbutton =
+"Jäger: %s\n"..
+"|cffffffffDieser Knopf öffnet das Begleitermenü des Jägers.|r\n\n".. 
+"|cffff0000Linksklick zum Öffnen/Schließen|r\n"..
+"|cffff0000Rechtsklick zum Verschieben|r\n".. 
+"|cff999999(Ausführungsreihenfolge: System)|r";
+
+MultiBot.tips.hunter.pet.stances =
+"Haltungsbefehle\n"..
+"|cffffffffÖffnet das Haltungsmenü des Begleiters.|r\n\n".. 
+"|cffff0000Linksklick zum Öffnen/Schließen|r\n"..
+"|cff999999(Ausführungsreihenfolge: System)|r";
+
+MultiBot.tips.hunter.pet.aggressive =
+"Aggressiv";
+
+MultiBot.tips.hunter.pet.passive =
+"Passiv";
+
+MultiBot.tips.hunter.pet.defensive =
+"Defensiv";
+
+MultiBot.tips.hunter.pet.curstance =
+"Aktuelle Haltung des Begleiters?";
+
+MultiBot.tips.hunter.pet.attack =
+"Angreifen";
+
+MultiBot.tips.hunter.pet.follow =
+"Folgen";
+
+MultiBot.tips.hunter.pet.stay =
+"Bleiben";
+
 MultiBot.tips.hunter.naspect.master =
 "Non-Combat-Buff|cffffffff\n"..
 "Diese Steuereinheit erlaubt es die Non-Combat-Buffs auszuwählen, zu aktivieren oder deaktivieren.|r\n\n"..

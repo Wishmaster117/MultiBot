@@ -1897,6 +1897,46 @@ MultiBot.tips.hunter.pet.rename =
 "|cffff0000ЛКМ — переименовать|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
+MultiBot.tips.hunter.pet.abandon =
+"Отпустить питомца\n"..
+"|cffffffffЭта команда позволяет отпустить питомца.|r\n\n"..
+"|cffff0000Левый клик – отпустить|r\n"..
+"|cff999999(Порядок выполнения: Бот)|r";
+
+MultiBot.tips.hunter.ownbutton =
+"Охотник: %s\n"..
+"|cffffffffЭта кнопка открывает меню питомца охотника.|r\n\n".. 
+"|cffff0000Левый клик – открыть/закрыть|r\n"..
+"|cffff0000Правый клик – переместить|r\n".. 
+"|cff999999(Порядок выполнения: Система)|r";
+
+MultiBot.tips.hunter.pet.stances =
+"Режимы питомца\n"..
+"|cffffffffОткрывает меню режимов питомца.|r\n\n".. 
+"|cffff0000Левый клик – открыть/закрыть|r\n"..
+"|cff999999(Порядок выполнения: Система)|r";
+
+MultiBot.tips.hunter.pet.aggressive =
+"Агрессивный";
+
+MultiBot.tips.hunter.pet.passive =
+"Пассивный";
+
+MultiBot.tips.hunter.pet.defensive =
+"Оборонительный";
+
+MultiBot.tips.hunter.pet.curstance =
+"Текущий режим питомца?";
+
+MultiBot.tips.hunter.pet.attack =
+"Атаковать";
+
+MultiBot.tips.hunter.pet.follow =
+"Следовать";
+
+MultiBot.tips.hunter.pet.stay =
+"Стоять";
+
 MultiBot.tips.hunter.naspect.master =
 "Небоевые баффы|cffffffff\n"..
 "Позволяет выбрать бафф по умолчанию вне боя.|r\n\n"..

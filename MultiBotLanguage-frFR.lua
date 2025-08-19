@@ -1912,6 +1912,46 @@ MultiBot.tips.hunter.pet.rename =
 "|cffff0000Clic gauche pour renommer|r\n"..
 "|cff999999(Ordre d’exécution : Bot)|r";
 
+MultiBot.tips.hunter.pet.abandon =
+"Renvoi du familier\n"..
+"|cffffffffAvec cette commande vous pouvez renvoyer votre familier.|r\n\n"..
+"|cffff0000Clic gauche pour renvoyer|r\n"..
+"|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.hunter.ownbutton =
+"Chasseur : %s\n"..
+"|cffffffffCe bouton ouvre le menu du familier du chasseur.|r\n\n".. 
+"|cffff0000Clic gauche pour ouvrir/fermer|r\n"..
+"|cffff0000Clic droit pour déplacer|r\n".. 
+"|cff999999(Ordre d’exécution : Système)|r";
+
+MultiBot.tips.hunter.pet.stances =
+"Comportements du familier\n"..
+"|cffffffffOuvre le menu des comportements du familier.|r\n\n".. 
+"|cffff0000Clic gauche pour ouvrir/fermer|r\n"..
+"|cff999999(Ordre d’exécution : Système)|r";
+
+MultiBot.tips.hunter.pet.aggressive =
+"Agressif";
+
+MultiBot.tips.hunter.pet.passive =
+"Passif";
+
+MultiBot.tips.hunter.pet.defensive =
+"Défensif";
+
+MultiBot.tips.hunter.pet.curstance =
+"Comportement actuel du familier ?";
+
+MultiBot.tips.hunter.pet.attack =
+"Attaque";
+
+MultiBot.tips.hunter.pet.follow =
+"Suis-moi";
+
+MultiBot.tips.hunter.pet.stay =
+"Reste";
+
 MultiBot.tips.hunter.naspect.master =
 "Buff Non-Combat|cffffffff\n"..
 "Ce contrôle vous permet de sélectionner, activer ou désactiver le buff non-combat par défaut.|r\n\n"..

@@ -37,73 +37,11 @@ tLeft.addButton("Tanker", -170, 0, "ability_warrior_shieldbash", MultiBot.tips.t
 	if(MultiBot.isTarget()) then MultiBot.ActionToGroup("@tank do attack my target") end
 end
 
---[[-- ATTACK --
-
-local tButton = tLeft.addButton("Attack", -136, 0, "Interface\\AddOns\\MultiBot\\Icons\\attack.blp", MultiBot.tips.attack.master)
-tButton.doRight = function(pButton)
-	MultiBot.ShowHideSwitch(pButton.parent.frames["Attack"])
-end
-tButton.doLeft = function(pButton)
-	if(MultiBot.isTarget()) then MultiBot.ActionToGroup("do attack my target") end
-end
-
-local tAttack = tLeft.addFrame("Attack", -138, 34)
-tAttack:Hide()
-
-local tButton = tAttack.addButton("Attack", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\attack.blp", MultiBot.tips.attack.attack)
-tButton.doRight = function(pButton)
-	MultiBot.SelectToGroupButtonWithTarget(pButton.parent.parent, "Attack", pButton.texture, "do attack my target")
-end
-tButton.doLeft = function(pButton)
-	if(MultiBot.isTarget()) then MultiBot.ActionToGroup("do attack my target") end
-end
-
-local tButton = tAttack.addButton("Ranged", 0, 30, "Interface\\AddOns\\MultiBot\\Icons\\attack_ranged.blp", MultiBot.tips.attack.ranged)
-tButton.doRight = function(pButton)
-	MultiBot.SelectToGroupButtonWithTarget(pButton.parent.parent, "Attack", pButton.texture, "@ranged do attack my target")
-end
-tButton.doLeft = function(pButton)
-	if(MultiBot.isTarget()) then MultiBot.ActionToGroup("@ranged do attack my target") end
-end
-
-local tButton = tAttack.addButton("Melee", 0, 60, "Interface\\AddOns\\MultiBot\\Icons\\attack_melee.blp", MultiBot.tips.attack.melee)
-tButton.doRight = function(pButton)
-	MultiBot.SelectToGroupButtonWithTarget(pButton.parent.parent, "Attack", pButton.texture, "@melee do attack my target")
-end
-tButton.doLeft = function(pButton)
-	if(MultiBot.isTarget()) then MultiBot.ActionToGroup("@melee do attack my target") end
-end
-
-local tButton = tAttack.addButton("Healer", 0, 90, "Interface\\AddOns\\MultiBot\\Icons\\attack_healer.blp", MultiBot.tips.attack.healer)
-tButton.doRight = function(pButton)
-	MultiBot.SelectToGroupButtonWithTarget(pButton.parent.parent, "Attack", pButton.texture, "@healer do attack my target")
-end
-tButton.doLeft = function(pButton)
-	if(MultiBot.isTarget()) then MultiBot.ActionToGroup("@healer do attack my target") end
-end
-
-local tButton = tAttack.addButton("Dps", 0, 120, "Interface\\AddOns\\MultiBot\\Icons\\attack_dps.blp", MultiBot.tips.attack.dps)
-tButton.doRight = function(pButton)
-	MultiBot.SelectToGroupButtonWithTarget(pButton.parent.parent, "Attack", pButton.texture, "@dps do attack my target")
-end
-tButton.doLeft = function(pButton)
-	if(MultiBot.isTarget()) then MultiBot.ActionToGroup("@dps do attack my target") end
-end
-
-local tButton = tAttack.addButton("Tank", 0, 150, "Interface\\AddOns\\MultiBot\\Icons\\attack_tank.blp", MultiBot.tips.attack.tank)
-tButton.doRight = function(pButton)
-	MultiBot.SelectToGroupButtonWithTarget(pButton.parent.parent, "Attack", pButton.texture, "@tank do attack my target")
-end
-tButton.doLeft = function(pButton)
-	if(MultiBot.isTarget()) then MultiBot.ActionToGroup("@tank do attack my target") end
-end]]--
-
 --  UI ATTACK REFORGED --
 function MultiBot.BuildAttackUI(tLeft)
 
   -- 1. Table
   local ATTACK_BUTTONS = {
-    -- label          icon                                                           command                           tip-key (MultiBot.tips.attack.<key>)
     { name="Attack",  icon="Interface\\AddOns\\MultiBot\\Icons\\attack.blp",         cmd="do attack my target",        tip="attack" },
     { name="Ranged",  icon="Interface\\AddOns\\MultiBot\\Icons\\attack_ranged.blp",  cmd="@ranged do attack my target",tip="ranged" },
     { name="Melee",   icon="Interface\\AddOns\\MultiBot\\Icons\\attack_melee.blp",   cmd="@melee do attack my target", tip="melee"  },
@@ -357,60 +295,9 @@ end
 --  We call it when tLeft are ready
 MultiBot.BuildFleeUI(tLeft)
 
---[[-- FORMATION --
-
-local tButton = tLeft.addButton("Format", -0, 0, "Interface\\AddOns\\MultiBot\\Icons\\formation_near.blp", MultiBot.tips.format.master)
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("formation")
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ShowHideSwitch(pButton.parent.frames["Format"])
-end
-
-local tFormat = tLeft.addFrame("Format", -2, 34)
-tFormat:Hide()
-
-tFormat.addButton("Arrow", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\formation_arrow.blp", MultiBot.tips.format.arrow)
-.doLeft = function(pButton)
-	MultiBot.SelectToGroup(pButton.parent.parent, "Format", pButton.texture, "formation arrow")
-end
-
-tFormat.addButton("Queue", 0, 30, "Interface\\AddOns\\MultiBot\\Icons\\formation_queue.blp", MultiBot.tips.format.queue)
-.doLeft = function(pButton)
-	MultiBot.SelectToGroup(pButton.parent.parent, "Format", pButton.texture, "formation queue")
-end
-
-tFormat.addButton("Near", 0, 60, "Interface\\AddOns\\MultiBot\\Icons\\formation_near.blp", MultiBot.tips.format.near)
-.doLeft = function(pButton)
-	MultiBot.SelectToGroup(pButton.parent.parent, "Format", pButton.texture, "formation near")
-end
-
-tFormat.addButton("Melee", 0, 90, "Interface\\AddOns\\MultiBot\\Icons\\formation_melee.blp", MultiBot.tips.format.melee)
-.doLeft = function(pButton)
-	MultiBot.SelectToGroup(pButton.parent.parent, "Format", pButton.texture, "formation melee")
-end
-
-tFormat.addButton("Line", 0, 120, "Interface\\AddOns\\MultiBot\\Icons\\formation_line.blp", MultiBot.tips.format.line)
-.doLeft = function(pButton)
-	MultiBot.SelectToGroup(pButton.parent.parent, "Format", pButton.texture, "formation line")
-end
-
-tFormat.addButton("Circle", 0, 150, "Interface\\AddOns\\MultiBot\\Icons\\formation_circle.blp", MultiBot.tips.format.circle)
-.doLeft = function(pButton)
-	MultiBot.SelectToGroup(pButton.parent.parent, "Format", pButton.texture, "formation circle")
-end
-
-tFormat.addButton("Chaos", 0, 180, "Interface\\AddOns\\MultiBot\\Icons\\formation_chaos.blp", MultiBot.tips.format.chaos)
-.doLeft = function(pButton)
-	MultiBot.SelectToGroup(pButton.parent.parent, "Format", pButton.texture, "formation chaos")
-end
-
-tFormat.addButton("Shield", 0, 210, "Interface\\AddOns\\MultiBot\\Icons\\formation_shield.blp", MultiBot.tips.format.shield)
-.doLeft = function(pButton)
-	MultiBot.SelectToGroup(pButton.parent.parent, "Format", pButton.texture, "formation shield")
-end]]--
 
 --  UI FORMATION REFORGED --
+
 function MultiBot.BuildFormationUI(tLeft)
   -- 1. Formation Table
   local FORMATION_BUTTONS = {
@@ -496,110 +383,6 @@ tBeast.addButton("Call", 0, 120, "ability_hunter_beastcall", MultiBot.tips.beast
 .doLeft = function(pButton)
 	MultiBot.ActionToTargetOrGroup("cast 883")
 end
-
--- CREATOR --
-
--- tLeft.addButton("Creator", -0, 0, "inv_helmet_145a", MultiBot.tips.creator.master).doHide()
--- .doLeft = function(pButton)
--- 	MultiBot.ShowHideSwitch(pButton.parent.frames["Creator"])
--- 	MultiBot.frames["MultiBar"].frames["Units"]:Hide()
--- end
--- 
--- local tCreator = tLeft.addFrame("Creator", -2, 34)
--- tCreator:Hide()
--- 
--- tCreator.addButton("Warrior", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\addclass_warrior.blp", MultiBot.tips.creator.warrior)
--- .doLeft = function(pButton)
--- 	SendChatMessage(".playerbot bot addclass warrior", "SAY")
--- end
--- 
--- tCreator.addButton("Warlock", 0, 30, "Interface\\AddOns\\MultiBot\\Icons\\addclass_warlock.blp", MultiBot.tips.creator.warlock)
--- .doLeft = function(pButton)
--- 	SendChatMessage(".playerbot bot addclass warlock", "SAY")
--- end
--- 
--- tCreator.addButton("Shaman", 0, 60, "Interface\\AddOns\\MultiBot\\Icons\\addclass_shaman.blp", MultiBot.tips.creator.shaman)
--- .doLeft = function(pButton)
--- 	SendChatMessage(".playerbot bot addclass shaman", "SAY")
--- end
--- 
--- tCreator.addButton("Rogue", 0, 90, "Interface\\AddOns\\MultiBot\\Icons\\addclass_rogue.blp", MultiBot.tips.creator.rogue)
--- .doLeft = function(pButton)
--- 	SendChatMessage(".playerbot bot addclass rogue", "SAY")
--- end
--- 
--- tCreator.addButton("Priest", 0, 120, "Interface\\AddOns\\MultiBot\\Icons\\addclass_priest.blp", MultiBot.tips.creator.priest)
--- .doLeft = function(pButton)
--- 	SendChatMessage(".playerbot bot addclass priest", "SAY")
--- end
--- 
--- tCreator.addButton("Paladin", 0, 150, "Interface\\AddOns\\MultiBot\\Icons\\addclass_paladin.blp", MultiBot.tips.creator.paladin)
--- .doLeft = function(pButton)
--- 	SendChatMessage(".playerbot bot addclass paladin", "SAY")
--- end
--- 
--- tCreator.addButton("Mage", 0, 180, "Interface\\AddOns\\MultiBot\\Icons\\addclass_mage.blp", MultiBot.tips.creator.mage)
--- .doLeft = function(pButton)
--- 	SendChatMessage(".playerbot bot addclass mage", "SAY")
--- end
--- 
--- tCreator.addButton("Hunter", 0, 210, "Interface\\AddOns\\MultiBot\\Icons\\addclass_hunter.blp", MultiBot.tips.creator.hunter)
--- .doLeft = function(pButton)
--- 	SendChatMessage(".playerbot bot addclass hunter", "SAY")
--- end
--- 
--- tCreator.addButton("Druid", 0, 240, "Interface\\AddOns\\MultiBot\\Icons\\addclass_druid.blp", MultiBot.tips.creator.druid)
--- .doLeft = function(pButton)
--- 	SendChatMessage(".playerbot bot addclass druid", "SAY")
--- end
--- 
--- tCreator.addButton("DeathKnight", 0, 270, "Interface\\AddOns\\MultiBot\\Icons\\addclass_deathknight.blp", MultiBot.tips.creator.deathknight)
--- .doLeft = function(pButton)
--- 	SendChatMessage(".playerbot bot addclass dk", "SAY")
--- end
--- 
--- tCreator.addButton("Inspect", 0, 300, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", MultiBot.tips.creator.inspect)
--- .doLeft = function(pButton)
--- 	local tName = UnitName("target")
--- 	if(tName == nil or tName == "Unknown Entity") then return SendChatMessage("I dont have a Target.", "SAY") end
--- 	InspectUnit(tName)
--- end
--- 
--- local tButton = tCreator.addButton("Init", 0, 330, "inv_misc_enggizmos_27", MultiBot.tips.creator.init)
--- tButton.doRight = function(pButton)
--- 	if(GetNumRaidMembers() > 0) then
--- 		for i = 1, GetNumRaidMembers() do
--- 			local tName = UnitName("raid" .. i)
--- 			if(MultiBot.isRoster("players", tName))	then SendChatMessage(MultiBot.doReplace(MultiBot.info.player, "NAME", tName), "SAY")
--- 			elseif(MultiBot.isRoster("members", tName)) then SendChatMessage(MultiBot.doReplace(MultiBot.info.member, "NAME", tName), "SAY")
--- 			elseif(tName ~= UnitName("player")) then SendChatMessage(".playerbot bot init=auto " .. tName, "SAY")
--- 			end
--- 		end
--- 		
--- 		return
--- 	end
--- 	
--- 	if(GetNumPartyMembers() > 0) then
--- 		for i = 1, GetNumPartyMembers() do
--- 			local tName = UnitName("party" .. i)
--- 			if(MultiBot.isRoster("players", tName))	then SendChatMessage(MultiBot.doReplace(MultiBot.info.player, "NAME", tName), "SAY")
--- 			elseif(MultiBot.isRoster("members", tName)) then SendChatMessage(MultiBot.doReplace(MultiBot.info.member, "NAME", tName), "SAY")
--- 			elseif(tName ~= UnitName("player")) then SendChatMessage(".playerbot bot init=auto " .. tName, "SAY")
--- 			end
--- 		end
--- 		
--- 		return
--- 	end
--- 	
--- 	SendChatMessage(MultiBot.info.group, "SAY")
--- end
--- tButton.doLeft = function(pButton)
--- 	local tName = UnitName("target")
--- 	if(tName == nil or tName == "Unknown Entity") then return SendChatMessage(MultiBot.info.target, "SAY") end
--- 	if(MultiBot.isRoster("players", tName)) then return SendChatMessage(MultiBot.info.players, "SAY") end
--- 	if(MultiBot.isRoster("members", tName)) then return SendChatMessage(MultiBot.info.members, "SAY") end
--- 	SendChatMessage(".playerbot bot init=auto " .. tName, "SAY")
--- end
 
 --  CREATOR refactored --
 local GENDER_BUTTONS = {
@@ -913,98 +696,6 @@ btnAlliance.doLeft  = function() SendChatMessage(".playerbot bot add *",    "SAY
 
 local tControl = tUnits.addFrame("Control", -2, 0)
 tControl:Show()
-
---[[-- UNITS:FILTER --
-
-local tButton = tControl.addButton("Filter", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", MultiBot.tips.units.filter)
-tButton.doRight = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent, "Filter", "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp")
-	tButton.doLeft(tButton, nil, "none")
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ShowHideSwitch(pButton.parent.frames["Filter"])
-end
-
-local tFilter = tControl.addFrame("Filter", -30, 2)
-tFilter:Hide()
-
-tFilter.addButton("DeathKnight", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_deathknight.blp", MultiBot.tips.units.deathknight)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Filter", pButton.texture)
-	tButton.doLeft(tButton, nil, "DeathKnight")
-end
-
-tFilter.addButton("Druid", -26, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_druid.blp", MultiBot.tips.units.druid)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Filter", pButton.texture)
-	tButton.doLeft(tButton, nil, "Druid")
-end
-
-tFilter.addButton("Hunter", -52, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_hunter.blp", MultiBot.tips.units.hunter)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Filter", pButton.texture)
-	tButton.doLeft(tButton, nil, "Hunter")
-end
-
-tFilter.addButton("Mage", -78, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_mage.blp", MultiBot.tips.units.mage)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Filter", pButton.texture)
-	tButton.doLeft(tButton, nil, "Mage")
-end
-
-tFilter.addButton("Paladin", -104, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_paladin.blp", MultiBot.tips.units.paladin)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Filter", pButton.texture)
-	tButton.doLeft(tButton, nil, "Paladin")
-end
-
-tFilter.addButton("Priest", -130, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_priest.blp", MultiBot.tips.units.priest)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Filter", pButton.texture)
-	tButton.doLeft(tButton, nil, "Priest")
-end
-
-tFilter.addButton("Rogue", -156, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_rogue.blp", MultiBot.tips.units.rogue)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Filter", pButton.texture)
-	tButton.doLeft(tButton, nil, "Rogue")
-end
-
-tFilter.addButton("Shaman", -182, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_shaman.blp", MultiBot.tips.units.shaman)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Filter", pButton.texture)
-	tButton.doLeft(tButton, nil, "Shaman")
-end
-
-tFilter.addButton("Warlock", -208, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_warlock.blp", MultiBot.tips.units.warlock)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Filter", pButton.texture)
-	tButton.doLeft(tButton, nil, "Warlock")
-end
-
-tFilter.addButton("Warrior", -234, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_warrior.blp", MultiBot.tips.units.warrior)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Filter", pButton.texture)
-	tButton.doLeft(tButton, nil, "Warrior")
-end
-
-tFilter.addButton("None", -260, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", MultiBot.tips.units.none)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Filter", pButton.texture)
-	tButton.doLeft(tButton, nil, "none")
-end]]--
 
 -- UNITS:FILTER REFACTORED --
 function MultiBot.BuildFilterUI(tControl)
@@ -1420,41 +1111,6 @@ tMain.addButton("Beast", 0, 170, "ability_mount_swiftredwindrider", MultiBot.tip
 	end
 end
 
---[[
-local tButton = tMain.addButton("Language", 0, 34, "Interface\\AddOns\\MultiBot\\Icons\\language_none.blp", MultiBot.tips.main.lang.master).setDisable()
-tButton.doRight = function(pButton)
-	MultiBot.auto.language = MultiBot.OnOffSwitch(pButton) == false
-end
-tButton.doLeft = function(pButton)
-	if(MultiBot.auto.language == true) then return SendChatMessage(MultiBot.info.language, "SAY") end
-	MultiBot.ShowHideSwitch(pButton.parent.frames["Language"])
-end
-
-local tFrame = tMain.addFrame("Language", -36, 36)
-tFrame:Hide()
-
-tFrame.addButton("deDE", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\language_deDE.blp", MultiBot.tips.main.lang.deDE)
-.doLeft = function(pButton)
-	MultiBot.Select(pButton.parent.parent, "Language", pButton.texture)
-	MultiBot.doSlash("/reload")
-	MultiBot.language = "deDE"
-end
-
-tFrame.addButton("enGB", -30, 0, "Interface\\AddOns\\MultiBot\\Icons\\language_enGB.blp", MultiBot.tips.main.lang.enGB)
-.doLeft = function(pButton)
-	MultiBot.Select(pButton.parent.parent, "Language", pButton.texture)
-	MultiBot.doSlash("/reload")
-	MultiBot.language = "enGB"
-end
-
-tFrame.addButton("None", -60, 0, "Interface\\AddOns\\MultiBot\\Icons\\language_none.blp", MultiBot.tips.main.lang.none)
-.doLeft = function(pButton)
-	MultiBot.Select(pButton.parent.parent, "Language", pButton.texture)
-	MultiBot.doSlash("/reload")
-	MultiBot.language = "none"
-end
-]]--
-
 tMain.addButton("Expand", 0, 204, "Interface\\AddOns\\MultiBot\\Icons\\command_follow.blp", MultiBot.tips.main.expand).setDisable()
 .doLeft = function(pButton)
 	if(MultiBot.OnOffSwitch(pButton)) then
@@ -1548,153 +1204,6 @@ tBtnOptions.doLeft = function(pButton)
     if tex and tex.SetDesaturated then tex:SetDesaturated(not opened) end
   end
 end
-
---[[-- GAMEMASTER --
-
-local tButton = tMultiBar.addButton("Masters", 38, 0, "mail_gmicon", MultiBot.tips.game.master).doHide()
-tButton.doRight = function(pButton)
-	MultiBot.doSlash("/MultiBot", "")
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ShowHideSwitch(pButton.parent.frames["Masters"])
-end
-
-local tMasters = tMultiBar.addFrame("Masters", 36, 38)
-tMasters:Hide()
-
-tMasters.addButton("NecroNet", 0, 0, "achievement_bg_xkills_avgraveyard", MultiBot.tips.game.necronet).setDisable()
-.doLeft = function(pButton)
-	if(pButton.state) then
-		MultiBot.necronet.state = false
-		for key, value in pairs(MultiBot.necronet.buttons) do value:Hide() end
-		pButton.setDisable()
-	else
-		MultiBot.necronet.cont = 0
-		MultiBot.necronet.area = 0
-		MultiBot.necronet.zone = 0
-		MultiBot.necronet.state = true
-		pButton.setEnable()
-	end
-end
-
-tMasters.addButton("Portal", 0, 34, "inv_box_02", MultiBot.tips.game.portal)
-.doLeft = function(pButton)
-	MultiBot.ShowHideSwitch(pButton.parent.frames["Portal"])
-end
-
-local tPortal = tMasters.addFrame("Portal", 30, 36)
-tPortal:Hide()
-
-local tButton = tPortal.addButton("Red", 0, 0, "inv_jewelcrafting_gem_16", MultiBot.doReplace(MultiBot.tips.game.memory, "ABOUT", MultiBot.info.location)).setDisable()
-tButton.goMap = ""
-tButton.goX = 0
-tButton.goY = 0
-tButton.goZ = 0
-
-tButton.doRight = function(pButton)
-	if(pButton.state == false) then return SendChatMessage(MultiBot.info.itlocation, "SAY") end
-	pButton.tip = MultiBot.doReplace(MultiBot.tips.game.memory, "ABOUT", MultiBot.info.location)
-	pButton.setDisable()
-end
-tButton.doLeft = function(pButton)
-	local tPlayer = MultiBot.getBot(UnitName("player"))
-	if(tPlayer.waitFor == nil) then tPlayer.waitFor = "" end
-	if(tPlayer.waitFor ~= "") then return SendChatMessage(MultiBot.info.saving, "SAY") end
-	if(pButton.state) then return SendChatMessage(".go xyz " .. pButton.goX .. " " .. pButton.goY .. " " .. pButton.goZ .. " " .. pButton.goMap, "SAY")	end
-	tPlayer.memory = pButton
-	tPlayer.waitFor = "COORDS"
-	SendChatMessage(".gps", "SAY")
-end
-
-local tButton = tPortal.addButton("Green", 30, 0, "inv_jewelcrafting_gem_13", MultiBot.doReplace(MultiBot.tips.game.memory, "ABOUT", MultiBot.info.location)).setDisable()
-tButton.goMap = ""
-tButton.goX = 0
-tButton.goY = 0
-tButton.goZ = 0
-
-tButton.doRight = function(pButton)
-	if(pButton.state == false) then return SendChatMessage(MultiBot.info.itlocation, "SAY") end
-	pButton.tip = MultiBot.doReplace(MultiBot.tips.game.memory, "ABOUT", MultiBot.info.location)
-	pButton.setDisable()
-end
-tButton.doLeft = function(pButton)
-	local tPlayer = MultiBot.getBot(UnitName("player"))
-	if(tPlayer.waitFor == nil) then tPlayer.waitFor = "" end
-	if(tPlayer.waitFor ~= "") then return SendChatMessage(MultiBot.info.saving, "SAY") end
-	if(pButton.state) then return SendChatMessage(".go xyz " .. pButton.goX .. " " .. pButton.goY .. " " .. pButton.goZ .. " " .. pButton.goMap, "SAY")	end
-	tPlayer.memory = pButton
-	tPlayer.waitFor = "COORDS"
-	SendChatMessage(".gps", "SAY")
-end
-
-local tButton = tPortal.addButton("Blue", 60, 0, "inv_jewelcrafting_gem_17", MultiBot.doReplace(MultiBot.tips.game.memory, "ABOUT", MultiBot.info.location)).setDisable()
-tButton.goMap = ""
-tButton.goX = 0
-tButton.goY = 0
-tButton.goZ = 0
-
-tButton.doRight = function(pButton)
-	if(pButton.state == false) then return SendChatMessage(MultiBot.info.itlocation, "SAY") end
-	pButton.tip = MultiBot.doReplace(MultiBot.tips.game.memory, "ABOUT", MultiBot.info.location)
-	pButton.setDisable()
-end
-tButton.doLeft = function(pButton)
-	local tPlayer = MultiBot.getBot(UnitName("player"))
-	if(tPlayer.waitFor == nil) then tPlayer.waitFor = "" end
-	if(tPlayer.waitFor ~= "") then return SendChatMessage(MultiBot.info.saving, "SAY") end
-	if(pButton.state) then return SendChatMessage(".go xyz " .. pButton.goX .. " " .. pButton.goY .. " " .. pButton.goZ .. " " .. pButton.goMap, "SAY")	end
-	tPlayer.memory = pButton
-	tPlayer.waitFor = "COORDS"
-	SendChatMessage(".gps", "SAY")
-end
-
-tMasters.addButton("Itemus", 0, 68, "inv_box_01", MultiBot.tips.game.itemus)
-.doLeft = function(pButton)
-	if(MultiBot.ShowHideSwitch(MultiBot.itemus)) then
-		MultiBot.itemus.addItems()
-	end
-end
-
-tMasters.addButton("Iconos", 0, 102, "inv_mask_01", MultiBot.tips.game.iconos)
-.doLeft = function(pButton)
-	if(MultiBot.ShowHideSwitch(MultiBot.iconos)) then
-		MultiBot.iconos.addIcons()
-	end
-end
-
-tMasters.addButton("Summon", 0, 136, "spell_holy_prayerofspirit", MultiBot.tips.game.summon)
-.doLeft = function(pButton)
-	MultiBot.doDotWithTarget(".summon")
-end
-
-tMasters.addButton("Appear", 0, 170, "spell_holy_divinespirit", MultiBot.tips.game.appear)
-.doLeft = function(pButton)
-	MultiBot.doDotWithTarget(".appear")
-end
-
--- DELETE SAVED VARIABLES --
-StaticPopupDialogs["MULTIBOT_DELETE_SV"] = {
-    text = MultiBot.tips.game.delsvwarning,
-    button1 = YES,
-    button2 = NO,
-    OnAccept = function()
-        if wipe then
-            wipe(MultiBotGlobalSave)
-        else
-            for k in pairs(MultiBotGlobalSave) do MultiBotGlobalSave[k] = nil end
-        end
-        ReloadUI()
-    end,
-    timeout = 0,
-    whileDead = true,
-    hideOnEscape = true,
-}
-
-tMasters.addButton("DelSV", 0, 204, "ability_golemstormbolt", MultiBot.tips.game.delsv, "ActionButtonTemplate")
-
-.doLeft = function()
-    StaticPopup_Show("MULTIBOT_DELETE_SV")
-end]]--
 
 --  GAMEMASTER REFORGED --
 function MultiBot.BuildGmUI(tMultiBar)
@@ -5530,6 +5039,590 @@ tButton.doLeft = function(pButton)
 		pButton.state = true
 	end
 end
+
+-- HUNTER PETS MENU --
+if not MultiBot.InitHunterQuick then
+  function MultiBot.InitHunterQuick()
+    local MBH = MultiBot.HunterQuick or {}
+    MultiBot.HunterQuick = MBH
+
+    -- Container global
+    MBH.frame = MultiBot.addFrame("HunterQuick", -420, 240, 36, 36*8, 36*4)
+    MBH.frame:SetMovable(true)
+    MBH.frame:EnableMouse(true)
+    MBH.frame:RegisterForDrag("RightButton")
+    MBH.frame:SetScript("OnDragStart", MBH.frame.StartMoving)
+    MBH.frame:SetScript("OnDragStop" , MBH.frame.StopMovingOrSizing)
+    MBH.frame:Hide()
+
+    -- Plusieurs bots chasseurs
+    MBH.entries, MBH.COL_GAP = {}, 40   -- espacement horizontal entre chasseurs
+
+    local function SanitizeName(n)
+      return (tostring(n):gsub("[^%w_]", "_"))
+    end
+
+    function MBH:BuildForHunter(hName)
+      local san = SanitizeName(hName)
+      -- On mets un conteneur par chasseur
+      local row = self.frame.addFrame("HunterQuickRow_"..san, -36*7, 0, 36, 36*8, 36*3)
+      row.owner = hName
+
+      -- Un Bouton par chasseur avec son nom
+      row.mainBtn = row.addButton("HunterQuickMain_"..san, 0, 0,
+          "Interface\\AddOns\\MultiBot\\Icons\\class_hunter.blp",
+          MultiBot.tips.hunter.ownbutton:format(hName))
+      row.mainBtn:SetFrameStrata("HIGH")
+      row.mainBtn:RegisterForDrag("RightButton")
+      row.mainBtn:SetScript("OnDragStart", function() self.frame:StartMoving() end)
+      row.mainBtn:SetScript("OnDragStop" , function() self.frame:StopMovingOrSizing() end)
+
+      -- Mini menu 2 icônes
+      row.vmenu = row.addFrame("HunterQuickMenu_"..san, 0, 0, 36, 36, 36*3)
+      row.vmenu:Hide()
+      row.modesBtn = row.vmenu.addButton("HunterModesBtn_"..san, 0, 36, "ability_hunter_beasttaming", MultiBot.tips.hunter.pet.stances)
+      row.utilsBtn = row.vmenu.addButton("HunterUtilsBtn_"..san, 0, 72, "trade_engineering", "Pet Utilities")
+
+      -- Strips
+      row.modesStrip = row.addFrame("HunterQuickModesStrip_"..san, 0, 0, 36, 36*7, 36)
+      row.utilsStrip = row.addFrame("HunterQuickUtilsStrip_"..san, 0, 0, 36, 36*5, 36)
+      row.modesStrip:ClearAllPoints()
+      row.modesStrip:SetPoint("BOTTOMLEFT", row.modesBtn, "BOTTOMRIGHT", 0, 0)
+      row.modesStrip:SetWidth(36*7); row.modesStrip:SetHeight(36)
+      row.utilsStrip:ClearAllPoints()
+      row.utilsStrip:SetPoint("BOTTOMLEFT", row.utilsBtn, "BOTTOMRIGHT", 0, 0)
+      row.utilsStrip:SetWidth(36*5); row.utilsStrip:SetHeight(36)
+      row.modesStrip:EnableMouse(false); row.utilsStrip:EnableMouse(false)
+      row.modesStrip:Hide(); row.utilsStrip:Hide()
+
+      -- Toggle du mini menu
+      row.mainBtn.doLeft = function()
+	  MBH:CloseAllExcept(row)
+        if row.vmenu:IsShown() then
+          row.vmenu:Hide()
+          row.modesStrip:Hide()
+          row.utilsStrip:Hide()
+        else
+          row.vmenu:Show()
+        end
+      end
+
+      -- Pet Modes 7 boutons
+      local labels_and_tips = {
+        { key="aggressive", tip=MultiBot.tips.hunter.pet.aggressive },
+        { key="passive"   , tip=MultiBot.tips.hunter.pet.passive   },
+        { key="defensive" , tip=MultiBot.tips.hunter.pet.defensive },
+        { key="stance"    , tip=MultiBot.tips.hunter.pet.curstance },
+        { key="attack"    , tip=MultiBot.tips.hunter.pet.attack },
+        { key="follow"    , tip=MultiBot.tips.hunter.pet.follow },
+        { key="stay"      , tip=MultiBot.tips.hunter.pet.stay },
+      }
+      local PET_MODE_ICONS = {
+        aggressive = "ability_Racial_BloodRage",
+        passive    = "ABILITY_SEAL",
+        defensive  = "Ability_Defend",
+        stance     = "Temp",
+        attack     = "Ability_GhoulFrenzy",
+        follow     = "ability_tracking",
+        stay       = "Spell_Nature_TimeStop",
+      }
+      for i, def in ipairs(labels_and_tips) do
+        local px = -36 * (7 - i)
+        local tex = PET_MODE_ICONS[def.key] or "inv_misc_questionmark"
+        local b = row.modesStrip.addButton("HunterQuickMode_"..san.."_"..i, px, 0, tex, def.tip)
+        b.doLeft = function()
+          SendChatMessage("pet "..def.key, "WHISPER", nil, hName)
+        end
+      end
+      row.modesBtn.doLeft = function()
+	  MBH:CloseAllExcept(row)
+        if row.modesStrip:IsShown() then
+          row.modesStrip:Hide()
+        else
+          row.modesStrip:Show()
+          row.utilsStrip:Hide()
+        end
+      end
+
+      -- Utilitaires Pets
+      local petCmdList = {
+        {"Name",    "tame name %s",    "inv_scroll_11",            MultiBot.tips.hunter.pet.name},
+        {"Id",      "tame id %s",      "inv_scroll_14",            MultiBot.tips.hunter.pet.id},
+        {"Family",  "tame family %s",  "inv_misc_enggizmos_03",    MultiBot.tips.hunter.pet.family},
+        {"Rename",  "tame rename %s",  "inv_scroll_01",            MultiBot.tips.hunter.pet.rename},
+        {"Abandon", "tame abandon",    "spell_nature_spiritwolf",  MultiBot.tips.hunter.pet.abandon},
+      }
+      for i, v in ipairs(petCmdList) do
+        local label, fmt, icon, tip = v[1], v[2], v[3], v[4]
+        local px = -36 * (5 - i)
+        local ub = row.utilsStrip.addButton("HunterQuickUtil_"..san.."_"..i, px, 0, icon, tip)
+        ub.doLeft = function()
+          if label == "Rename" then
+            MBH:ShowPrompt(fmt, hName, MultiBot.info.hunterpetnewname)
+            row.utilsStrip:Hide()
+          elseif label == "Id" then
+            MBH:ShowPrompt(fmt, hName, MultiBot.info.hunterpetid)
+            row.utilsStrip:Hide()
+          elseif label == "Family" then
+            MBH:ShowFamilyFrame(hName)
+            row.utilsStrip:Hide()
+          elseif label == "Abandon" then
+            SendChatMessage(fmt, "WHISPER", nil, hName)
+            row.utilsStrip:Hide()
+          else
+            MBH:EnsureSearchFrame()
+            local f = MBH.SEARCH_FRAME
+            f.TargetName = hName
+            f:Show()
+            f.EditBox:SetText("")
+            f.EditBox:SetFocus()
+            f:Refresh()
+            row.utilsStrip:Hide()
+          end
+        end
+      end
+      row.utilsBtn.doLeft = function()
+	  MBH:CloseAllExcept(row)
+        if row.utilsStrip:IsShown() then
+          row.utilsStrip:Hide()
+        else
+          row.utilsStrip:Show()
+          row.modesStrip:Hide()
+        end
+      end
+
+      self.entries[hName] = row
+    end
+
+    function MBH:CollectHunterBots()
+      local out = {}
+      if GetNumRaidMembers and GetNumRaidMembers() > 0 then
+        for i=1, GetNumRaidMembers() do
+          local unit = "raid"..i
+          local name = UnitName(unit)
+          local _, cls = UnitClass(unit)
+          if name and cls=="HUNTER" and MultiBot.getBot and (MultiBot.getBot(name) ~= nil or MultiBot.getBot(unit) ~= nil) then
+            table.insert(out, name)
+          end
+        end
+      else
+        if GetNumPartyMembers then
+          for i=1, GetNumPartyMembers() do
+            local unit = "party"..i
+            local name = UnitName(unit)
+            local _, cls = UnitClass(unit)
+            if name and cls=="HUNTER" and MultiBot.getBot and (MultiBot.getBot(name) ~= nil or MultiBot.getBot(unit) ~= nil) then
+              table.insert(out, name)
+            end
+          end
+        end
+      end
+      table.sort(out)
+      return out
+    end
+
+    function MBH:Rebuild()
+      local desired = self:CollectHunterBots()
+      
+	  for name, row in pairs(self.entries) do
+        local found = false
+        for _, n in ipairs(desired) do if n==name then found=true; break end end
+        if not found then
+          row:Hide()
+          self.entries[name] = nil
+        end
+      end
+
+      for _, name in ipairs(desired) do
+        if not self.entries[name] then
+          self:BuildForHunter(name)
+        end
+      end
+
+      for idx, name in ipairs(desired) do
+        local row = self.entries[name]
+        if row then
+          row:ClearAllPoints()
+          row:SetPoint("BOTTOMRIGHT", self.frame, "BOTTOMRIGHT", -36*7 + (idx-1)*self.COL_GAP, 0)
+          row:Show()
+        end
+      end
+
+      if #desired > 0 then self.frame:Show() else self.frame:Hide() end
+    end
+
+    function MBH:CloseAllExcept(keepRow)
+      for _, r in pairs(self.entries) do
+        if r ~= keepRow then
+          if r.vmenu and r.vmenu:IsShown() then r.vmenu:Hide() end
+          if r.modesStrip and r.modesStrip:IsShown() then r.modesStrip:Hide() end
+          if r.utilsStrip and r.utilsStrip:IsShown() then r.utilsStrip:Hide() end
+        end
+      end
+    end
+
+    function MBH:FindHunter()
+      if UnitExists("target") then
+        local _, cls = UnitClass("target")
+        if cls == "HUNTER" then
+          local tn = UnitName("target")
+          if tn and tn ~= "Unknown Entity" then return tn end
+        end
+      end
+      local i = MultiBot.index and MultiBot.index.classes
+      if i then
+        local p = i.players and i.players["Hunter"]
+        if p and #p > 0 then return p[1] end
+        local m = i.members and i.members["Hunter"]
+        if m and #m > 0 then return m[1] end
+        local f = i.friends and i.friends["Hunter"]
+        if f and #f > 0 then return f[1] end
+      end
+      return nil
+    end
+
+    -- Prompt
+    function MBH:ShowPrompt(fmt, targetName, title)
+      local P = self.PROMPT
+      if not P then
+        P = CreateFrame("Frame", "MBHunterPrompt", UIParent)
+        self.PROMPT = P
+        P:SetSize(260, 90)
+        P:SetPoint("CENTER")
+        P:SetBackdrop({
+          bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
+          edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
+          tile=true, tileSize=16, edgeSize=16,
+          insets={left=4,right=4,top=4,bottom=4}
+        })
+        P:SetBackdropColor(0,0,0,0.9)
+        P:SetFrameStrata("DIALOG")
+        P:SetMovable(true); P:EnableMouse(true)
+        P:RegisterForDrag("LeftButton")
+        P:SetScript("OnDragStart", P.StartMoving)
+        P:SetScript("OnDragStop" , P.StopMovingOrSizing)
+        local btnClose = CreateFrame("Button", nil, P, "UIPanelCloseButton")
+        btnClose:SetPoint("TOPRIGHT", -5, -5)
+        btnClose:SetScript("OnClick", function() P:Hide() end)
+        local e = CreateFrame("EditBox", nil, P, "InputBoxTemplate")
+        e:SetAutoFocus(true); e:SetSize(200,20); e:SetTextColor(1,1,1)
+        e:SetPoint("TOP", 0, -30)
+        e:SetScript("OnEscapePressed", function() P:Hide() end)
+        P.EditBox = e
+        local ok = CreateFrame("Button", nil, P, "UIPanelButtonTemplate")
+        ok:SetSize(60,20); ok:SetPoint("BOTTOM",0,10); ok:SetText("OK")
+        P.OkBtn = ok
+        P.Title = P:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+        P.Title:SetPoint("TOP", 0, -10)
+      end
+      P.Title:SetText(title or MultiBot.info.hunterpeteditentervalue)
+      P:Show()
+      P.EditBox:SetText(MultiBot.info.hunterpetentersomething)
+      P.EditBox:SetFocus()
+      P.OkBtn:SetScript("OnClick", function()
+        local text = P.EditBox:GetText()
+        if text and text~="" and targetName then
+          local cmd = string.format(fmt, text)
+          SendChatMessage(cmd, "WHISPER", nil, targetName)
+        end
+        P:Hide()
+      end)
+    end
+
+    -- Fenêtre list créatures + recherche + preview 3D
+    function MBH:EnsureSearchFrame()
+      if self.SEARCH_FRAME then return end
+      local f = CreateFrame("Frame", "MBHunterPetSearch", UIParent)
+      self.SEARCH_FRAME = f
+
+      local title = f:CreateFontString(nil,"ARTWORK","GameFontNormalLarge")
+      title:SetPoint("TOP",0,-10)
+      title:SetText(MultiBot.info.hunterpetcreaturelist)
+
+      f:SetSize(340,340)
+      f:SetPoint("CENTER")
+      f:SetBackdrop({
+        bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
+        edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
+        tile=true, tileSize=16, edgeSize=16,
+        insets={left=4,right=4,top=4,bottom=4}
+      })
+      f:SetBackdropColor(0,0,0,0.9)
+      f:SetMovable(true); f:EnableMouse(true)
+      f:RegisterForDrag("LeftButton")
+      f:SetScript("OnDragStart", f.StartMoving)
+      f:SetScript("OnDragStop" , f.StopMovingOrSizing)
+      CreateFrame("Button", nil, f, "UIPanelCloseButton"):SetPoint("TOPRIGHT",-5,-5)
+
+      local e = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+      e:SetAutoFocus(true)
+      e:SetSize(200,20)
+      e:SetPoint("TOP", title, "BOTTOM", 0, -8)
+      f.EditBox = e
+
+      local PREVIEW_WIDTH, PREVIEW_HEIGHT = 180, 260
+      local BLANK_MODEL   = "Interface\\Buttons\\WHITE8x8"
+      local PREVIEW_MODEL_SCALE = 0.6
+      local PREVIEW_FACING = -math.pi/12
+      local PREVIEW_X_OFFSET, PREVIEW_Y_OFFSET = 100, 20
+      local CURRENT_ENTRY = nil
+
+      local function GetPreviewFrame()
+        if MBHunterPetPreview then return MBHunterPetPreview end
+        local p = CreateFrame("PlayerModel","MBHunterPetPreview",UIParent)
+        p:SetSize(PREVIEW_WIDTH, PREVIEW_HEIGHT)
+        p:SetBackdrop({
+          bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
+          edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
+          tile=true, tileSize=16, edgeSize=16,
+          insets={left=4,right=4,top=4,bottom=4}})
+        p:SetBackdropColor(0,0,0,0.85)
+        p:SetFrameStrata("DIALOG")
+        p:SetMovable(true); p:EnableMouse(true)
+        p:RegisterForDrag("LeftButton")
+        p:SetScript("OnDragStart", p.StartMoving)
+        p:SetScript("OnDragStop" , p.StopMovingOrSizing)
+        CreateFrame("Button",nil,p,"UIPanelCloseButton"):SetPoint("TOPRIGHT",-5,-5)
+        return p
+      end
+
+      local function LoadCreatureToPreview(entryId)
+        local pv = GetPreviewFrame()
+        if pv:IsShown() and CURRENT_ENTRY==entryId then pv:Hide(); CURRENT_ENTRY=nil; return end
+        CURRENT_ENTRY = entryId
+        local cx,cy = GetCursorPosition(); local scale = UIParent:GetEffectiveScale()
+        pv:ClearAllPoints()
+        pv:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",
+          cx/scale+PREVIEW_X_OFFSET, cy/scale+PREVIEW_Y_OFFSET)
+        pv:SetUnit("none"); pv:ClearModel(); pv:SetModel(BLANK_MODEL); pv:Show()
+        pv:SetScript("OnUpdate", function(self)
+          self:SetScript("OnUpdate",nil)
+          self:SetModelScale(PREVIEW_MODEL_SCALE)
+          self:SetFacing(PREVIEW_FACING)
+          self:SetCreature(entryId)
+        end)
+      end
+
+      local ROW_H, VISIBLE_ROWS = 18, 17
+      local OFFSET = 0
+      local RESULTS = {}
+
+      local sf = CreateFrame("ScrollFrame","MBHunterPetScroll",f,"UIPanelScrollFrameTemplate")
+      sf:SetPoint("TOPLEFT",10,-60)
+      sf:SetPoint("BOTTOMRIGHT",-30,10)
+      local content = CreateFrame("Frame",nil,sf) ; content:SetSize(1,1)
+      sf:SetScrollChild(content)
+
+      f.Rows = {}
+      for i = 1, VISIBLE_ROWS do
+        local row = CreateFrame("Button", nil, content)
+        row:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
+        row:SetHeight(ROW_H)
+        row:SetWidth(content:GetWidth())
+        row:SetPoint("TOPLEFT", 0, -(i-1)*ROW_H)
+
+        row.text = row:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+        row.text:SetPoint("LEFT",2,0)
+
+        local btn = CreateFrame("Button", nil, row)
+        btn:SetSize(16,16)
+        btn:SetPoint("RIGHT",-22,0)
+        btn:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-UP")
+        btn:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-DOWN")
+        btn:SetHighlightTexture("Interface\\Buttons\\UI-PlusButton-Hilight")
+        row.previewBtn = btn
+
+        f.Rows[i] = row
+      end
+
+      local function localeField()
+        local l = GetLocale():lower()
+        if     l=="frfr" then return "name_fr"
+        elseif l=="dede" then return "name_de"
+        elseif l=="eses" then return "name_es"
+        elseif l=="esmx" then return "name_esmx"
+        elseif l=="kokr" then return "name_ko"
+        elseif l=="zhtw" then return "name_zhtw"
+        elseif l=="zhcn" then return "name_zhcn"
+        elseif l=="ruru" then return "name_ru"
+        else return "name_en" end
+      end
+
+      function f:RefreshRows()
+        for i = 1, VISIBLE_ROWS do
+          local idx  = i + OFFSET
+          local data = RESULTS[idx]
+          local row  = self.Rows[i]
+          local LIST_W = 320
+
+          row:ClearAllPoints()
+          row:SetPoint("TOPLEFT", 0, -((i-1 + OFFSET) * ROW_H))
+          row:SetWidth(LIST_W)
+
+          if data then
+            row.text:SetText(
+              string.format("|cffffd200%-24s|r |cff888888[%s]|r",
+              data.name, MultiBot.PET_FAMILY[data.family] or "?"))
+
+            row:SetScript("OnClick", function()
+              if f.TargetName then
+                SendChatMessage(("tame id %d"):format(data.id), "WHISPER", nil, f.TargetName)
+              end
+              f:Hide()
+            end)
+
+            row.previewBtn:SetScript("OnClick", function()
+              LoadCreatureToPreview(data.id)
+            end)
+
+            row:Show()
+          else
+            row:Hide()
+          end
+        end
+      end
+
+      sf:SetScript("OnVerticalScroll", function(_,delta)
+        local newOffset = math.floor(sf:GetVerticalScroll()/ROW_H + 0.5)
+        if newOffset ~= OFFSET then OFFSET = newOffset; f:RefreshRows() end
+      end)
+
+      function f:Refresh()
+        wipe(RESULTS)
+        local filter = (e:GetText() or ""):lower()
+        local field  = localeField()
+
+        for id,info in pairs(MultiBot.PET_DATA) do
+          local name = info[field] or info.name_en
+          if name:lower():find(filter,1,true) then
+            RESULTS[#RESULTS+1] = {id=id,name=name,family=info.family,display=info.display}
+          end
+        end
+        table.sort(RESULTS,function(a,b) return a.name<b.name end)
+
+        content:SetHeight(#RESULTS * ROW_H)
+        OFFSET = 0
+        sf:SetVerticalScroll(0)
+        f:RefreshRows()
+      end
+      e:SetScript("OnTextChanged", function() f:Refresh() end)
+    end
+
+    -- Fenêtre liste par familles
+    function MBH:ShowFamilyFrame(targetName)
+      local ff = self.FAMILY_FRAME
+      if not ff then
+        ff = CreateFrame("Frame", "MBHunterPetFamily", UIParent)
+        self.FAMILY_FRAME = ff
+        ff:SetSize(220, 300)
+        ff:SetPoint("CENTER")
+        ff:SetBackdrop({
+          bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
+          edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
+          tile=true, tileSize=16, edgeSize=16,
+          insets={left=4, right=4, top=4, bottom=4}
+        })
+        ff:SetBackdropColor(0,0,0,0.9)
+        ff:EnableMouse(true); ff:SetMovable(true)
+        ff:RegisterForDrag("LeftButton")
+        ff:SetScript("OnDragStart", ff.StartMoving)
+        ff:SetScript("OnDragStop" , ff.StopMovingOrSizing)
+
+        local title = ff:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+        title:SetPoint("TOP", 0, -10)
+        title:SetText(MultiBot.info.hunterpetrandomfamily)
+
+        local close = CreateFrame("Button", nil, ff, "UIPanelCloseButton")
+        close:SetPoint("TOPRIGHT", -5, -5)
+
+        local sf = CreateFrame("ScrollFrame", "MBHunterFamilyScroll", ff, "UIPanelScrollFrameTemplate")
+        sf:SetPoint("TOPLEFT", 8, -40)
+        sf:SetPoint("BOTTOMRIGHT", -28, 8)
+        local LIST_W = 320
+        local content = CreateFrame("Frame", nil, sf)
+        content:SetSize(LIST_W, 1)
+        sf:SetScrollChild(content)
+        ff.Content = content
+        ff.Rows = {}
+
+        local ROW_H = 18
+
+        local loc  = GetLocale()
+        local L10N = MultiBot.PET_FAMILY_L10N and MultiBot.PET_FAMILY_L10N[loc]
+
+        local families = {}
+        for fid, eng in pairs(MultiBot.PET_FAMILY) do
+          local txt = (L10N and L10N[fid]) or eng
+          table.insert(families, {id=fid, eng=eng, txt=txt})
+        end
+        table.sort(families, function(a,b) return a.txt < b.txt end)
+
+        for i,data in ipairs(families) do
+          local row = CreateFrame("Button", nil, content)
+          row:EnableMouse(true)
+          row:SetHeight(ROW_H)
+          row:SetPoint("TOPLEFT", 0, -(i-1)*ROW_H)
+          row:SetWidth(content:GetWidth())
+
+          row.text = row:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+          row.text:SetPoint("LEFT")
+          row.text:SetText("|cffffd200"..data.txt.."|r")
+          row:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
+
+          row:SetScript("OnClick", function()
+            if targetName then
+              local cmd = ("tame family %s"):format(data.eng) -- nom anglais dans la commande
+              SendChatMessage(cmd, "WHISPER", nil, targetName)
+            end
+            ff:Hide()
+          end)
+        end
+      end
+      ff:Show()
+    end
+
+    -- Un chasseur dans le groupe/raid ?
+    function MBH:HasHunterInGroup()
+      local _, cls = UnitClass("player")
+      if cls == "HUNTER" then return true end
+      if GetNumRaidMembers and GetNumRaidMembers() > 0 then
+        for i = 1, GetNumRaidMembers() do
+          local _, c = UnitClass("raid"..i)
+          if c == "HUNTER" then return true end
+        end
+      else
+        if GetNumPartyMembers then
+          for i = 1, GetNumPartyMembers() do
+            local _, c = UnitClass("party"..i)
+            if c == "HUNTER" then return true end
+          end
+        end
+      end
+      return false
+    end
+
+    MBH.presenceFrame = CreateFrame("Frame")
+    MBH.presenceFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+    if MBH.presenceFrame.RegisterEvent then
+      MBH.presenceFrame:RegisterEvent("PARTY_MEMBERS_CHANGED")
+      MBH.presenceFrame:RegisterEvent("RAID_ROSTER_UPDATE")
+    end
+    MBH.presenceFrame:SetScript("OnEvent", function()
+      MBH:Rebuild()
+    end)
+
+    -- Initial rebuild différée
+    if MultiBot.TimerAfter then
+      MultiBot.TimerAfter(0.5, function() MBH:Rebuild() end)
+    end
+
+  end
+
+  -- Initialisation
+  MultiBot.InitHunterQuick()
+end
+
+-- End Hunter --
 
 -- FINISH --
 

@@ -1895,6 +1895,46 @@ MultiBot.tips.hunter.pet.rename =
 "|cffff0000좌클릭으로 이름 변경|r\n"..
 "|cff999999(실행 순서: 봇)|r";
 
+MultiBot.tips.hunter.pet.abandon =
+"야수 해제\n"..
+"|cffffffff이 명령어로 소환한 야수를 해제할 수 있습니다.|r\n\n"..
+"|cffff0000왼쪽 클릭: 해제|r\n"..
+"|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.hunter.ownbutton =
+"사냥꾼: %s\n"..
+"|cffffffff이 버튼으로 사냥꾼의 야수 메뉴를 엽니다.|r\n\n".. 
+"|cffff0000왼쪽 클릭: 열기/닫기|r\n"..
+"|cffff0000오른쪽 클릭: 이동|r\n".. 
+"|cff999999(실행 순서: 시스템)|r";
+
+MultiBot.tips.hunter.pet.stances =
+"야수 태세\n"..
+"|cffffffff야수의 태세 메뉴를 엽니다.|r\n\n".. 
+"|cffff0000왼쪽 클릭: 열기/닫기|r\n"..
+"|cff999999(실행 순서: 시스템)|r";
+
+MultiBot.tips.hunter.pet.aggressive =
+"공격적";
+
+MultiBot.tips.hunter.pet.passive =
+"수동적";
+
+MultiBot.tips.hunter.pet.defensive =
+"방어적";
+
+MultiBot.tips.hunter.pet.curstance =
+"현재 야수 태세?";
+
+MultiBot.tips.hunter.pet.attack =
+"공격";
+
+MultiBot.tips.hunter.pet.follow =
+"따르기";
+
+MultiBot.tips.hunter.pet.stay =
+"대기";
+
 MultiBot.tips.hunter.naspect.master =
 "비전투 버프|cffffffff\n"..
 "이 컨트롤을 사용하면 기본 비전투 버프를 선택, 활성화 또는 비활성화할 수 있습니다.|r\n\n"..

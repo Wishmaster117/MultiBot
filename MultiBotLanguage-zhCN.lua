@@ -1895,6 +1895,46 @@ MultiBot.tips.hunter.pet.rename =
 "|cffff0000左键点击重命名|r\n"..
 "|cff999999（执行顺序：Bot）|r";
 
+MultiBot.tips.hunter.pet.abandon =
+"解散宠物\n"..
+"|cffffffff使用该命令可以解散你的宠物。|r\n\n"..
+"|cffff0000左键点击：解散|r\n"..
+"|cff999999(执行顺序: Bot)|r";
+
+MultiBot.tips.hunter.ownbutton =
+"猎人：%s\n"..
+"|cffffffff此按钮打开猎人的宠物菜单。|r\n\n".. 
+"|cffff0000左键点击：打开/关闭|r\n"..
+"|cffff0000右键点击：拖动|r\n".. 
+"|cff999999(执行顺序: 系统)|r";
+
+MultiBot.tips.hunter.pet.stances =
+"宠物姿态\n"..
+"|cffffffff打开宠物姿态菜单。|r\n\n".. 
+"|cffff0000左键点击：打开/关闭|r\n"..
+"|cff999999(执行顺序: 系统)|r";
+
+MultiBot.tips.hunter.pet.aggressive =
+"攻击型";
+
+MultiBot.tips.hunter.pet.passive =
+"被动";
+
+MultiBot.tips.hunter.pet.defensive =
+"防御型";
+
+MultiBot.tips.hunter.pet.curstance =
+"当前宠物姿态？";
+
+MultiBot.tips.hunter.pet.attack =
+"攻击";
+
+MultiBot.tips.hunter.pet.follow =
+"跟随";
+
+MultiBot.tips.hunter.pet.stay =
+"停留";
+
 MultiBot.tips.hunter.naspect.master =
 "非战斗增益|cffffffff\n"..
 "此控制允许您选择、启用或禁用默认的非战斗增益。|r\n\n"..

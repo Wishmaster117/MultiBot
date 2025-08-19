@@ -1901,6 +1901,46 @@ MultiBot.tips.hunter.pet.rename =
 "|cffff0000Clic izquierdo para renombrar|r\n"..
 "|cff999999(Orden de ejecución: Bot)|r";
 
+MultiBot.tips.hunter.pet.abandon =
+"Abandonar mascota\n"..
+"|cffffffffCon este comando puedes abandonar a tu mascota.|r\n\n"..
+"|cffff0000Clic izquierdo para abandonar|r\n"..
+"|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.hunter.ownbutton =
+"Cazador: %s\n"..
+"|cffffffffEste botón abre el menú de la mascota del cazador.|r\n\n".. 
+"|cffff0000Clic izquierdo para abrir/cerrar|r\n"..
+"|cffff0000Clic derecho para mover|r\n".. 
+"|cff999999(Orden de ejecución: Sistema)|r";
+
+MultiBot.tips.hunter.pet.stances =
+"Comportamientos de la mascota\n"..
+"|cffffffffAbre el menú de comportamientos de la mascota.|r\n\n".. 
+"|cffff0000Clic izquierdo para abrir/cerrar|r\n"..
+"|cff999999(Orden de ejecución: Sistema)|r";
+
+MultiBot.tips.hunter.pet.aggressive =
+"Agresivo";
+
+MultiBot.tips.hunter.pet.passive =
+"Pasivo";
+
+MultiBot.tips.hunter.pet.defensive =
+"Defensivo";
+
+MultiBot.tips.hunter.pet.curstance =
+"¿Comportamiento actual de la mascota?";
+
+MultiBot.tips.hunter.pet.attack =
+"Atacar";
+
+MultiBot.tips.hunter.pet.follow =
+"Seguirme";
+
+MultiBot.tips.hunter.pet.stay =
+"Quedarse";
+
 MultiBot.tips.hunter.naspect.master =
 "Non-Combat-Buff|cffffffff\n"..  -- Línea en inglés
 "Este control te permite seleccionar, activar o desactivar la mejora predeterminada fuera de combate.|r\n\n"..

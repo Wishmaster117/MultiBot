@@ -1845,6 +1845,46 @@ MultiBot.tips.hunter.pet.rename =
 "|cffff0000Left-click to rename|r\n"..
 "|cff999999(Executed by: Bot)|r";
 
+MultiBot.tips.hunter.pet.abandon =
+"Dismiss current pet\n"..
+"|cffffffffWith this command you can dismiss your pet.|r\n\n"..
+"|cffff0000Left-Click to dismiss|r\n"..
+"|cff999999(Execution Order: Bot)|r";
+
+MultiBot.tips.hunter.ownbutton =
+"Hunter: %s\n"..
+"|cffffffffThis button open Hunter pet's Menu.|r\n\n".. 
+"|cffff0000Left-Click to open/close|r\n"..
+"|cffff0000Right-Click to drag|r\n".. 
+"|cff999999(Execution Order: System)|r";
+
+MultiBot.tips.hunter.pet.stances =
+"Pets Stances\n"..
+"|cffffffffOpen pets stances menu.|r\n\n".. 
+"|cffff0000Left-Click to open/close|r\n"..
+"|cff999999(Execution Order: System)|r";
+
+MultiBot.tips.hunter.pet.aggressive =
+"Aggresive";
+
+MultiBot.tips.hunter.pet.passive =
+"Passive";
+
+MultiBot.tips.hunter.pet.defensive =
+"Defensive";
+
+MultiBot.tips.hunter.pet.curstance =
+"Current pet stance ?";
+
+MultiBot.tips.hunter.pet.attack =
+"Attack";
+
+MultiBot.tips.hunter.pet.follow =
+"Follow";
+
+MultiBot.tips.hunter.pet.stay =
+"Stay";
+
 MultiBot.tips.hunter.naspect.master =
 "Non-Combat Buff|cffffffff\n"..
 "Allows selecting, enabling or disabling the default Non-Combat Buff.|r\n\n"..
