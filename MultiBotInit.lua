@@ -4704,341 +4704,762 @@ end
 local tSelector = tRTSC.addFrame("Selector", 0, 2, 28)
 tSelector.selector = ""
 
+-- Exécute l'action sur la sélection
 tSelector.doExecute = function(pButton, pAction)
-	if(pButton.parent.selector == "") then return MultiBot.ActionToGroup(pAction) end
-	local tGroups = MultiBot.doSplit(pButton.parent.selector, " ")
-	
-	for i = 1, table.getn(tGroups) do
-		MultiBot.ActionToGroup(tGroups[i] .. " " .. pAction)
-		pButton.parent.buttons[tGroups[i]].setDisable()
+	if (pButton.parent.selector == "") then
+		return MultiBot.ActionToGroup(pAction)
 	end
-	
+
+	local tGroups = MultiBot.doSplit(pButton.parent.selector, " ")
+	for _, tag in ipairs(tGroups) do
+		MultiBot.ActionToGroup(tag .. " " .. pAction)
+		pButton.parent.buttons[tag].setDisable()
+	end
+
 	pButton.parent.selector = ""
 end
 
+-- Ajoute un tag à la sélection
 tSelector.doSelect = function(pButton, pSelector)
-	if(pButton.parent.selector == "")
-	then pButton.parent.selector = pSelector
-	else pButton.parent.selector = pButton.parent.selector .. " " .. pSelector
+	if (pButton.parent.selector == "") then
+		pButton.parent.selector = pSelector
+	else
+		pButton.parent.selector = pButton.parent.selector .. " " .. pSelector
 	end
 end
 
+-- Réinitialise la sélection + désactive les boutons associés
 tSelector.doReset = function(pFrame)
-	if(pFrame.selector == "") then return end
+	if (pFrame.selector == "") then return end
 	local tGroups = MultiBot.doSplit(pFrame.selector, " ")
-	for i = 1, table.getn(tGroups) do pFrame.buttons[tGroups[i]].setDisable() end
+	for _, tag in ipairs(tGroups) do
+		pFrame.buttons[tag].setDisable()
+	end
 	pFrame.selector = ""
 end
 
-tSelector.addButton("MACRO9", -34, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.macro, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").setDisable()
-.doLeft = function(pButton)
-	MultiBot.ActionToGroup("rtsc save 9")
-	pButton.parent.buttons["RTSC9"].doShow()
-	pButton.doHide()
+-- MACRO/RTSC pour un index donné
+local function createStoragePair(n, x)
+	local macroName = "MACRO" .. n
+	local rtscName  = "RTSC"  .. n
+	local icon      = "achievement_bg_winwsg_3-0"
+
+	-- Bouton MACROn (visible et disabled au départ)
+	tSelector
+		.addButton(macroName, x, 0, icon, MultiBot.tips.rtsc.macro, "SecureActionButtonTemplate")
+		.addMacro("type1", "/cast aedm")
+		.setDisable()
+		.doLeft = function(pButton)
+			MultiBot.ActionToGroup("rtsc save " .. n)
+			pButton.parent.buttons[rtscName].doShow()
+			pButton.doHide()
+		end
+
+	-- Bouton RTSCn (caché au départ)
+	local tButton = tSelector
+		.addButton(rtscName, x, 0, icon, MultiBot.tips.rtsc.spot, "SecureActionButtonTemplate")
+		.doHide()
+
+	tButton.doRight = function(pButton)
+		MultiBot.ActionToGroup("rtsc unsave " .. n)
+		pButton.parent.buttons[macroName].doShow()
+		pButton.doHide()
+	end
+
+	tButton.doLeft = function(pButton)
+		pButton.parent.doExecute(pButton, "rtsc go " .. n)
+	end
 end
 
-local tButton = tSelector.addButton("RTSC9", -34, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.spot, "SecureActionButtonTemplate").doHide()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("rtsc unsave 9")
-	pButton.parent.buttons["MACRO9"].doShow()
-	pButton.doHide()
-end
-tButton.doLeft = function(pButton)
-	pButton.parent.doExecute(pButton, "rtsc go 9")
-end
-
-tSelector.addButton("MACRO8", -64, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.macro, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").setDisable()
-.doLeft = function(pButton)
-	MultiBot.ActionToGroup("rtsc save 8")
-	pButton.parent.buttons["RTSC8"].doShow()
-	pButton.doHide()
-end
-
-local tButton = tSelector.addButton("RTSC8", -64, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.spot, "SecureActionButtonTemplate").doHide()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("rtsc unsave 8")
-	pButton.parent.buttons["MACRO8"].doShow()
-	pButton.doHide()
-end
-tButton.doLeft = function(pButton)
-	pButton.parent.doExecute(pButton, "rtsc go 8")
-end
-
-tSelector.addButton("MACRO7", -94, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.macro, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").setDisable()
-.doLeft = function(pButton)
-	MultiBot.ActionToGroup("rtsc save 7")
-	pButton.parent.buttons["RTSC7"].doShow()
-	pButton.doHide()
-end
-
-local tButton = tSelector.addButton("RTSC7", -94, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.spot, "SecureActionButtonTemplate").doHide()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("rtsc unsave 7")
-	pButton.parent.buttons["MACRO7"].doShow()
-	pButton.doHide()
-end
-tButton.doLeft = function(pButton)
-	pButton.parent.doExecute(pButton, "rtsc go 7")
-end
-
-tSelector.addButton("MACRO6", -124, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.macro, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").setDisable()
-.doLeft = function(pButton)
-	MultiBot.ActionToGroup("rtsc save 6")
-	pButton.parent.buttons["RTSC6"].doShow()
-	pButton.doHide()
-end
-
-local tButton = tSelector.addButton("RTSC6", -124, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.spot, "SecureActionButtonTemplate").doHide()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("rtsc unsave 6")
-	pButton.parent.buttons["MACRO6"].doShow()
-	pButton.doHide()
-end
-tButton.doLeft = function(pButton)
-	pButton.parent.doExecute(pButton, "rtsc go 6")
-end
-
-tSelector.addButton("MACRO5", -154, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.macro, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").setDisable()
-.doLeft = function(pButton)
-	MultiBot.ActionToGroup("rtsc save 5")
-	pButton.parent.buttons["RTSC5"].doShow()
-	pButton.doHide()
-end
-
-local tButton = tSelector.addButton("RTSC5", -154, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.spot, "SecureActionButtonTemplate").doHide()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("rtsc unsave 5")
-	pButton.parent.buttons["MACRO5"].doShow()
-	pButton.doHide()
-end
-tButton.doLeft = function(pButton)
-	pButton.parent.doExecute(pButton, "rtsc go 5")
-end
-
-tSelector.addButton("MACRO4", -184, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.macro, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").setDisable()
-.doLeft = function(pButton)
-	MultiBot.ActionToGroup("rtsc save 4")
-	pButton.parent.buttons["RTSC4"].doShow()
-	pButton.doHide()
-end
-
-local tButton = tSelector.addButton("RTSC4", -184, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.spot, "SecureActionButtonTemplate").doHide()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("rtsc unsave 4")
-	pButton.parent.buttons["MACRO4"].doShow()
-	pButton.doHide()
-end
-tButton.doLeft = function(pButton)
-	pButton.parent.doExecute(pButton, "rtsc go 4")
-end
-
-tSelector.addButton("MACRO3", -214, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.macro, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").setDisable()
-.doLeft = function(pButton)
-	MultiBot.ActionToGroup("rtsc save 3")
-	pButton.parent.buttons["RTSC3"].doShow()
-	pButton.doHide()
-end
-
-local tButton = tSelector.addButton("RTSC3", -214, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.spot, "SecureActionButtonTemplate").doHide()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("rtsc unsave 3")
-	pButton.parent.buttons["MACRO3"].doShow()
-	pButton.doHide()
-end
-tButton.doLeft = function(pButton)
-	pButton.parent.doExecute(pButton, "rtsc go 3")
-end
-
-tSelector.addButton("MACRO2", -244, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.macro, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").setDisable()
-.doLeft = function(pButton)
-	MultiBot.ActionToGroup("rtsc save 2")
-	pButton.parent.buttons["RTSC2"].doShow()
-	pButton.doHide()
-end
-
-local tButton = tSelector.addButton("RTSC2", -244, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.spot, "SecureActionButtonTemplate").doHide()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("rtsc unsave 2")
-	pButton.parent.buttons["MACRO2"].doShow()
-	pButton.doHide()
-end
-tButton.doLeft = function(pButton)
-	pButton.parent.doExecute(pButton, "rtsc go 2")
-end
-
-tSelector.addButton("MACRO1", -274, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.macro, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").setDisable()
-.doLeft = function(pButton)
-	MultiBot.ActionToGroup("rtsc save 1")
-	pButton.parent.buttons["RTSC1"].doShow()
-	pButton.doHide()
-end
-
-local tButton = tSelector.addButton("RTSC1", -274, 0, "achievement_bg_winwsg_3-0", MultiBot.tips.rtsc.spot, "SecureActionButtonTemplate").doHide()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("rtsc unsave 1")
-	pButton.parent.buttons["MACRO1"].doShow()
-	pButton.doHide()
-end
-tButton.doLeft = function(pButton)
-	pButton.parent.doExecute(pButton, "rtsc go 1")
+-- Recréation des paires 9 à 1
+for n = 9, 1, -1 do
+	local x = -304 + 30 * n
+	createStoragePair(n, x)
 end
 
 -- RTSC:SELECTOR --
 
-local tButton = tSelector.addButton("@group1", 30, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_group1.blp", MultiBot.tips.rtsc.group1, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").doHide().setDisable()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("@group1 rtsc select")
-	pButton.parent.doSelect(pButton, "@group1")
-	pButton.setEnable()
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@group1 rtsc select")
-	pButton.parent.doReset(pButton.parent)
+-- Création d'un bouton RTSC standard (@groupX, @tank/@dps/@healer/@melee/@ranged)
+local function createRTSCButton(tSelector, tag, x, icon, tip, hidden, disabled)
+    local b = tSelector
+        .addButton(tag, x, 0, icon, tip, "SecureActionButtonTemplate")
+        .addMacro("type1", "/cast aedm")
+
+    if hidden   then b.doHide()     end
+    if disabled then b.setDisable() end
+
+    b.doRight = function(pButton)
+        MultiBot.ActionToGroup(tag .. " rtsc select")
+        pButton.parent.doSelect(pButton, tag)
+        pButton.setEnable()
+    end
+
+    b.doLeft = function(pButton)
+        MultiBot.ActionToGroup(tag .. " rtsc select")
+        pButton.parent.doReset(pButton.parent)
+    end
+
+    return b
 end
 
-local tButton = tSelector.addButton("@group2", 60, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_group2.blp", MultiBot.tips.rtsc.group2, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").doHide().setDisable()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("@group2 rtsc select")
-	pButton.parent.doSelect(pButton, "@group2")
-	pButton.setEnable()
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@group2 rtsc select")
-	pButton.parent.doReset(pButton.parent)
+-- Boutons groupes (cachés et désactivés au départ)
+local groupButtons = {
+    { "@group1",  30, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_group1.blp", MultiBot.tips.rtsc.group1,  true,  true },
+    { "@group2",  60, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_group2.blp", MultiBot.tips.rtsc.group2,  true,  true },
+    { "@group3",  90, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_group3.blp", MultiBot.tips.rtsc.group3,  true,  true },
+    { "@group4", 120, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_group4.blp", MultiBot.tips.rtsc.group4,  true,  true },
+    { "@group5", 150, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_group5.blp", MultiBot.tips.rtsc.group5,  true,  true },
+}
+
+-- Boutons rôles (visibles + désactivés au départ)
+local roleButtons = {
+    { "@tank",   30, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_tank.blp",   MultiBot.tips.rtsc.tank,   false, true },
+    { "@dps",    60, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_dps.blp",    MultiBot.tips.rtsc.dps,    false, true },
+    { "@healer", 90, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_healer.blp", MultiBot.tips.rtsc.healer, false, true },
+    { "@melee", 120, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_melee.blp",  MultiBot.tips.rtsc.melee,  false, true },
+    { "@ranged",150, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_ranged.blp", MultiBot.tips.rtsc.ranged, false, true },
+}
+
+-- Création des boutons groupes
+for _, def in ipairs(groupButtons) do
+    createRTSCButton(tSelector, def[1], def[2], def[3], def[4], def[5], def[6])
 end
 
-local tButton = tSelector.addButton("@group3", 90, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_group3.blp", MultiBot.tips.rtsc.group3, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").doHide().setDisable()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("@group3 rtsc select")
-	pButton.parent.doSelect(pButton, "@group3")
-	pButton.setEnable()
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@group3 rtsc select")
-	pButton.parent.doReset(pButton.parent)
+-- Création des boutons rôles
+for _, def in ipairs(roleButtons) do
+    createRTSCButton(tSelector, def[1], def[2], def[3], def[4], def[5], def[6])
 end
 
-local tButton = tSelector.addButton("@group4", 120, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_group4.blp", MultiBot.tips.rtsc.group4, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").doHide().setDisable()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("@group4 rtsc select")
-	pButton.parent.doSelect(pButton, "@group4")
-	pButton.setEnable()
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@group4 rtsc select")
-	pButton.parent.doReset(pButton.parent)
+-- Bouton "@all"
+do
+    local tButton = tSelector
+        .addButton("@all", 180, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc.blp", MultiBot.tips.rtsc.all, "SecureActionButtonTemplate")
+        .addMacro("type1", "/cast aedm")
+
+    tButton.doRight = function(pButton)
+        MultiBot.ActionToGroup("rtsc select")
+        pButton.parent.doReset(pButton.parent)
+    end
+
+    tButton.doLeft = function(pButton)
+        MultiBot.ActionToGroup("rtsc select")
+        pButton.parent.doReset(pButton.parent)
+    end
 end
 
-local tButton = tSelector.addButton("@group5", 150, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_group5.blp", MultiBot.tips.rtsc.group5, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").doHide().setDisable()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("@group5 rtsc select")
-	pButton.parent.doSelect(pButton, "@group5")
-	pButton.setEnable()
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@group5 rtsc select")
-	pButton.parent.doReset(pButton.parent)
+-- Bouton Browse (toggle groupes <-> rôles)
+do
+    local tButton = tSelector.addButton("Browse", 210, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_browse.blp", MultiBot.tips.rtsc.browse)
+
+    tButton.doRight = function(pButton)
+        MultiBot.ActionToGroup("rtsc cancel")
+        pButton.parent.doReset(pButton.parent)
+    end
+
+    tButton.doLeft = function(pButton)
+        local tFrame = pButton.parent
+
+        -- Listes pour éviter la répétition
+        local roles  = { "@dps", "@tank", "@melee", "@healer", "@ranged" }
+        local groups = { "@group1", "@group2", "@group3", "@group4", "@group5" }
+
+        if (pButton.state) then
+            -- affichage des rôles
+            for _, tag in ipairs(roles)  do tFrame.buttons[tag].doShow() end
+            for _, tag in ipairs(groups) do tFrame.buttons[tag].doHide() end
+            pButton.state = false
+        else
+            -- affichage des groupes, on masque les rôles
+            for _, tag in ipairs(roles)  do tFrame.buttons[tag].doHide() end
+            for _, tag in ipairs(groups) do tFrame.buttons[tag].doShow() end
+            pButton.state = true
+        end
+    end
 end
 
-local tButton = tSelector.addButton("@tank", 30, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_tank.blp", MultiBot.tips.rtsc.tank, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").setDisable()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("@tank rtsc select")
-	pButton.parent.doSelect(pButton, "@tank")
-	pButton.setEnable()
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@tank rtsc select")
-	pButton.parent.doReset(pButton.parent)
+-- HUNTER PETS MENU --
+if not MultiBot.InitHunterQuick then
+  function MultiBot.InitHunterQuick()
+    local MBH = MultiBot.HunterQuick or {}
+    MultiBot.HunterQuick = MBH
+
+    -- Container global
+    MBH.frame = MultiBot.addFrame("HunterQuick", -420, 240, 36, 36*8, 36*4)
+    MBH.frame:SetMovable(true)
+    MBH.frame:EnableMouse(true)
+    MBH.frame:RegisterForDrag("RightButton")
+    MBH.frame:SetScript("OnDragStart", MBH.frame.StartMoving)
+    MBH.frame:SetScript("OnDragStop" , MBH.frame.StopMovingOrSizing)
+    MBH.frame:Hide()
+
+    -- Plusieurs bots chasseurs
+    MBH.entries, MBH.COL_GAP = {}, 40   -- espacement horizontal entre chasseurs
+
+    local function SanitizeName(n)
+      return (tostring(n):gsub("[^%w_]", "_"))
+    end
+
+    function MBH:BuildForHunter(hName)
+      local san = SanitizeName(hName)
+      -- On mets un conteneur par chasseur
+      local row = self.frame.addFrame("HunterQuickRow_"..san, -36*7, 0, 36, 36*8, 36*3)
+      row.owner = hName
+
+      -- Un Bouton par chasseur avec son nom
+      row.mainBtn = row.addButton("HunterQuickMain_"..san, 0, 0,
+          "Interface\\AddOns\\MultiBot\\Icons\\class_hunter.blp",
+          MultiBot.tips.hunter.ownbutton:format(hName))
+      row.mainBtn:SetFrameStrata("HIGH")
+      row.mainBtn:RegisterForDrag("RightButton")
+      row.mainBtn:SetScript("OnDragStart", function() self.frame:StartMoving() end)
+      row.mainBtn:SetScript("OnDragStop" , function() self.frame:StopMovingOrSizing() end)
+
+      -- Mini menu 2 icônes
+      row.vmenu = row.addFrame("HunterQuickMenu_"..san, 0, 0, 36, 36, 36*3)
+      row.vmenu:Hide()
+      row.modesBtn = row.vmenu.addButton("HunterModesBtn_"..san, 0, 36, "ability_hunter_beasttaming", MultiBot.tips.hunter.pet.stances)
+      row.utilsBtn = row.vmenu.addButton("HunterUtilsBtn_"..san, 0, 72, "trade_engineering", "Pet Utilities")
+
+      -- Strips
+      row.modesStrip = row.addFrame("HunterQuickModesStrip_"..san, 0, 0, 36, 36*7, 36)
+      row.utilsStrip = row.addFrame("HunterQuickUtilsStrip_"..san, 0, 0, 36, 36*5, 36)
+      row.modesStrip:ClearAllPoints()
+      row.modesStrip:SetPoint("BOTTOMLEFT", row.modesBtn, "BOTTOMRIGHT", 0, 0)
+      row.modesStrip:SetWidth(36*7); row.modesStrip:SetHeight(36)
+      row.utilsStrip:ClearAllPoints()
+      row.utilsStrip:SetPoint("BOTTOMLEFT", row.utilsBtn, "BOTTOMRIGHT", 0, 0)
+      row.utilsStrip:SetWidth(36*5); row.utilsStrip:SetHeight(36)
+      row.modesStrip:EnableMouse(false); row.utilsStrip:EnableMouse(false)
+      row.modesStrip:Hide(); row.utilsStrip:Hide()
+
+      -- Toggle du mini menu
+      row.mainBtn.doLeft = function()
+	  MBH:CloseAllExcept(row)
+        if row.vmenu:IsShown() then
+          row.vmenu:Hide()
+          row.modesStrip:Hide()
+          row.utilsStrip:Hide()
+        else
+          row.vmenu:Show()
+        end
+      end
+
+      -- Pet Modes 7 boutons
+      local labels_and_tips = {
+        { key="aggressive", tip=MultiBot.tips.hunter.pet.aggressive },
+        { key="passive"   , tip=MultiBot.tips.hunter.pet.passive   },
+        { key="defensive" , tip=MultiBot.tips.hunter.pet.defensive },
+        { key="stance"    , tip=MultiBot.tips.hunter.pet.curstance },
+        { key="attack"    , tip=MultiBot.tips.hunter.pet.attack },
+        { key="follow"    , tip=MultiBot.tips.hunter.pet.follow },
+        { key="stay"      , tip=MultiBot.tips.hunter.pet.stay },
+      }
+      local PET_MODE_ICONS = {
+        aggressive = "ability_Racial_BloodRage",
+        passive    = "ABILITY_SEAL",
+        defensive  = "Ability_Defend",
+        stance     = "Temp",
+        attack     = "Ability_GhoulFrenzy",
+        follow     = "ability_tracking",
+        stay       = "Spell_Nature_TimeStop",
+      }
+      for i, def in ipairs(labels_and_tips) do
+        local px = -36 * (7 - i)
+        local tex = PET_MODE_ICONS[def.key] or "inv_misc_questionmark"
+        local b = row.modesStrip.addButton("HunterQuickMode_"..san.."_"..i, px, 0, tex, def.tip)
+        b.doLeft = function()
+          SendChatMessage("pet "..def.key, "WHISPER", nil, hName)
+        end
+      end
+      row.modesBtn.doLeft = function()
+	  MBH:CloseAllExcept(row)
+        if row.modesStrip:IsShown() then
+          row.modesStrip:Hide()
+        else
+          row.modesStrip:Show()
+          row.utilsStrip:Hide()
+        end
+      end
+
+      -- Utilitaires Pets
+      local petCmdList = {
+        {"Name",    "tame name %s",    "inv_scroll_11",            MultiBot.tips.hunter.pet.name},
+        {"Id",      "tame id %s",      "inv_scroll_14",            MultiBot.tips.hunter.pet.id},
+        {"Family",  "tame family %s",  "inv_misc_enggizmos_03",    MultiBot.tips.hunter.pet.family},
+        {"Rename",  "tame rename %s",  "inv_scroll_01",            MultiBot.tips.hunter.pet.rename},
+        {"Abandon", "tame abandon",    "spell_nature_spiritwolf",  MultiBot.tips.hunter.pet.abandon},
+      }
+      for i, v in ipairs(petCmdList) do
+        local label, fmt, icon, tip = v[1], v[2], v[3], v[4]
+        local px = -36 * (5 - i)
+        local ub = row.utilsStrip.addButton("HunterQuickUtil_"..san.."_"..i, px, 0, icon, tip)
+        ub.doLeft = function()
+          if label == "Rename" then
+            MBH:ShowPrompt(fmt, hName, MultiBot.info.hunterpetnewname)
+            row.utilsStrip:Hide()
+          elseif label == "Id" then
+            MBH:ShowPrompt(fmt, hName, MultiBot.info.hunterpetid)
+            row.utilsStrip:Hide()
+          elseif label == "Family" then
+            MBH:ShowFamilyFrame(hName)
+            row.utilsStrip:Hide()
+          elseif label == "Abandon" then
+            SendChatMessage(fmt, "WHISPER", nil, hName)
+            row.utilsStrip:Hide()
+          else
+            MBH:EnsureSearchFrame()
+            local f = MBH.SEARCH_FRAME
+            f.TargetName = hName
+            f:Show()
+            f.EditBox:SetText("")
+            f.EditBox:SetFocus()
+            f:Refresh()
+            row.utilsStrip:Hide()
+          end
+        end
+      end
+      row.utilsBtn.doLeft = function()
+	  MBH:CloseAllExcept(row)
+        if row.utilsStrip:IsShown() then
+          row.utilsStrip:Hide()
+        else
+          row.utilsStrip:Show()
+          row.modesStrip:Hide()
+        end
+      end
+
+      self.entries[hName] = row
+    end
+
+    function MBH:CollectHunterBots()
+      local out = {}
+      if GetNumRaidMembers and GetNumRaidMembers() > 0 then
+        for i=1, GetNumRaidMembers() do
+          local unit = "raid"..i
+          local name = UnitName(unit)
+          local _, cls = UnitClass(unit)
+          if name and cls=="HUNTER" and MultiBot.getBot and (MultiBot.getBot(name) ~= nil or MultiBot.getBot(unit) ~= nil) then
+            table.insert(out, name)
+          end
+        end
+      else
+        if GetNumPartyMembers then
+          for i=1, GetNumPartyMembers() do
+            local unit = "party"..i
+            local name = UnitName(unit)
+            local _, cls = UnitClass(unit)
+            if name and cls=="HUNTER" and MultiBot.getBot and (MultiBot.getBot(name) ~= nil or MultiBot.getBot(unit) ~= nil) then
+              table.insert(out, name)
+            end
+          end
+        end
+      end
+      table.sort(out)
+      return out
+    end
+
+    function MBH:Rebuild()
+      local desired = self:CollectHunterBots()
+      
+	  for name, row in pairs(self.entries) do
+        local found = false
+        for _, n in ipairs(desired) do if n==name then found=true; break end end
+        if not found then
+          row:Hide()
+          self.entries[name] = nil
+        end
+      end
+
+      for _, name in ipairs(desired) do
+        if not self.entries[name] then
+          self:BuildForHunter(name)
+        end
+      end
+
+      for idx, name in ipairs(desired) do
+        local row = self.entries[name]
+        if row then
+          row:ClearAllPoints()
+          row:SetPoint("BOTTOMRIGHT", self.frame, "BOTTOMRIGHT", -36*7 + (idx-1)*self.COL_GAP, 0)
+          row:Show()
+        end
+      end
+
+      if #desired > 0 then self.frame:Show() else self.frame:Hide() end
+    end
+
+    function MBH:CloseAllExcept(keepRow)
+      for _, r in pairs(self.entries) do
+        if r ~= keepRow then
+          if r.vmenu and r.vmenu:IsShown() then r.vmenu:Hide() end
+          if r.modesStrip and r.modesStrip:IsShown() then r.modesStrip:Hide() end
+          if r.utilsStrip and r.utilsStrip:IsShown() then r.utilsStrip:Hide() end
+        end
+      end
+    end
+
+    function MBH:FindHunter()
+      if UnitExists("target") then
+        local _, cls = UnitClass("target")
+        if cls == "HUNTER" then
+          local tn = UnitName("target")
+          if tn and tn ~= "Unknown Entity" then return tn end
+        end
+      end
+      local i = MultiBot.index and MultiBot.index.classes
+      if i then
+        local p = i.players and i.players["Hunter"]
+        if p and #p > 0 then return p[1] end
+        local m = i.members and i.members["Hunter"]
+        if m and #m > 0 then return m[1] end
+        local f = i.friends and i.friends["Hunter"]
+        if f and #f > 0 then return f[1] end
+      end
+      return nil
+    end
+
+    -- Prompt
+    function MBH:ShowPrompt(fmt, targetName, title)
+      local P = self.PROMPT
+      if not P then
+        P = CreateFrame("Frame", "MBHunterPrompt", UIParent)
+        self.PROMPT = P
+        P:SetSize(260, 90)
+        P:SetPoint("CENTER")
+        P:SetBackdrop({
+          bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
+          edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
+          tile=true, tileSize=16, edgeSize=16,
+          insets={left=4,right=4,top=4,bottom=4}
+        })
+        P:SetBackdropColor(0,0,0,0.9)
+        P:SetFrameStrata("DIALOG")
+        P:SetMovable(true); P:EnableMouse(true)
+        P:RegisterForDrag("LeftButton")
+        P:SetScript("OnDragStart", P.StartMoving)
+        P:SetScript("OnDragStop" , P.StopMovingOrSizing)
+        local btnClose = CreateFrame("Button", nil, P, "UIPanelCloseButton")
+        btnClose:SetPoint("TOPRIGHT", -5, -5)
+        btnClose:SetScript("OnClick", function() P:Hide() end)
+        local e = CreateFrame("EditBox", nil, P, "InputBoxTemplate")
+        e:SetAutoFocus(true); e:SetSize(200,20); e:SetTextColor(1,1,1)
+        e:SetPoint("TOP", 0, -30)
+        e:SetScript("OnEscapePressed", function() P:Hide() end)
+        P.EditBox = e
+        local ok = CreateFrame("Button", nil, P, "UIPanelButtonTemplate")
+        ok:SetSize(60,20); ok:SetPoint("BOTTOM",0,10); ok:SetText("OK")
+        P.OkBtn = ok
+        P.Title = P:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+        P.Title:SetPoint("TOP", 0, -10)
+      end
+      P.Title:SetText(title or MultiBot.info.hunterpeteditentervalue)
+      P:Show()
+      P.EditBox:SetText(MultiBot.info.hunterpetentersomething)
+      P.EditBox:SetFocus()
+      P.OkBtn:SetScript("OnClick", function()
+        local text = P.EditBox:GetText()
+        if text and text~="" and targetName then
+          local cmd = string.format(fmt, text)
+          SendChatMessage(cmd, "WHISPER", nil, targetName)
+        end
+        P:Hide()
+      end)
+    end
+
+    -- Fenêtre list créatures + recherche + preview 3D
+    function MBH:EnsureSearchFrame()
+      if self.SEARCH_FRAME then return end
+      local f = CreateFrame("Frame", "MBHunterPetSearch", UIParent)
+      self.SEARCH_FRAME = f
+
+      local title = f:CreateFontString(nil,"ARTWORK","GameFontNormalLarge")
+      title:SetPoint("TOP",0,-10)
+      title:SetText(MultiBot.info.hunterpetcreaturelist)
+
+      f:SetSize(340,340)
+      f:SetPoint("CENTER")
+      f:SetBackdrop({
+        bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
+        edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
+        tile=true, tileSize=16, edgeSize=16,
+        insets={left=4,right=4,top=4,bottom=4}
+      })
+      f:SetBackdropColor(0,0,0,0.9)
+      f:SetMovable(true); f:EnableMouse(true)
+      f:RegisterForDrag("LeftButton")
+      f:SetScript("OnDragStart", f.StartMoving)
+      f:SetScript("OnDragStop" , f.StopMovingOrSizing)
+      CreateFrame("Button", nil, f, "UIPanelCloseButton"):SetPoint("TOPRIGHT",-5,-5)
+
+      local e = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+      e:SetAutoFocus(true)
+      e:SetSize(200,20)
+      e:SetPoint("TOP", title, "BOTTOM", 0, -8)
+      f.EditBox = e
+
+      local PREVIEW_WIDTH, PREVIEW_HEIGHT = 180, 260
+      local BLANK_MODEL   = "Interface\\Buttons\\WHITE8x8"
+      local PREVIEW_MODEL_SCALE = 0.6
+      local PREVIEW_FACING = -math.pi/12
+      local PREVIEW_X_OFFSET, PREVIEW_Y_OFFSET = 100, 20
+      local CURRENT_ENTRY = nil
+
+      local function GetPreviewFrame()
+        if MBHunterPetPreview then return MBHunterPetPreview end
+        local p = CreateFrame("PlayerModel","MBHunterPetPreview",UIParent)
+        p:SetSize(PREVIEW_WIDTH, PREVIEW_HEIGHT)
+        p:SetBackdrop({
+          bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
+          edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
+          tile=true, tileSize=16, edgeSize=16,
+          insets={left=4,right=4,top=4,bottom=4}})
+        p:SetBackdropColor(0,0,0,0.85)
+        p:SetFrameStrata("DIALOG")
+        p:SetMovable(true); p:EnableMouse(true)
+        p:RegisterForDrag("LeftButton")
+        p:SetScript("OnDragStart", p.StartMoving)
+        p:SetScript("OnDragStop" , p.StopMovingOrSizing)
+        CreateFrame("Button",nil,p,"UIPanelCloseButton"):SetPoint("TOPRIGHT",-5,-5)
+        return p
+      end
+
+      local function LoadCreatureToPreview(entryId)
+        local pv = GetPreviewFrame()
+        if pv:IsShown() and CURRENT_ENTRY==entryId then pv:Hide(); CURRENT_ENTRY=nil; return end
+        CURRENT_ENTRY = entryId
+        local cx,cy = GetCursorPosition(); local scale = UIParent:GetEffectiveScale()
+        pv:ClearAllPoints()
+        pv:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",
+          cx/scale+PREVIEW_X_OFFSET, cy/scale+PREVIEW_Y_OFFSET)
+        pv:SetUnit("none"); pv:ClearModel(); pv:SetModel(BLANK_MODEL); pv:Show()
+        pv:SetScript("OnUpdate", function(self)
+          self:SetScript("OnUpdate",nil)
+          self:SetModelScale(PREVIEW_MODEL_SCALE)
+          self:SetFacing(PREVIEW_FACING)
+          self:SetCreature(entryId)
+        end)
+      end
+
+      local ROW_H, VISIBLE_ROWS = 18, 17
+      local OFFSET = 0
+      local RESULTS = {}
+
+      local sf = CreateFrame("ScrollFrame","MBHunterPetScroll",f,"UIPanelScrollFrameTemplate")
+      sf:SetPoint("TOPLEFT",10,-60)
+      sf:SetPoint("BOTTOMRIGHT",-30,10)
+      local content = CreateFrame("Frame",nil,sf) ; content:SetSize(1,1)
+      sf:SetScrollChild(content)
+
+      f.Rows = {}
+      for i = 1, VISIBLE_ROWS do
+        local row = CreateFrame("Button", nil, content)
+        row:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
+        row:SetHeight(ROW_H)
+        row:SetWidth(content:GetWidth())
+        row:SetPoint("TOPLEFT", 0, -(i-1)*ROW_H)
+
+        row.text = row:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+        row.text:SetPoint("LEFT",2,0)
+
+        local btn = CreateFrame("Button", nil, row)
+        btn:SetSize(16,16)
+        btn:SetPoint("RIGHT",-22,0)
+        btn:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-UP")
+        btn:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-DOWN")
+        btn:SetHighlightTexture("Interface\\Buttons\\UI-PlusButton-Hilight")
+        row.previewBtn = btn
+
+        f.Rows[i] = row
+      end
+
+      local function localeField()
+        local l = GetLocale():lower()
+        if     l=="frfr" then return "name_fr"
+        elseif l=="dede" then return "name_de"
+        elseif l=="eses" then return "name_es"
+        elseif l=="esmx" then return "name_esmx"
+        elseif l=="kokr" then return "name_ko"
+        elseif l=="zhtw" then return "name_zhtw"
+        elseif l=="zhcn" then return "name_zhcn"
+        elseif l=="ruru" then return "name_ru"
+        else return "name_en" end
+      end
+
+      function f:RefreshRows()
+        for i = 1, VISIBLE_ROWS do
+          local idx  = i + OFFSET
+          local data = RESULTS[idx]
+          local row  = self.Rows[i]
+          local LIST_W = 320
+
+          row:ClearAllPoints()
+          row:SetPoint("TOPLEFT", 0, -((i-1 + OFFSET) * ROW_H))
+          row:SetWidth(LIST_W)
+
+          if data then
+            row.text:SetText(
+              string.format("|cffffd200%-24s|r |cff888888[%s]|r",
+              data.name, MultiBot.PET_FAMILY[data.family] or "?"))
+
+            row:SetScript("OnClick", function()
+              if f.TargetName then
+                SendChatMessage(("tame id %d"):format(data.id), "WHISPER", nil, f.TargetName)
+              end
+              f:Hide()
+            end)
+
+            row.previewBtn:SetScript("OnClick", function()
+              LoadCreatureToPreview(data.id)
+            end)
+
+            row:Show()
+          else
+            row:Hide()
+          end
+        end
+      end
+
+      sf:SetScript("OnVerticalScroll", function(_,delta)
+        local newOffset = math.floor(sf:GetVerticalScroll()/ROW_H + 0.5)
+        if newOffset ~= OFFSET then OFFSET = newOffset; f:RefreshRows() end
+      end)
+
+      function f:Refresh()
+        wipe(RESULTS)
+        local filter = (e:GetText() or ""):lower()
+        local field  = localeField()
+
+        for id,info in pairs(MultiBot.PET_DATA) do
+          local name = info[field] or info.name_en
+          if name:lower():find(filter,1,true) then
+            RESULTS[#RESULTS+1] = {id=id,name=name,family=info.family,display=info.display}
+          end
+        end
+        table.sort(RESULTS,function(a,b) return a.name<b.name end)
+
+        content:SetHeight(#RESULTS * ROW_H)
+        OFFSET = 0
+        sf:SetVerticalScroll(0)
+        f:RefreshRows()
+      end
+      e:SetScript("OnTextChanged", function() f:Refresh() end)
+    end
+
+    -- Fenêtre liste par familles
+    function MBH:ShowFamilyFrame(targetName)
+      local ff = self.FAMILY_FRAME
+      if not ff then
+        ff = CreateFrame("Frame", "MBHunterPetFamily", UIParent)
+        self.FAMILY_FRAME = ff
+        ff:SetSize(220, 300)
+        ff:SetPoint("CENTER")
+        ff:SetBackdrop({
+          bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
+          edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
+          tile=true, tileSize=16, edgeSize=16,
+          insets={left=4, right=4, top=4, bottom=4}
+        })
+        ff:SetBackdropColor(0,0,0,0.9)
+        ff:EnableMouse(true); ff:SetMovable(true)
+        ff:RegisterForDrag("LeftButton")
+        ff:SetScript("OnDragStart", ff.StartMoving)
+        ff:SetScript("OnDragStop" , ff.StopMovingOrSizing)
+
+        local title = ff:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+        title:SetPoint("TOP", 0, -10)
+        title:SetText(MultiBot.info.hunterpetrandomfamily)
+
+        local close = CreateFrame("Button", nil, ff, "UIPanelCloseButton")
+        close:SetPoint("TOPRIGHT", -5, -5)
+
+        local sf = CreateFrame("ScrollFrame", "MBHunterFamilyScroll", ff, "UIPanelScrollFrameTemplate")
+        sf:SetPoint("TOPLEFT", 8, -40)
+        sf:SetPoint("BOTTOMRIGHT", -28, 8)
+        local LIST_W = 320
+        local content = CreateFrame("Frame", nil, sf)
+        content:SetSize(LIST_W, 1)
+        sf:SetScrollChild(content)
+        ff.Content = content
+        ff.Rows = {}
+
+        local ROW_H = 18
+
+        local loc  = GetLocale()
+        local L10N = MultiBot.PET_FAMILY_L10N and MultiBot.PET_FAMILY_L10N[loc]
+
+        local families = {}
+        for fid, eng in pairs(MultiBot.PET_FAMILY) do
+          local txt = (L10N and L10N[fid]) or eng
+          table.insert(families, {id=fid, eng=eng, txt=txt})
+        end
+        table.sort(families, function(a,b) return a.txt < b.txt end)
+
+        for i,data in ipairs(families) do
+          local row = CreateFrame("Button", nil, content)
+          row:EnableMouse(true)
+          row:SetHeight(ROW_H)
+          row:SetPoint("TOPLEFT", 0, -(i-1)*ROW_H)
+          row:SetWidth(content:GetWidth())
+
+          row.text = row:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+          row.text:SetPoint("LEFT")
+          row.text:SetText("|cffffd200"..data.txt.."|r")
+          row:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
+
+          row:SetScript("OnClick", function()
+            if targetName then
+              local cmd = ("tame family %s"):format(data.eng) -- nom anglais dans la commande
+              SendChatMessage(cmd, "WHISPER", nil, targetName)
+            end
+            ff:Hide()
+          end)
+        end
+      end
+      ff:Show()
+    end
+
+    -- Un chasseur dans le groupe/raid ?
+    function MBH:HasHunterInGroup()
+      local _, cls = UnitClass("player")
+      if cls == "HUNTER" then return true end
+      if GetNumRaidMembers and GetNumRaidMembers() > 0 then
+        for i = 1, GetNumRaidMembers() do
+          local _, c = UnitClass("raid"..i)
+          if c == "HUNTER" then return true end
+        end
+      else
+        if GetNumPartyMembers then
+          for i = 1, GetNumPartyMembers() do
+            local _, c = UnitClass("party"..i)
+            if c == "HUNTER" then return true end
+          end
+        end
+      end
+      return false
+    end
+
+    MBH.presenceFrame = CreateFrame("Frame")
+    MBH.presenceFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+    if MBH.presenceFrame.RegisterEvent then
+      MBH.presenceFrame:RegisterEvent("PARTY_MEMBERS_CHANGED")
+      MBH.presenceFrame:RegisterEvent("RAID_ROSTER_UPDATE")
+    end
+    MBH.presenceFrame:SetScript("OnEvent", function()
+      MBH:Rebuild()
+    end)
+
+    -- Initial rebuild différée
+    if MultiBot.TimerAfter then
+      MultiBot.TimerAfter(0.5, function() MBH:Rebuild() end)
+    end
+
+  end
+
+  -- Initialisation
+  MultiBot.InitHunterQuick()
 end
 
-local tButton = tSelector.addButton("@dps", 60, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_dps.blp", MultiBot.tips.rtsc.dps, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").setDisable()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("@dps rtsc select")
-	pButton.parent.doSelect(pButton, "@dps")
-	pButton.setEnable()
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@dps rtsc select")
-	pButton.parent.doReset(pButton.parent)
-end
-
-local tButton = tSelector.addButton("@healer", 90, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_healer.blp", MultiBot.tips.rtsc.healer, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").setDisable()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("@healer rtsc select")
-	pButton.parent.doSelect(pButton, "@healer")
-	pButton.setEnable()
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@healer rtsc select")
-	pButton.parent.doReset(pButton.parent)
-end
-
-local tButton = tSelector.addButton("@melee", 120, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_melee.blp", MultiBot.tips.rtsc.melee, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").setDisable()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("@melee rtsc select")
-	pButton.parent.doSelect(pButton, "@melee")
-	pButton.setEnable()
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@melee rtsc select")
-	pButton.parent.doReset(pButton.parent)
-end
-
-local tButton = tSelector.addButton("@ranged", 150, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_ranged.blp", MultiBot.tips.rtsc.ranged, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm").setDisable()
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("@ranged rtsc select")
-	pButton.parent.doSelect(pButton, "@ranged")
-	pButton.setEnable()
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@ranged rtsc select")
-	pButton.parent.doReset(pButton.parent)
-end
-
-local tButton = tSelector.addButton("@all", 180, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc.blp", MultiBot.tips.rtsc.all, "SecureActionButtonTemplate").addMacro("type1", "/cast aedm")
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("rtsc select")
-	pButton.parent.doReset(pButton.parent)
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("rtsc select")
-	pButton.parent.doReset(pButton.parent)
-end
-
-local tButton = tSelector.addButton("Browse", 210, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_browse.blp", MultiBot.tips.rtsc.browse)
-tButton.doRight = function(pButton)
-	MultiBot.ActionToGroup("rtsc cancel")
-	pButton.parent.doReset(pButton.parent)
-end
-tButton.doLeft = function(pButton)
-	local tFrame = pButton.parent
-	
-	if(pButton.state) then
-		tFrame.buttons["@dps"].doShow()
-		tFrame.buttons["@tank"].doShow()
-		tFrame.buttons["@melee"].doShow()
-		tFrame.buttons["@healer"].doShow()
-		tFrame.buttons["@ranged"].doShow()
-		tFrame.buttons["@group1"].doHide()
-		tFrame.buttons["@group2"].doHide()
-		tFrame.buttons["@group3"].doHide()
-		tFrame.buttons["@group4"].doHide()
-		tFrame.buttons["@group5"].doHide()
-		pButton.state = false
-	else
-		tFrame.buttons["@dps"].doHide()
-		tFrame.buttons["@tank"].doHide()
-		tFrame.buttons["@healer"].doHide()
-		tFrame.buttons["@melee"].doHide()
-		tFrame.buttons["@ranged"].doHide()
-		tFrame.buttons["@group1"].doShow()
-		tFrame.buttons["@group2"].doShow()
-		tFrame.buttons["@group3"].doShow()
-		tFrame.buttons["@group4"].doShow()
-		tFrame.buttons["@group5"].doShow()
-		pButton.state = true
-	end
-end
+-- End Hunter --
 
 -- HUNTER PETS MENU --
 if not MultiBot.InitHunterQuick then
