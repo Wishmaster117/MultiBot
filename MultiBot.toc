@@ -5,20 +5,24 @@
 ## Author: Nico Löbbert
 ## SavedVariablesPerCharacter: MultiBotSave, MultiBotDB
 ## SavedVariables: MultiBotGlobalSave
+## X-Maintainer: Wishmaster117 aka TheWarlock
+## X-Contributors: Wishmaster117 aka TheWarlock
+## X-Contact: admin@azerothdevs.com
+## X-ProjectURL: https://www.azerothdevs.com
 
 MultiBot.lua
 MultiBotConfig.lua
 MultiBotOptions.lua
 MultiBotThrottle.lua
 
-MultiBotLanguage-deDE.lua
-MultiBotLanguage-enGB.lua
-MultiBotLanguage-enUS.lua
-MultiBotLanguage-frFR.lua
-MultiBotLanguage-zhCN.lua
-MultiBotLanguage-koKR.lua
-MultiBotLanguage-ruRU.lua
-MultiBotLanguage-esES.lua
+Locales\MultiBotLanguage-deDE.lua
+Locales\MultiBotLanguage-enGB.lua
+Locales\MultiBotLanguage-enUS.lua
+Locales\MultiBotLanguage-frFR.lua
+Locales\MultiBotLanguage-zhCN.lua
+Locales\MultiBotLanguage-koKR.lua
+Locales\MultiBotLanguage-ruRU.lua
+Locales\MultiBotLanguage-esES.lua
 Data\HunterPetFamily.lua
 Data\HunterPetList_1.lua
 Data\HunterPetList_2.lua
