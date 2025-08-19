@@ -103,7 +103,304 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 			pButton.getButton("Dps").setDisable()
 		end
 	end
+
+	-- CURSES --
 	
+	local btnCurses = pFrame.addButton("CursesSelect", -120, 0,
+					"ability_warlock_avoidance",
+					MultiBot.tips.warlock.curses.master)
+	
+	local fCurses   = pFrame.addFrame("Curses", -122, 30)
+	fCurses:Hide()
+	fCurses.activeCurse = nil          -- memorize active label
+	
+	btnCurses.doLeft = function() MultiBot.ShowHideSwitch(fCurses) end
+	
+	local curseList = {
+		{"Agony",      "curse of agony",        "Spell_Shadow_CurseOfSargeras"},
+		{"Elements",   "curse of the elements", "Spell_Shadow_ChillTouch"},
+		{"Exhaustion", "curse of exhaustion",   "Spell_Shadow_GrimWard"},
+		{"Doom",       "curse of doom",         "Spell_Shadow_AuraOfDarkness"},
+		{"Weakness",   "curse of weakness",     "Spell_Shadow_CurseOfMannoroth"},
+		{"Tongues",    "curse of tongues",      "Spell_Shadow_CurseOfTounges"},
+	}
+	
+	-- Generate 6 sub-buttons
+	for i,v in ipairs(curseList) do
+		local label, cmd, icon = unpack(v)
+		local b = fCurses.addButton("Curse"..label, 0, (i-1)*26, icon,
+				MultiBot.tips.warlock.curses[label:lower()])
+	
+		--   CLICK  --
+		b.doLeft = function(pButton)
+			-- 1) debug + whisper
+			--[[DEFAULT_CHAT_FRAME:AddMessage(
+				("[MB DEBUG] > %s : co +%s"):format(pButton.getName(), cmd), 0.9,0.9,0.2)]]--
+			SendChatMessage("co +"..cmd, "WHISPER", nil, pButton.getName())
+	
+			-- 2) visual aspect
+			for _,child in pairs(fCurses.buttons) do
+				if child.icon then child.icon:SetDesaturated(0) end
+			end
+			pButton.icon:SetDesaturated(1)
+			fCurses.activeCurse = label          -- we store here
+	
+			fCurses:Hide()
+		end
+	end
+	
+	-- mark active button when the menu is open
+	fCurses:SetScript("OnShow", function(self)
+		if self.activeCurse then
+			local btn = self.getButton and self:getButton("Curse"..self.activeCurse) or nil
+			if btn and btn.icon then btn.icon:SetDesaturated(1) end
+		end
+	end)
+	-- END CURSES --
+
+	-- STONES (Spellstone / Firestone) --
+	
+	local btnStones = pFrame.addButton("StonesSelect", -150, 0,
+						"inv_misc_orb_05",
+						MultiBot.tips.warlock.stones.master)
+	
+	local fStones = pFrame.addFrame("Stones", -152, 30)
+	fStones:Hide()
+	fStones.activeStone = nil -- nil = aucune pierre activée
+	
+	btnStones.doLeft = function()
+		MultiBot.ShowHideSwitch(fStones)
+	end
+	
+	-- Handles buttons
+	local stoneButtons = {}
+	
+	local stoneList = {
+		{"Spellstone", "spellstone", "inv_misc_gem_amethyst_02"},
+		{"Firestone",  "firestone",  "inv_ammo_firetar"},
+	}
+	
+	-- Helper : (dé)saturer les icônes
+	local function UpdateStoneIcons(active)
+		for label, b in pairs(stoneButtons) do
+			if b.icon then
+				-- Active  => icône colorée (SetDesaturated(false))
+				-- Inactive => grisée (SetDesaturated(true))
+				b.icon:SetDesaturated(label ~= active)
+			end
+		end
+		-- Bouton principal : grisé si aucune pierre active
+		if btnStones.icon then
+			btnStones.icon:SetDesaturated(active == nil)
+		end
+	end
+	
+	-- Mise à jour d'état : active -> inactive ; inactive -> active
+	local function ToggleStone(pButton, label, cmd)
+		if fStones.activeStone == label then
+			-- La pierre est déjà active on la désactive
+			SendChatMessage("nc -" .. cmd, "WHISPER", nil, pButton.getName())
+			fStones.activeStone = nil
+		else
+			-- Nouvelle activation ► on active celle-ci et désactive l'autre le cas échéant
+			if fStones.activeStone then
+				local oldLabel = fStones.activeStone
+				local oldCmd   = (oldLabel == "Spellstone") and "spellstone" or "firestone"
+				SendChatMessage("nc -" .. oldCmd, "WHISPER", nil, pButton.getName())
+			end
+			SendChatMessage("nc +" .. cmd, "WHISPER", nil, pButton.getName())
+			fStones.activeStone = label
+		end
+		UpdateStoneIcons(fStones.activeStone)
+		fStones:Hide()
+	end
+	
+	-- Création des boutons Spellstone / Firestone
+	for i, v in ipairs(stoneList) do
+		local label, cmd, icon = unpack(v)
+		local b = fStones.addButton("Stone" .. label, 0, (i - 1) * 26, icon,
+									MultiBot.tips.warlock.stones[label:lower()])
+		stoneButtons[label] = b
+	
+		-- LEFT Click => toggle (activation / désactivation)
+		b.doLeft = function(pButton)
+			ToggleStone(pButton, label, cmd)
+		end
+	
+		-- RIGHT Click identique au gauche (usage facultatif)
+		b.doRight = b.doLeft
+	end
+	
+	-- État par défaut : les deux pierres sont inactives icônes grisées
+	-- On vérifie quand même si une commande est déjà active (reconnexion)
+	for _, v in ipairs(stoneList) do
+		local label, cmd = v[1], v[2]
+		if MultiBot.isInside(pNormal, cmd) then
+			fStones.activeStone = label
+			break
+		end
+	end
+	UpdateStoneIcons(fStones.activeStone)
+	
+	-- Réactualise les icônes à chaque affichage du menu
+	fStones:SetScript("OnShow", function(self)
+		UpdateStoneIcons(self.activeStone)
+	end)
+	
+	-- FIN STONES --
+ 
+	-- SOULSTONES (Stratégies de pose) --
+	
+	local btnSoulstones = pFrame.addButton("SoulstonesSelect", -180, 0,
+							"inv_misc_orb_04",
+							MultiBot.tips.warlock.soulstones.masterbutton)
+	
+	local fSoul = pFrame.addFrame("Soulstones", -182, 30)
+	fSoul:Hide()
+	
+	local ssButtons, ssActive = {}, {}
+	local ssList = {
+		{"Self",   "ss self",   "Spell_shadow_Shadowform"},
+		{"Master", "ss master", "Achievement_WorldEvent_LittleHelper"},
+		{"Tank",   "ss tank",   "ability_warrior_defensivestance"},
+		{"Healer", "ss healer", "INV_Elemental_Primal_life"},
+	}
+	
+	local function UpdateSSIcons()
+		local any = false
+		for label, b in pairs(ssButtons) do
+			local ok = ssActive[label] == true
+			if ok then any = true end
+			if b.icon then b.icon:SetDesaturated(not ok) end
+		end
+		if btnSoulstones.icon then
+			btnSoulstones.icon:SetDesaturated(not any)
+		end
+	end
+	
+	btnSoulstones.doLeft = function()  MultiBot.ShowHideSwitch(fSoul)  end
+	
+	local function ToggleSS(pButton, label, cmd)
+		if ssActive[label] then
+			SendChatMessage("nc -"..cmd, "WHISPER", nil, pButton.getName())
+			ssActive[label] = false
+		else
+			SendChatMessage("nc +"..cmd, "WHISPER", nil, pButton.getName())
+			ssActive[label] = true
+		end
+		UpdateSSIcons() ; fSoul:Hide()
+	end
+	
+	for i,v in ipairs(ssList) do
+		local label, cmd, icon = unpack(v)
+		local b = fSoul.addButton("SS" .. label, 0, (i - 1) * 26, icon,
+								MultiBot.tips.warlock.soulstones[label:lower()] or label)
+	
+		ssButtons[label] = b
+		b.doLeft = function(pButton)  ToggleSS(pButton, label, cmd)  end
+	end
+	
+	-- état initial (reconnexion)
+	for _,v in ipairs(ssList) do
+		if MultiBot.isInside(pNormal, v[2]) then ssActive[v[1]] = true end
+	end
+	UpdateSSIcons()
+	
+	fSoul:SetScript("OnShow", function()  UpdateSSIcons()  end)
+	
+	-- FIN SOULSTONES --
+
+	-- PETS --
+	
+	-- 1) Parent button: one notch to the left of “Stones” 
+	local btnPets = pFrame.addButton(
+		"PetsSelect", -210, 0,
+		"ability_druid_forceofnature",       -- icon
+		MultiBot.tips.warlock.pets.master
+	)
+	
+	-- 2) Drop-down subframe
+	local fPets = pFrame.addFrame("Pets", -212, 30)
+	fPets:Hide()
+	fPets.activePet = nil          -- stores the active daemon
+	btnPets.doLeft = function()  MultiBot.ShowHideSwitch(fPets)  end
+	
+	-- 3) Table of the five pets
+	local petList = {
+		{"Imp",       "imp",       "spell_shadow_summonimp"},
+		{"Voidwalker","voidwalker","spell_shadow_summonvoidwalker"},
+		{"Succubus",  "succubus",  "spell_shadow_summonsuccubus"},
+		{"Felhunter", "felhunter", "spell_shadow_summonfelhunter"},
+		{"Felguard",  "felguard",  "spell_shadow_summonfelguard"},
+	}
+	
+	-- Handles of sub-buttons stored here
+	local petButtons = {}
+	
+	-- Helper: updates icon desaturation
+	local function UpdatePetIcons(active)
+		for label, b in pairs(petButtons) do
+			if b.icon then
+				b.icon:SetDesaturated(label == active and 1 or 0)
+			end
+		end
+	end
+
+	-- 4) Creating sub-buttons
+	for i, v in ipairs(petList) do
+		local label, cmd, icon = unpack(v)
+		local b = fPets.addButton("Pet"..label, 0, (i-1)*26, icon,
+								MultiBot.tips.warlock.pets[label:lower()])
+		petButtons[label] = b   -- stores the handle
+	
+		--  LEFT CLICK => ACTIVATE the daemon (nc +pet)
+		b.doLeft = function(pButton)
+			--[[DEFAULT_CHAT_FRAME:AddMessage(
+				("[MB DEBUG] > %s : nc +%s"):format(pButton.getName(), cmd),
+				0.9, 0.9, 0.2)]]--
+	
+			SendChatMessage("nc +"..cmd, "WHISPER", nil, pButton.getName())
+	
+			fPets.activePet = label
+			UpdatePetIcons(label)
+			fPets:Hide()
+		end
+	
+		--  RIGHT CLICK  →  DISABLE the daemon (nc -pet)
+		--  (Requires a modification to the PlayerBot module to function)
+		
+		b.doRight = function(pButton)
+			--[[DEFAULT_CHAT_FRAME:AddMessage(
+				("[MB DEBUG] > %s : nc -%s"):format(pButton.getName(), cmd),
+				0.9, 0.5, 0.5)]]--
+	
+			SendChatMessage("nc -" .. cmd, "WHISPER", nil, pButton.getName())
+	
+			if fPets.activePet == label then
+				fPets.activePet = nil
+			end
+			UpdatePetIcons(fPets.activePet)
+			fPets:Hide()
+		end
+	end
+
+	-- 5) At login: gray out the already active daemon (present in pNormal)
+	for _, v in ipairs(petList) do
+		local label, cmd = v[1], v[2]
+		if MultiBot.isInside(pNormal, cmd) then
+			fPets.activePet = label
+			break
+		end
+	end
+	UpdatePetIcons(fPets.activePet)
+	
+	-- 6) Each time the menu is opened: reflects the current status
+	fPets:SetScript("OnShow", function(self)
+		UpdatePetIcons(self.activePet)
+	end)
+	
+	-- FIN PETS --
+
 	-- STRATEGIES --
 	
 	if(MultiBot.isInside(pCombat, "dps")) then pFrame.getButton("Dps").setEnable() end

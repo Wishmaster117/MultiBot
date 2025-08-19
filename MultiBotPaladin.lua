@@ -298,7 +298,20 @@ MultiBot.addPaladin = function(pFrame, pCombat, pNormal)
 			pButton.getButton("Tank").setDisable()
 		end
 	end
-	
+
+    -- OFF-HEAL --
+    tFrame.addButton("OffHeal", 0, 78, "Spell_Holy_FlashHeal", MultiBot.tips.paladin.dps.offheal).setDisable()
+        .doLeft = function(pButton)
+            if (MultiBot.OnOffActionToTarget(
+                    pButton, "co +offheal,?", "co -offheal,?",
+                    pButton.getName())) then
+
+                -- Modes exclusifs
+                pButton.getButton("Dps").setDisable()
+                pButton.getButton("Heal").setDisable()
+            end
+        end
+		
 	-- ASSIST --
 	
 	pFrame.addButton("TankAssist", -150, 0, "ability_warrior_innerrage", MultiBot.tips.paladin.tankAssist).setDisable()
