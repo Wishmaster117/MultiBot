@@ -6,7 +6,8 @@ Simply place the files in a folder called "MultiBot" in your World of Warcraft A
 Example: "C:\WorldOfWarcraft\Interface\AddOns\MultiBot"
 # Use
 Start World of Warcraft and enter "/multibot" or "/mbot" or "/mb" in the chat.
-
+# Wiki
+https://github.com/Wishmaster117/MultiBot/wiki
 ---
 
 ## ⚠️ Notice — About This Fork
