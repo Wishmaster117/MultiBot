@@ -157,7 +157,7 @@ MultiBot.auto.talent = false
 MultiBot.auto.invite = false
 MultiBot.auto.release = false
 --MultiBot.auto.language = true
-MultiBot.auto.strategyAsk = false
+MultiBot.auto.strategyAsk = true
 
 MultiBot.timer = {}
 MultiBot.timer.sort = {}
@@ -4005,3 +4005,4 @@ MultiBot.tips.rtsc.browse =
 "|cff999999(Execution-Order: Raid, Party)|r";
   
 MultiBot.GM = false
+
