@@ -1,3 +1,4 @@
+
 MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 	local tButton = pFrame.addButton("Buff", 0, 0, "spell_shadow_lifedrain02", MultiBot.tips.warlock.buff.master)
 	tButton.doLeft = function(pButton)
@@ -84,8 +85,19 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 			pButton.getButton("Tank").setDisable()
 		end
 	end
-	
-	-- ASSIST --
+
+    -- META MELEE (Démonologie) --
+    local btnMeta = tFrame.addButton(
+      "MetaMelee", 0, 104, "Spell_Shadow_DemonForm",
+      (MultiBot.tips.warlock.dps and MultiBot.tips.warlock.dps.metamelee)
+    )
+    btnMeta.setDisable()
+    
+    btnMeta.doLeft = function(pButton)
+      MultiBot.OnOffActionToTarget(pButton, "co +meta melee,?", "co -meta melee,?", pButton.getName())
+    end
+    	
+		-- ASSIST --
 	
 	pFrame.addButton("TankAssist", -60, 0, "ability_warrior_innerrage", MultiBot.tips.warlock.tankAssist).setDisable()
 	.doLeft = function(pButton)
@@ -118,7 +130,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 	
 	local curseList = {
 		{"Agony",      "curse of agony",        "Spell_Shadow_CurseOfSargeras"},
-		{"Elements",   "curse of the elements", "Spell_Shadow_ChillTouch"},
+		{"Elements",   "curse of elements",     "Spell_Shadow_ChillTouch"},
 		{"Exhaustion", "curse of exhaustion",   "Spell_Shadow_GrimWard"},
 		{"Doom",       "curse of doom",         "Spell_Shadow_AuraOfDarkness"},
 		{"Weakness",   "curse of weakness",     "Spell_Shadow_CurseOfMannoroth"},
@@ -400,13 +412,14 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 	end)
 	
 	-- FIN PETS --
-
-	-- STRATEGIES --
 	
-	if(MultiBot.isInside(pCombat, "dps")) then pFrame.getButton("Dps").setEnable() end
-	if(MultiBot.isInside(pCombat, "dps aoe")) then pFrame.getButton("DpsAoe").setEnable() end
-	if(MultiBot.isInside(pCombat, "dps debuff")) then pFrame.getButton("DpsDebuff").setEnable() end
-	if(MultiBot.isInside(pCombat, "dps assist")) then pFrame.getButton("DpsAssist").setEnable() end
-	if(MultiBot.isInside(pCombat, "tank assist")) then pFrame.getButton("TankAssist").setEnable() end
-	if(MultiBot.isInside(pCombat, "tank")) then pFrame.getButton("Tank").setEnable() end
+	-- STRATEGIES --
+    if(MultiBot.isInside(pCombat, "dps")) then pFrame.getButton("Dps").setEnable() end
+    if(MultiBot.isInside(pCombat, "dps aoe")) then pFrame.getButton("DpsAoe").setEnable() end
+    if(MultiBot.isInside(pCombat, "dps debuff")) then pFrame.getButton("DpsDebuff").setEnable() end
+    if(MultiBot.isInside(pCombat, "dps assist")) then pFrame.getButton("DpsAssist").setEnable() end
+    if(MultiBot.isInside(pCombat, "tank assist")) then pFrame.getButton("TankAssist").setEnable() end
+    if(MultiBot.isInside(pCombat, "tank")) then pFrame.getButton("Tank").setEnable() end
+    if(MultiBot.isInside(pCombat, "meta melee")) then pFrame.getButton("MetaMelee").setEnable() end
+
 end

@@ -3189,6 +3189,16 @@ MultiBot.tips.warlock.dps.dps =
 "|cffff0000Left-Click to enable or disable DPS|r\n"..
 "|cf9999999(Execution-Order: Bot)|r";
 
+MultiBot.tips.warlock.dps.metamelee =
+"Meta Melee|cffffffff\n"..
+"Enables the Warlock 'meta melee' combat strategy.\n"..
+"When Metamorphosis and Immolation Aura are active\n"..
+"the bot will move to melee range and behave accordingly.\n"..
+"This toggle has no effect without Metamorphosis/Immolation Aura\n"..
+"and it is independent of DPS/Tank-Assist toggles.|r\n\n"..
+"|cffff0000Left-Click to enable or disable Meta Melee|r\n"..
+"|cff999999(Execution-Order: Bot)|r";
+
 MultiBot.tips.warlock.tankAssist = 
 "Tank-Assist|cffffffff\n"..
 "It enables the Tank-Assist-Strategies.\n"..

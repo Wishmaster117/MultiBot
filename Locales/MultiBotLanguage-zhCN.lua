@@ -2643,6 +2643,16 @@ MultiBot.tips.warlock.dps.dps =
 "|cffff0000左键单击以启用或禁用DPS策略|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
+MultiBot.tips.warlock.dps.metamelee =
+"近战形态|cffffffff\n"..
+"启用术士的“近战形态”战斗策略。\n"..
+"当恶魔变形和献祭光环激活时，\n"..
+"机器人会移动到近战范围并相应地进行战斗。\n"..
+"此设置在没有恶魔变形/献祭光环时无效，\n"..
+"并且独立于 DPS/坦克辅助的切换。|r\n\n"..
+"|cffff0000左键点击以启用或禁用近战形态|r\n"..
+"|cff999999(执行顺序: Bot)|r";
+
 MultiBot.tips.warlock.tankAssist = 
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..
