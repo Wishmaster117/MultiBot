@@ -364,6 +364,7 @@ MultiBot:SetScript("OnEvent", function()
           end
         end
 
+
 		-- if(MultiBot.isInside(arg1, "Possible strategies")) then
 		if(MultiBot.auto.strategyAsk and MultiBot.isInside(arg1, "Possible strategies")) then -- Changed because chat spam
 			local tStrategies = MultiBot.doSplit(arg1, ", ")
@@ -789,7 +790,7 @@ MultiBot:SetScript("OnEvent", function()
 			if MultiBot._awaitingQuestsAllBots then
 				MultiBot._awaitingQuestsAllBots[author] = true
 			end
-	
+
 			-- Vide le buffer
 			MultiBot._questAllBuffer[author] = nil
 	
