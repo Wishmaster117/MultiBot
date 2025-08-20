@@ -157,7 +157,7 @@ MultiBot.auto.talent = false
 MultiBot.auto.invite = false
 MultiBot.auto.release = false
 --MultiBot.auto.language = true
-MultiBot.auto.strategyAsk = true
+-- MultiBot.auto.strategyAsk = false Lock pour spam chat en suspend
 
 MultiBot.timer = {}
 MultiBot.timer.sort = {}
