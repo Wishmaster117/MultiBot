@@ -2559,6 +2559,22 @@ MultiBot.tips.shaman.dps.dpsAoe =
 "|cffff0000 DPS 범위 공격을 활성화 또는 비활성화하려면 왼쪽 클릭하세요|r\n"..
 "|cf9999999(명령 실행: 로봇)|r";
 
+MultiBot.tips.shaman.playbook.cure =
+"정화|cffffffff\n"..
+"정화 전략을 활성화합니다.\n"..
+"봇은 가능한 경우 독, 저주 및 질병을 제거합니다.|r\n\n"..
+"|cffff0000좌클릭으로 정화를 활성화하거나 비활성화합니다|r\n"..
+"|cf9999999(실행 순서: 봇)|r";
+
+MultiBot.tips.shaman.dps.healerdps =
+"힐러-DPS|cffffffff\n"..
+"힐러-DPS 전략을 활성화합니다.\n"..
+"힐러는 치유에 집중하면서 동시에 피해를 입힙니다.\n"..
+"힐러-DPS, DPS-AOE, DPS-지원 및 탱커-지원은 상호 배타적입니다.\n"..
+"이 전략들 중 하나만 활성화할 수 있습니다.|r\n\n"..
+"|cffff0000좌클릭으로 힐러-DPS를 활성화하거나 비활성화합니다|r\n"..
+"|cf9999999(실행 순서: 봇)|r";
+
 MultiBot.tips.shaman.tankAssist = 
 "탱크 지원|cffffffff\n"..
 "탱크 지원 전략을 구현합니다.\n"..

@@ -2577,6 +2577,22 @@ MultiBot.tips.shaman.dps.dpsAoe =
 "|cffff0000Clic izquierdo para activar o desactivar DPS-AOE|r\n".. 
 "|cf9999999(Execution-Order: Bot)|r";
 
+MultiBot.tips.shaman.playbook.cure =
+"Curar|cffffffff\n"..
+"Activa la estrategia de curación.\n"..
+"El bot eliminará venenos, maldiciones y enfermedades cuando sea posible.|r\n\n"..
+"|cffff0000Clic izquierdo para activar o desactivar Curar|r\n"..
+"|cf9999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.shaman.dps.healerdps =
+"Healer-DPS|cffffffff\n"..
+"Activa la estrategia Healer-DPS.\n"..
+"El sanador infligirá daño mientras sigue concentrándose en la curación.\n"..
+"Healer-DPS, DPS-AOE, DPS-Assist y Tank-Assist son mutuamente excluyentes.\n"..
+"Solo una de estas estrategias puede estar activada.|r\n\n"..
+"|cffff0000Clic izquierdo para activar o desactivar Healer-DPS|r\n"..
+"|cf9999999(Orden de ejecución: Bot)|r";
+
 MultiBot.tips.shaman.tankAssist = 
 "Tank-Assist|cffffffff\n".. 
 "Activa las estrategias de asistencia al tanque.\n".. 

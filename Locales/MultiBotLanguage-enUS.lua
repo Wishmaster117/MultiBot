@@ -2516,6 +2516,22 @@ MultiBot.tips.shaman.dps.dpsAoe =
 "|cffff0000Left-click to toggle DPS-AoE|r\n"..
 "|cf9999999(Executed by: Bot)|r";
 
+MultiBot.tips.shaman.playbook.cure =
+"Cure|cffffffff\n"..
+"It enables the Cure-Strategy.\n"..
+"The bot will remove poisons, curses and diseases when possible.|r\n\n"..
+"|cffff0000Left-Click to enable or disable Cure|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
+MultiBot.tips.shaman.dps.healerdps =
+"Healer-DPS|cffffffff\n"..
+"It enables the Healer-DPS-Strategy.\n"..
+"The healer will contribute damage while still focusing on healing.\n"..
+"Healer-DPS, DPS-AOE, DPS-Assist and Tank-Assist are mutually exclusive.\n"..
+"Only one of these Strategies can be activated.|r\n\n"..
+"|cffff0000Left-Click to enable or disable Healer-DPS|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
 MultiBot.tips.shaman.tankAssist =
 "Tank Assist|cffffffff\n"..
 "DPS AoE, DPS Assist, and Tank Assist are mutually exclusive.\n"..

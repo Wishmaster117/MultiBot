@@ -123,6 +123,12 @@ MultiBot.addShaman = function(pFrame, pCombat, pNormal)
 			pButton.getButton("Heal").setDisable()
 		end
 	end
+
+	-- UTILITAIRE : CURE --
+	pFrame.addButton("Cure", -180, 0, "Ability_Creature_Poison_02", MultiBot.tips.shaman.playbook.cure).setDisable()
+	.doLeft = function(pButton)
+		MultiBot.OnOffActionToTarget(pButton, "co +cure,?", "co -cure,?", pButton.getName())
+	end
 	
 	-- STRATEGIES:PLAYBOOK --
 	
@@ -132,6 +138,7 @@ MultiBot.addShaman = function(pFrame, pCombat, pNormal)
 	if(MultiBot.isInside(pCombat, "caster,")) then pFrame.getButton("Caster").setEnable() end
 	if(MultiBot.isInside(pCombat, "melee aoe")) then pFrame.getButton("MeleeAoe").setEnable() end
 	if(MultiBot.isInside(pCombat, "caster aoe")) then pFrame.getButton("CasterAoe").setEnable() end
+	if(MultiBot.isInside(pCombat, "cure")) then pFrame.getButton("Cure").setEnable() end
 	
 	-- DPS --
 	
@@ -158,6 +165,16 @@ MultiBot.addShaman = function(pFrame, pCombat, pNormal)
 			pButton.getButton("DpsAssist").setDisable()
 		end
 	end
+
+	-- HEALER DPS --
+	tFrame.addButton("HealerDps", 0, 52, "INV_Alchemy_Elixir_02", MultiBot.tips.shaman.dps.healerdps).setDisable()
+	.doLeft = function(pButton)
+		if(MultiBot.OnOffActionToTarget(pButton, "co +healer dps,?", "co -healer dps,?", pButton.getName())) then
+			pButton.getButton("TankAssist").setDisable()
+			pButton.getButton("DpsAoe").setDisable()
+			pButton.getButton("DpsAssist").setDisable()
+		end
+	end
 	
 	-- ASSIST --
 	
@@ -173,5 +190,6 @@ MultiBot.addShaman = function(pFrame, pCombat, pNormal)
 	
 	if(MultiBot.isInside(pCombat, "dps aoe")) then pFrame.getButton("DpsAoe").setEnable() end
 	if(MultiBot.isInside(pCombat, "dps assist")) then pFrame.getButton("DpsAssist").setEnable() end
+	if(MultiBot.isInside(pCombat, "healer dps")) then pFrame.getButton("HealerDps").setEnable() end
 	if(MultiBot.isInside(pCombat, "tank assist")) then pFrame.getButton("TankAssist").setEnable() end
 end
