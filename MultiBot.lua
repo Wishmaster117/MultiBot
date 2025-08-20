@@ -157,6 +157,7 @@ MultiBot.auto.talent = false
 MultiBot.auto.invite = false
 MultiBot.auto.release = false
 --MultiBot.auto.language = true
+MultiBot.auto.strategyAsk = false
 
 MultiBot.timer = {}
 MultiBot.timer.sort = {}

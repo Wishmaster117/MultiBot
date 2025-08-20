@@ -364,7 +364,9 @@ MultiBot:SetScript("OnEvent", function()
           end
         end
 
-		if(MultiBot.isInside(arg1, "Possible strategies")) then
+
+		-- if(MultiBot.isInside(arg1, "Possible strategies")) then
+		if(MultiBot.auto.strategyAsk and MultiBot.isInside(arg1, "Possible strategies")) then -- Changed because chat spam
 			local tStrategies = MultiBot.doSplit(arg1, ", ")
 			SendChatMessage("=== STRATEGIES ===", "SAY")
 			for i = 1, table.getn(tStrategies) do SendChatMessage(i .. " : " .. tStrategies[i], "SAY") end
@@ -544,8 +546,12 @@ MultiBot:SetScript("OnEvent", function()
 			
 			if(MultiBot.isMember(tName)) then
 				tButton.waitFor = "CO"
-				SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
-				SendChatMessage("co ?", "WHISPER", nil, tName)
+				--[[SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
+				SendChatMessage("co ?", "WHISPER", nil, tName)]]-- Removed for chat spam
+				if MultiBot.auto.strategyAsk then
+					SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
+					SendChatMessage("co ?", "WHISPER", nil, tName)
+				end				
 				tButton.setEnable()
 				--MultiBot.doRaid()
 				return
@@ -580,9 +586,14 @@ MultiBot:SetScript("OnEvent", function()
 			local tButton = MultiBot.frames["MultiBar"].frames["Units"].buttons[tName]
 			if(tButton == nil) then return end
 			tButton.waitFor = "CO"
-			SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
-			SendChatMessage("co ?", "WHISPER", nil, tName)
-			tButton.setEnable()
+			-- SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
+			-- SendChatMessage("co ?", "WHISPER", nil, tName)
+			-- tButton.setEnable()
+			if MultiBot.auto.strategyAsk then
+				SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
+				SendChatMessage("co ?", "WHISPER", nil, tName)
+			end
+			tButton.setEnable()			
 			--MultiBot.doRaid()
 			return
 		end
@@ -779,7 +790,7 @@ MultiBot:SetScript("OnEvent", function()
 			if MultiBot._awaitingQuestsAllBots then
 				MultiBot._awaitingQuestsAllBots[author] = true
 			end
-	
+
 			-- Vide le buffer
 			MultiBot._questAllBuffer[author] = nil
 	
@@ -1024,8 +1035,12 @@ MultiBot:SetScript("OnEvent", function()
 		
 		if(MultiBot.isInside(arg1, "Hello", "你好")) then
 			tButton.waitFor = "CO"
-			SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", arg2), "SAY")
-			SendChatMessage("co ?", "WHISPER", nil, arg2)
+			-- SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", arg2), "SAY")
+			-- SendChatMessage("co ?", "WHISPER", nil, arg2)
+			if MultiBot.auto.strategyAsk then
+				SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", arg2), "SAY")
+				SendChatMessage("co ?", "WHISPER", nil, arg2)
+			end			
 			--MultiBot.doRaid()
 			return
 		end
@@ -1089,15 +1104,22 @@ MultiBot:SetScript("OnEvent", function()
 			end
 			
 			tButton.setEnable()
-			SendChatMessage("ss ?", "WHISPER", nil, arg2)
+			-- SendChatMessage("ss ?", "WHISPER", nil, arg2)
+			if MultiBot.auto.strategyAsk then
+				SendChatMessage("ss ?", "WHISPER", nil, arg2)
+			end			
 			return
 		end
 		
 		if(tButton.waitFor == "CO" and MultiBot.isInside(arg1, "Strategies: ")) then
 			tButton.waitFor = "NC"
 			tButton.combat = string.sub(arg1, 13)
-			SendChatMessage(MultiBot.doReplace(MultiBot.info.normal, "NAME", arg2), "SAY")
-			SendChatMessage("nc ?", "WHISPER", nil, arg2)
+			-- SendChatMessage(MultiBot.doReplace(MultiBot.info.normal, "NAME", arg2), "SAY")
+			-- SendChatMessage("nc ?", "WHISPER", nil, arg2)
+			if MultiBot.auto.strategyAsk then
+				SendChatMessage(MultiBot.doReplace(MultiBot.info.normal, "NAME", arg2), "SAY")
+				SendChatMessage("nc ?", "WHISPER", nil, arg2)
+			end			
 			return
 		end
 		
