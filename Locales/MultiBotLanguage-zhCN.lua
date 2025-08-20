@@ -2571,6 +2571,22 @@ MultiBot.tips.shaman.dps.dpsAoe =
 "|cffff0000左键点击启用或禁用DPS范围攻击|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
+MultiBot.tips.shaman.playbook.cure =
+"净化|cffffffff\n"..
+"启用净化策略。\n"..
+"机器人会在可能的情况下移除中毒、诅咒和疾病效果。|r\n\n"..
+"|cffff0000左键点击以启用或禁用净化|r\n"..
+"|cf9999999(执行顺序: Bot)|r";
+
+MultiBot.tips.shaman.dps.healerdps =
+"治疗者-DPS|cffffffff\n"..
+"启用治疗者-DPS策略。\n"..
+"治疗者在专注于治疗的同时也会造成伤害。\n"..
+"治疗者-DPS、DPS-AOE、DPS-协助和坦克-协助互斥。\n"..
+"这些策略中只能激活一个。|r\n\n"..
+"|cffff0000左键点击以启用或禁用治疗者-DPS|r\n"..
+"|cf9999999(执行顺序: Bot)|r";
+
 MultiBot.tips.shaman.tankAssist = 
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..
