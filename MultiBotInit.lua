@@ -5686,7 +5686,6 @@ if not MultiBot.InitHunterQuick then
       ff:Show()
     end
 
-    -- Un chasseur dans le groupe/raid ?
     function MBH:HasHunterInGroup()
       local _, cls = UnitClass("player")
       if cls == "HUNTER" then return true end
@@ -5716,18 +5715,203 @@ if not MultiBot.InitHunterQuick then
       MBH:Rebuild()
     end)
 
-    -- Initial rebuild différée
     if MultiBot.TimerAfter then
       MultiBot.TimerAfter(0.5, function() MBH:Rebuild() end)
     end
 
   end
 
-  -- Initialisation
   MultiBot.InitHunterQuick()
 end
 
 -- End Hunter --
+
+-- SHAMAN TOTEMS QUICK BAR --
+if not MultiBot.InitShamanQuick then
+  function MultiBot.InitShamanQuick()
+    local MBS = MultiBot.ShamanQuick or {}
+    MultiBot.ShamanQuick = MBS
+
+    function MBS:CloseAllExcept(keepRow)
+      for _, r in pairs(self.entries) do
+        if r ~= keepRow then
+          if r.vmenu    and r.vmenu:IsShown()    then r.vmenu:Hide()    end
+          if r.earthGrp and r.earthGrp:IsShown() then r.earthGrp:Hide() end
+          if r.fireGrp  and r.fireGrp:IsShown()  then r.fireGrp:Hide()  end
+          if r.waterGrp and r.waterGrp:IsShown() then r.waterGrp:Hide() end
+          if r.airGrp   and r.airGrp:IsShown()   then r.airGrp:Hide()   end
+        end
+      end
+    end
+
+    MBS.frame = MultiBot.addFrame("ShamanQuick", -420, 240, 36, 36*8, 36*4)
+    MBS.frame:SetMovable(true)
+    MBS.frame:EnableMouse(true)
+    MBS.frame:RegisterForDrag("RightButton")
+    MBS.frame:SetScript("OnDragStart", MBS.frame.StartMoving)
+    MBS.frame:SetScript("OnDragStop" , MBS.frame.StopMovingOrSizing)
+    MBS.frame:Hide()
+
+    MBS.entries, MBS.COL_GAP = {}, 40
+    MBS.count = 0
+
+    local function SanitizeName(n) return (tostring(n):gsub("[^%w_]", "_")) end
+
+    local function AddTotemToggle(parentFrame, name, x, y, icon, label, spell, ownerName)
+      local b = parentFrame.addButton(name, x, y, icon, label)
+      b._mb_owner = ownerName
+      b._mb_on    = false
+      b.doLeft = function()
+        local who = b._mb_owner
+        if not who then return end
+        if b._mb_on then
+          MultiBot.ActionToTarget("co -" .. spell .. ",?", who)
+          b._mb_on = false
+        else
+          MultiBot.ActionToTarget("co +" .. spell .. ",?", who)
+          b._mb_on = true
+        end
+      end
+      return b
+    end
+
+    function MBS:BuildForShaman(sName)
+      local san = SanitizeName(sName)
+      self.count = self.count + 1
+      local xoff = -36*7 + (self.count-1) * self.COL_GAP
+
+      local row = self.frame.addFrame("ShamanQuickRow_"..san, xoff, 0, 36, 36*8, 36*3)
+      row.owner = sName
+      self.entries[san] = row
+
+      row.mainBtn = row.addButton("ShamanQuickMain_"..san, 0, 0,
+        "Interface\\AddOns\\MultiBot\\Icons\\class_shaman.blp",
+        (MultiBot.tips and MultiBot.tips.shaman and MultiBot.tips.shaman.ownbutton) and MultiBot.tips.shaman.ownbutton:format(sName) or ("Shaman: "..sName))
+      row.mainBtn:SetFrameStrata("HIGH")
+      row.mainBtn:RegisterForDrag("RightButton")
+      row.mainBtn:SetScript("OnDragStart", function() self.frame:StartMoving() end)
+      row.mainBtn:SetScript("OnDragStop" , function() self.frame:StopMovingOrSizing() end)
+
+      row.mainBtn.doLeft = function()
+        local mbs = MultiBot.ShamanQuick
+        if mbs and mbs.CloseAllExcept then mbs:CloseAllExcept(row) end
+      
+        if row.vmenu and row.vmenu:IsShown() then
+          row.vmenu:Hide()
+          if row.earthGrp then row.earthGrp:Hide() end
+          if row.fireGrp  then row.fireGrp:Hide()  end
+          if row.waterGrp then row.waterGrp:Hide() end
+          if row.airGrp   then row.airGrp:Hide()   end
+        else
+          if row.vmenu then row.vmenu:Show() end
+        end
+      end
+
+      row.vmenu = row.addFrame("ShamanQuickMenu_"..san, 0, 0, 36, 36, 36*4)
+      row.vmenu:Hide()
+
+      local function ToggleGroup(groupFrame)
+        if groupFrame:IsShown() then groupFrame:Hide() else groupFrame:Show() end
+      end
+
+      -- Earth --
+      row.earthBtn = row.vmenu.addButton("ShamanEarthBtn_"..san, 0, 36, "spell_nature_earthbindtotem", MultiBot.tips.shaman.ctotem.earthtot)
+      row.earthGrp = row.addFrame("ShamanEarthGrp_"..san, 40, 0, 36, 36, 36*5); row.earthGrp:Hide()
+      row.earthBtn.doLeft = function() ToggleGroup(row.earthGrp) end
+
+      AddTotemToggle(row.earthGrp, "StrengthOfEarth_"..san,  0,   0, "spell_nature_earthbindtotem",         MultiBot.tips.shaman.ctotem.stoe,   "strength of earth", sName)
+      AddTotemToggle(row.earthGrp, "Stoneskin_"..san,        0,  36, "spell_nature_stoneskintotem",         MultiBot.tips.shaman.stoskin,       "stoneskin",         sName)
+      AddTotemToggle(row.earthGrp, "Tremor_"..san,           0,  72, "spell_nature_tremortotem",            MultiBot.tips.shaman.ctotem.tremor, "tremor",            sName)
+      AddTotemToggle(row.earthGrp, "Earthbind_"..san,        0, 108, "spell_nature_strengthofearthtotem02", MultiBot.tips.shaman.ctotem.eabind, "earthbind",         sName)
+ 
+      -- Fire --
+      row.fireBtn = row.vmenu.addButton("ShamanFireBtn_"..san, 0, 72, "spell_fire_searingtotem", MultiBot.tips.shaman.ctotem.firetot)
+      row.fireGrp = row.addFrame("ShamanFireGrp_"..san, 80, 0, 36, 36, 36*5); row.fireGrp:Hide()
+      row.fireBtn.doLeft = function() ToggleGroup(row.fireGrp) end
+ 
+      AddTotemToggle(row.fireGrp, "Searing_"..san,       0,   0, "spell_fire_searingtotem",   MultiBot.tips.shaman.ctotem.searing,  "searing",          sName)
+      AddTotemToggle(row.fireGrp, "Magma_"..san,         0,  36, "spell_fire_moltenblood",    MultiBot.tips.shaman.ctotem.magma,    "magma",            sName)
+      AddTotemToggle(row.fireGrp, "Flametongue_"..san,   0,  72, "spell_nature_guardianward", MultiBot.tips.shaman.ctotem.fltong,   "flametongue",      sName)
+      AddTotemToggle(row.fireGrp, "Wrath_"..san,         0, 108, "spell_fire_totemofwrath",   MultiBot.tips.shaman.ctotem.towrath,  "wrath",            sName)
+      AddTotemToggle(row.fireGrp, "FrostResist_"..san,   0, 144, "spell_frost_frostward",     MultiBot.tips.shaman.ctotem.frostres, "frost resistance", sName)
+ 
+      -- Water --
+      row.waterBtn = row.vmenu.addButton("ShamanWaterBtn_"..san, 0, 108, "spell_nature_manaregentotem", MultiBot.tips.shaman.ctotem.watertot)
+      row.waterGrp = row.addFrame("ShamanWaterGrp_"..san, 120, 0, 36, 36, 36*4); row.waterGrp:Hide()
+      row.waterBtn.doLeft = function() ToggleGroup(row.waterGrp) end
+ 
+      AddTotemToggle(row.waterGrp, "HealingStream_"..san, 0,   0, "spell_nature_healingwavelesser", MultiBot.tips.shaman.ctotem.healstream, "healing stream",  sName)
+      AddTotemToggle(row.waterGrp, "ManaSpring_"..san,    0,  36, "spell_nature_manaregentotem",    MultiBot.tips.shaman.ctotem.manasprin,  "mana spring",     sName)
+      AddTotemToggle(row.waterGrp, "Cleansing_"..san,     0,  72, "spell_nature_nullifydisease",    MultiBot.tips.shaman.ctotem.cleansing,  "cleansing",       sName)
+      AddTotemToggle(row.waterGrp, "FireResistW_"..san,   0, 108, "spell_fire_firearmor",           MultiBot.tips.shaman.ctotem.fireres,    "fire resistance", sName)
+ 
+      -- Air --
+      row.airBtn = row.vmenu.addButton("ShamanAirBtn_"..san, 0, 144, "spell_nature_windfury", MultiBot.tips.shaman.ctotem.airtot)
+      row.airGrp = row.addFrame("ShamanAirGrp_"..san, 160, 0, 36, 36, 36*4); row.airGrp:Hide()
+      row.airBtn.doLeft = function() ToggleGroup(row.airGrp) end
+ 
+      AddTotemToggle(row.airGrp, "WrathOfAir_"..san,   0,   0, "spell_nature_slowingtotem",         MultiBot.tips.shaman.ctotem.wrhatair,  "wrath of air",      sName)
+      AddTotemToggle(row.airGrp, "Windfury_"..san,     0,  36, "spell_nature_windfury",             MultiBot.tips.shaman.ctotem.windfury,  "windfury",          sName)
+      AddTotemToggle(row.airGrp, "NatureResist_"..san, 0,  72, "spell_nature_natureresistancetotem",MultiBot.tips.shaman.ctotem.natres,    "nature resistance", sName)
+      AddTotemToggle(row.airGrp, "Grounding_"..san,    0, 108, "spell_nature_groundingtotem",       MultiBot.tips.shaman.ctotem.grounding, "grounding",         sName)
+
+      return row
+    end
+
+    function MBS:Clear()
+      self.entries = {}
+      self.count = 0
+      self.frame:Hide()
+    end
+
+    function MBS:AddOrUpdate(shamanName)
+      local san = SanitizeName(shamanName)
+      if not self.entries[san] then
+        self:BuildForShaman(shamanName)
+      end
+      self.frame:Show()
+    end
+
+    function MBS:RefreshFromGroup()
+
+      self:Clear()
+
+      local function ConsiderUnit(unit)
+        if not UnitExists(unit) then return end
+        local name = GetUnitName(unit, true)
+        local _, classTag = UnitClass(unit)
+        if classTag == "SHAMAN" then
+          if not MultiBot.IsBot or MultiBot.IsBot(name) then
+            self:AddOrUpdate(name)
+          end
+        end
+      end
+
+      if IsInRaid() then
+        for i=1, GetNumGroupMembers() do ConsiderUnit("raid"..i) end
+      else
+        ConsiderUnit("player")
+        for i=1, GetNumSubgroupMembers() do ConsiderUnit("party"..i) end
+      end
+
+      if self.count == 0 then self.frame:Hide() end
+    end
+  end
+end
+
+MultiBot.InitShamanQuick()
+
+do
+  local f = CreateFrame("Frame")
+  f:RegisterEvent("PLAYER_ENTERING_WORLD")
+  f:RegisterEvent("GROUP_ROSTER_UPDATE")
+  f:SetScript("OnEvent", function()
+    if MultiBot and MultiBot.ShamanQuick and MultiBot.ShamanQuick.RefreshFromGroup then
+      MultiBot.ShamanQuick:RefreshFromGroup()
+    end
+  end)
+end
+
 
 -- FINISH --
 

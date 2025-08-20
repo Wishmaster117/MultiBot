@@ -2416,6 +2416,72 @@ MultiBot.tips.shaman.heal =
 "|cffff0000Left-click to toggle Heal|r\n"..
 "|cf9999999(Executed by: Bot)|r";
 
+MultiBot.tips.shaman.totemsmove =
+"Right-Click to drag and move the TotemBar";
+
+MultiBot.tips.shaman.ctotem.stoe =
+"Strength of Earth";
+
+MultiBot.tips.shaman.ctotem.stoskin =
+"Stoneskin";
+
+MultiBot.tips.shaman.ctotem.tremor =
+"Tremor";
+
+MultiBot.tips.shaman.ctotem.eabind =
+"Earthbind";
+
+MultiBot.tips.shaman.ctotem.searing =
+"Searing";
+
+MultiBot.tips.shaman.ctotem.magma =      
+"Magma";
+
+MultiBot.tips.shaman.ctotem.fltong =  
+"Flametongue";
+
+MultiBot.tips.shaman.ctotem.towrath = 
+"Totem of Wrath";
+
+MultiBot.tips.shaman.ctotem.frostres = 
+"Frost Resistance";
+
+MultiBot.tips.shaman.ctotem.healstream = 
+"Healing Stream";
+
+MultiBot.tips.shaman.ctotem.manasprin = 
+"Mana Spring";
+
+MultiBot.tips.shaman.ctotem.cleansing =
+"Cleansing";
+
+MultiBot.tips.shaman.ctotem.fireres =
+"Fire Resistance";
+
+MultiBot.tips.shaman.ctotem.wrhatair =
+"Wrath of Air";
+
+MultiBot.tips.shaman.ctotem.windfury =
+"Windfury";
+
+MultiBot.tips.shaman.ctotem.natres =
+"Nature Resistance";
+
+MultiBot.tips.shaman.ctotem.grounding =
+"Grounding";
+
+MultiBot.tips.shaman.ctotem.earthtot =
+"Earth Totems";
+
+MultiBot.tips.shaman.ctotem.firetot =
+"Fire Totems";
+
+MultiBot.tips.shaman.ctotem.watertot =
+"Water Totems";
+
+MultiBot.tips.shaman.ctotem.airtot =
+"Air Totems";
+
 MultiBot.tips.shaman.ntotem.master =
 "Non-Combat Totem Main Menu|cffffffff\n"..
 "Select and toggle Non-Combat Totems here.|r\n\n"..

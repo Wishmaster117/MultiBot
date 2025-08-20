@@ -2877,6 +2877,72 @@ MultiBot.tips.shaman.heal =
 "|cffff0000Left-Click to enable or disable Heal|r\n"..
 "|cf9999999(Execution-Order: Bot)|r";
 
+MultiBot.tips.shaman.totemsmove =
+"Right-Click to drag and move the TotemBar";
+
+MultiBot.tips.shaman.ctotem.stoe =
+"Strength of Earth";
+
+MultiBot.tips.shaman.ctotem.stoskin =
+"Stoneskin";
+
+MultiBot.tips.shaman.ctotem.tremor =
+"Tremor";
+
+MultiBot.tips.shaman.ctotem.eabind =
+"Earthbind";
+
+MultiBot.tips.shaman.ctotem.searing =
+"Searing";
+
+MultiBot.tips.shaman.ctotem.magma =      
+"Magma";
+
+MultiBot.tips.shaman.ctotem.fltong =  
+"Flametongue";
+
+MultiBot.tips.shaman.ctotem.towrath = 
+"Totem of Wrath";
+
+MultiBot.tips.shaman.ctotem.frostres = 
+"Frost Resistance";
+
+MultiBot.tips.shaman.ctotem.healstream = 
+"Healing Stream";
+
+MultiBot.tips.shaman.ctotem.manasprin = 
+"Mana Spring";
+
+MultiBot.tips.shaman.ctotem.cleansing =
+"Cleansing";
+
+MultiBot.tips.shaman.ctotem.fireres =
+"Fire Resistance";
+
+MultiBot.tips.shaman.ctotem.wrhatair =
+"Wrath of Air";
+
+MultiBot.tips.shaman.ctotem.windfury =
+"Windfury";
+
+MultiBot.tips.shaman.ctotem.natres =
+"Nature Resistance";
+
+MultiBot.tips.shaman.ctotem.grounding =
+"Grounding";
+
+MultiBot.tips.shaman.ctotem.earthtot =
+"Earth Totems";
+
+MultiBot.tips.shaman.ctotem.firetot =
+"Fire Totems";
+
+MultiBot.tips.shaman.ctotem.watertot =
+"Water Totems";
+
+MultiBot.tips.shaman.ctotem.airtot =
+"Air Totems";
+
 MultiBot.tips.shaman.ntotem.master =
 "Non-Combat-Totem|cffffffff\n"..
 "This Control allows you to select, enable or disable the default Non-Combat-Totem.|r\n\n"..
@@ -2977,6 +3043,22 @@ MultiBot.tips.shaman.dps.dpsAoe =
 "DPS-AOE, DPS-Assist and Tank-Assist are mutually exclusive.\n"..
 "Only one of these Strategies can be activated.|r\n\n"..
 "|cffff0000Left-Click to enable or disable DPS-AOE|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
+MultiBot.tips.shaman.playbook.cure =
+"Cure|cffffffff\n"..
+"It enables the Cure-Strategy.\n"..
+"The bot will remove poisons, curses and diseases when possible.|r\n\n"..
+"|cffff0000Left-Click to enable or disable Cure|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
+MultiBot.tips.shaman.dps.healerdps =
+"Healer-DPS|cffffffff\n"..
+"It enables the Healer-DPS-Strategy.\n"..
+"The healer will contribute damage while still focusing on healing.\n"..
+"Healer-DPS, DPS-AOE, DPS-Assist and Tank-Assist are mutually exclusive.\n"..
+"Only one of these Strategies can be activated.|r\n\n"..
+"|cffff0000Left-Click to enable or disable Healer-DPS|r\n"..
 "|cf9999999(Execution-Order: Bot)|r";
 
 MultiBot.tips.shaman.tankAssist = 

@@ -2459,6 +2459,72 @@ MultiBot.tips.shaman.heal =
 "|cffff0000Linksklicken um Heal ein- oder auszuschalten|r\n"..
 "|cf9999999(Ausführreihenfolge: Bot)|r";
 
+MultiBot.tips.shaman.totemsmove =
+"Rechtsklick, um die Totemleiste zu ziehen und zu bewegen";
+
+MultiBot.tips.shaman.ctotem.stoe =
+"Erdstärke";
+
+MultiBot.tips.shaman.ctotem.stoskin =
+"Steinhaut";
+
+MultiBot.tips.shaman.ctotem.tremor =
+"Erdzittern";
+
+MultiBot.tips.shaman.ctotem.eabind =
+"Erdfesselung";
+
+MultiBot.tips.shaman.ctotem.searing =
+"Verbrennung";
+
+MultiBot.tips.shaman.ctotem.magma =      
+"Magma";
+
+MultiBot.tips.shaman.ctotem.fltong =  
+"Flammenzunge";
+
+MultiBot.tips.shaman.ctotem.towrath = 
+"Totem des Zorns";
+
+MultiBot.tips.shaman.ctotem.frostres = 
+"Frostwiderstand";
+
+MultiBot.tips.shaman.ctotem.healstream = 
+"Heilungsstrom";
+
+MultiBot.tips.shaman.ctotem.manasprin = 
+"Manaquelle";
+
+MultiBot.tips.shaman.ctotem.cleansing =
+"Reinigung";
+
+MultiBot.tips.shaman.ctotem.fireres =
+"Feuerwiderstand";
+
+MultiBot.tips.shaman.ctotem.wrhatair =
+"Zorn der Luft";
+
+MultiBot.tips.shaman.ctotem.windfury =
+"Windzorn";
+
+MultiBot.tips.shaman.ctotem.natres =
+"Naturwiderstand";
+
+MultiBot.tips.shaman.ctotem.grounding =
+"Erdung";
+
+MultiBot.tips.shaman.ctotem.earthtot =
+"Erdtotems";
+
+MultiBot.tips.shaman.ctotem.firetot =
+"Feuertotems";
+
+MultiBot.tips.shaman.ctotem.watertot =
+"Wassertotems";
+
+MultiBot.tips.shaman.ctotem.airtot =
+"Lufttotems";
+
 MultiBot.tips.shaman.ntotem.master =
 "Non-Combat-Totem|cffffffff\n"..
 "Diese Steuereinheit erlaubt es die Non-Combat-Totems auszuwählen, zu aktivieren oder deaktivieren.|r\n\n"..
