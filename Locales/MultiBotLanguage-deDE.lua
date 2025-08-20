@@ -2766,6 +2766,16 @@ MultiBot.tips.warlock.dps.dps =
 "|cffff0000Linksklicken um DPS ein- oder auszuschalten|r\n"..
 "|cf9999999(Ausführreihenfolge: Bot)|r";
 
+MultiBot.tips.warlock.dps.metamelee =
+"Meta Nahkampf|cffffffff\n"..
+"Aktiviert die „Meta Nahkampf“-Kampfstrategie des Hexenmeisters.\n"..
+"Wenn Metamorphose und Feuerbrand-Aura aktiv sind,\n"..
+"wird der Bot in den Nahkampf gehen und sich entsprechend verhalten.\n"..
+"Diese Einstellung hat keine Wirkung ohne Metamorphose/Feuerbrand-Aura\n"..
+"und ist unabhängig von den DPS/Tank-Assist-Umschaltern.|r\n\n"..
+"|cffff0000Linksklick zum Aktivieren oder Deaktivieren von Meta Nahkampf|r\n"..
+"|cff999999(Ausführungsreihenfolge: Bot)|r";
+
 MultiBot.tips.warlock.tankAssist = 
 "Tank-Assist|cffffffff\n"..
 "Diese Schaltfläche aktiviert die Tank-Assist-Strategie.\n"..

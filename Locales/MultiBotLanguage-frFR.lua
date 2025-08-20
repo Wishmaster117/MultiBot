@@ -2799,6 +2799,16 @@ MultiBot.tips.warlock.dps.dps =
 "|cffff0000Clic gauche pour activer ou désactiver DPS|r\n"..
 "|cff999999(Ordre d'exécution : Bot)|r";
 
+MultiBot.tips.warlock.dps.metamelee =
+"Méta mêlée|cffffffff\n"..
+"Active la stratégie de combat « méta mêlée » du Démoniste.\n"..
+"Lorsque Métamorphose et Aura d'immolation sont actives,\n"..
+"le bot se déplacera au corps à corps et se comportera en conséquence.\n"..
+"Ce réglage n’a aucun effet sans Métamorphose/Aura d'immolation\n"..
+"et il est indépendant des bascules DPS/Assistance du tank.|r\n\n"..
+"|cffff0000Clic gauche pour activer ou désactiver Méta mêlée|r\n"..
+"|cff999999(Ordre d’exécution : Bot)|r";
+
 MultiBot.tips.warlock.tankAssist = 
 "Assistance Tank|cffffffff\n"..
 "Ceci active les stratégies d'assistance Tank.\n"..

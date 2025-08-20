@@ -2767,6 +2767,16 @@ MultiBot.tips.warlock.dps.dps =
 "|cffff0000DPS 정책을 활성화 또는 비활성화하려면 왼쪽 클릭|r\n"..
 "|cf9999999(명령 실행: 로봇)|r";
 
+MultiBot.tips.warlock.dps.metamelee =
+"메타 근접|cffffffff\n"..
+"흑마법사의 '메타 근접' 전투 전략을 활성화합니다.\n"..
+"변신과 제물의 오라가 활성화되면,\n"..
+"봇이 근접 범위로 이동하여 그에 맞게 행동합니다.\n"..
+"이 설정은 변신/제물의 오라가 없으면 효과가 없으며,\n"..
+"DPS/탱커-지원 전환과는 독립적으로 작동합니다.|r\n\n"..
+"|cffff0000좌클릭으로 메타 근접을 활성화하거나 비활성화합니다|r\n"..
+"|cff999999(실행 순서: 봇)|r";
+
 MultiBot.tips.warlock.tankAssist = 
 "탱크 지원|cffffffff\n"..
 "탱크 지원 전략을 구현합니다.\n"..

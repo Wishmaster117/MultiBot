@@ -2783,6 +2783,16 @@ MultiBot.tips.warlock.dps.dps =
 "|cffff0000Clic izquierdo para activar o desactivar DPS|r\n".. 
 "|cf9999999(Execution-Order: Bot)|r";
 
+MultiBot.tips.warlock.dps.metamelee =
+"Meta cuerpo a cuerpo|cffffffff\n"..
+"Activa la estrategia de combate «meta cuerpo a cuerpo» del Brujo.\n"..
+"Cuando Metamorfosis y Aura de inmolación están activas,\n"..
+"el bot se acercará a distancia de cuerpo a cuerpo y actuará en consecuencia.\n"..
+"Este ajuste no tiene efecto sin Metamorfosis/Aura de inmolación\n"..
+"y es independiente de los conmutadores de DPS/Asistencia de tanque.|r\n\n"..
+"|cffff0000Clic izquierdo para activar o desactivar Meta cuerpo a cuerpo|r\n"..
+"|cff999999(Orden de ejecución: Bot)|r";
+
 MultiBot.tips.warlock.tankAssist = 
 "Tank-Assist|cffffffff\n".. 
 "Activa las estrategias de asistencia al tanque.\n".. 
