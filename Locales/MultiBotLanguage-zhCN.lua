@@ -2459,7 +2459,7 @@ MultiBot.tips.rogue.tankAssist =
 "|cffff0000左键单击以启用或禁用坦克辅助|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
--- 萨满 --
+-- SHAMAN --
 
 MultiBot.tips.shaman.heal =
 "治疗|cffffffff\n"..
@@ -2468,6 +2468,72 @@ MultiBot.tips.shaman.heal =
 "只能激活这些策略中的一种。|r\n\n"..
 "|cffff0000左键点击启用或禁用治疗|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
+
+MultiBot.tips.shaman.totemsmove =
+"右键点击以拖动和移动图腾栏";
+
+MultiBot.tips.shaman.ctotem.stoe =
+"大地之力";
+
+MultiBot.tips.shaman.ctotem.stoskin =
+"石肤";
+
+MultiBot.tips.shaman.ctotem.tremor =
+"战栗";
+
+MultiBot.tips.shaman.ctotem.eabind =
+"地缚";
+
+MultiBot.tips.shaman.ctotem.searing =
+"灼热";
+
+MultiBot.tips.shaman.ctotem.magma =      
+"熔岩";
+
+MultiBot.tips.shaman.ctotem.fltong =  
+"火舌";
+
+MultiBot.tips.shaman.ctotem.towrath = 
+"天怒图腾";
+
+MultiBot.tips.shaman.ctotem.frostres = 
+"冰霜抗性";
+
+MultiBot.tips.shaman.ctotem.healstream = 
+"治疗之泉";
+
+MultiBot.tips.shaman.ctotem.manasprin = 
+"法力之泉";
+
+MultiBot.tips.shaman.ctotem.cleansing =
+"祛病";
+
+MultiBot.tips.shaman.ctotem.fireres =
+"火焰抗性";
+
+MultiBot.tips.shaman.ctotem.wrhatair =
+"风之优雅";
+
+MultiBot.tips.shaman.ctotem.windfury =
+"风怒";
+
+MultiBot.tips.shaman.ctotem.natres =
+"自然抗性";
+
+MultiBot.tips.shaman.ctotem.grounding =
+"根基";
+
+MultiBot.tips.shaman.ctotem.earthtot =
+"大地图腾";
+
+MultiBot.tips.shaman.ctotem.firetot =
+"火焰图腾";
+
+MultiBot.tips.shaman.ctotem.watertot =
+"水之图腾";
+
+MultiBot.tips.shaman.ctotem.airtot =
+"风之图腾";
 
 MultiBot.tips.shaman.ntotem.master =
 "非战斗图腾|cffffffff\n"..

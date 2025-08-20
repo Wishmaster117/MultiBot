@@ -2475,6 +2475,72 @@ MultiBot.tips.shaman.heal =
 "|cffff0000Clic izquierdo para activar o desactivar Sanación|r\n".. 
 "|cf9999999(Execution-Order: Bot)|r";
 
+MultiBot.tips.shaman.totemsmove =
+"Clic derecho para arrastrar y mover la barra de tótems";
+
+MultiBot.tips.shaman.ctotem.stoe =
+"Fuerza de la Tierra";
+
+MultiBot.tips.shaman.ctotem.stoskin =
+"Piel de piedra";
+
+MultiBot.tips.shaman.ctotem.tremor =
+"Temblor";
+
+MultiBot.tips.shaman.ctotem.eabind =
+"Vínculo terrestre";
+
+MultiBot.tips.shaman.ctotem.searing =
+"Tótem abrasador";
+
+MultiBot.tips.shaman.ctotem.magma =      
+"Magma";
+
+MultiBot.tips.shaman.ctotem.fltong =  
+"Lengua de fuego";
+
+MultiBot.tips.shaman.ctotem.towrath = 
+"Tótem de cólera";
+
+MultiBot.tips.shaman.ctotem.frostres = 
+"Resistencia a la escarcha";
+
+MultiBot.tips.shaman.ctotem.healstream = 
+"Corriente de sanación";
+
+MultiBot.tips.shaman.ctotem.manasprin = 
+"Fuente de maná";
+
+MultiBot.tips.shaman.ctotem.cleansing =
+"Purificación";
+
+MultiBot.tips.shaman.ctotem.fireres =
+"Resistencia al fuego";
+
+MultiBot.tips.shaman.ctotem.wrhatair =
+"Ira del aire";
+
+MultiBot.tips.shaman.ctotem.windfury =
+"Viento furioso";
+
+MultiBot.tips.shaman.ctotem.natres =
+"Resistencia a la Naturaleza";
+
+MultiBot.tips.shaman.ctotem.grounding =
+"Tótem de tremor";
+
+MultiBot.tips.shaman.ctotem.earthtot =
+"Tótems de tierra";
+
+MultiBot.tips.shaman.ctotem.firetot =
+"Tótems de fuego";
+
+MultiBot.tips.shaman.ctotem.watertot =
+"Tótems de agua";
+
+MultiBot.tips.shaman.ctotem.airtot =
+"Tótems de aire";
+
 MultiBot.tips.shaman.ntotem.master =
 "Non-Combat-Totem|cffffffff\n".. 
 "Este control permite seleccionar, activar o desactivar el Tótem fuera de combate predeterminado.|r\n\n".. 

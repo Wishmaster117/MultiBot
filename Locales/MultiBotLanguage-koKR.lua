@@ -2457,6 +2457,72 @@ MultiBot.tips.shaman.heal =
 "|cffff0000 왼쪽 클릭으로 치유를 활성화 또는 비활성화합니다.|r\n"..
 "|cf9999999(명령 실행: 로봇)|r";
 
+MultiBot.tips.shaman.totemsmove =
+"우클릭으로 토템바를 끌어서 이동합니다";
+
+MultiBot.tips.shaman.ctotem.stoe =
+"대지의 힘";
+
+MultiBot.tips.shaman.ctotem.stoskin =
+"돌가죽";
+
+MultiBot.tips.shaman.ctotem.tremor =
+"진동";
+
+MultiBot.tips.shaman.ctotem.eabind =
+"속박의 토템";
+
+MultiBot.tips.shaman.ctotem.searing =
+"불타는 토템";
+
+MultiBot.tips.shaman.ctotem.magma =      
+"용암";
+
+MultiBot.tips.shaman.ctotem.fltong =  
+"불꽃의 혀";
+
+MultiBot.tips.shaman.ctotem.towrath = 
+"격노의 토템";
+
+MultiBot.tips.shaman.ctotem.frostres = 
+"냉기 저항";
+
+MultiBot.tips.shaman.ctotem.healstream = 
+"치유의 토템";
+
+MultiBot.tips.shaman.ctotem.manasprin = 
+"마나샘 토템";
+
+MultiBot.tips.shaman.ctotem.cleansing =
+"정화의 토템";
+
+MultiBot.tips.shaman.ctotem.fireres =
+"화염 저항";
+
+MultiBot.tips.shaman.ctotem.wrhatair =
+"질풍의 토템";
+
+MultiBot.tips.shaman.ctotem.windfury =
+"질풍";
+
+MultiBot.tips.shaman.ctotem.natres =
+"자연 저항";
+
+MultiBot.tips.shaman.ctotem.grounding =
+"마법흡수 토템";
+
+MultiBot.tips.shaman.ctotem.earthtot =
+"대지 토템";
+
+MultiBot.tips.shaman.ctotem.firetot =
+"불의 토템";
+
+MultiBot.tips.shaman.ctotem.watertot =
+"물의 토템";
+
+MultiBot.tips.shaman.ctotem.airtot =
+"바람의 토템";
+
 MultiBot.tips.shaman.ntotem.master =
 "비전투 토템|cffffffff\n"..
 "이 컨트롤을 사용하면 기본 비전투 토템을 선택, 활성화 또는 비활성화할 수 있습니다.|r\n\n"..

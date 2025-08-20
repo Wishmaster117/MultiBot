@@ -2491,6 +2491,72 @@ MultiBot.tips.shaman.heal =
 "|cffff0000Clic gauche pour activer ou désactiver les Soins|r\n"..
 "|cff9999999(Ordre d'exécution : Bot)|r";
 
+MultiBot.tips.shaman.totemsmove =
+"Clic droit pour faire glisser et déplacer la barre des totems";
+
+MultiBot.tips.shaman.ctotem.stoe =
+"Force de la Terre";
+
+MultiBot.tips.shaman.ctotem.stoskin =
+"Peau de pierre";
+
+MultiBot.tips.shaman.ctotem.tremor =
+"Tremblement";
+
+MultiBot.tips.shaman.ctotem.eabind =
+"Lien terrestre";
+
+MultiBot.tips.shaman.ctotem.searing =
+"Totem incendiaire";
+
+MultiBot.tips.shaman.ctotem.magma =      
+"Magma";
+
+MultiBot.tips.shaman.ctotem.fltong =  
+"Langue de feu";
+
+MultiBot.tips.shaman.ctotem.towrath = 
+"Totem de courroux";
+
+MultiBot.tips.shaman.ctotem.frostres = 
+"Résistance au givre";
+
+MultiBot.tips.shaman.ctotem.healstream = 
+"Guérisseur";
+
+MultiBot.tips.shaman.ctotem.manasprin = 
+"Fontaine de mana";
+
+MultiBot.tips.shaman.ctotem.cleansing =
+"Purification";
+
+MultiBot.tips.shaman.ctotem.fireres =
+"Résistance au feu";
+
+MultiBot.tips.shaman.ctotem.wrhatair =
+"Fureur de l’air";
+
+MultiBot.tips.shaman.ctotem.windfury =
+"Furie-des-vents";
+
+MultiBot.tips.shaman.ctotem.natres =
+"Résistance à la nature";
+
+MultiBot.tips.shaman.ctotem.grounding =
+"Totem de glèbe";
+
+MultiBot.tips.shaman.ctotem.earthtot =
+"Totems de terre";
+
+MultiBot.tips.shaman.ctotem.firetot =
+"Totems de feu";
+
+MultiBot.tips.shaman.ctotem.watertot =
+"Totems d’eau";
+
+MultiBot.tips.shaman.ctotem.airtot =
+"Totems d’air";
+
 MultiBot.tips.shaman.ntotem.master =
 "Totem Non-Combat|cffffffff\n"..
 "Ce contrôle vous permet de sélectionner, d'activer ou de désactiver le Totem Non-Combat par défaut.|r\n\n"..

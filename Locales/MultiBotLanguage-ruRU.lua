@@ -2471,6 +2471,72 @@ MultiBot.tips.shaman.heal =
 "|cffff0000Левый клик – включить/отключить Лечение|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
+MultiBot.tips.shaman.totemsmove =
+"ПКМ, чтобы перетащить и переместить панель тотемов";
+
+MultiBot.tips.shaman.ctotem.stoe =
+"Сила земли";
+
+MultiBot.tips.shaman.ctotem.stoskin =
+"Каменная кожа";
+
+MultiBot.tips.shaman.ctotem.tremor =
+"Трепет";
+
+MultiBot.tips.shaman.ctotem.eabind =
+"Оковы земли";
+
+MultiBot.tips.shaman.ctotem.searing =
+"Опаляющий";
+
+MultiBot.tips.shaman.ctotem.magma =      
+"Магма";
+
+MultiBot.tips.shaman.ctotem.fltong =  
+"Язык пламени";
+
+MultiBot.tips.shaman.ctotem.towrath = 
+"Тотем гнева";
+
+MultiBot.tips.shaman.ctotem.frostres = 
+"Сопротивление льду";
+
+MultiBot.tips.shaman.ctotem.healstream = 
+"Целительный поток";
+
+MultiBot.tips.shaman.ctotem.manasprin = 
+"Источник маны";
+
+MultiBot.tips.shaman.ctotem.cleansing =
+"Очищение";
+
+MultiBot.tips.shaman.ctotem.fireres =
+"Сопротивление огню";
+
+MultiBot.tips.shaman.ctotem.wrhatair =
+"Гнев воздуха";
+
+MultiBot.tips.shaman.ctotem.windfury =
+"Ярость ветра";
+
+MultiBot.tips.shaman.ctotem.natres =
+"Сопротивление силам природы";
+
+MultiBot.tips.shaman.ctotem.grounding =
+"Заземление";
+
+MultiBot.tips.shaman.ctotem.earthtot =
+"Земные тотемы";
+
+MultiBot.tips.shaman.ctotem.firetot =
+"Огненные тотемы";
+
+MultiBot.tips.shaman.ctotem.watertot =
+"Водные тотемы";
+
+MultiBot.tips.shaman.ctotem.airtot =
+"Воздушные тотемы";
+
 MultiBot.tips.shaman.ntotem.master =
 "Тотем вне боя|cffffffff\n"..
 "Позволяет выбрать, включить или отключить стандартный тотем вне боя.|r\n\n"..
