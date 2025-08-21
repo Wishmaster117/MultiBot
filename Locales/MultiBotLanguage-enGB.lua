@@ -2394,6 +2394,29 @@ MultiBot.tips.priest.playbook.shadow =
 "|cffff0000Left-click to toggle|r\n"..
 "|cf9999999(Executed by: Bot)|r";
 
+MultiBot.tips.priest.playbook.holyheal =
+"Holy Heal|cffffffff\n"..
+"Switches the playbook to Holy (Heal).\n"..
+"Holy Heal, Shadow and Holy DPS are mutually exclusive.\n"..
+"Only one of these playbooks can be active.|r\n\n"..
+"|cffff0000Left-Click to enable or disable Holy Heal|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
+MultiBot.tips.priest.playbook.holydps =
+"Holy DPS|cffffffff\n"..
+"Switches the playbook to Holy (DPS).\n"..
+"Holy DPS, Shadow and Holy Heal are mutually exclusive.\n"..
+"Only one of these playbooks can be active.|r\n\n"..
+"|cffff0000Left-Click to enable or disable Holy DPS|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
+MultiBot.tips.priest.playbook.rshadow =
+"Shadow Resistance|cffffffff\n"..
+"Turns on the Shadow-Resistance strategy.\n"..
+"This option is not a playbook and can be combined with other playbooks.|r\n\n"..
+"|cffff0000Left-Click to enable or disable Shadow Resistance|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
 MultiBot.tips.priest.dps.master =
 "Priest DPS Main Menu|cffffffff\n"..
 "General Priest DPS roles|r\n\n"..

@@ -2462,6 +2462,29 @@ MultiBot.tips.priest.playbook.shadow =
 "|cffff0000Clic gauche pour activer ou désactiver Ombre|r\n"..
 "|cff999999(Ordre d'exécution : Bot)|r";
 
+MultiBot.tips.priest.playbook.holyheal =
+"Sacré – Soins|cffffffff\n"..
+"Bascule le playbook sur Sacré (Soins).\n"..
+"Sacré–Soins, Ombre et Sacré–DPS sont mutuellement exclusifs.\n"..
+"Un seul de ces playbooks peut être actif.|r\n\n"..
+"|cffff0000Clic-Gauche pour activer/désactiver Sacré–Soins|r\n"..
+"|cf9999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.priest.playbook.holydps =
+"Sacré – DPS|cffffffff\n"..
+"Bascule le playbook sur Sacré (DPS).\n"..
+"Sacré–DPS, Ombre et Sacré–Soins sont mutuellement exclusifs.\n"..
+"Un seul de ces playbooks peut être actif.|r\n\n"..
+"|cffff0000Clic-Gauche pour activer/désactiver Sacré–DPS|r\n"..
+"|cf9999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.priest.playbook.rshadow =
+"Résistance à l’Ombre|cffffffff\n"..
+"Active la stratégie de résistance à l’Ombre.\n"..
+"Cette option n’est pas un playbook et peut se combiner avec d’autres playbooks.|r\n\n"..
+"|cffff0000Clic-Gauche pour activer/désactiver la Résistance à l’Ombre|r\n"..
+"|cf9999999(Ordre d’exécution : Bot)|r";
+  
 MultiBot.tips.priest.dps.master =
 "Contrôle DPS|cffffffff\n"..
 "Dans le Contrôle DPS, vous trouverez les stratégies générales de DPS.|r\n\n"..

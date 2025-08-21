@@ -2431,6 +2431,29 @@ MultiBot.tips.priest.playbook.shadow =
 "|cffff0000왼쪽 클릭해서 그림자를 활성화하거나 비활성화합니다|r\n"..
 "|cf9999999(명령 실행: 로봇)|r";
 
+MultiBot.tips.priest.playbook.holyheal =
+"신성 - 치유|cffffffff\n"..
+"플레이북을 신성(치유)로 전환합니다.\n"..
+"신성-치유, 암흑, 신성-DPS는 서로 배타적입니다.\n"..
+"이 플레이북들 중 하나만 활성화할 수 있습니다.|r\n\n"..
+"|cffff0000좌클릭하여 신성-치유를 활성/비활성|r\n"..
+"|cf9999999(실행 순서: 봇)|r";
+
+MultiBot.tips.priest.playbook.holydps =
+"신성 - DPS|cffffffff\n"..
+"플레이북을 신성(DPS)로 전환합니다.\n"..
+"신성-DPS, 암흑, 신성-치유는 서로 배타적입니다.\n"..
+"이 플레이북들 중 하나만 활성화할 수 있습니다.|r\n\n"..
+"|cffff0000좌클릭하여 신성-DPS를 활성/비활성|r\n"..
+"|cf9999999(실행 순서: 봇)|r";
+
+MultiBot.tips.priest.playbook.rshadow =
+"암흑 저항|cffffffff\n"..
+"암흑 저항 전략을 활성화합니다.\n"..
+"이 옵션은 플레이북이 아니며 다른 플레이북과 함께 사용할 수 있습니다.|r\n\n"..
+"|cffff0000좌클릭하여 암흑 저항을 활성/비활성|r\n"..
+"|cf9999999(실행 순서: 봇)|r";
+  
 MultiBot.tips.priest.dps.master =
 "DPS 제어|cffffffff\n"..
 "이 제어 장치를 사용하여 공통 DPS 전략을 설정합니다.|r\n\n"..
