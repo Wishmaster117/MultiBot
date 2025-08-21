@@ -2144,6 +2144,29 @@ MultiBot.tips.mage.playbook.fire =
 "|cffff0000왼쪽 클릭으로 화염 마법을 활성화 또는 비활성화합니다|r\n"..
 "|cf9999999(명령 실행: 로봇)|r";
 
+MultiBot.tips.mage.playbook.frostfireAoe =
+"Frostfire AOE|cffffffff\n"..
+"Frostfire + AOE 전투 전략을 활성화합니다.\n"..
+"DPS-AOE, DPS-Assist, Tank-Assist는 서로 배타적입니다.\n"..
+"이 모드 중 하나만 활성화할 수 있습니다.|r\n\n"..
+"|cffff0000왼쪽-클릭으로 Frostfire AOE 켜기/끄기|r\n"..
+"|cf9999999(실행 순서: 봇)|r";
+
+MultiBot.tips.mage.playbook.frostfire =
+"Frostfire|cffffffff\n"..
+"단일 대상 Frostfire 전투 전략을 활성화합니다.\n"..
+"Arcane, Frost, Fire, Frostfire는 서로 배타적입니다.\n"..
+"하나의 전문화만 활성화할 수 있습니다.|r\n\n"..
+"|cffff0000왼쪽-클릭으로 Frostfire 켜기/끄기|r\n"..
+"|cf9999999(실행 순서: 봇)|r";
+
+MultiBot.tips.mage.playbook.firestarter =
+"Firestarter|cffffffff\n"..
+"화염 운용을 위한 \"Firestarter\" 전술을 활성화합니다(오프너/즉시 시전).\n"..
+"현재 전문화 및 AOE 설정과 함께 사용할 수 있습니다.|r\n\n"..
+"|cffff0000왼쪽-클릭으로 Firestarter 켜기/끄기|r\n"..
+"|cf9999999(실행 순서: 봇)|r";
+
 MultiBot.tips.mage.dps.master =
 "DPS 제어|cffffffff\n"..
 "이 제어 장치를 사용하여 공통 DPS 전략을 설정합니다.|r\n\n"..

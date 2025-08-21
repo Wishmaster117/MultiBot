@@ -2150,6 +2150,29 @@ MultiBot.tips.mage.playbook.fire =
 "|cffff0000Clic izquierdo para activar o desactivar Fire-Magic|r\n"..
 "|cff999999(Orden de ejecución: Bot)|r";
 
+MultiBot.tips.mage.playbook.frostfireAoe =
+"Frostfire AOE|cffffffff\n"..
+"Habilita las estrategias de combate Frostfire + AOE.\n"..
+"DPS-AOE, DPS-Assist y Tank-Assist son mutuamente excluyentes.\n"..
+"Solo uno de estos modos puede estar activo.|r\n\n"..
+"|cffff0000Clic izquierdo para activar o desactivar Frostfire AOE|r\n"..
+"|cf9999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.mage.playbook.frostfire =
+"Frostfire|cffffffff\n"..
+"Habilita la estrategia de combate Frostfire de un solo objetivo.\n"..
+"Arcano, Escarcha, Fuego y Frostfire son mutuamente excluyentes.\n"..
+"Solo una especialización puede estar activa.|r\n\n"..
+"|cffff0000Clic izquierdo para activar o desactivar Frostfire|r\n"..
+"|cf9999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.mage.playbook.firestarter =
+"Firestarter|cffffffff\n"..
+"Habilita la táctica \"Firestarter\" para la rama de Fuego (apertura/lanzamientos instantáneos).\n"..
+"Se puede combinar con tu especialización y la configuración de AOE.|r\n\n"..
+"|cffff0000Clic izquierdo para activar o desactivar Firestarter|r\n"..
+"|cf9999999(Orden de ejecución: Bot)|r";
+
 MultiBot.tips.mage.dps.master =
 "DPS-Control|cffffffff\n"..  -- Línea en inglés
 "En el DPS-Control encontrarás las estrategias de daño general.|r\n\n"..

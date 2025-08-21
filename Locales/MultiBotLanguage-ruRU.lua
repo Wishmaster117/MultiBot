@@ -2145,6 +2145,29 @@ MultiBot.tips.mage.playbook.fire =
 "|cffff0000Левый клик - вкл/выкл огненную магию|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
+MultiBot.tips.mage.playbook.frostfireAoe =
+"Frostfire AOE|cffffffff\n"..
+"Включает боевые стратегии Frostfire + AOE.\n"..
+"DPS-AOE, DPS-Assist и Tank-Assist взаимоисключают друг друга.\n"..
+"Активным может быть только один из этих режимов.|r\n\n"..
+"|cffff0000ЛКМ — включить/выключить Frostfire AOE|r\n"..
+"|cf9999999(Порядок выполнения: Бот)|r";
+
+MultiBot.tips.mage.playbook.frostfire =
+"Frostfire|cffffffff\n"..
+"Включает однопользовательскую боевую стратегию Frostfire.\n"..
+"Arcane, Frost, Fire и Frostfire взаимно исключают друг друга.\n"..
+"Активной может быть только одна специализация.|r\n\n"..
+"|cffff0000ЛКМ — включить/выключить Frostfire|r\n"..
+"|cf9999999(Порядок выполнения: Бот)|r";
+
+MultiBot.tips.mage.playbook.firestarter =
+"Firestarter|cffffffff\n"..
+"Включает тактику \"Firestarter\" для школы Огня (опенер/мгновенные заклинания).\n"..
+"Можно сочетать с текущей специализацией и параметрами AOE.|r\n\n"..
+"|cffff0000ЛКМ — включить/выключить Firestarter|r\n"..
+"|cf9999999(Порядок выполнения: Бот)|r";
+
 MultiBot.tips.mage.dps.master =
 "Управление DPS|cffffffff\n"..
 "Содержит основные DPS-стратегии.|r\n\n"..

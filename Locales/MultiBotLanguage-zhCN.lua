@@ -2073,7 +2073,7 @@ MultiBot.tips.hunter.tankAssist =
 "|cffff0000左键单击以启用或禁用坦克辅助|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
--- 法师 --
+-- MAGE --
 
 MultiBot.tips.mage.buff.master =
 "增益控制|cffffffff\n"..
@@ -2142,6 +2142,29 @@ MultiBot.tips.mage.playbook.fire =
 "只能激活这些策略中的一种。|r\n\n"..
 "|cffff0000左键点击启用或禁用火焰魔法|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
+
+MultiBot.tips.mage.playbook.frostfireAoe =
+"Frostfire AOE|cffffffff\n"..
+"启用 Frostfire + AOE 作战策略。\n"..
+"DPS-AOE、DPS-Assist 与 Tank-Assist 互斥。\n"..
+"这些模式中只能激活一个。|r\n\n"..
+"|cffff0000左键点击以启用/停用 Frostfire AOE|r\n"..
+"|cf9999999（执行顺序：Bot）|r";
+
+MultiBot.tips.mage.playbook.frostfire =
+"Frostfire|cffffffff\n"..
+"启用单体 Frostfire 作战策略。\n"..
+"Arcane、Frost、Fire 与 Frostfire 互斥。\n"..
+"只能激活一个专精。|r\n\n"..
+"|cffff0000左键点击以启用/停用 Frostfire|r\n"..
+"|cf9999999（执行顺序：Bot）|r";
+
+MultiBot.tips.mage.playbook.firestarter =
+"Firestarter|cffffffff\n"..
+"为火焰流派启用\"Firestarter\"战术（起手/瞬发）。\n"..
+"可与当前专精与 AOE 设置组合使用。|r\n\n"..
+"|cffff0000左键点击以启用/停用 Firestarter|r\n"..
+"|cf9999999（执行顺序：Bot）|r";
 
 MultiBot.tips.mage.dps.master =
 "DPS控制|cffffffff\n"..
