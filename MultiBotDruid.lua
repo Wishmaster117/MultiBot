@@ -7,6 +7,7 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 			pButton.getButton("Bear").setDisable()
 			pButton.getButton("Cat").setDisable()
 			pButton.getButton("Dps").setDisable()
+			pButton.getButton("HealerDps").setDisable()
 		end
 	end
 	
@@ -82,6 +83,15 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 			pButton.getButton("Tank").setDisable()
 		end
 	end
+ 
+   -- Missin MELEE --
+   tFrame.addButton("Melee", 0, 156, "ability_parry", MultiBot.tips.druid.playbook.melee).setDisable()
+   .doLeft = function(pButton)
+     if(MultiBot.OnOffActionToTarget(pButton, "co +melee,?", "co -melee,?", pButton.getName())) then
+       pButton.getButton("Caster").setDisable()
+       pButton.getButton("Heal").setDisable()
+     end
+   end
 	
 	-- DPS --
 	
@@ -118,6 +128,16 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 		end
 	end
 	
+    -- Missing HEALER DPS --
+    tFrame.addButton("HealerDps", 0, 130, "INV_Alchemy_Elixir_02", MultiBot.tips.druid.dps.healerdps).setDisable()
+    .doLeft = function(pButton)
+      if(MultiBot.OnOffActionToTarget(pButton, "co +healer dps,?", "co -healer dps,?", pButton.getName())) then
+        pButton.getButton("Dps").setDisable()
+        pButton.getButton("OffHeal").setDisable()
+        pButton.getButton("Heal").setDisable()
+      end
+    end
+ 
 	tFrame.addButton("Dps", 0, 78, "spell_holy_divinepurpose", MultiBot.tips.druid.dps.dps).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +cat,?", "co -cat,?", pButton.getName())) then
@@ -183,4 +203,7 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 	if(MultiBot.isInside(pCombat, "cat,")) then pFrame.getButton("Dps").setEnable() end
 	if(MultiBot.isInside(pCombat, "tank assist")) then pFrame.getButton("TankAssist").setEnable() end
 	if(MultiBot.isInside(pCombat, "bear,")) then pFrame.getButton("Tank").setEnable() end
+    if(MultiBot.isInside(pCombat, "healer dps")) then pFrame.getButton("HealerDps").setEnable() end
+    if(MultiBot.isInside(pCombat, "melee")) then pFrame.getButton("Melee").setEnable() end
+    if(MultiBot.isInside(pCombat, "offheal")) then pFrame.getButton("OffHeal").setEnable() end
 end

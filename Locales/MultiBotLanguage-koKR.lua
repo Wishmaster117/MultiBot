@@ -1811,6 +1811,23 @@ MultiBot.tips.druid.playbook.bear =
 "|cffff0000 왼쪽 클릭으로 곰을 활성화 또는 비활성화합니다.|r\n"..
 "|cf9999999(명령 실행: 로봇)|r";
 
+-- koKR
+MultiBot.tips.druid.playbook.melee =
+"근접|cffffffff\n"..
+"근접 전투 전략을 활성화합니다.\n"..
+"근접 사거리를 유지하고 물리 공격을 우선시합니다.\n"..
+"'캐스터' 및 '치유'와 상호 배타적입니다.|r\n\n"..
+"|cffff0000좌클릭으로 근접 전환|r\n"..
+"|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.druid.dps.healerdps =
+"힐러-DPS|cffffffff\n"..
+"하이브리드 힐러-DPS 전략을 활성화합니다.\n"..
+"기본적으로 공격하지만 필요 시 치유합니다.\n"..
+"'치유' 및 '오프힐'과 상호 배타적입니다.|r\n\n"..
+"|cffff0000좌클릭으로 힐러-DPS 전환|r\n"..
+"|cff999999(실행 순서: 봇)|r";
+
 MultiBot.tips.druid.dps.master =
 "DPS 제어|cffffffff\n"..
 "이 제어 장치를 사용하여 공통 DPS 전략을 설정합니다.|r\n\n"..
