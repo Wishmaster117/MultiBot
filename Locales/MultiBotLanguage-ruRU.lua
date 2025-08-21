@@ -2323,6 +2323,14 @@ MultiBot.tips.paladin.dps.offheal =
 "|cffff0000ЛКМ, чтобы включить или отключить доп. исцеление|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
+MultiBot.tips.paladin.dps.healerdps =
+"HealerDps|cffffffff\n"..
+"Позволяет целителю наносить урон, когда это безопасно.\n"..
+"Бот сохраняет исцеление как высший приоритет и добавляет урон, когда входящий урон низкий.\n"..
+"Рекомендуется для лечебных специализаций (например, Паладин Света).|r\n\n"..
+"|cffff0000Left-Click to enable or disable HealerDps|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
 MultiBot.tips.paladin.tankAssist = 
 "Танк-ассист|cffffffff\n"..
 "Включает стратегии танк-ассиста.\n"..

@@ -2309,6 +2309,14 @@ MultiBot.tips.paladin.dps.offheal =
 "|cffff0000좌클릭으로 오프힐 활성화 또는 비활성화|r\n"..
 "|cff999999(실행 순서: 봇)|r";
 
+MultiBot.tips.paladin.dps.healerdps =
+"HealerDps|cffffffff\n"..
+"안전할 때 치유 담당이 공격할 수 있게 합니다.\n"..
+"봇은 치유를 최우선으로 유지하며, 받는 피해가 낮을 때 공격을 섞어 사용합니다.\n"..
+"치유 특성(예: 신성 성기사)에 권장됩니다.|r\n\n"..
+"|cffff0000Left-Click to enable or disable HealerDps|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
 MultiBot.tips.paladin.tankAssist = 
 "탱크 지원|cffffffff\n"..
 "탱크 지원 전략을 구현합니다.\n"..
