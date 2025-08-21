@@ -28,6 +28,30 @@ MultiBot.addRogue = function(pFrame, pCombat, pNormal)
 		MultiBot.OnOffActionToTarget(pButton, "co +dps,?", "co -dps,?", pButton.getName())
 	end
 	
+	-- STEALTH (maintenir le camouflage HORS COMBAT)
+	tFrame.addButton("Stealth", 0, 78, "ability_stealth",  MultiBot.tips.rogue.dps.stealth).setDisable()
+	.doLeft = function(pButton)
+		-- "stealth" est une stratégie non-combat : on la pousse côté pNormal
+		MultiBot.OnOffActionToTarget(pButton, "co +stealth,?", "co -stealth,?", pButton.getName())
+	end
+	
+	-- STEALTHED (comportement EN CAMOUFLAGE en combat)
+	tFrame.addButton("Stealthed", 0, 104, "ability_sap", MultiBot.tips.rogue.dps.stealthed).setDisable()
+	.doLeft = function(pButton)
+		-- Pour entrer en mode "stealthed", on coupe dps et on force stealthed ; l'inverse pour repasser en dps.
+		if(MultiBot.OnOffActionToTarget(pButton, "co +stealthed,?", "co -stealthed,?", pButton.getName())) then
+			pButton.getButton("Dps")      .setDisable()
+			pButton.getButton("DpsAoe")   .setDisable()
+			pButton.getButton("DpsAssist")   .setDisable()
+		end
+	end
+
+	-- BOOST (active les CD offensifs : Adrenaline Rush, Blade Flurry, etc.)
+	tFrame.addButton("Boost", 0, 130, "ability_mage_potentspirit", MultiBot.tips.rogue.dps.boost).setDisable()
+	.doLeft = function(pButton)
+		MultiBot.OnOffActionToTarget(pButton, "co +boost,?", "co -boost,?", pButton.getName())
+	end
+	
 	-- ASSIST --
 	
 	pFrame.addButton("TankAssist", -30, 0, "ability_warrior_innerrage", MultiBot.tips.rogue.tankAssist).setDisable()
@@ -44,4 +68,7 @@ MultiBot.addRogue = function(pFrame, pCombat, pNormal)
 	if(MultiBot.isInside(pCombat, "dps aoe")) then pFrame.getButton("DpsAoe").setEnable() end
 	if(MultiBot.isInside(pCombat, "dps assist")) then pFrame.getButton("DpsAssist").setEnable() end
 	if(MultiBot.isInside(pCombat, "tank assist")) then pFrame.getButton("TankAssist").setEnable() end
+	if(MultiBot.isInside(pNormal, "stealth")) then pFrame.getButton("Stealth").setEnable() end
+	if(MultiBot.isInside(pCombat, "stealthed")) then rFrame.getButton("Stealthed").setEnable() end
+	if(MultiBot.isInside(pCombat, "boost")) then rFrame.getButton("Boost").setEnable() end	
 end

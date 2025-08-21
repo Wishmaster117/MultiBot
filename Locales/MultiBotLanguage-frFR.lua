@@ -2558,6 +2558,31 @@ MultiBot.tips.rogue.dps.dps =
 "|cffff0000Clic gauche pour activer ou désactiver le DPS|r\n"..
 "|cff9999999(Ordre d'exécution : Bot)|r";
 
+MultiBot.tips.rogue.dps.stealth =
+"Camouflage|cffffffff\n"..
+"Le Voleur camouflé dès que possible et privilégie les ouvertures en furtif.\n"..
+"Compatible avec les modes DPS. Pour le comportement en combat,\n"..
+"utilisez |cffffd200Furtif (combat)|cffffffff.|r\n\n"..
+"|cffff0000Clic-Gauche pour activer/désactiver le Camouflage|r\n"..
+"|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.rogue.dps.stealthed =
+"Furtif (combat)|cffffffff\n"..
+"Privilégie le combat en furtif, approche en camouflage.\n"..
+"Utilise des ouvertures en furtif et peut interrompre le DPS pour se re-camoufler.\n"..
+"Peut interrompre le DPS pour se re-camoufler.\n"..
+"“Furtif (combat)” et DPS/DPS-AOE/DPS-Assist sont mutuellement exclusifs.\n"..
+" Une seule stratégie peut être active.r\n\n"..
+"|cffff0000Clic-Gauche pour activer/désactiver|r\n"..
+"|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.rogue.dps.boost =
+"Boost|cffffffff\n"..
+"Active l’utilisation des temps de recharge offensifs selon la rotation.\n"..
+"Fonctionne avec DPS/DPS-AOE/DPS-Assist et Tank-Assist ; non exclusif.|r\n\n"..
+"|cffff0000Clic-Gauche pour activer/désactiver Boost|r\n"..
+"|cff999999(Ordre d’exécution : Bot)|r";
+	
 MultiBot.tips.rogue.tankAssist = 
 "Assistance Tank|cffffffff\n"..
 "Active les stratégies d'assistance Tank.\n"..

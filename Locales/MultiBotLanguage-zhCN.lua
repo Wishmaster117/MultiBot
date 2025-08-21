@@ -2537,6 +2537,30 @@ MultiBot.tips.rogue.dps.dps =
 "|cffff0000左键单击以启用或禁用DPS|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
+MultiBot.tips.rogue.dps.stealth =
+"潜行|cffffffff\n"..
+"尽可能保持潜行，并优先使用潜行起手。\n"..
+"与DPS模式兼容。关于战斗中的行为，\n"..
+"请使用|cffffd200潜行（战斗）|cffffffff。|r\n\n"..
+"|cffff0000左键点击 启用/停用 潜行|r\n"..
+"（执行顺序：Bot）|r";
+
+MultiBot.tips.rogue.dps.stealthed =
+"潜行（战斗）|cffffffff\n"..
+"偏好在潜行状态下作战；以潜行方式接近。\n"..
+"使用潜行起手，并可暂停输出以重新潜行。\n"..
+"“潜行（战斗）”与DPS/DPS-AOE/DPS-协助互斥。\n"..
+"同一时间只能激活一种策略。|r\n\n"..
+"|cffff0000左键点击 启用/停用|r\n"..
+"（执行顺序：Bot）|r";
+
+MultiBot.tips.rogue.dps.boost =
+"爆发|cffffffff\n"..
+"按循环启用进攻类冷却的使用。\n"..
+"可与DPS/DPS-AOE/DPS-协助及Tank-Assist同时使用；不互斥。|r\n\n"..
+"|cffff0000左键点击 启用/停用 爆发|r\n"..
+"（执行顺序：Bot）|r";
+	
 MultiBot.tips.rogue.tankAssist = 
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..

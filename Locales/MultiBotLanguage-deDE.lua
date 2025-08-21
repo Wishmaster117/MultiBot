@@ -2527,6 +2527,30 @@ MultiBot.tips.rogue.dps.dps =
 "|cffff0000Linksklicken um DPS ein- oder auszuschalten|r\n"..
 "|cf9999999(Ausführreihenfolge: Bot)|r";
 
+MultiBot.tips.rogue.dps.stealth =
+"Verstohlenheit|cffffffff\n"..
+"Hält den Schurken möglichst oft verstohlen und bevorzugt verstohlene Eröffnungen.\n"..
+"Kompatibel mit DPS-Modi. Für das Verhalten im Kampf\n"..
+"verwende |cffffd200Verstohlen (Kampf)|cffffffff.|r\n\n"..
+"|cffff0000Linksklick zum Aktivieren/Deaktivieren der Verstohlenheit|r\n"..
+"|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.rogue.dps.stealthed =
+"Verstohlen (Kampf)|cffffffff\n"..
+"Bevorzugt Kämpfen in Verstohlenheit; nähert sich verstohlen.\n"..
+"Nutzen verstohlener Eröffnungen; kann DPS pausieren, um erneut zu verstohlenen.\n"..
+"„Verstohlen (Kampf)“ und DPS/DPS-AOE/DPS-Assist schließen sich aus.\n"..
+"Es kann nur eine Strategie aktiv sein.|r\n\n"..
+"|cffff0000Linksklick zum Aktivieren/Deaktivieren|r\n"..
+"|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.rogue.dps.boost =
+"Boost|cffffffff\n"..
+"Aktiviert den Einsatz offensiver Abklingzeiten gemäß der Rotation.\n"..
+"Funktioniert mit DPS/DPS-AOE/DPS-Assist und Tank-Assist; nicht exklusiv.|r\n\n"..
+"|cffff0000Linksklick zum Aktivieren/Deaktivieren von Boost|r\n"..
+"|cff999999(Ausführungsreihenfolge: Bot)|r";
+	
 MultiBot.tips.rogue.tankAssist = 
 "Tank-Assist|cffffffff\n"..
 "Diese Schaltfläche aktiviert die Tank-Assist-Strategie.\n"..

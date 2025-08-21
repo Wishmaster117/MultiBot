@@ -2525,7 +2525,31 @@ MultiBot.tips.rogue.dps.dps =
 "DPS 정책을 활성화합니다.|r\n\n"..
 "|cffff0000DPS를 활성화 또는 비활성화하려면 왼쪽 클릭|r\n"..
 "|cf9999999(명령 실행: 로봇)|r";
+  
+MultiBot.tips.rogue.dps.stealth =
+"은신|cffffffff\n"..
+"가능하면 도적을 은신 상태로 유지하고 은신 선제기를 선호합니다.\n"..
+"DPS 모드와 호환됩니다. 전투 중 동작은\n"..
+"|cffffd200은신(전투)|cffffffff 를 사용하세요.|r\n\n"..
+"|cffff0000좌클릭: 은신 사용/해제|r\n"..
+"|cff999999(실행 순서: 봇)|r";
 
+MultiBot.tips.rogue.dps.stealthed =
+"은신(전투)|cffffffff\n"..
+"은신 상태로 전투를 선호하며, 은신으로 접근합니다.\n"..
+"은신 선제기를 사용하며 재은신을 위해 DPS를 잠시 멈출 수 있습니다.\n"..
+"‘은신(전투)’와 DPS/DPS-AOE/DPS-지원은 상호 배타적입니다.\n"..
+"한 번에 하나의 전략만 활성화됩니다.|r\n\n"..
+"|cffff0000좌클릭: 사용/해제|r\n"..
+"|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.rogue.dps.boost =
+"버스트|cffffffff\n"..
+"로테이션에 따라 공격적 재사용 대기시간 사용을 활성화합니다.\n"..
+"DPS/DPS-AOE/DPS-지원 및 Tank-Assist와 함께 동작하며, 배타적이지 않습니다.|r\n\n"..
+"|cffff0000좌클릭: 버스트 사용/해제|r\n"..
+"|cff999999(실행 순서: 봇)|r";
+	
 MultiBot.tips.rogue.tankAssist = 
 "탱크 지원|cffffffff\n"..
 "탱크 지원 전략을 구현합니다.\n"..
