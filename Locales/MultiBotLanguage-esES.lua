@@ -2449,6 +2449,29 @@ MultiBot.tips.priest.playbook.shadow =
 "|cffff0000Clic izquierdo para activar o desactivar Shadow|r\n".. 
 "|cf9999999(Execution-Order: Bot)|r";
 
+MultiBot.tips.priest.playbook.holyheal =
+"Sagrado – Sanación|cffffffff\n"..
+"Cambia el playbook a Sagrado (Sanación).\n"..
+"Sagrado–Sanación, Sombra y Sagrado–DPS son mutuamente excluyentes.\n"..
+"Solo uno de estos playbooks puede estar activo.|r\n\n"..
+"|cffff0000Clic izquierdo para activar o desactivar Sagrado–Sanación|r\n"..
+"|cf9999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.priest.playbook.holydps =
+"Sagrado – DPS|cffffffff\n"..
+"Cambia el playbook a Sagrado (DPS).\n"..
+"Sagrado–DPS, Sombra y Sagrado–Sanación son mutuamente excluyentes.\n"..
+"Solo uno de estos playbooks puede estar activo.|r\n\n"..
+"|cffff0000Clic izquierdo para activar o desactivar Sagrado–DPS|r\n"..
+"|cf9999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.priest.playbook.rshadow =
+"Resistencia a las Sombras|cffffffff\n"..
+"Activa la estrategia de resistencia a las sombras.\n"..
+"Esta opción no es un playbook y puede combinarse con otros playbooks.|r\n\n"..
+"|cffff0000Clic izquierdo para activar o desactivar Resistencia a las Sombras|r\n"..
+"|cf9999999(Orden de ejecución: Bot)|r";
+  
 MultiBot.tips.priest.dps.master =
 "DPS-Control|cffffffff\n".. 
 "En el Control de DPS encontrarás las estrategias generales de daño.|r\n\n".. 

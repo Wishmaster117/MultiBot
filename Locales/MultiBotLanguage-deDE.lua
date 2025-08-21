@@ -2432,6 +2432,29 @@ MultiBot.tips.priest.playbook.shadow =
 "|cffff0000Linksklicken um Shadow ein- oder auszuschalten|r\n"..
 "|cf9999999(Ausführreihenfolge: Bot)|r";
 
+MultiBot.tips.priest.playbook.holyheal =
+"Heilig – Heilung|cffffffff\n"..
+"Schaltet das Playbook auf Heilig (Heilung) um.\n"..
+"Heilig–Heilung, Schatten und Heilig–DPS schließen sich gegenseitig aus.\n"..
+"Nur eines dieser Playbooks kann aktiv sein.|r\n\n"..
+"|cffff0000Linksklick, um Heilig–Heilung zu aktivieren/deaktivieren|r\n"..
+"|cf9999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.priest.playbook.holydps =
+"Heilig – DPS|cffffffff\n"..
+"Schaltet das Playbook auf Heilig (DPS) um.\n"..
+"Heilig–DPS, Schatten und Heilig–Heilung schließen sich gegenseitig aus.\n"..
+"Nur eines dieser Playbooks kann aktiv sein.|r\n\n"..
+"|cffff0000Linksklick, um Heilig–DPS zu aktivieren/deaktivieren|r\n"..
+"|cf9999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.priest.playbook.rshadow =
+"Schattenwiderstand|cffffffff\n"..
+"Aktiviert die Strategie „Schattenwiderstand“.\n"..
+"Diese Option ist kein Playbook und kann mit anderen Playbooks kombiniert werden.|r\n\n"..
+"|cffff0000Linksklick, um Schattenwiderstand zu aktivieren/deaktivieren|r\n"..
+"|cf9999999(Ausführungsreihenfolge: Bot)|r";
+  
 MultiBot.tips.priest.dps.master =
 "DPS-Control|cffffffff\n"..
 "Mit dieser Steuereinheit legt man die generelle DPS-Strategie fest.|r\n\n"..

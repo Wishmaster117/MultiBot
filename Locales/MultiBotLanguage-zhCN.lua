@@ -2400,7 +2400,7 @@ MultiBot.tips.paladin.tank =
 "|cffff0000左键点击启用或禁用坦克辅助|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
--- 牧师 --
+-- PRIEST --
 
 MultiBot.tips.priest.heal =
 "治疗|cffffffff\n"..
@@ -2442,6 +2442,29 @@ MultiBot.tips.priest.playbook.shadow =
 "|cffff0000左键点击启用或禁用暗影|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
+MultiBot.tips.priest.playbook.holyheal =
+"神圣 - 治疗|cffffffff\n"..
+"将作战方案切换为 神圣（治疗）。\n"..
+"神圣-治疗、暗影 与 神圣-DPS 互斥。\n"..
+"这些方案中同一时间只能启用一个。|r\n\n"..
+"|cffff0000左键点击以启用/禁用 神圣-治疗|r\n"..
+"|cf9999999（执行顺序：Bot）|r";
+
+MultiBot.tips.priest.playbook.holydps =
+"神圣 - 伤害|cffffffff\n"..
+"将作战方案切换为 神圣（DPS）。\n"..
+"神圣-DPS、暗影 与 神圣-治疗 互斥。\n"..
+"这些方案中同一时间只能启用一个。|r\n\n"..
+"|cffff0000左键点击以启用/禁用 神圣-DPS|r\n"..
+"|cf9999999（执行顺序：Bot）|r";
+
+MultiBot.tips.priest.playbook.rshadow =
+"暗影抗性|cffffffff\n"..
+"启用暗影抗性策略。\n"..
+"此选项不是作战方案，可与其他方案同时使用。|r\n\n"..
+"|cffff0000左键点击以启用/禁用 暗影抗性|r\n"..
+"|cf9999999（执行顺序：Bot）|r";
+  
 MultiBot.tips.priest.dps.master =
 "DPS控制|cffffffff\n"..
 "使用此控制单元可以设置通用的DPS策略。|r\n\n"..
