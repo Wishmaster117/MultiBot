@@ -1731,6 +1731,22 @@ MultiBot.tips.deathknight.dps.dpsAoe =
 "|cffff0000Clic izquierdo para activar o desactivar DPS-AOE|r\n"..
 "|cff999999(Orden de ejecución: Bot)|r";
 
+MultiBot.tips.deathknight.dps.frostAoe =
+"ESCARCHA-AOE|cffffffff\n"..
+"Activa la estrategia de AOE de Escarcha.\n"..
+"Escarcha-AOE, Asistencia-DPS y Asistencia-Tanque son mutuamente excluyentes.\n"..
+"Solo una de estas estrategias puede estar activa.|r\n\n"..
+"|cffff0000Clic izquierdo para activar o desactivar Escarcha-AOE|r\n"..
+"|cf9999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.deathknight.dps.unholyAoe =
+"PROFANO-AOE|cffffffff\n"..
+"Activa la estrategia de AOE de Profano.\n"..
+"Profano-AOE, Asistencia-DPS y Asistencia-Tanque son mutuamente excluyentes.\n"..
+"Solo una de estas estrategias puede estar activa.|r\n\n"..
+"|cffff0000Clic izquierdo para activar o desactivar Profano-AOE|r\n"..
+"|cf9999999(Orden de ejecución: Bot)|r";
+
 MultiBot.tips.deathknight.tankAssist =
 "Tank-Assist|cffffffff\n"..  -- Línea en inglés
 "Activa las estrategias de asistencia al tanque.\n"..

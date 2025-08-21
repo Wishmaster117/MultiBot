@@ -72,6 +72,24 @@ MultiBot.addDeathKnight = function(pFrame, pCombat, pNormal)
 			pButton.getButton("DpsAssist").setDisable()
 		end
 	end
+
+    -- missing CLASS AOE (Frost/Unholy) --
+
+    tFrame.addButton("FrostAoe", 0, 52, "spell_frost_frostbolt02", "Frost Aoe").setDisable()
+    .doLeft = function(pButton)
+        if(MultiBot.OnOffActionToTarget(pButton, "co +frost aoe,?", "co -frost aoe,?", pButton.getName())) then
+            pButton.getButton("DpsAoe").setDisable()
+            pButton.getButton("UnholyAoe").setDisable()
+        end
+    end
+
+    tFrame.addButton("UnholyAoe", 0, 78, "spell_fire_felflamering", "Unholy Aoe").setDisable()
+    .doLeft = function(pButton)
+        if(MultiBot.OnOffActionToTarget(pButton, "co +unholy aoe,?", "co -unholy aoe,?", pButton.getName())) then
+            pButton.getButton("DpsAoe").setDisable()
+            pButton.getButton("FrostAoe").setDisable()
+        end
+    end
 	
 	-- ASSIST --
 	
@@ -88,4 +106,6 @@ MultiBot.addDeathKnight = function(pFrame, pCombat, pNormal)
 	if(MultiBot.isInside(pCombat, "dps aoe")) then pFrame.getButton("DpsAoe").setEnable() end
 	if(MultiBot.isInside(pCombat, "dps assist")) then pFrame.getButton("DpsAssist").setEnable() end
 	if(MultiBot.isInside(pCombat, "tank assist")) then pFrame.getButton("TankAssist").setEnable() end
+    if(MultiBot.isInside(pCombat, "frost aoe"))   then pFrame.getButton("FrostAoe").setEnable()   end
+    if(MultiBot.isInside(pCombat, "unholy aoe"))  then pFrame.getButton("UnholyAoe").setEnable()  end	
 end

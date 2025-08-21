@@ -1723,6 +1723,22 @@ MultiBot.tips.deathknight.dps.dpsAoe =
 "|cffff0000左键点击启用或禁用DPS范围攻击|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
+MultiBot.tips.deathknight.dps.frostAoe =
+"冰霜-AOE|cffffffff\n"..
+"启用冰霜AOE策略。\n"..
+"冰霜-AOE、DPS-支援与坦克-支援彼此互斥。\n"..
+"这些策略中只能激活一个。|r\n\n"..
+"|cffff0000左键点击以启用或禁用冰霜-AOE|r\n"..
+"|cf9999999(执行顺序：Bot)|r";
+
+MultiBot.tips.deathknight.dps.unholyAoe =
+"邪恶-AOE|cffffffff\n"..
+"启用邪恶AOE策略。\n"..
+"邪恶-AOE、DPS-支援与坦克-支援彼此互斥。\n"..
+"这些策略中只能激活一个。|r\n\n"..
+"|cffff0000左键点击以启用或禁用邪恶-AOE|r\n"..
+"|cf9999999(执行顺序：Bot)|r";
+
 MultiBot.tips.deathknight.tankAssist =
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..

@@ -2098,6 +2098,22 @@ MultiBot.tips.deathknight.dps.dpsAoe =
 "|cffff0000Left-Click to enable or disable DPS-AOE|r\n"..
 "|cf9999999(Execution-Order: Bot)|r";
 
+MultiBot.tips.deathknight.dps.frostAoe =
+"FROST-AOE|cffffffff\n"..
+"Enables the Frost AOE strategy.\n"..
+"Frost-AOE, DPS-Assist and Tank-Assist are mutually exclusive.\n"..
+"Only one of these strategies can be active.|r\n\n".. 
+"|cffff0000Left-Click to enable or disable Frost-AOE|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
+MultiBot.tips.deathknight.dps.unholyAoe =
+"UNHOLY-AOE|cffffffff\n"..
+"Enables the Unholy AOE strategy.\n"..
+"Unholy-AOE, DPS-Assist and Tank-Assist are mutually exclusive.\n"..
+"Only one of these strategies can be active.|r\n\n".. 
+"|cffff0000Left-Click to enable or disable Unholy-AOE|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
 MultiBot.tips.deathknight.tankAssist =
 "Tank-Assist|cffffffff\n"..
 "It enables the Tank-Assist-Strategies.\n"..
