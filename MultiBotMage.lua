@@ -83,6 +83,25 @@ MultiBot.addMage = function(pFrame, pCombat, pNormal)
 			pButton.getButton("Frost").setDisable()
 		end
 	end
+	-- missing Frostfire & Firestarter --
+	tFrame.addButton("FrostFireAoe", 0, 156, "ability_mage_frostfirebolt", MultiBot.tips.mage.playbook.frostfireAoe).setDisable()
+	.doLeft = function(pButton)
+		MultiBot.OnOffActionToTarget(pButton, "co +frostfire aoe,?", "co -frostfire aoe,?", pButton.getName())
+	end
+
+	tFrame.addButton("FrostFire", 0, 182, "ability_mage_frostfirebolt", MultiBot.tips.mage.playbook.frostfire).setDisable()
+	.doLeft = function(pButton)
+		if(MultiBot.OnOffActionToTarget(pButton, "co +frostfire,?", "co -frostfire,?", pButton.getName())) then
+			pButton.getButton("Arcane").setDisable()
+			pButton.getButton("Frost").setDisable()
+			pButton.getButton("Fire").setDisable()
+		end
+	end
+
+	tFrame.addButton("Firestarter", 0, 208, "ability_mage_firestarter", MultiBot.tips.mage.playbook.firestarter).setDisable()
+	.doLeft = function(pButton)
+		MultiBot.OnOffActionToTarget(pButton, "co +firestarter,?", "co -firestarter,?", pButton.getName())
+	end
 	
 	-- STRATEGIES:PLAYBOOK --
 	
@@ -92,6 +111,9 @@ MultiBot.addMage = function(pFrame, pCombat, pNormal)
 	if(MultiBot.isInside(pCombat, "frost,")) then pFrame.getButton("Frost").setEnable() end
 	if(MultiBot.isInside(pCombat, "fire aoe")) then pFrame.getButton("FireAoe").setEnable() end
 	if(MultiBot.isInside(pCombat, "fire,")) then pFrame.getButton("Fire").setEnable() end
+	if(MultiBot.isInside(pCombat, "frostfire aoe")) then pFrame.getButton("FrostFireAoe").setEnable() end
+	if(MultiBot.isInside(pCombat, "frostfire,")) then pFrame.getButton("FrostFire").setEnable() end
+	if(MultiBot.isInside(pCombat, "firestarter")) then pFrame.getButton("Firestarter").setEnable() end
 	
 	-- DPS --
 	

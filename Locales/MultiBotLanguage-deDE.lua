@@ -2145,6 +2145,29 @@ MultiBot.tips.mage.playbook.fire =
 "|cffff0000Linksklicken um Feuer-Magie ein- oder auszuschalten|r\n"..
 "|cf9999999(Ausführreihenfolge: Bot)|r";
 
+MultiBot.tips.mage.playbook.frostfireAoe =
+"Frostfire AOE|cffffffff\n"..
+"Aktiviert die Frostfire- + AOE-Kampfstrategien.\n"..
+"DPS-AOE, DPS-Assist und Tank-Assist schließen sich gegenseitig aus.\n"..
+"Nur einer dieser Modi kann aktiv sein.|r\n\n"..
+"|cffff0000Linksklick zum Aktivieren/Deaktivieren von Frostfire AOE|r\n"..
+"|cf9999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.mage.playbook.frostfire =
+"Frostfire|cffffffff\n"..
+"Aktiviert die Frostfire-Einzelziel-Kampfstrategie.\n"..
+"Arkan, Frost, Feuer und Frostfire schließen sich gegenseitig aus.\n"..
+"Nur eine Spezialisierung kann aktiv sein.|r\n\n"..
+"|cffff0000Linksklick zum Aktivieren/Deaktivieren von Frostfire|r\n"..
+"|cf9999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.mage.playbook.firestarter =
+"Firestarter|cffffffff\n"..
+"Aktiviert die \"Firestarter\"-Taktik für Feuerspielweise (Opener/Sofortzauber).\n"..
+"Kann mit deiner aktuellen Spezialisierung und AOE-Einstellungen kombiniert werden.|r\n\n"..
+"|cffff0000Linksklick zum Aktivieren/Deaktivieren von Firestarter|r\n"..
+"|cf9999999(Ausführungsreihenfolge: Bot)|r";
+
 MultiBot.tips.mage.dps.master =
 "DPS-Control|cffffffff\n"..
 "Mit dieser Steuereinheit legt man die generelle DPS-Strategie fest.|r\n\n"..

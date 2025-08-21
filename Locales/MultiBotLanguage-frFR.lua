@@ -2161,6 +2161,29 @@ MultiBot.tips.mage.playbook.fire =
 "|cffff0000Clic gauche pour activer ou désactiver la magie de feu|r\n"..
 "|cff999999(Ordre d'exécution : Bot)|r";
 
+MultiBot.tips.mage.playbook.frostfireAoe =
+"GivreFeu AOE|cffffffff\n"..
+"Active les stratégies de combat GivreFeu + AOE.\n"..
+"DPS-AOE, DPS-Assist et Tank-Assist sont mutuellement exclusifs.\n"..
+"Un seul de ces modes peut être actif.|r\n\n"..
+"|cffff0000Clic-Gauche pour activer ou désactiver Frostfire AOE|r\n"..
+"|cf9999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.mage.playbook.frostfire =
+"GivreFeu|cffffffff\n"..
+"Active la stratégie de combat GivreFeu mono-cible.\n"..
+"Arcane, Givre, Feu et GivreFeu sont mutuellement exclusifs.\n"..
+"Une seule spécialisation peut être active.|r\n\n"..
+"|cffff0000Clic-Gauche pour activer ou désactiver Frostfire|r\n"..
+"|cf9999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.mage.playbook.firestarter =
+"Firestarter|cffffffff\n"..
+"Active la tactique \"Firestarter\" pour le gameplay Feu (ouverture/incantations instantanées).\n"..
+"Peut être combiné avec votre spécialisation et l’option AOE.|r\n\n"..
+"|cffff0000Clic-Gauche pour activer ou désactiver Firestarter|r\n"..
+"|cf9999999(Ordre d’exécution : Bot)|r";
+
 MultiBot.tips.mage.dps.master =
 "Contrôle DPS|cffffffff\n"..
 "Dans le contrôle DPS, vous trouverez les stratégies DPS générales.|r\n\n"..

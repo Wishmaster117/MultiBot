@@ -2532,6 +2532,29 @@ MultiBot.tips.mage.playbook.fire =
 "|cffff0000Left-Click to enable or disable Fire-Magic|r\n"..
 "|cf9999999(Execution-Order: Bot)|r";
 
+MultiBot.tips.mage.playbook.frostfireAoe =
+"Frostfire AOE|cffffffff\n"..
+"Enables the Frostfire + AOE combat strategies.\n"..
+"DPS-AOE, DPS-Assist and Tank-Assist are mutually exclusive.\n"..
+"Only one of these can be active.|r\n\n"..
+"|cffff0000Left-Click to enable or disable Frostfire AOE|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
+MultiBot.tips.mage.playbook.frostfire =
+"Frostfire|cffffffff\n"..
+"Enables the Frostfire single-target combat strategy.\n"..
+"Arcane, Frost, Fire and Frostfire are mutually exclusive.\n"..
+"Only one spec can be active.|r\n\n"..
+"|cffff0000Left-Click to enable or disable Frostfire|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
+MultiBot.tips.mage.playbook.firestarter =
+"Firestarter|cffffffff\n"..
+"Enables the \"Firestarter\" tactic for Fire gameplay (opener/instant casts).\n"..
+"Can be combined with your current spec and AOE settings.|r\n\n"..
+"|cffff0000Left-Click to enable or disable Firestarter|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
 MultiBot.tips.mage.dps.master =
 "DPS-Control|cffffffff\n"..
 "In the DPS-Control you will find the general DPS-Strategies.|r\n\n"..
