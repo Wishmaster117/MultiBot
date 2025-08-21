@@ -1828,6 +1828,22 @@ MultiBot.tips.druid.playbook.bear =
 "|cffff0000Clic gauche pour activer ou désactiver Ours|r\n"..
 "|cff9999999(Ordre d'exécution : Bot)|r";
 
+MultiBot.tips.druid.playbook.melee =
+"Mêlée|cffffffff\n"..
+"Active la stratégie Mêlée.\n"..
+"Se place au corps-à-corps et privilégie les attaques physiques.\n"..
+"Incompatible avec Lanceur de sorts et Soin.|r\n\n"..
+"|cffff0000Clic gauche pour activer/désactiver Mêlée|r\n"..
+"|cff999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.druid.dps.healerdps =
+"Soigneur-DPS|cffffffff\n"..
+"Active la stratégie hybride Soigneur-DPS.\n"..
+"Inflige des dégâts par défaut et soigne si nécessaire.\n"..
+"Incompatible avec Soin et OffHeal.|r\n\n"..
+"|cffff0000Clic gauche pour activer/désactiver Soigneur-DPS|r\n"..
+"|cff999999(Ordre d’exécution : Bot)|r";
+
 MultiBot.tips.druid.dps.master =
 "Contrôle DPS|cffffffff\n"..
 "Dans le contrôle DPS, vous trouverez les stratégies DPS générales.|r\n\n"..

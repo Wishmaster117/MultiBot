@@ -1747,7 +1747,7 @@ MultiBot.tips.deathknight.tankAssist =
 "|cffff0000左键点击启用或禁用坦克辅助|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
--- 德鲁伊 --
+-- DRUID --
 
 MultiBot.tips.druid.heal =
 "治疗|cffffffff\n"..
@@ -1810,6 +1810,22 @@ MultiBot.tips.druid.playbook.bear =
 "同一时间只能激活这些策略中的一个。|r\n\n"..
 "|cffff0000左键单击以启用或禁用熊|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
+
+MultiBot.tips.druid.playbook.melee =
+"近战|cffffffff\n"..
+"启用近战策略。\n"..
+"保持近战距离并优先使用物理攻击。\n"..
+"与施法者和治疗策略互斥。|r\n\n"..
+"|cffff0000左键点击启用/禁用近战|r\n"..
+"|cff999999(执行顺序：机器人)|r";
+
+MultiBot.tips.druid.dps.healerdps =
+"治疗-输出|cffffffff\n"..
+"启用混合的治疗-输出策略。\n"..
+"默认进行输出，必要时进行治疗。\n"..
+"与治疗和OffHeal互斥。|r\n\n"..
+"|cffff0000左键点击启用/禁用治疗-输出|r\n"..
+"|cff999999(执行顺序：机器人)|r";
 
 MultiBot.tips.druid.dps.master =
 "DPS控制|cffffffff\n"..

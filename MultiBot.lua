@@ -2190,6 +2190,22 @@ MultiBot.tips.druid.playbook.bear =
 "|cffff0000Left-Click to enable or disable Bear|r\n"..
 "|cf9999999(Execution-Order: Bot)|r";
 
+MultiBot.tips.druid.playbook.melee =
+"Melee|cffffffff\n"..
+"Enable the Melee strategy.\n"..
+"Stay in melee range and prefer physical attacks.\n"..
+"Mutually exclusive with Caster and Heal.|r\n\n"..
+"|cffff0000Left-Click to enable or disable Melee|r\n"..
+"|cff999999(Execution-Order: Bot)|r";
+
+MultiBot.tips.druid.dps.healerdps =
+"Healer DPS|cffffffff\n"..
+"Enable the hybrid Healer-DPS strategy.\n"..
+"Deal damage by default and heal when needed.\n"..
+"Mutually exclusive with Heal and OffHeal.|r\n\n"..
+"|cffff0000Left-Click to enable or disable Healer-DPS|r\n"..
+"|cff999999(Execution-Order: Bot)|r";
+
 MultiBot.tips.druid.dps.master =
 "DPS-Control|cffffffff\n"..
 "In the DPS-Control you will find the general DPS-Strategies.|r\n\n"..

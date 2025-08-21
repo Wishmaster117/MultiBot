@@ -1813,6 +1813,22 @@ MultiBot.tips.druid.playbook.bear =
 "|cffff0000Linksklicken um Bear ein- oder auszuschalten|r\n"..
 "|cf9999999(Ausführreihenfolge: Bot)|r";
 
+MultiBot.tips.druid.playbook.melee =
+"Nahkampf|cffffffff\n"..
+"Aktiviert die Nahkampf-Strategie.\n"..
+"Bleibt in Nahkampfreichweite und bevorzugt physische Angriffe.\n"..
+"Schließt Zauberwirker und Heilen aus.|r\n\n"..
+"|cffff0000Linksklick, um Nahkampf ein/auszuschalten|r\n"..
+"|cff999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.druid.dps.healerdps =
+"Heiler-DPS|cffffffff\n"..
+"Aktiviert die hybride Heiler-DPS-Strategie.\n"..
+"Verursacht standardmäßig Schaden und heilt bei Bedarf.\n"..
+"Schließt Heilen und OffHeal aus.|r\n\n"..
+"|cffff0000Linksklick, um Heiler-DPS ein/auszuschalten|r\n"..
+"|cff999999(Ausführungsreihenfolge: Bot)|r";
+
 MultiBot.tips.druid.dps.master =
 "DPS-Control|cffffffff\n"..
 "Mit dieser Steuereinheit legt man die generelle DPS-Strategie fest.|r\n\n"..

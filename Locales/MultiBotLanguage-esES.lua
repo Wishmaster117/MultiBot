@@ -1818,6 +1818,23 @@ MultiBot.tips.druid.playbook.bear =
 "Solo una puede estar activa.|r\n\n"..
 "|cffff0000Clic izquierdo para activar o desactivar Bear|r\n"..
 "|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.druid.playbook.melee =
+"Cuerpo a cuerpo|cffffffff\n"..
+"Activa la estrategia de cuerpo a cuerpo.\n"..
+"Permanece en rango de melé y prioriza ataques físicos.\n"..
+"Incompatible con Hechicero y Sanar.|r\n\n"..
+"|cffff0000Clic izquierdo para activar/desactivar cuerpo a cuerpo|r\n"..
+"|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.druid.dps.healerdps =
+"Sanador-DPS|cffffffff\n"..
+"Activa la estrategia híbrida Sanador-DPS.\n"..
+"Inflige daño por defecto y sana cuando sea necesario.\n"..
+"Incompatible con Sanar y OffHeal.|r\n\n"..
+"|cffff0000Clic izquierdo para activar/desactivar Sanador-DPS|r\n"..
+"|cff999999(Orden de ejecución: Bot)|r";
+
 MultiBot.tips.druid.dps.master =
 "Control de DPS|cffffffff\n"..
 "En el control de DPS, encontrarás las estrategias generales de DPS.|r\n\n"..
