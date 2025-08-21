@@ -3,7 +3,7 @@
 ## Title: MultiBot
 ## Notes: User Interface for Playerbot
 ## Author: Nico Löbbert
-## SavedVariablesPerCharacter: MultiBotSave, MultiBotDB
+## SavedVariablesPerCharacter: MultiBotSave, MultiBotDB, MultiBotSaved
 ## SavedVariables: MultiBotGlobalSave
 ## X-Maintainer: Wishmaster117 aka TheWarlock
 ## X-Contributors: Wishmaster117 aka TheWarlock
