@@ -1723,6 +1723,22 @@ MultiBot.tips.deathknight.dps.dpsAoe =
 "|cffff0000 DPS 범위 공격을 활성화 또는 비활성화하려면 왼쪽 클릭하세요|r\n"..
 "|cf9999999(명령 실행: 로봇)|r";
 
+MultiBot.tips.deathknight.dps.frostAoe =
+"냉기-광역|cffffffff\n"..
+"냉기 광역 전략을 활성화합니다.\n"..
+"냉기-광역, DPS-보조, 탱커-보조는 서로 배타적입니다.\n"..
+"이 전략들 중 하나만 활성화될 수 있습니다.|r\n\n"..
+"|cffff0000좌클릭으로 냉기-광역 켜기/끄기|r\n"..
+"|cf9999999(실행 순서: 봇)|r";
+
+MultiBot.tips.deathknight.dps.unholyAoe =
+"부정-광역|cffffffff\n"..
+"부정 광역 전략을 활성화합니다.\n"..
+"부정-광역, DPS-보조, 탱커-보조는 서로 배타적입니다.\n"..
+"이 전략들 중 하나만 활성화될 수 있습니다.|r\n\n"..
+"|cffff0000좌클릭으로 부정-광역 켜기/끄기|r\n"..
+"|cf9999999(실행 순서: 봇)|r";
+
 MultiBot.tips.deathknight.tankAssist =
 "탱크 지원|cffffffff\n"..
 "탱크 지원 전략을 구현합니다.\n"..

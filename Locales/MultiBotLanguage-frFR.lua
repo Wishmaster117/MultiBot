@@ -1739,6 +1739,22 @@ MultiBot.tips.deathknight.dps.dpsAoe =
 "|cffff0000Clic gauche pour activer ou désactiver DPS-AOE|r\n"..
 "|cff999999(Ordre d'exécution : Bot)|r";
 
+MultiBot.tips.deathknight.dps.frostAoe =
+"AOE-GIVRE|cffffffff\n"..
+"Active la stratégie AOE Givre.\n"..
+"AOE-Givre, DPS-Assist et Tank-Assist sont mutuellement exclusives.\n"..
+"Une seule de ces stratégies peut être activée.|r\n\n"..
+"|cffff0000Clic gauche pour activer ou désactiver AOE-Givre|r\n"..
+"|cf9999999(Ordre d’exécution : Bot)|r";
+
+MultiBot.tips.deathknight.dps.unholyAoe =
+"AOE-IMPIE|cffffffff\n"..
+"Active la stratégie AOE Impie.\n"..
+"AOE-Impie, DPS-Assist et Tank-Assist sont mutuellement exclusives.\n"..
+"Une seule de ces stratégies peut être activée.|r\n\n"..
+"|cffff0000Clic gauche pour activer ou désactiver AOE-Impie|r\n"..
+"|cf9999999(Ordre d’exécution : Bot)|r";
+
 MultiBot.tips.deathknight.tankAssist =
 "Assistance Tank|cffffffff\n"..
 "Elle active les stratégies d'assistance Tank.\n"..

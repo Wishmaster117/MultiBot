@@ -1725,6 +1725,22 @@ MultiBot.tips.deathknight.dps.dpsAoe =
 "|cffff0000Linksklicken um DPS-AOE ein- oder auszuschalten|r\n"..
 "|cf9999999(Ausführreihenfolge: Bot)|r";
 
+MultiBot.tips.deathknight.dps.frostAoe =
+"FROST-AOE|cffffffff\n"..
+"Aktiviert die Frost-AOE-Strategie.\n"..
+"Frost-AOE, DPS-Assist und Tank-Assist schließen sich gegenseitig aus.\n"..
+"Nur eine dieser Strategien kann aktiv sein.|r\n\n"..
+"|cffff0000Linksklick zum Aktivieren/Deaktivieren von Frost-AOE|r\n"..
+"|cf9999999(Ausführungsreihenfolge: Bot)|r";
+
+MultiBot.tips.deathknight.dps.unholyAoe =
+"UNHEILIG-AOE|cffffffff\n"..
+"Aktiviert die Unheilig-AOE-Strategie.\n"..
+"Unheilig-AOE, DPS-Assist und Tank-Assist schließen sich gegenseitig aus.\n"..
+"Nur eine dieser Strategien kann aktiv sein.|r\n\n"..
+"|cffff0000Linksklick zum Aktivieren/Deaktivieren von Unheilig-AOE|r\n"..
+"|cf9999999(Ausführungsreihenfolge: Bot)|r";
+
 MultiBot.tips.deathknight.tankAssist =
 "Tank-Assist|cffffffff\n"..
 "Diese Schaltfläche aktiviert die Tank-Assist-Strategie.\n"..
