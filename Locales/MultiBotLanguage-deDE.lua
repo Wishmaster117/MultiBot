@@ -2311,6 +2311,14 @@ MultiBot.tips.paladin.dps.offheal =
 "|cffff0000Linksklick, um OffHeal zu aktivieren oder zu deaktivieren|r\n"..
 "|cff999999(Ausführungsreihenfolge: Bot)|r";
 
+MultiBot.tips.paladin.dps.healerdps =
+"HealerDps|cffffffff\n"..
+"Erlaubt dem Heiler, Schaden zu verursachen, wenn es sicher ist.\n"..
+"Der Bot behält Heilung als höchste Priorität bei und fügt bei geringer Schadensaufnahme DPS ein.\n"..
+"Empfohlen für Heiler-Spielweisen (z. B. Heil-Paladin).|r\n\n"..
+"|cffff0000Left-Click to enable or disable HealerDps|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
 MultiBot.tips.paladin.tankAssist = 
 "Tank-Assist|cffffffff\n"..
 "Diese Schaltfläche aktiviert die Tank-Assist-Strategie.\n"..

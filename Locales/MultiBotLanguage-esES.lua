@@ -2327,6 +2327,14 @@ MultiBot.tips.paladin.dps.offheal =
 "|cffff0000Clic izquierdo para activar o desactivar OffHeal|r\n"..
 "|cff999999(Orden de ejecución: Bot)|r";
 
+MultiBot.tips.paladin.dps.healerdps =
+"HealerDps|cffffffff\n"..
+"Permite que el sanador inflija daño cuando sea seguro.\n"..
+"El bot mantiene la sanación como máxima prioridad y añade DPS cuando el daño entrante es bajo.\n"..
+"Recomendado para configuraciones de sanador (p. ej., Paladín Sagrado).|r\n\n"..
+"|cffff0000Left-Click to enable or disable HealerDps|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
 MultiBot.tips.paladin.tankAssist = 
 "Tank-Assist|cffffffff\n".. 
 "Activa las estrategias de asistencia al tanque.\n".. 

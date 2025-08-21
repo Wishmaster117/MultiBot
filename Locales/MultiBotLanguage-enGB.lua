@@ -2275,6 +2275,14 @@ MultiBot.tips.paladin.dps.offheal =
 "|cffff0000Left-click to toggle|r\n"..
 "|cf9999999(Executed by: Bot)|r";
 
+MultiBot.tips.paladin.dps.healerdps =
+"HealerDps|cffffffff\n"..
+"Allows the healer to deal damage when it's safe.\n"..
+"The bot keeps healing as the top priority and weaves DPS during low incoming damage.\n"..
+"Recommended for healer builds (e.g., Holy Paladin).|r\n\n"..
+"|cffff0000Left-Click to enable or disable HealerDps|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
 MultiBot.tips.paladin.tankAssist =
 "Tank Assist|cffffffff\n"..
 "DPS AoE, DPS Assist, and Tank Assist are mutually exclusive.\n"..

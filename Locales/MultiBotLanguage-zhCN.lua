@@ -2321,6 +2321,14 @@ MultiBot.tips.paladin.dps.offheal =
 "|cffff0000左键点击以启用或禁用辅助治疗|r\n"..
 "|cff999999（执行顺序：Bot）|r";
 
+MultiBot.tips.paladin.dps.healerdps =
+"HealerDps|cffffffff\n"..
+"在安全的情况下允许治疗进行输出。\n"..
+"机器人始终以治疗为首要任务，在承受伤害较低时穿插输出。\n"..
+"推荐用于治疗构筑（例如：神圣圣骑士）。|r\n\n"..
+"|cffff0000Left-Click to enable or disable HealerDps|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
 MultiBot.tips.paladin.tankAssist = 
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..

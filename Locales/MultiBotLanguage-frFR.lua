@@ -2340,6 +2340,14 @@ MultiBot.tips.paladin.dps.offheal =
 "|cffff0000Clic gauche pour activer ou désactiver OffHeal|r\n"..
 "|cff999999(Ordre d'exécution : Bot)|r";
 
+MultiBot.tips.paladin.dps.healerdps =
+"HealerDps|cffffffff\n"..
+"Permet au soigneur d’infliger des dégâts quand c’est sans risque.\n"..
+"Le bot garde le soin comme priorité absolue et ajoute du DPS quand les dégâts entrants sont faibles.\n"..
+"Recommandé pour les spécialisations soigneur (ex. Paladin Sacré).|r\n\n"..
+"|cffff0000Left-Click to enable or disable HealerDps|r\n"..
+"|cf9999999(Execution-Order: Bot)|r";
+
 MultiBot.tips.paladin.tankAssist = 
 "Assistance Tank|cffffffff\n"..
 "Ceci active les stratégies d'assistance Tank.\n"..
