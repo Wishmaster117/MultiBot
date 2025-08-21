@@ -2939,6 +2939,30 @@ MultiBot.tips.rogue.dps.dps =
 "|cffff0000Left-Click to enable or disable DPS|r\n"..
 "|cf9999999(Execution-Order: Bot)|r";
 
+MultiBot.tips.rogue.dps.stealth =
+"Stealth|cffffffff\n"..
+"Keeps the Rogue stealthed whenever possible and favors stealth openers.\n"..
+"Compatible with DPS modes. For in-combat behavior,\n"..
+"use |cffffd200Stealthed (combat)|cffffffff.|r\n\n"..
+"|cffff0000Left-Click to enable/disable Stealth|r\n"..
+"|cff999999(Execution-Order: Bot)|r";
+
+MultiBot.tips.rogue.dps.stealthed =
+"Stealthed (combat)|cffffffff\n"..
+"Favors fighting while stealthed; approaches in stealth.\n"..
+"Uses stealth openers and may pause DPS to re-stealth.\n"..
+"‘Stealthed (combat)’ and DPS/DPS-AOE/DPS-Assist are mutually exclusive.\n"..
+"Only one strategy can be active.|r\n\n"..
+"|cffff0000Left-Click to enable/disable|r\n"..
+"|cff999999(Execution-Order: Bot)|r";
+
+MultiBot.tips.rogue.dps.boost =
+"Boost|cffffffff\n"..
+"Enables use of offensive cooldowns according to the rotation.\n"..
+"Works with DPS/DPS-AOE/DPS-Assist and Tank-Assist; not exclusive.|r\n\n"..
+"|cffff0000Left-Click to enable/disable Boost|r\n"..
+"|cff999999(Execution-Order: Bot)|r";
+	
 MultiBot.tips.rogue.tankAssist = 
 "Tank-Assist|cffffffff\n"..
 "It enables the Tank-Assist-Strategies.\n"..

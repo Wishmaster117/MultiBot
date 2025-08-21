@@ -2544,6 +2544,30 @@ MultiBot.tips.rogue.dps.dps =
 "|cffff0000Clic izquierdo para activar o desactivar DPS|r\n".. 
 "|cf9999999(Execution-Order: Bot)|r";
 
+MultiBot.tips.rogue.dps.stealth =
+"Sigilo|cffffffff\n"..
+"Mantiene al pícaro en sigilo siempre que sea posible y prioriza aperturas en sigilo.\n"..
+"Compatible con los modos de DPS. Para el comportamiento en combate,\n"..
+"usa |cffffd200Sigilo (combate)|cffffffff.|r\n\n"..
+"|cffff0000Clic izquierdo para activar/desactivar Sigilo|r\n"..
+"|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.rogue.dps.stealthed =
+"Sigilo (combate)|cffffffff\n"..
+"Prefiere combatir en sigilo; se acerca en sigilo.\n"..
+"Usa aperturas en sigilo y puede pausar el DPS para volver a entrar en sigilo.\n"..
+"«Sigilo (combate)» y DPS/DPS-AOE/DPS-Asistencia son excluyentes.\n"..
+"Solo una estrategia puede estar activa.|r\n\n"..
+"|cffff0000Clic izquierdo para activar/desactivar|r\n"..
+"|cff999999(Orden de ejecución: Bot)|r";
+
+MultiBot.tips.rogue.dps.boost =
+"Potenciar|cffffffff\n"..
+"Activa el uso de tiempos de reutilización ofensivos según la rotación.\n"..
+"Funciona con DPS/DPS-AOE/DPS-Asistencia y Tank-Assist; no es excluyente.|r\n\n"..
+"|cffff0000Clic izquierdo para activar/desactivar Potenciar|r\n"..
+"|cff999999(Orden de ejecución: Bot)|r";
+	
 MultiBot.tips.rogue.tankAssist = 
 "Tank-Assist|cffffffff\n".. 
 "Activa las estrategias de asistencia al tanque.\n".. 
