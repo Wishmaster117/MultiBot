@@ -5152,7 +5152,7 @@ if not MultiBot.InitHunterQuick then
     MultiBot.HunterQuick = MBH
 
     -- Container global
-    MBH.frame = MultiBot.addFrame("HunterQuick", -420, 240, 36, 36*8, 36*4)
+    MBH.frame = MultiBot.addFrame("HunterQuick", -820, 300, 36, 36*8, 36*4)
     MBH.frame:SetMovable(true)
     MBH.frame:EnableMouse(true)
     MBH.frame:RegisterForDrag("RightButton")
@@ -5729,18 +5729,32 @@ end
 -- SHAMAN TOTEMS QUICK BAR --
 if not MultiBot.InitShamanQuick then
   function MultiBot.InitShamanQuick()
+    -- SavedVariables
+    MultiBotSaved = MultiBotSaved or {}
+    MultiBotSaved.pos = MultiBotSaved.pos or {}
+    MultiBotSaved.pos.ShamanQuick = MultiBotSaved.pos.ShamanQuick or {}
+
     local MBS = MultiBot.ShamanQuick or {}
     MultiBot.ShamanQuick = MBS
 
     function MBS:CloseAllExcept(keepRow)
       for _, r in pairs(self.entries) do
         if r ~= keepRow then
-          if r.vmenu    and r.vmenu:IsShown()    then r.vmenu:Hide()    end
-          if r.earthGrp and r.earthGrp:IsShown() then r.earthGrp:Hide() end
-          if r.fireGrp  and r.fireGrp:IsShown()  then r.fireGrp:Hide()  end
-          if r.waterGrp and r.waterGrp:IsShown() then r.waterGrp:Hide() end
-          if r.airGrp   and r.airGrp:IsShown()   then r.airGrp:Hide()   end
+          if r.vmenu    then r.vmenu:Hide()    end
+          if r.earthGrp then r.earthGrp:Hide() end
+          if r.fireGrp  then r.fireGrp:Hide()  end
+          if r.waterGrp then r.waterGrp:Hide() end
+          if r.airGrp   then r.airGrp:Hide()   end
+          if r.Show and r.Hide then r:Hide() end
+          r._expanded = false
         end
+        if r == keepRow and r.Show then r:Show() end
+      end
+    end
+
+    function MBS:ShowAllRows()
+      for _, r in pairs(self.entries) do
+        if r.Show then r:Show() end
       end
     end
 
@@ -5749,7 +5763,27 @@ if not MultiBot.InitShamanQuick then
     MBS.frame:EnableMouse(true)
     MBS.frame:RegisterForDrag("RightButton")
     MBS.frame:SetScript("OnDragStart", MBS.frame.StartMoving)
-    MBS.frame:SetScript("OnDragStop" , MBS.frame.StopMovingOrSizing)
+    -- OnDragStop : stop + SAVE position
+    MBS.frame:SetScript("OnDragStop" , function(self)
+      self:StopMovingOrSizing()
+      local p, _, rp, x, y = self:GetPoint()
+      MultiBotSaved.pos.ShamanQuick.frame = { point=p, relPoint=rp, x=x, y=y }
+    end)
+
+    -- Restaure la position sauvegardée (si présente)
+    function MBS:RestorePosition()
+      local st = MultiBotSaved.pos.ShamanQuick.frame
+      if not st then return end
+      local f = self.frame
+      if not f then return end
+      if f.ClearAllPoints and f.SetPoint then
+        f:ClearAllPoints()
+        f:SetPoint(st.point or "CENTER", UIParent, st.relPoint or "CENTER", st.x or 0, st.y or 0)
+      elseif f.setPoint then
+        -- fallback si ton wrapper n’a que setPoint()
+        f:setPoint(st.point or "CENTER", st.relPoint or "CENTER", st.x or 0, st.y or 0)
+      end
+    end
     MBS.frame:Hide()
 
     MBS.entries, MBS.COL_GAP = {}, 40
@@ -5783,27 +5817,37 @@ if not MultiBot.InitShamanQuick then
       local row = self.frame.addFrame("ShamanQuickRow_"..san, xoff, 0, 36, 36*8, 36*3)
       row.owner = sName
       self.entries[san] = row
-
+      row._expanded = false
+	  
       row.mainBtn = row.addButton("ShamanQuickMain_"..san, 0, 0,
         "Interface\\AddOns\\MultiBot\\Icons\\class_shaman.blp",
         (MultiBot.tips and MultiBot.tips.shaman and MultiBot.tips.shaman.ownbutton) and MultiBot.tips.shaman.ownbutton:format(sName) or ("Shaman: "..sName))
       row.mainBtn:SetFrameStrata("HIGH")
       row.mainBtn:RegisterForDrag("RightButton")
       row.mainBtn:SetScript("OnDragStart", function() self.frame:StartMoving() end)
-      row.mainBtn:SetScript("OnDragStop" , function() self.frame:StopMovingOrSizing() end)
+      -- Stop + SAVE position quand on lâche le drag depuis le main bouton
+      row.mainBtn:SetScript("OnDragStop" , function()
+        self.frame:StopMovingOrSizing()
+        local p, _, rp, x, y = self.frame:GetPoint()
+        MultiBotSaved.pos.ShamanQuick.frame = { point=p, relPoint=rp, x=x, y=y }
+      end)
 
       row.mainBtn.doLeft = function()
-        local mbs = MultiBot.ShamanQuick
-        if mbs and mbs.CloseAllExcept then mbs:CloseAllExcept(row) end
-      
-        if row.vmenu and row.vmenu:IsShown() then
-          row.vmenu:Hide()
+        local svc = MultiBot.ShamanQuick
+        if not row._expanded then
+          -- Ouvre ce shaman et cache tous les autres
+          if svc and svc.CloseAllExcept then svc:CloseAllExcept(row) end
+          if row.vmenu then row.vmenu:Show() end
+          row._expanded = true
+        else
+          -- Ferme ce shaman et ré-affiche tous les autres
+          if row.vmenu then row.vmenu:Hide() end
           if row.earthGrp then row.earthGrp:Hide() end
           if row.fireGrp  then row.fireGrp:Hide()  end
           if row.waterGrp then row.waterGrp:Hide() end
           if row.airGrp   then row.airGrp:Hide()   end
-        else
-          if row.vmenu then row.vmenu:Show() end
+          if svc and svc.ShowAllRows then svc:ShowAllRows() end
+          row._expanded = false
         end
       end
 
@@ -5895,16 +5939,23 @@ if not MultiBot.InitShamanQuick then
       end
 
       if self.count == 0 then self.frame:Hide() end
+	  if self.RestorePosition then self:RestorePosition() end
     end
   end
 end
 
 MultiBot.InitShamanQuick()
 
+-- Première restauration juste après l'init (au cas où la barre soit déjà visible)
+if MultiBot.ShamanQuick and MultiBot.ShamanQuick.RestorePosition then
+  MultiBot.ShamanQuick:RestorePosition()
+end
+
 do
   local f = CreateFrame("Frame")
   f:RegisterEvent("PLAYER_ENTERING_WORLD")
   f:RegisterEvent("GROUP_ROSTER_UPDATE")
+  f:RegisterEvent("PARTY_MEMBERS_CHANGED")
   f:SetScript("OnEvent", function()
     if MultiBot and MultiBot.ShamanQuick and MultiBot.ShamanQuick.RefreshFromGroup then
       MultiBot.ShamanQuick:RefreshFromGroup()

@@ -232,7 +232,7 @@ MultiBot.addPaladin = function(pFrame, pCombat, pNormal)
 			MultiBot.OnOffActionToTarget(pButton, "co +bcast,?", "co -bcast,?", pButton.getName())
 		end
 	end
-	
+   
 	-- STRATEGIES:COMBAT-AURA --
 	
 	if(MultiBot.isInside(pCombat, "bspeed")) then
@@ -311,7 +311,20 @@ MultiBot.addPaladin = function(pFrame, pCombat, pNormal)
                 pButton.getButton("Heal").setDisable()
             end
         end
-		
+
+    -- Added missing Healer DPS
+	tFrame.addButton("HealerDps", 0, 104, "INV_Alchemy_Elixir_02",
+        (MultiBot.tips.paladin and MultiBot.tips.paladin.dps and MultiBot.tips.paladin.dps.healerdps)
+            or "Healer DPS|cffffffff\nPermet au soigneur de faire des dégâts quand c'est sans danger.|r")
+    .setDisable()
+    .doLeft = function(pButton)
+        if(MultiBot.OnOffActionToTarget(pButton, "co +healer dps,?", "co -healer dps,?", pButton.getName())) then
+            pButton.getButton("TankAssist").setDisable()
+            pButton.getButton("DpsAoe").setDisable()
+            pButton.getButton("DpsAssist").setDisable()
+        end
+    end
+	
 	-- ASSIST --
 	
 	pFrame.addButton("TankAssist", -150, 0, "ability_warrior_innerrage", MultiBot.tips.paladin.tankAssist).setDisable()
@@ -338,6 +351,8 @@ MultiBot.addPaladin = function(pFrame, pCombat, pNormal)
 	if(MultiBot.isInside(pCombat, "heal")) then pFrame.getButton("Heal").setEnable() end
 	if(MultiBot.isInside(pCombat, "tank,")) then pFrame.getButton("Tank").setEnable() end
 	if(MultiBot.isInside(pCombat, "dps aoe")) then pFrame.getButton("DpsAoe").setEnable() end
+	if(MultiBot.isInside(pCombat, "offheal")) then pFrame.getButton("OffHeal").setEnable() end
+	if(MultiBot.isInside(pCombat, "healer dps")) then pFrame.getButton("HealerDps").setEnable() end
 	if(MultiBot.isInside(pCombat, "dps assist")) then pFrame.getButton("DpsAssist").setEnable() end
 	if(MultiBot.isInside(pCombat, "tank assist")) then pFrame.getButton("TankAssist").setEnable() end
 end
