@@ -3768,6 +3768,22 @@ MultiBot.tips.rtsc.ranged =
 "|cffff0000Clic derecho para seleccionar los luchadores a distancia|r\n".. 
 "|cff999999(Execution-Order: Raid, Party)|r";
 
+MultiBot.tips.rtsc.meleedps =
+"DPS de melé\n|cffffffff"..
+"Solo los bots DPS de melé ejecutarán la acción.\n"..
+"|cffff0000Clic izquierdo para enviar|r\n"..
+"|cff999999(Ejecutado por: Banda, Grupo)|r\n\n"..
+"|cffff0000Clic derecho para seleccionar|r\n"..
+"|cff999999(Ejecutado por: Banda, Grupo)|r";
+
+MultiBot.tips.rtsc.rangeddps =
+"DPS a distancia\n|cffffffff"..
+"Solo los bots DPS a distancia ejecutarán la acción.\n"..
+"|cffff0000Clic izquierdo para enviar|r\n"..
+"|cff999999(Ejecutado por: Banda, Grupo)|r\n\n"..
+"|cffff0000Clic derecho para seleccionar|r\n"..
+"|cff999999(Ejecutado por: Banda, Grupo)|r";
+
 MultiBot.tips.rtsc.all = 
 "All-Selector\n|cffffffff".. 
 "Este botón selecciona todos los bots y los envía a una ubicación.\n".. 

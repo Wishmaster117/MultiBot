@@ -3703,6 +3703,22 @@ MultiBot.tips.rtsc.ranged =
 "|cffff0000원거리 전투기를 선택하려면 우클릭합니다.|r\n"..
 "|cff999999(명령 실행: 레이드, 파티)|r";
 
+MultiBot.tips.rtsc.meleedps =
+"근접 DPS\n|cffffffff"..
+"근접 DPS 봇만 행동을 수행합니다.\n"..
+"|cffff0000왼쪽 클릭으로 전송|r\n"..
+"|cff999999(실행: 공격대, 파티)|r\n\n"..
+"|cffff0000오른쪽 클릭으로 선택|r\n"..
+"|cff999999(실행: 공격대, 파티)|r";
+
+MultiBot.tips.rtsc.rangeddps =
+"원거리 DPS\n|cffffffff"..
+"원거리 DPS 봇만 행동을 수행합니다.\n"..
+"|cffff0000왼쪽 클릭으로 전송|r\n"..
+"|cff999999(실행: 공격대, 파티)|r\n\n"..
+"|cffff0000오른쪽 클릭으로 선택|r\n"..
+"|cff999999(실행: 공격대, 파티)|r";
+
 MultiBot.tips.rtsc.all =
 "전체 선택기\n|cffffffff"..
 "이 버튼은 모든 봇을 선택하여 위치로 보냅니다.\n"..

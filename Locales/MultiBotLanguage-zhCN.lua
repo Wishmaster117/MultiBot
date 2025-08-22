@@ -1019,18 +1019,6 @@ MultiBot.tips.main.beast =
 "|cffff0000左键点击以启用或禁用兽王控制功能|r\n"..
 "|cff999999(执行命令: 系统)|r";
 
---[[
-MultiBot.tips.main.lang.master =
-"语言选择器|cffffffff\n"..
-"这个控制单元允许你为 MultiBot 选择语言。\n"..
-"当这个控制单元处于激活状态时，MultiBot 可以使用与客户端不同的语言。\n"..
-"执行命令显示命令的接收者。|r\n\n"..
-"|cffff0000左键点击以显示或隐藏选项|r\n"..
-"|cff999999(执行命令: 系统)|r\n\n"..
-"|cffff0000右键点击以开启或关闭语言选择器|r\n"..
-"|cff999999(执行命令: 系统)|r";
-]]--
-
 MultiBot.tips.main.expand =
 "展开 - 开关\n|cffffffff"..
 "此开关将展开或缩小‘保持跟随控制’。\n"..
@@ -3763,6 +3751,22 @@ MultiBot.tips.rtsc.ranged =
 "|cff999999(执行命令：队伍，团队)|r\n\n"..
 "|cffff0000右键点击选择远程战士。|r\n"..
 "|cff999999(执行命令：队伍，团队)|r";
+
+MultiBot.tips.rtsc.meleedps =
+"近战输出\n|cffffffff"..
+"只有近战输出机器人会执行该操作。\n"..
+"|cffff0000左键发送|r\n"..
+"|cff999999(执行者：团队、小队)|r\n\n"..
+"|cffff0000右键选择|r\n"..
+"|cff999999(执行者：团队、小队)|r";
+
+MultiBot.tips.rtsc.rangeddps =
+"远程输出\n|cffffffff"..
+"只有远程输出机器人会执行该操作。\n"..
+"|cffff0000左键发送|r\n"..
+"|cff999999(执行者：团队、小队)|r\n\n"..
+"|cffff0000右键选择|r\n"..
+"|cff999999(执行者：团队、小队)|r";
 
 MultiBot.tips.rtsc.all = 
 "全选器\n|cffffffff"..
