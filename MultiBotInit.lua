@@ -5851,7 +5851,7 @@ if not MultiBot.InitHunterQuick then
 end
 -- End Hunter --
 
--- SHAMAN TOTEMS QUICK BAR --
+--[[-- SHAMAN TOTEMS QUICK BAR --
 if not MultiBot.InitShamanQuick then
   function MultiBot.InitShamanQuick()
     -- SavedVariables
@@ -6086,7 +6086,7 @@ do
       MultiBot.ShamanQuick:RefreshFromGroup()
     end
   end)
-end
+end]]--
 
 
 -- FINISH --
