@@ -2067,6 +2067,13 @@ MultiBot.tips.hunter.dps.dps =
 "|cffff0000Linksklicken um DPS ein- oder auszuschalten|r\n"..
 "|cf9999999(Ausführreihenfolge: Bot)|r";
 
+MultiBot.tips.hunter.trapweave =
+"Fallenweben|cffffffff\n"..
+"Aktiviert Fallenweben im Nahkampf: Der Jäger geht kurz in den Nahkampf, um Fallen sicher zu platzieren.\n"..
+"Funktioniert mit allen DPS-Modi; nicht exklusiv zu Assist/Tank-Assist.|r\n\n"..
+"|cffff0000Linksklick zum Aktivieren/Deaktivieren von Fallenweben|r\n"..
+"|cff999999(Ausführungsreihenfolge: Bot)|r";
+
 MultiBot.tips.hunter.tankAssist =
 "Tank-Assist|cffffffff\n"..
 "Diese Schaltfläche aktiviert die Tank-Assist-Strategie.\n"..

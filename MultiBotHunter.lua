@@ -156,6 +156,12 @@ MultiBot.addHunter = function(pFrame, pCombat, pNormal)
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "co +dps,?", "co -dps,?", pButton.getName())
 	end
+
+	-- Trap Weave : active/désactive le weaving des pièges en mêlée
+	tFrame.addButton("TrapWeave", 0, 104, "ability_ensnare", MultiBot.tips.hunter.trapweave).setDisable()
+	.doLeft = function(pButton)
+		MultiBot.OnOffActionToTarget(pButton, "co +trap weave,?", "co -trap weave,?", pButton.getName())
+	end
 	
 	-- ASSIST --
 	
@@ -174,4 +180,5 @@ MultiBot.addHunter = function(pFrame, pCombat, pNormal)
 	if(MultiBot.isInside(pCombat, "dps assist")) then pFrame.getButton("DpsAssist").setEnable() end
 	if(MultiBot.isInside(pCombat, "dps debuff")) then pFrame.getButton("DpsDebuff").setEnable() end
 	if(MultiBot.isInside(pCombat, "tank assist")) then pFrame.getButton("TankAssist").setEnable() end
+	if(MultiBot.isInside(pCombat, "trap weave")) then pFrame.getButton("TrapWeave").setEnable() end
 end

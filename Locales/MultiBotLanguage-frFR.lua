@@ -2082,6 +2082,13 @@ MultiBot.tips.hunter.dps.dps =
 "|cffff0000Clic gauche pour activer ou désactiver DPS|r\n"..
 "|cff999999(Ordre d'exécution : Bot)|r";
 
+MultiBot.tips.hunter.trapweave =
+"Tissage de pièges|cffffffff\n"..
+"Active le tissage de pièges en mêlée : le Chasseur s’approche brièvement pour poser des pièges quand c’est sûr.\n"..
+"Compatible avec tous les modes DPS ; non exclusif avec Assist/Tank-Assist.|r\n\n"..
+"|cffff0000Clic-Gauche pour activer/désactiver le Tissage de pièges|r\n"..
+"|cff999999(Ordre d’exécution : Bot)|r";
+
 MultiBot.tips.hunter.tankAssist = 
 "Assistance Tank|cffffffff\n"..
 "Ceci active les stratégies d'assistance Tank.\n"..

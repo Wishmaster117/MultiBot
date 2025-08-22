@@ -5151,7 +5151,6 @@ if not MultiBot.InitHunterQuick then
     local MBH = MultiBot.HunterQuick or {}
     MultiBot.HunterQuick = MBH
 
-    -- Container global
     MBH.frame = MultiBot.addFrame("HunterQuick", -820, 300, 36, 36*8, 36*4)
     MBH.frame:SetMovable(true)
     MBH.frame:EnableMouse(true)
@@ -5160,8 +5159,66 @@ if not MultiBot.InitHunterQuick then
     MBH.frame:SetScript("OnDragStop" , MBH.frame.StopMovingOrSizing)
     MBH.frame:Hide()
 
-    -- Plusieurs bots chasseurs
-    MBH.entries, MBH.COL_GAP = {}, 40   -- espacement horizontal entre chasseurs
+    function MBH:ResolveUnitToken(name)
+      if GetNumRaidMembers and GetNumRaidMembers() > 0 then
+        for i = 1, GetNumRaidMembers() do
+          local u = "raid"..i
+          if UnitName(u) == name then return u, ("raidpet"..i) end
+        end
+      end
+      for i = 1, GetNumPartyMembers() do
+        local u = "party"..i
+        if UnitName(u) == name then return u, ("partypet"..i) end
+      end
+      if UnitName("player") == name then return "player", "pet" end
+      return nil, nil
+    end
+
+    function MBH:UpdatePetPresence(row)
+      local unit, petUnit = self:ResolveUnitToken(row.owner)
+      row.unit, row.petUnit = unit, petUnit
+      local hasPet = petUnit and UnitExists(petUnit) and not UnitIsDead(petUnit)
+      if hasPet then
+        if row.modesBtn and row.modesBtn.setEnable then row.modesBtn.setEnable() end
+      else
+        if row.modesBtn and row.modesBtn.setDisable then row.modesBtn.setDisable() end
+        if row.modesStrip and row.modesStrip:IsShown() then row.modesStrip:Hide() end
+      end
+    end
+
+    function MBH:UpdateAllPetPresence()
+      for _, r in pairs(self.entries or {}) do
+        if r.owner then self:UpdatePetPresence(r) end
+      end
+    end
+
+    function MBH:_ensureSaved()
+      MultiBotSaved = MultiBotSaved or {}
+      MultiBotSaved.hunterPetStance = MultiBotSaved.hunterPetStance or {}
+    end
+    
+	function MBH:GetSavedStance(name)
+      self:_ensureSaved()
+      return MultiBotSaved.hunterPetStance[name]
+    end
+    
+	function MBH:SetSavedStance(name, stance)
+      self:_ensureSaved()
+      MultiBotSaved.hunterPetStance[name] = stance
+    end
+    
+	function MBH:ApplyStanceVisual(row, stance)
+      row.stanceButtons = row.stanceButtons or {}
+      for _, btn in pairs(row.stanceButtons) do
+        if btn and btn.setDisable then btn.setDisable(true) end
+      end
+      if stance and row.stanceButtons[stance] and row.stanceButtons[stance].setEnable then
+        row.stanceButtons[stance].setEnable(true)
+      end
+      row.ActiveStance = stance
+    end
+
+    MBH.entries, MBH.COL_GAP = {}, 40
 
     local function SanitizeName(n)
       return (tostring(n):gsub("[^%w_]", "_"))
@@ -5169,11 +5226,9 @@ if not MultiBot.InitHunterQuick then
 
     function MBH:BuildForHunter(hName)
       local san = SanitizeName(hName)
-      -- On mets un conteneur par chasseur
       local row = self.frame.addFrame("HunterQuickRow_"..san, -36*7, 0, 36, 36*8, 36*3)
       row.owner = hName
 
-      -- Un Bouton par chasseur avec son nom
       row.mainBtn = row.addButton("HunterQuickMain_"..san, 0, 0,
           "Interface\\AddOns\\MultiBot\\Icons\\class_hunter.blp",
           MultiBot.tips.hunter.ownbutton:format(hName))
@@ -5182,13 +5237,11 @@ if not MultiBot.InitHunterQuick then
       row.mainBtn:SetScript("OnDragStart", function() self.frame:StartMoving() end)
       row.mainBtn:SetScript("OnDragStop" , function() self.frame:StopMovingOrSizing() end)
 
-      -- Mini menu 2 icônes
       row.vmenu = row.addFrame("HunterQuickMenu_"..san, 0, 0, 36, 36, 36*3)
       row.vmenu:Hide()
       row.modesBtn = row.vmenu.addButton("HunterModesBtn_"..san, 0, 36, "ability_hunter_beasttaming", MultiBot.tips.hunter.pet.stances)
-      row.utilsBtn = row.vmenu.addButton("HunterUtilsBtn_"..san, 0, 72, "trade_engineering", "Pet Utilities")
+      row.utilsBtn = row.vmenu.addButton("HunterUtilsBtn_"..san, 0, 72, "trade_engineering", MultiBot.tips.hunter.pet.master)
 
-      -- Strips
       row.modesStrip = row.addFrame("HunterQuickModesStrip_"..san, 0, 0, 36, 36*7, 36)
       row.utilsStrip = row.addFrame("HunterQuickUtilsStrip_"..san, 0, 0, 36, 36*5, 36)
       row.modesStrip:ClearAllPoints()
@@ -5200,7 +5253,8 @@ if not MultiBot.InitHunterQuick then
       row.modesStrip:EnableMouse(false); row.utilsStrip:EnableMouse(false)
       row.modesStrip:Hide(); row.utilsStrip:Hide()
 
-      -- Toggle du mini menu
+      MBH:UpdatePetPresence(row)
+
       row.mainBtn.doLeft = function()
 	  MBH:CloseAllExcept(row)
         if row.vmenu:IsShown() then
@@ -5212,7 +5266,6 @@ if not MultiBot.InitHunterQuick then
         end
       end
 
-      -- Pet Modes 7 boutons
       local labels_and_tips = {
         { key="aggressive", tip=MultiBot.tips.hunter.pet.aggressive },
         { key="passive"   , tip=MultiBot.tips.hunter.pet.passive   },
@@ -5224,32 +5277,47 @@ if not MultiBot.InitHunterQuick then
       }
       local PET_MODE_ICONS = {
         aggressive = "ability_Racial_BloodRage",
-        passive    = "ABILITY_SEAL",
+        passive    = "Spell_Nature_Sleep",
         defensive  = "Ability_Defend",
         stance     = "Temp",
         attack     = "Ability_GhoulFrenzy",
         follow     = "ability_tracking",
         stay       = "Spell_Nature_TimeStop",
       }
+
+      row.stanceButtons = {}
       for i, def in ipairs(labels_and_tips) do
         local px = -36 * (7 - i)
         local tex = PET_MODE_ICONS[def.key] or "inv_misc_questionmark"
         local b = row.modesStrip.addButton("HunterQuickMode_"..san.."_"..i, px, 0, tex, def.tip)
-        b.doLeft = function()
-          SendChatMessage("pet "..def.key, "WHISPER", nil, hName)
+        if def.key == "aggressive" or def.key == "passive" or def.key == "defensive" then
+          row.stanceButtons[def.key] = b
+          if b.setDisable then b.setDisable(true) end
+          b.doLeft = function()
+            SendChatMessage("pet "..def.key, "WHISPER", nil, hName)
+            MBH:ApplyStanceVisual(row, def.key)
+            MBH:SetSavedStance(hName, def.key)
+          end
+        else
+          b.doLeft = function()
+            SendChatMessage("pet "..def.key, "WHISPER", nil, hName)
+          end
         end
       end
+	  
+	  MBH:ApplyStanceVisual(row, MBH:GetSavedStance(hName))
+	  
       row.modesBtn.doLeft = function()
-	  MBH:CloseAllExcept(row)
+        MBH:CloseAllExcept(row)
         if row.modesStrip:IsShown() then
           row.modesStrip:Hide()
         else
           row.modesStrip:Show()
           row.utilsStrip:Hide()
+		  MBH:ApplyStanceVisual(row, row.ActiveStance)
         end
       end
 
-      -- Utilitaires Pets
       local petCmdList = {
         {"Name",    "tame name %s",    "inv_scroll_11",            MultiBot.tips.hunter.pet.name},
         {"Id",      "tame id %s",      "inv_scroll_14",            MultiBot.tips.hunter.pet.id},
@@ -5386,7 +5454,6 @@ if not MultiBot.InitHunterQuick then
       return nil
     end
 
-    -- Prompt
     function MBH:ShowPrompt(fmt, targetName, title)
       local P = self.PROMPT
       if not P then
@@ -5434,7 +5501,6 @@ if not MultiBot.InitHunterQuick then
       end)
     end
 
-    -- Fenêtre list créatures + recherche + preview 3D
     function MBH:EnsureSearchFrame()
       if self.SEARCH_FRAME then return end
       local f = CreateFrame("Frame", "MBHunterPetSearch", UIParent)
@@ -5613,7 +5679,6 @@ if not MultiBot.InitHunterQuick then
       e:SetScript("OnTextChanged", function() f:Refresh() end)
     end
 
-    -- Fenêtre liste par familles
     function MBH:ShowFamilyFrame(targetName)
       local ff = self.FAMILY_FRAME
       if not ff then
@@ -5720,10 +5785,25 @@ if not MultiBot.InitHunterQuick then
     end
 
   end
+  
+  MultiBot.HunterQuick = MultiBot.HunterQuick or {}
 
   MultiBot.InitHunterQuick()
-end
 
+  if not MultiBot.HunterQuick.ev then
+    local f = CreateFrame("Frame")
+    MultiBot.HunterQuick.ev = f
+    f:RegisterEvent("PLAYER_ENTERING_WORLD")
+    f:RegisterEvent("GROUP_ROSTER_UPDATE")
+    f:RegisterEvent("PARTY_MEMBERS_CHANGED")
+    f:RegisterEvent("RAID_ROSTER_UPDATE")
+    f:RegisterEvent("UNIT_PET")
+    f:SetScript("OnEvent", function()
+      local HQ = MultiBot and MultiBot.HunterQuick
+      if HQ and HQ.UpdateAllPetPresence then HQ:UpdateAllPetPresence() end
+    end)
+  end
+end
 -- End Hunter --
 
 -- SHAMAN TOTEMS QUICK BAR --

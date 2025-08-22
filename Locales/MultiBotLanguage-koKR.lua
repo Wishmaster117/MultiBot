@@ -2066,6 +2066,13 @@ MultiBot.tips.hunter.dps.dps =
 "|cffff0000DPS 정책을 활성화 또는 비활성화하려면 왼쪽 클릭|r\n"..
 "|cf9999999(명령 실행: 로봇)|r";
 
+MultiBot.tips.hunter.trapweave =
+"덫 위빙|cffffffff\n"..
+"근접전에서 덫 위빙을 사용합니다: 안전할 때 잠시 접근해 덫을 설치합니다.\n"..
+"모든 DPS 모드와 함께 작동하며 Assist/Tank-Assist와 상충하지 않습니다.|r\n\n"..
+"|cffff0000좌클릭으로 덫 위빙 켜기/끄기|r\n"..
+"|cff999999(실행 순서: 봇)|r";
+
 MultiBot.tips.hunter.tankAssist =
 "탱크 지원|cffffffff\n"..
 "탱크 지원 전략을 구현합니다.\n"..

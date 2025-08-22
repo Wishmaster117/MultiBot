@@ -2011,6 +2011,13 @@ MultiBot.tips.hunter.dps.dps =
 "|cffff0000Left-click to toggle|r\n"..
 "|cf9999999(Executed by: Bot)|r";
 
+MultiBot.tips.hunter.trapweave =
+"Trap Weave|cffffffff\n"..
+"Enables melee trap weaving: the Hunter briefly moves in to place traps when safe.\n"..
+"Works with any DPS mode; not mutually exclusive with Assist/Tank-Assist.|r\n\n"..
+"|cffff0000Left-Click to enable or disable Trap Weave|r\n"..
+"|cff999999(Execution-Order: Bot)|r";
+
 MultiBot.tips.hunter.tankAssist =
 "Tank Assist|cffffffff\n"..
 "Activates Tank Assist strategy.\n"..

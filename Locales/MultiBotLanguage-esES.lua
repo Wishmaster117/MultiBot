@@ -2072,6 +2072,13 @@ MultiBot.tips.hunter.dps.dps =
 "|cffff0000Clic izquierdo para activar o desactivar DPS|r\n"..
 "|cff999999(Orden de ejecución: Bot)|r";
 
+MultiBot.tips.hunter.trapweave =
+"Tejido de trampas|cffffffff\n"..
+"Activa el trap weaving en melé: el Cazador se acerca brevemente para colocar trampas cuando es seguro.\n"..
+"Funciona con cualquier modo de DPS; no es excluyente con Assist/Tank-Assist.|r\n\n"..
+"|cffff0000Clic izquierdo para activar o desactivar Tejido de trampas|r\n"..
+"|cff999999(Orden de ejecución: Bot)|r";
+
 MultiBot.tips.hunter.tankAssist = 
 "Tank-Assist|cffffffff\n"..  -- Línea en inglés
 "Activa las estrategias de asistencia al tanque.\n"..
