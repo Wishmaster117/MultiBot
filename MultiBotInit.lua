@@ -4973,7 +4973,7 @@ local tSelector = tRTSC.addFrame("Selector", 0, 2, 28)
 tSelector.selector = ""
 
 -- Exécute l'action sur la sélection
-tSelector.doExecute = function(pButton, pAction)
+--[[tSelector.doExecute = function(pButton, pAction)
 	if (pButton.parent.selector == "") then
 		return MultiBot.ActionToGroup(pAction)
 	end
@@ -4985,6 +4985,49 @@ tSelector.doExecute = function(pButton, pAction)
 	end
 
 	pButton.parent.selector = ""
+end]]--
+
+-- Exécute l'action sur la sélection => Modifié pour La PR (commit 78116fe)
+tSelector.doExecute = function(pButton, pAction)
+    if (pButton.parent.selector == "") then
+        return MultiBot.ActionToGroup(pAction)
+    end
+
+    local selected = MultiBot.doSplit(pButton.parent.selector, " ")
+    local others, groupIdx = {}, {}
+
+    -- Séparer @groupN des autres tags (@tank/@melee/@rangeddps, etc.)
+    for _, tag in ipairs(selected) do
+        local n = string.match(tag, "^@group(%d+)$")
+        if n then table.insert(groupIdx, tonumber(n)) else table.insert(others, tag) end
+    end
+
+    -- Envoyer pour les autres tags comme avant
+    for _, tag in ipairs(others) do
+        MultiBot.ActionToGroup(tag .. " " .. pAction)
+        if pButton.parent.buttons[tag] then pButton.parent.buttons[tag].setDisable() end
+    end
+
+    -- Compresser @group en liste/plage : @group1-3,5
+    if #groupIdx > 0 then
+        table.sort(groupIdx)
+        local parts, i = {}, 1
+        while i <= #groupIdx do
+            local a, j = groupIdx[i], i
+            while j+1 <= #groupIdx and groupIdx[j+1] == groupIdx[j]+1 do j = j + 1 end
+            local b = groupIdx[j]
+            table.insert(parts, (a == b) and tostring(a) or (tostring(a).."-"..tostring(b)))
+            i = j + 1
+        end
+        local prefix = "@group" .. table.concat(parts, ",")
+        MultiBot.ActionToGroup(prefix .. " " .. pAction)
+        for _, n in ipairs(groupIdx) do
+            local key = "@group" .. tostring(n)
+            if pButton.parent.buttons[key] then pButton.parent.buttons[key].setDisable() end
+        end
+    end
+
+    pButton.parent.selector = ""
 end
 
 -- Ajoute un tag à la sélection
@@ -5086,6 +5129,8 @@ local roleButtons = {
     { "@healer", 90, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_healer.blp", MultiBot.tips.rtsc.healer, false, true },
     { "@melee", 120, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_melee.blp",  MultiBot.tips.rtsc.melee,  false, true },
     { "@ranged",150, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_ranged.blp", MultiBot.tips.rtsc.ranged, false, true },
+    { "@meleedps",  180, "Interface\\AddOns\\MultiBot\\Icons\\attack_melee.blp", MultiBot.tips.rtsc.meleedps,  false, true },
+    { "@rangeddps", 210, "Interface\\AddOns\\MultiBot\\Icons\\attack_range.blp", MultiBot.tips.rtsc.rangeddps, false, true },	
 }
 
 -- Création des boutons groupes
@@ -5101,7 +5146,7 @@ end
 -- Bouton "@all"
 do
     local tButton = tSelector
-        .addButton("@all", 180, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc.blp", MultiBot.tips.rtsc.all, "SecureActionButtonTemplate")
+        .addButton("@all", 240, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc.blp", MultiBot.tips.rtsc.all, "SecureActionButtonTemplate")
         .addMacro("type1", "/cast aedm")
 
     tButton.doRight = function(pButton)
@@ -5117,7 +5162,7 @@ end
 
 -- Bouton Browse (toggle groupes <-> rôles)
 do
-    local tButton = tSelector.addButton("Browse", 210, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_browse.blp", MultiBot.tips.rtsc.browse)
+    local tButton = tSelector.addButton("Browse", 270, 0, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_browse.blp", MultiBot.tips.rtsc.browse)
 
     tButton.doRight = function(pButton)
         MultiBot.ActionToGroup("rtsc cancel")

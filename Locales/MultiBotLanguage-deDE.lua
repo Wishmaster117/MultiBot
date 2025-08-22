@@ -3749,6 +3749,22 @@ MultiBot.tips.rtsc.ranged =
 "|cffff0000Rechtsklicken um die Fernkämpfer auszuwählen|r\n"..
 "|cff999999(Ausführreihenfolge: Raid, Party)|r";
 
+MultiBot.tips.rtsc.meleedps =
+"Nahkampf-DPS\n|cffffffff"..
+"Nur Nahkampf-DPS-Bots führen die Aktion aus.\n"..
+"|cffff0000Linksklick zum Senden|r\n"..
+"|cff999999(Ausgeführt von: Schlachtzug, Gruppe)|r\n\n"..
+"|cffff0000Rechtsklick zum Auswählen|r\n"..
+"|cff999999(Ausgeführt von: Schlachtzug, Gruppe)|r";
+
+MultiBot.tips.rtsc.rangeddps =
+"Fernkampf-DPS\n|cffffffff"..
+"Nur Fernkampf-DPS-Bots führen die Aktion aus.\n"..
+"|cffff0000Linksklick zum Senden|r\n"..
+"|cff999999(Ausgeführt von: Schlachtzug, Gruppe)|r\n\n"..
+"|cffff0000Rechtsklick zum Auswählen|r\n"..
+"|cff999999(Ausgeführt von: Schlachtzug, Gruppe)|r";
+
 MultiBot.tips.rtsc.all = 
 "All-Selector\n|cffffffff"..
 "Mit dieser Schaltfläche werden alle Bots ausgewählt und an einen Standort entsendet.\n"..

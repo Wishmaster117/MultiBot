@@ -3803,7 +3803,23 @@ MultiBot.tips.rtsc.ranged =
 "|cffff0000Clic droit pour sélectionner les combattants à distance|r\n"..
 "|cff999999(Ordre d'exécution : Raid, Groupe)|r";
 
-MultiBot.tips.rtsc.all = 
+MultiBot.tips.rtsc.meleedps =
+"DPS de mêlée\n|cffffffff"..
+"Seuls les bots DPS de mêlée exécuteront l’action.\n"..
+"|cffff0000Clic-gauche pour envoyer|r\n"..
+"|cff999999(Exécuté par : Raid, Groupe)|r\n\n"..
+"|cffff0000Clic-droit pour sélectionner|r\n"..
+"|cff999999(Exécuté par : Raid, Groupe)|r";
+
+MultiBot.tips.rtsc.rangeddps =
+"DPS à distance\n|cffffffff"..
+"Seuls les bots DPS à distance exécuteront l’action.\n"..
+"|cffff0000Clic-gauche pour envoyer|r\n"..
+"|cff999999(Exécuté par : Raid, Groupe)|r\n\n"..
+"|cffff0000Clic-droit pour sélectionner|r\n"..
+"|cff999999(Exécuté par : Raid, Groupe)|r";
+
+MultiBot.tips.rtsc.all =
 "Sélecteur global\n|cffffffff"..
 "Ce bouton sélectionne tous les bots et les envoie à un emplacement.\n"..
 "Clic gauche puis utilisez le sort AEDM pour marquer un emplacement.|r\n\n"..

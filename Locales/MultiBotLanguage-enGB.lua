@@ -3683,6 +3683,22 @@ MultiBot.tips.rtsc.ranged =
 "|cffff0000Right-click to select|r\n"..
 "|cff999999(Executed by: Raid, Party)|r";
 
+MultiBot.tips.rtsc.meleedps =
+"Melee DPS\n|cffffffff"..
+"Only Melee DPS bots will execute the action.\n"..
+"|cffff0000Left-click to send|r\n"..
+"|cff999999(Executed by: Raid, Party)|r\n\n"..
+"|cffff0000Right-click to select|r\n"..
+"|cff999999(Executed by: Raid, Party)|r";
+
+MultiBot.tips.rtsc.rangeddps =
+"Ranged DPS\n|cffffffff"..
+"Only Ranged DPS bots will execute the action.\n"..
+"|cffff0000Left-click to send|r\n"..
+"|cff999999(Executed by: Raid, Party)|r\n\n"..
+"|cffff0000Right-click to select|r\n"..
+"|cff999999(Executed by: Raid, Party)|r";
+
 MultiBot.tips.rtsc.all =
 "All Bots\n|cffffffff"..
 "Sends all Bots to a marked location.\n"..
