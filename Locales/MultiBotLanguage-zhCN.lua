@@ -2065,6 +2065,13 @@ MultiBot.tips.hunter.dps.dps =
 "|cffff0000左键单击以启用或禁用DPS策略|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
+MultiBot.tips.hunter.trapweave =
+"陷阱编织|cffffffff\n"..
+"启用近战陷阱编织：在安全时短暂贴近以放置陷阱。\n"..
+"与任意DPS模式兼容；不与助攻/坦克助攻互斥。|r\n\n"..
+"|cffff0000左键 启用/禁用 陷阱编织|r\n"..
+"|cff999999(执行顺序：Bot)|r";
+
 MultiBot.tips.hunter.tankAssist =
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..
