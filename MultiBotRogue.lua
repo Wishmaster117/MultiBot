@@ -69,6 +69,6 @@ MultiBot.addRogue = function(pFrame, pCombat, pNormal)
 	if(MultiBot.isInside(pCombat, "dps assist")) then pFrame.getButton("DpsAssist").setEnable() end
 	if(MultiBot.isInside(pCombat, "tank assist")) then pFrame.getButton("TankAssist").setEnable() end
 	if(MultiBot.isInside(pNormal, "stealth")) then pFrame.getButton("Stealth").setEnable() end
-	if(MultiBot.isInside(pCombat, "stealthed")) then rFrame.getButton("Stealthed").setEnable() end
-	if(MultiBot.isInside(pCombat, "boost")) then rFrame.getButton("Boost").setEnable() end	
+	if(MultiBot.isInside(pCombat, "stealthed")) then pFrame.getButton("Stealthed").setEnable() end
+	if(MultiBot.isInside(pCombat, "boost")) then pFrame.getButton("Boost").setEnable() end		
 end
