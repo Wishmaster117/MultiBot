@@ -71,16 +71,16 @@ MultiBot.info.target =
 "I don't have a target.";
 
 MultiBot.info.classes =
-"The Classes doesn't match.";
+"Classes don't match.";
 
 MultiBot.info.levels =
 "Levels don't match.";
 
 MultiBot.info.spell =
-"I couldn't identify the spell.";
+"I couldn't identify that spell.";
 
 MultiBot.info.macro =
-"I already have the maximum of # private macros.";
+"I already have the maximum number of private macros.";
 
 MultiBot.info.neither =
 "I neither have a target, nor am I in a Raid or Party.";
@@ -92,7 +92,7 @@ MultiBot.info.inviting =
 "I'm inviting NAME to the Group.";
 
 MultiBot.info.combat =
-"Asked NAME for Combat Strategies.";
+"I'm querying NAME for their combat directives...";
 
 MultiBot.info.teleport =
 "will teleport you to 'MAP - ZONE'";
@@ -107,13 +107,19 @@ MultiBot.info.spellbook =
 "NAME's Spellbook";
 
 MultiBot.info.player =
-"I won't Auto-Initialize 'NAME' from the Playerbot-Roster.";
+"I couldn't auto-initialise NAME from the Playerbot Roster.";
 
 MultiBot.info.member =
-"I won't Auto-Initialize 'NAME' from the Guild-Roster.";
+"I couldn't auto-initialise NAME from the Guild Roster.";
+
+MultiBot.info.players =
+"I couldn't auto-initialise anyone from the Playerbot Roster.";
+
+MultiBot.info.members =
+"I couldn't auto-initialise anyone from the Guild Roster.";
 
 MultiBot.info.wait =
-"I've already invited members. Please wait until I'm done.";
+"Bot invitation is in progress. Please wait.";
 
 MultiBot.info.starting =
 "Inviting Bots to group...";
@@ -134,7 +140,7 @@ MultiBot.info.action =
 "I need to select an action.";
 
 MultiBot.info.combination =
-"There are no Items for this Combination.";
+"I couldn't find any items that match this filter combination.";
 
 --MultiBot.info.language =
 --"I need to activate the Language-Selector first.";
@@ -279,7 +285,6 @@ MultiBot.tips.move.stats =
 "Right-click to drag and move Auto-Stats";
 
 MultiBot.tips.move.itemus =
-
 "Right-click to drag and move the Itemus window";
 
 MultiBot.tips.move.iconos =
@@ -289,7 +294,7 @@ MultiBot.tips.move.spellbook =
 "Right-click to drag and move the Spellbook";
 
 MultiBot.tips.move.reward =
-"Right-click to drag and move the Reward Selector window";
+"Right-click to drag and move the Reward Selection window";
 
 MultiBot.tips.move.talent =
 "Right-click to drag and move the Talents window";
@@ -300,7 +305,6 @@ MultiBot.tips.move.raidus =
 -- TANKER --
 
 MultiBot.tips.tanker.master =
-
 "Tank Main Menu\n|cffffffff"..
 "Control how Tanks attack.\n"..
 "|cffff0000Left-click to activate Tank Attack|r\n"..
@@ -708,7 +712,7 @@ MultiBot.tips.unit.button =
 MultiBot.tips.units.master =
 "PlayerBot Main Menu\n|cffffffff"..
 "Contains a master list of PlayerBot controls.\n"..
-"Each button represents one of your Characters, Guild-Members, or Friends.\n"..
+"Each button represents one of your Characters, Guild Members, or Friends.\n"..
 "|cffff0000Left-click to show or hide the PlayerBot buttons|r\n"..
 "|cff999999(Executed by: System)|r\n\n"..
 "|cffff0000Right-click to refresh the Roster|r\n"..
@@ -868,7 +872,7 @@ MultiBot.tips.units.inviteRaid40 =
 
 MultiBot.tips.units.alliance =
 "Log In/Out All PlayerBots\n|cffffffff"..
-"Log in/out all PlayerBots you have access to.\n"..
+"Log in/Out all PlayerBots you have access to.\n"..
 "This function will take time to populate the ButtonBars for each PlayerBot, depending on the number of PlayerBots total.\n\n"..
 "|cffff0000Left-click to log in all PlayerBots|r\n"..
 "|cff999999(Executed by: System)|r\n\n"..
@@ -918,12 +922,12 @@ MultiBot.tips.main.master =
 "|cff999999(Executed by: System)|r";
 
 MultiBot.tips.main.options =
-"Options-Switch\n|cffffffff"..
+"Options Panel\n|cffffffff"..
 "Opens the MultiBot settings panel with sliders for action intervals.\n"..
 "(Stats / Talents / Invite / Sort) and chat throttling (Messages per second / Burst).\n"..
 "Settings are saved per character.|r\n\n"..
 "|cffff0000Left-Click to open or close the options panel|r\n"..
-"|cff999999(Execution-Order: Interface)|r";
+"|cff999999(Executed by: Interface)|r";
 
 MultiBot.tips.main.coords =
 "Reset Window Locations\n|cffffffff"..
@@ -1677,17 +1681,17 @@ MultiBot.tips.deathknight.dps.frostAoe =
 "FROST-AOE|cffffffff\n"..
 "Enables the Frost AOE strategy.\n"..
 "Frost-AOE, DPS-Assist and Tank-Assist are mutually exclusive.\n"..
-"Only one of these strategies can be active.|r\n\n".. 
+"Only one of these strategies can be active.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Frost-AOE|r\n"..
-"|cf9999999(Execution-Order: Bot)|r";
+"|cf9999999(Executed by: Bot)|r";
 
 MultiBot.tips.deathknight.dps.unholyAoe =
 "UNHOLY-AOE|cffffffff\n"..
 "Enables the Unholy AOE strategy.\n"..
 "Unholy-AOE, DPS-Assist and Tank-Assist are mutually exclusive.\n"..
-"Only one of these strategies can be active.|r\n\n".. 
+"Only one of these strategies can be active.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Unholy-AOE|r\n"..
-"|cf9999999(Execution-Order: Bot)|r";
+"|cf9999999(Executed by: Bot)|r";
 
 MultiBot.tips.deathknight.tankAssist =
 "Tank Assist|cffffffff\n"..
@@ -1764,18 +1768,18 @@ MultiBot.tips.druid.playbook.bear =
 MultiBot.tips.druid.playbook.melee =
 "Melee|cffffffff\n"..
 "Enable the Melee strategy.\n"..
-"Stay in melee range and prefer physical attacks.\n"..
+"Stays in melee range, preferring physical attacks.\n"..
 "Mutually exclusive with Caster and Heal.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Melee|r\n"..
-"|cff999999(Execution-Order: Bot)|r";
+"|cff999999(Executed by: Bot)|r";
 
 MultiBot.tips.druid.dps.healerdps =
 "Healer DPS|cffffffff\n"..
 "Enable the hybrid Healer-DPS strategy.\n"..
-"Deal damage by default and heal when needed.\n"..
+"Deals damage by default, healing when needed.\n"..
 "Mutually exclusive with Heal and OffHeal.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Healer-DPS|r\n"..
-"|cff999999(Execution-Order: Bot)|r";
+"|cff999999(Executed by: Bot)|r";
 
 MultiBot.tips.druid.dps.master =
 "Druid DPS Control|cffffffff\n"..
@@ -1881,14 +1885,14 @@ MultiBot.tips.hunter.pet.abandon =
 
 MultiBot.tips.hunter.ownbutton =
 "Hunter: %s\n"..
-"|cffffffffThis button open Hunter pet's Menu.|r\n\n".. 
+"|cffffffffThis button open Hunter pet's Menu.|r\n\n"..
 "|cffff0000Left-Click to open/close|r\n"..
-"|cffff0000Right-Click to drag|r\n".. 
+"|cffff0000Right-Click to drag|r\n"..
 "|cff999999(Execution Order: System)|r";
 
 MultiBot.tips.hunter.pet.stances =
 "Pets Stances\n"..
-"|cffffffffOpen pets stances menu.|r\n\n".. 
+"|cffffffffOpen pets stances menu.|r\n\n"..
 "|cffff0000Left-Click to open/close|r\n"..
 "|cff999999(Execution Order: System)|r";
 
@@ -2016,7 +2020,7 @@ MultiBot.tips.hunter.trapweave =
 "Enables melee trap weaving: the Hunter briefly moves in to place traps when safe.\n"..
 "Works with any DPS mode; not mutually exclusive with Assist/Tank-Assist.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Trap Weave|r\n"..
-"|cff999999(Execution-Order: Bot)|r";
+"|cff999999(Executed by: Bot)|r";
 
 MultiBot.tips.hunter.tankAssist =
 "Tank Assist|cffffffff\n"..
@@ -2106,7 +2110,7 @@ MultiBot.tips.mage.playbook.frostfireAoe =
 "DPS-AOE, DPS-Assist and Tank-Assist are mutually exclusive.\n"..
 "Only one of these can be active.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Frostfire AOE|r\n"..
-"|cf9999999(Execution-Order: Bot)|r";
+"|cf9999999(Executed by: Bot)|r";
 
 MultiBot.tips.mage.playbook.frostfire =
 "Frostfire|cffffffff\n"..
@@ -2114,14 +2118,14 @@ MultiBot.tips.mage.playbook.frostfire =
 "Arcane, Frost, Fire and Frostfire are mutually exclusive.\n"..
 "Only one spec can be active.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Frostfire|r\n"..
-"|cf9999999(Execution-Order: Bot)|r";
+"|cf9999999(Executed by: Bot)|r";
 
 MultiBot.tips.mage.playbook.firestarter =
 "Firestarter|cffffffff\n"..
 "Enables the \"Firestarter\" tactic for Fire gameplay (opener/instant casts).\n"..
 "Can be combined with your current spec and AOE settings.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Firestarter|r\n"..
-"|cf9999999(Execution-Order: Bot)|r";
+"|cf9999999(Executed by: Bot)|r";
 
 MultiBot.tips.mage.dps.master =
 "Main Mage DPS|cffffffff\n"..
@@ -2343,7 +2347,7 @@ MultiBot.tips.paladin.dps.healerdps =
 "The bot keeps healing as the top priority and weaves DPS during low incoming damage.\n"..
 "Recommended for healer builds (e.g., Holy Paladin).|r\n\n"..
 "|cffff0000Left-Click to enable or disable HealerDps|r\n"..
-"|cf9999999(Execution-Order: Bot)|r";
+"|cf9999999(Executed by: Bot)|r";
 
 MultiBot.tips.paladin.tankAssist =
 "Tank Assist|cffffffff\n"..
@@ -2407,7 +2411,7 @@ MultiBot.tips.priest.playbook.holyheal =
 "Holy Heal, Shadow and Holy DPS are mutually exclusive.\n"..
 "Only one of these playbooks can be active.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Holy Heal|r\n"..
-"|cf9999999(Execution-Order: Bot)|r";
+"|cf9999999(Executed by: Bot)|r";
 
 MultiBot.tips.priest.playbook.holydps =
 "Holy DPS|cffffffff\n"..
@@ -2415,14 +2419,14 @@ MultiBot.tips.priest.playbook.holydps =
 "Holy DPS, Shadow and Holy Heal are mutually exclusive.\n"..
 "Only one of these playbooks can be active.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Holy DPS|r\n"..
-"|cf9999999(Execution-Order: Bot)|r";
+"|cf9999999(Executed by: Bot)|r";
 
 MultiBot.tips.priest.playbook.rshadow =
 "Shadow Resistance|cffffffff\n"..
 "Turns on the Shadow-Resistance strategy.\n"..
 "This option is not a playbook and can be combined with other playbooks.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Shadow Resistance|r\n"..
-"|cf9999999(Execution-Order: Bot)|r";
+"|cf9999999(Executed by: Bot)|r";
 
 MultiBot.tips.priest.dps.master =
 "Priest DPS Main Menu|cffffffff\n"..
@@ -2498,7 +2502,7 @@ MultiBot.tips.rogue.dps.stealth =
 "Compatible with DPS modes. For in-combat behavior,\n"..
 "use |cffffd200Stealthed (combat)|cffffffff.|r\n\n"..
 "|cffff0000Left-Click to enable/disable Stealth|r\n"..
-"|cff999999(Execution-Order: Bot)|r";
+"|cff999999(Executed by: Bot)|r";
 
 MultiBot.tips.rogue.dps.stealthed =
 "Stealthed (combat)|cffffffff\n"..
@@ -2507,14 +2511,14 @@ MultiBot.tips.rogue.dps.stealthed =
 "‘Stealthed (combat)’ and DPS/DPS-AOE/DPS-Assist are mutually exclusive.\n"..
 "Only one strategy can be active.|r\n\n"..
 "|cffff0000Left-Click to enable/disable|r\n"..
-"|cff999999(Execution-Order: Bot)|r";
+"|cff999999(Executed by: Bot)|r";
 
 MultiBot.tips.rogue.dps.boost =
 "Boost|cffffffff\n"..
 "Enables use of offensive cooldowns according to the rotation.\n"..
 "Works with DPS/DPS-AOE/DPS-Assist and Tank-Assist; not exclusive.|r\n\n"..
 "|cffff0000Left-Click to enable/disable Boost|r\n"..
-"|cff999999(Execution-Order: Bot)|r";
+"|cff999999(Executed by: Bot)|r";
 
 MultiBot.tips.rogue.tankAssist =
 "Tank Assist|cffffffff\n"..
@@ -2551,22 +2555,22 @@ MultiBot.tips.shaman.ctotem.eabind =
 MultiBot.tips.shaman.ctotem.searing =
 "Searing";
 
-MultiBot.tips.shaman.ctotem.magma =      
+MultiBot.tips.shaman.ctotem.magma =
 "Magma";
 
-MultiBot.tips.shaman.ctotem.fltong =  
+MultiBot.tips.shaman.ctotem.fltong =
 "Flametongue";
 
-MultiBot.tips.shaman.ctotem.towrath = 
+MultiBot.tips.shaman.ctotem.towrath =
 "Totem of Wrath";
 
-MultiBot.tips.shaman.ctotem.frostres = 
+MultiBot.tips.shaman.ctotem.frostres =
 "Frost Resistance";
 
-MultiBot.tips.shaman.ctotem.healstream = 
+MultiBot.tips.shaman.ctotem.healstream =
 "Healing Stream";
 
-MultiBot.tips.shaman.ctotem.manasprin = 
+MultiBot.tips.shaman.ctotem.manasprin =
 "Mana Spring";
 
 MultiBot.tips.shaman.ctotem.cleansing =
@@ -2700,7 +2704,7 @@ MultiBot.tips.shaman.playbook.cure =
 "It enables the Cure-Strategy.\n"..
 "The bot will remove poisons, curses and diseases when possible.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Cure|r\n"..
-"|cf9999999(Execution-Order: Bot)|r";
+"|cf9999999(Executed by: Bot)|r";
 
 MultiBot.tips.shaman.dps.healerdps =
 "Healer-DPS|cffffffff\n"..
@@ -2709,7 +2713,7 @@ MultiBot.tips.shaman.dps.healerdps =
 "Healer-DPS, DPS-AOE, DPS-Assist and Tank-Assist are mutually exclusive.\n"..
 "Only one of these Strategies can be activated.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Healer-DPS|r\n"..
-"|cf9999999(Execution-Order: Bot)|r";
+"|cf9999999(Executed by: Bot)|r";
 
 MultiBot.tips.shaman.tankAssist =
 "Tank Assist|cffffffff\n"..
@@ -2916,7 +2920,7 @@ MultiBot.tips.warlock.dps.metamelee =
 "This toggle has no effect without Metamorphosis/Immolation Aura\n"..
 "and it is independent of DPS/Tank-Assist toggles.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Meta Melee|r\n"..
-"|cff999999(Execution-Order: Bot)|r";
+"|cff999999(Executed by: Bot)|r";
 
 MultiBot.tips.warlock.tankAssist =
 "Tank Assist|cffffffff\n"..
