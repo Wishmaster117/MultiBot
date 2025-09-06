@@ -5194,6 +5194,10 @@ end
 if not MultiBot.InitHunterQuick then
   function MultiBot.InitHunterQuick()
     local MBH = MultiBot.HunterQuick or {}
+	-- Espace de sauvegarde pour la position de la barre des chasseurs
+    MultiBotSaved = MultiBotSaved or {}
+    MultiBotSaved.pos = MultiBotSaved.pos or {}
+    MultiBotSaved.pos.HunterQuick = MultiBotSaved.pos.HunterQuick or {}
     MultiBot.HunterQuick = MBH
 
     MBH.frame = MultiBot.addFrame("HunterQuick", -820, 300, 36, 36*8, 36*4)
@@ -5201,8 +5205,35 @@ if not MultiBot.InitHunterQuick then
     MBH.frame:EnableMouse(true)
     MBH.frame:RegisterForDrag("RightButton")
     MBH.frame:SetScript("OnDragStart", MBH.frame.StartMoving)
-    MBH.frame:SetScript("OnDragStop" , MBH.frame.StopMovingOrSizing)
+    -- MBH.frame:SetScript("OnDragStop" , MBH.frame.StopMovingOrSizing)
+    MBH.frame:SetScript("OnDragStop", function(self)
+      self:StopMovingOrSizing()
+      local p, _, rp, x, y = self:GetPoint()
+      -- Assurer l'existence des SV
+      MultiBotSaved = MultiBotSaved or {}
+      MultiBotSaved.pos = MultiBotSaved.pos or {}
+      MultiBotSaved.pos.HunterQuick = MultiBotSaved.pos.HunterQuick or {}
+      -- Sauvegarde
+      MultiBotSaved.pos.HunterQuick.frame = { point = p, relPoint = rp, x = x, y = y }
+    end)
     MBH.frame:Hide()
+
+    function MBH:RestorePosition()
+      local st = MultiBotSaved.pos
+                and MultiBotSaved.pos.HunterQuick
+                and MultiBotSaved.pos.HunterQuick.frame
+      if not st then return end
+      local f = self.frame
+      if not f then return end
+    
+      if f.ClearAllPoints and f.SetPoint then
+        f:ClearAllPoints()
+        f:SetPoint(st.point or "CENTER", UIParent, st.relPoint or "CENTER", st.x or 0, st.y or 0)
+      elseif f.setPoint then
+        -- fallback si votre wrapper n’expose que setPoint()
+        f:setPoint(st.point or "CENTER", st.relPoint or "CENTER", st.x or 0, st.y or 0)
+      end
+    end
 
     function MBH:ResolveUnitToken(name)
       if GetNumRaidMembers and GetNumRaidMembers() > 0 then
@@ -5280,7 +5311,17 @@ if not MultiBot.InitHunterQuick then
       row.mainBtn:SetFrameStrata("HIGH")
       row.mainBtn:RegisterForDrag("RightButton")
       row.mainBtn:SetScript("OnDragStart", function() self.frame:StartMoving() end)
-      row.mainBtn:SetScript("OnDragStop" , function() self.frame:StopMovingOrSizing() end)
+      -- row.mainBtn:SetScript("OnDragStop" , function() self.frame:StopMovingOrSizing() end)
+      row.mainBtn:SetScript("OnDragStop", function()
+        self.frame:StopMovingOrSizing()
+        local p, _, rp, x, y = self.frame:GetPoint()
+        -- Assurer l'existence des SV
+        MultiBotSaved = MultiBotSaved or {}
+        MultiBotSaved.pos = MultiBotSaved.pos or {}
+        MultiBotSaved.pos.HunterQuick = MultiBotSaved.pos.HunterQuick or {}
+        -- Sauvegarde
+        MultiBotSaved.pos.HunterQuick.frame = { point = p, relPoint = rp, x = x, y = y }
+      end)
 
       row.vmenu = row.addFrame("HunterQuickMenu_"..san, 0, 0, 36, 36, 36*3)
       row.vmenu:Hide()
@@ -5467,6 +5508,7 @@ if not MultiBot.InitHunterQuick then
       end
 
       if #desired > 0 then self.frame:Show() else self.frame:Hide() end
+      if self.RestorePosition then self:RestorePosition() end
     end
 
     function MBH:CloseAllExcept(keepRow)
@@ -5834,6 +5876,10 @@ if not MultiBot.InitHunterQuick then
   MultiBot.HunterQuick = MultiBot.HunterQuick or {}
 
   MultiBot.InitHunterQuick()
+
+  if MultiBot.HunterQuick and MultiBot.HunterQuick.RestorePosition then
+    MultiBot.HunterQuick:RestorePosition()
+  end
 
   if not MultiBot.HunterQuick.ev then
     local f = CreateFrame("Frame")
