@@ -2895,7 +2895,7 @@ MultiBot.tips.warrior.tank =
 "|cf9999999(执行命令: 机器人)|r";
 
 
--- 所有的 --
+-- EVERY --
 
 MultiBot.tips.every.misc =
 "杂项|cffffffff\n"..
@@ -2910,6 +2910,9 @@ MultiBot.tips.every.autogear =
 "自动为该机器人装备物品。|r\n\n"..
 "|cffff0000左键点击启动自动装备|r\n"..
 "|cff999999（执行顺序：机器人）|r";
+
+MultiBot.tips.every.autogearpopup =
+"在 %s 上启动自动装备？";
 
 MultiBot.tips.every.maintenance =
 "维护|cffffffff\n"..

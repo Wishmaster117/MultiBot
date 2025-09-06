@@ -1,3 +1,21 @@
+-- Confirmation popup for Autogear
+if not StaticPopupDialogs["MULTIBOT_AUTOGEAR_CONFIRM"] then
+  StaticPopupDialogs["MULTIBOT_AUTOGEAR_CONFIRM"] = {
+    text = MultiBot.tips.every.autogearpopup,
+    button1 = ACCEPT,
+    button2 = CANCEL,
+    OnAccept = function(self, data)
+      if data and data.target then
+        SendChatMessage("autogear", "WHISPER", nil, data.target)
+      end
+    end,
+    timeout = 0,
+    whileDead = 1,
+    hideOnEscape = 1,
+    preferredIndex = 3, -- évite les conflits d’index avec d’autres popups
+  }
+end
+
 MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 	
     -- MENU MISC --------------------------------------------
@@ -20,7 +38,11 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 	
 	for _, data in ipairs{
 		{ "Wipe",        "Achievement_Halloween_Ghost_01", MultiBot.tips.every.wipe,        function(b) MultiBot.ActionToTarget("wipe", b.getName()) end },
-		{ "Autogear",    "inv_misc_enggizmos_30",     MultiBot.tips.every.autogear,    function(b) SendChatMessage("autogear", "WHISPER", nil, b.getName()) end },
+		--{ "Autogear",    "inv_misc_enggizmos_30",     MultiBot.tips.every.autogear,    function(b) SendChatMessage("autogear", "WHISPER", nil, b.getName()) end },
+		{ "Autogear",    "inv_misc_enggizmos_30",          MultiBot.tips.every.autogear,   function(b)
+            StaticPopup_Show("MULTIBOT_AUTOGEAR_CONFIRM", b.getName(), nil, { target = b.getName() })
+          end
+        },
 		{ "Maintenance", "Achievement_Halloween_Smiley_01",     MultiBot.tips.every.maintenance, function(b) SendChatMessage("maintenance", "WHISPER", nil, b.getName()) end },
 	} do
 		local btn = tMisc.addButton(data[1], 0, y, data[2], data[3])
