@@ -24,11 +24,13 @@ end
 -- MULTIBAR --
 
 local tMultiBar = MultiBot.addFrame("MultiBar", -322, 144, 36)
+MultiBot.PromoteFrame(tMultiBar)
 tMultiBar:SetMovable(true)
 
 -- LEFT --
 
 local tLeft = tMultiBar.addFrame("Left", -76, 2, 32)
+MultiBot.PromoteFrame(tLeft)
 
 -- TANKER --
 
@@ -1344,6 +1346,7 @@ MultiBot.BuildGmUI(tMultiBar)
 -- RIGHT --
 
 local tRight = tMultiBar.addFrame("Right", 34, 2, 32)
+MultiBot.PromoteFrame(tRight)
 
 -- QUESTS MENU --
 -- flags par défaut
@@ -5201,6 +5204,7 @@ if not MultiBot.InitHunterQuick then
     MultiBot.HunterQuick = MBH
 
     MBH.frame = MultiBot.addFrame("HunterQuick", -820, 300, 36, 36*8, 36*4)
+	MultiBot.PromoteFrame(MultiBot.HunterQuick.frame)
     MBH.frame:SetMovable(true)
     MBH.frame:EnableMouse(true)
     MBH.frame:RegisterForDrag("RightButton")
@@ -5930,6 +5934,7 @@ if not MultiBot.InitShamanQuick then
     end
 
     MBS.frame = MultiBot.addFrame("ShamanQuick", -420, 240, 36, 36*8, 36*4)
+	MultiBot.PromoteFrame(MultiBot.ShamanQuick.frame)
     MBS.frame:SetMovable(true)
     MBS.frame:EnableMouse(true)
     MBS.frame:RegisterForDrag("RightButton")

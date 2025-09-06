@@ -14,6 +14,17 @@ function MultiBot.SetGM(isGM)
 end
 -- end GM core --
 
+-- UI helper: promote a frame to the foreground without breaking tooltips
+function MultiBot.PromoteFrame(f, strata)
+  if not f or not f.SetFrameStrata then return end
+  f:SetFrameStrata(strata or "DIALOG")
+  if f.SetToplevel then f:SetToplevel(true) end
+  if f.HookScript then
+    f:HookScript("OnShow", function(self) if self.Raise then self:Raise() end end)
+  end
+end
+
+
 -- Account level detection (multi-locale, no hardcoding in handler) --
 -- Set your GM threshold here (>= value means GM). ONLY set it once.
 MultiBot.GM_THRESHOLD = 3
