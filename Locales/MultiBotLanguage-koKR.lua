@@ -3033,17 +3033,28 @@ MultiBot.tips.warrior.tank =
 
 -- EVERY --
 
+MultiBot.tips.every.misc =
+"기타|cffffffff\n"..
+"기타 행동 메뉴를 엽니다.\n"..
+"포함: 전멸, 자동 장비 등.|r\n\n"..
+"|cffff0000좌클릭으로 이 메뉴를 전환|r\n"..
+"|cff999999(실행 순서: 시스템)|r"
+
 MultiBot.tips.every.autogear =
 "자동 장비|cffffffff\n"..
-"이 봇을 자동 장비 설정(품질 / 장비 점수)\n"..
-"기준에 따라 자동으로 장착합니다.|r\n\n"..
-"|cffff0000왼쪽 클릭으로 자동 장비 시작|r\n"..
+"자동 장비 제한 조건\n"..
+"(품질 / 아이템 점수)에 따라\n"..
+"이 봇에 자동으로 장비를 착용합니다.|r\n\n"..
+"|cffff0000좌클릭으로 자동 장비 시작|r\n"..
 "|cff999999(실행 순서: 봇)|r";
+
+MultiBot.tips.every.autogearpopup =
+"%s에 자동 장비를 실행하시겠습니까?";
 
 MultiBot.tips.every.maintenance =
 "정비|cffffffff\n"..
-"봇을 활성화하여 사용 가능한 모든 주문과 기술을 배우고,\n"..
-"소모품을 보충하며, 장비에 마법 부여 및 수리를 수행합니다.|r\n\n"..
+"봇이 사용 가능한 모든 주문과 기술을 배우고,\n"..
+"소모품을 보충하며, 장비에 마법부여 및 수리를 수행합니다.|r\n\n"..
 "|cffff0000좌클릭으로 정비 시작|r\n"..
 "|cff999999(실행 순서: 봇)|r";
 

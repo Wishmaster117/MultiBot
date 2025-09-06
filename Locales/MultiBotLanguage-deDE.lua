@@ -3045,6 +3045,9 @@ MultiBot.tips.every.autogear =
 "|cffff0000Linksklick zum Starten der Auto-Ausrüstung|r\n"..
 "|cff999999(Ausführungsreihenfolge: Bot)|r"
 
+MultiBot.tips.every.autogearpopup =
+"Autogear auf %s starten?";
+
 MultiBot.tips.every.maintenance =
 "Wartung|cffffffff\n"..
 "Aktiviere den Bot, um alle verfügbaren Zauber und Fertigkeiten zu erlernen,\n"..

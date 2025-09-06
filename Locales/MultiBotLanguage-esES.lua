@@ -3063,6 +3063,9 @@ MultiBot.tips.every.autogear =
 "|cffff0000Clic izquierdo para iniciar AutoGear|r\n"..
 "|cff999999(Orden de ejecución: Bot)|r";
 
+MultiBot.tips.every.autogearpopup =
+"Lanzar Autogear en %s ?";
+
 MultiBot.tips.every.maintenance =
 "Mantenimiento|cffffffff\n"..
 "Activa el bot para aprender todos los hechizos y habilidades disponibles,\n"..

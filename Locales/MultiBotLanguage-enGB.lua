@@ -2969,6 +2969,30 @@ MultiBot.tips.warrior.tank =
 
 -- EVERY --
 
+MultiBot.tips.every.misc =
+"Miscellaneous|cffffffff\n"..
+"Opens the menu of miscellaneous actions.\n"..
+"Includes: Wipe, Autogear, etc.|r\n\n"..
+"|cffff0000Left-click to toggle this menu|r\n"..
+"|cff999999(Execution order: System)|r"
+
+MultiBot.tips.every.autogear =
+"AutoGear|cffffffff\n"..
+"Automatically equips this Bot based on\n"..
+"your AutoGear limits (quality / GearScore).|r\n\n"..
+"|cffff0000Left-click to start AutoGear|r\n"..
+"|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.every.autogearpopup =
+"Launch Autogear on %s ?";
+
+MultiBot.tips.every.maintenance =
+"Maintenance|cffffffff\n"..
+"Enable bot to learn all available spells and skills, \n"..
+"supplement consumables, enchant gear, and repair.|r\n\n"..
+"|cffff0000Left-click to start Maintenance|r\n"..
+"|cff999999(Execution order: Bot)|r";
+
 MultiBot.tips.every.summon =
 "Summon|cffffffff\n"..
 "Summons this Bot to your Position.|r\n\n"..

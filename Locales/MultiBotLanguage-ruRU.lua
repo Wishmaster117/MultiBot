@@ -3057,6 +3057,9 @@ MultiBot.tips.every.autogear =
 "|cffff0000Левый клик для запуска AutoGear|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
+MultiBot.tips.every.autogearpopup =
+"Запустить Autogear на %s?";
+
 MultiBot.tips.every.maintenance =
 "Обслуживание|cffffffff\n"..
 "Активирует бота для изучения всех доступных заклинаний и умений,\n"..
