@@ -1,0 +1,54 @@
+## Interface: 30300
+## Version: 2.0.0
+## Title: MultiBot
+## Notes: User Interface for Playerbot
+## Author: Nico Löbbert
+## SavedVariablesPerCharacter: MultiBotSave, MultiBotDB, MultiBotSaved
+## SavedVariables: MultiBotGlobalSave
+## X-Maintainer: Wishmaster117 aka TheWarlock
+## X-Contributors: Wishmaster117 aka TheWarlock
+## X-Contact: admin@azerothdevs.com
+## X-ProjectURL: https://www.azerothdevs.com
+
+Core\MultiBot.lua
+Core\MultiBotConfig.lua
+UI\MultiBotOptions.lua
+Core\MultiBotThrottle.lua
+
+Locales\MultiBotLanguage-deDE.lua
+Locales\MultiBotLanguage-enGB.lua
+Locales\MultiBotLanguage-enUS.lua
+Locales\MultiBotLanguage-frFR.lua
+Locales\MultiBotLanguage-zhCN.lua
+Locales\MultiBotLanguage-koKR.lua
+Locales\MultiBotLanguage-ruRU.lua
+Locales\MultiBotLanguage-esES.lua
+Data\HunterPetFamily.lua
+Data\HunterPetList_1.lua
+Data\HunterPetList_2.lua
+Data\HunterPetList_3.lua
+Data\HunterPetList_4.lua
+Core\MultiBotEngine.lua
+Core\MultiBotHandler.lua
+Strategies\MultiBotDeathKnight.lua
+Strategies\MultiBotDruid.lua
+Strategies\MultiBotHunter.lua
+Strategies\MultiBotMage.lua
+Strategies\MultiBotPaladin.lua
+Strategies\MultiBotPriest.lua
+Strategies\MultiBotRogue.lua
+Strategies\MultiBotShaman.lua
+Strategies\MultiBotWarlock.lua
+Strategies\MultiBotWarrior.lua
+Core\MultiBotEvery.lua
+UI\MultiBotStats.lua
+UI\MultiBotSpell.lua
+UI\MultiBotItem.lua
+Core\MultiBotInit.lua
+UI\MultiBotIconos.lua
+UI\MultiBotSpecUI.lua
+Data\MultiBotItemus.lua
+UI\MultiBotTalent.lua
+Features\MultiBotReward.lua
+Features\MultiBotNecronet.lua
+Features\MultiBotRaidus.lua
