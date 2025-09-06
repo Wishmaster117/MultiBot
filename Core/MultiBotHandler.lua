@@ -1278,6 +1278,9 @@ MultiBot:SetScript("OnEvent", function()
 		local tCont = GetCurrentMapContinent()
 		local tArea = GetCurrentMapAreaID()
 		
+		-- Recalculate Necronet button positions when map size changes
+		if MultiBot.Necronet_RecalcButtons then MultiBot.Necronet_RecalcButtons() end
+
 		if(MultiBot.necronet.cont ~= tCont or MultiBot.necronet.area ~= tArea) then
 			for key, value in pairs(MultiBot.necronet.buttons) do value:Hide() end
 			
