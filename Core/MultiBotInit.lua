@@ -888,7 +888,8 @@ function MultiBot.BuildRosterUI(tControl)
  
           if cfg.filter then
             -- Appliquer un filtre sans changer de roster (Favorites)
-            unitsBtn.doLeft(unitsBtn, nil, cfg.filter)
+            -- unitsBtn.doLeft(unitsBtn, nil, cfg.filter)
+			unitsBtn.doLeft(unitsBtn, "players", cfg.filter)
           else
            -- Sélection classique de roster + RAZ du filtre pour réafficher tous les bots
            -- 1) Mettre le roster voulu
@@ -912,6 +913,13 @@ function MultiBot.BuildRosterUI(tControl)
  
 --  Function call
 MultiBot.BuildRosterUI(tControl)
+-- Prebuild unit indices after load to avoid empty Favorites right after login/reload
+TimerAfter(0.7, function()
+  local unitsBtn = MultiBot.frames and MultiBot.frames.MultiBar and MultiBot.frames.MultiBar.buttons and MultiBot.frames.MultiBar.buttons.Units
+  if unitsBtn and unitsBtn.doRight then
+    pcall(unitsBtn.doRight, unitsBtn)
+  end
+end)
 
 -- UNITS:BROWSE --
 
