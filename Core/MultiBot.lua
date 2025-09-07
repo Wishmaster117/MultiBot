@@ -141,8 +141,10 @@ MultiBot:SetPoint("BOTTOMRIGHT", 0, 0)
 MultiBot:SetSize(1, 1)
 MultiBot:Show()
 
-MultiBotSave = {}
-MultiBotGlobalSave = {}
+-- MultiBotSave = {}
+-- MultiBotGlobalSave = {}
+MultiBotSave = MultiBotSave or {}
+MultiBotGlobalSave = MultiBotGlobalSave or {}
 MultiBot.data = {}
 MultiBot.index = {}
 MultiBot.index.classes = {}
@@ -160,6 +162,29 @@ MultiBot.frames = {}
 MultiBot.units = {}
 MultiBot.tips = {}
 MultiBot.tips.spec = MultiBot.tips.spec or {}
+
+
+-- Favorites helpers (per-character via SavedVariablesPerCharacter: MultiBotSave)
+function MultiBot.IsFavorite(name)
+  if not name then return false end
+  if not MultiBotSave or not MultiBotSave.Favorites then return false end
+  return MultiBotSave.Favorites[name] == true
+end
+
+function MultiBot.SetFavorite(name, isFav)
+  if not name then return end
+  MultiBotSave = MultiBotSave or {}
+  MultiBotSave.Favorites = MultiBotSave.Favorites or {}
+  if isFav then
+    MultiBotSave.Favorites[name] = true
+  else
+    MultiBotSave.Favorites[name] = nil
+  end
+end
+
+function MultiBot.ToggleFavorite(name)
+  MultiBot.SetFavorite(name, not MultiBot.IsFavorite(name))
+end
 
 MultiBot.auto = {}
 MultiBot.auto.sort = false
@@ -1240,6 +1265,12 @@ MultiBot.tips.units.friends =
 "Shows the Friend-Roster.\n"..
 "The Friend-Roster does not show your Characters or Guild-Members.|r\n\n"..
 "|cffff0000Left-Click to select Friend-Roster|r\n"..
+"|cff999999(Execution-Order: System)|r";
+
+MultiBot.tips.units.favorites =
+"Roster-Filter\n|cffffffff"..
+"Show only bots you have starred as Favorites.|r\n\n"..
+"|cffff0000Left-Click to select Active-Roster|r\n"..
 "|cff999999(Execution-Order: System)|r";
 
 -- UNITS:BROWSE --
@@ -3476,6 +3507,19 @@ MultiBot.tips.every.misc =
 "Includes: Wipe, Autogear, etc.|r\n\n"..
 "|cffff0000Left-click to toggle this menu|r\n"..
 "|cff999999(Execution order: System)|r"
+
+-- FAVORITES
+MultiBot.tips.every.favorite    =
+"Add/Remove Favorite|cffffffff\n"..
+"Toggle this bot as a Favorite.|r\n\n"..
+"|cffff0000Left-Click to add/remove|r\n"..
+"|cff999999(Execution-Order: System)|r";
+
+MultiBot.tips.every.favorited   =
+"Marked as Favorite.";
+
+MultiBot.tips.every.unfavorited =
+"Removed from Favorites.";
 
 MultiBot.tips.every.autogear =
 "AutoGear|cffffffff\n"..

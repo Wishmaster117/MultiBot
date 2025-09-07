@@ -862,6 +862,12 @@ MultiBot.tips.units.friends =
 "|cffff0000左键单击选择好友团队|r\n"..
 "|cff999999(执行命令: 系统)|r";
 
+MultiBot.tips.units.favorites =
+"名册筛选\n|cffffffff"..
+"仅显示你已标记为收藏的机器人。|r\n\n"..
+"|cffff0000左键点击以选择激活名册|r\n"..
+"|cff999999(执行顺序: 系统)|r";
+
 -- 团队：浏览 --
 
 MultiBot.tips.units.browse =
@@ -2903,6 +2909,18 @@ MultiBot.tips.every.misc =
 "包括：Wipe、Autogear 等。|r\n\n"..
 "|cffff0000左键单击切换此菜单|r\n"..
 "|cff999999(执行顺序：系统)|r"
+
+MultiBot.tips.every.favorite =
+"添加/移除收藏|cffffffff\n"..
+"将此机器人切换为收藏。|r\n\n"..
+"|cffff0000左键点击以添加/移除|r\n"..
+"|cff999999(执行顺序: 系统)|r";
+
+MultiBot.tips.every.favorited =
+"已标记为收藏。";
+
+MultiBot.tips.every.unfavorited =
+"已从收藏中移除。";
 
 MultiBot.tips.every.autogear =
 "自动装备|cffffffff\n"..

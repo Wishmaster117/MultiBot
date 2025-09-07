@@ -862,6 +862,12 @@ MultiBot.tips.units.friends =
 "|cffff0000 왼쪽 클릭으로 친구팀 선택|r\n"..
 "|cff999999(명령 실행: 시스템)|r";
 
+MultiBot.tips.units.favorites =
+"로스터 필터\n|cffffffff"..
+"즐겨찾기로 표시한 봇만 표시합니다.|r\n\n"..
+"|cffff0000좌클릭으로 활성 로스터 선택|r\n"..
+"|cff999999(실행 순서: 시스템)|r";
+
 -- UNITS:BROWSE --
 
 MultiBot.tips.units.browse =
@@ -3039,6 +3045,18 @@ MultiBot.tips.every.misc =
 "포함: 전멸, 자동 장비 등.|r\n\n"..
 "|cffff0000좌클릭으로 이 메뉴를 전환|r\n"..
 "|cff999999(실행 순서: 시스템)|r"
+
+MultiBot.tips.every.favorite =
+"즐겨찾기 추가/제거|cffffffff\n"..
+"이 봇을 즐겨찾기로 전환합니다.|r\n\n"..
+"|cffff0000좌클릭으로 추가/제거|r\n"..
+"|cff999999(실행 순서: 시스템)|r";
+
+MultiBot.tips.every.favorited =
+"즐겨찾기로 표시됨.";
+
+MultiBot.tips.every.unfavorited =
+"즐겨찾기에서 제거됨.";
 
 MultiBot.tips.every.autogear =
 "자동 장비|cffffffff\n"..
