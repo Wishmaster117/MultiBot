@@ -47,72 +47,8 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 	} do
 		local btn = tMisc.addButton(data[1], 0, y, data[2], data[3])
 		btn.doLeft = data[4]
-		y = y + dy	
+		y = y + dy
 	end
-	
-    --[[-- Favorite toggle
-    local btnFav = tMisc.addButton("Favorite", 0, y, "Interface\\Icons\\INV_Misc_Star_01", MultiBot.tips.every.favorite)
-    btnFav.doLeft = function(b)
-        local name = b.getName() or (b.parent and b.parent.name)
-        if name then
-            MultiBot.ToggleFavorite(name)
-            -- Feedback optionnel
-            if MultiBot.IsFavorite(name) then
-                DEFAULT_CHAT_FRAME:AddMessage("|cffFFD700[MultiBot]|r " .. name .. " " .. (MultiBot.tips and MultiBot.tips.every and MultiBot.tips.every.favorited or "is now a Favorite."))
-            else
-                DEFAULT_CHAT_FRAME:AddMessage("|cffFFD700[MultiBot]|r " .. name .. " " .. (MultiBot.tips and MultiBot.tips.every and MultiBot.tips.every.unfavorited or "removed from Favorites."))
-            end
-        end
-    end
-    y = y + dy]]--
-    -- Favorite toggle
-    local FAV_ON_TEX = "Interface\\RaidFrame\\ReadyCheck-Ready"     -- cœur
-    local FAV_OFF_TEX     = "Interface\\RaidFrame\\ReadyCheck-NotReady"    -- X
-
-    local btnFav = tMisc.addButton("Favorite", 0, y, FAV_ON_TEX, MultiBot.tips.every.favorite)
-
-    local function SetBtnIcon(b, tex)
-      if not b then return end
-      -- API de ta fabrique si dispo
-      if b.setTexture then
-        pcall(b.setTexture, tex)
-        return
-      end
-      -- Fallback: bouton/frame Blizzard
-      local f = (b.frame and b.frame.SetNormalTexture and b.frame)
-             or (b.button and b.button.SetNormalTexture and b.button)
-             or b
-      if f and f.SetNormalTexture then
-        f:SetNormalTexture(tex)
-      end
-    end
-
-    local function UpdateFavoriteIcon(b)
-      local name = (b.getName and b.getName()) or (b.parent and b.parent.name)
-      local isFav = name and MultiBot.IsFavorite(name)
-      SetBtnIcon(b, isFav and FAV_OFF_TEX or FAV_ON_TEX)
-    end
-
-    btnFav.doLeft = function(b)
-      local name = b.getName() or (b.parent and b.parent.name)
-      if not name then return end
-      MultiBot.ToggleFavorite(name)
-      UpdateFavoriteIcon(b)
-      -- Feedback optionnel
-      if MultiBot.IsFavorite(name) then
-        DEFAULT_CHAT_FRAME:AddMessage("|cffFFD700[MultiBot]|r " .. name .. " " .. (MultiBot.tips and MultiBot.tips.every and MultiBot.tips.every.favorited or "is now a Favorite."))
-      else
-        DEFAULT_CHAT_FRAME:AddMessage("|cffFFD700[MultiBot]|r " .. name .. " " .. (MultiBot.tips and MultiBot.tips.every and MultiBot.tips.every.unfavorited or "removed from Favorites."))
-      end
-    end
-
-    -- Met la bonne icône quand le sous-menu s'affiche (au cas où l'état a changé ailleurs)
-    if tMisc and tMisc.HookScript then
-      tMisc:HookScript("OnShow", function() UpdateFavoriteIcon(btnFav) end)
-    end
-    UpdateFavoriteIcon(btnFav)
-    y = y + dy
-
     -- MENU MISC END-----------------------------------------
 	   
 	pFrame.addButton("Summon", 94, 0, "ability_hunter_beastcall", MultiBot.tips.every.summon)
