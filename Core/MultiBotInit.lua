@@ -539,7 +539,6 @@ local tButton = tMultiBar.addButton("Units", -38, 0, "inv_scroll_04", MultiBot.t
 -- tButton.roster = "players"
 tButton.roster = "actives"
 tButton.filter = "none"
-tButton.favMode = false
 
 tButton.doRight = function(pButton)
 	-- MEMBERBOTS --
@@ -621,51 +620,31 @@ tButton.doLeft = function(pButton, oRoster, oFilter)
 	for key, value in pairs(tUnits.frames) do value:Hide() end
 	tUnits.frames["Alliance"]:Show()
 	tUnits.frames["Control"]:Show()
-
-	-- if(pButton.filter ~= "none")
-	-- then tTable = MultiBot.index.classes[pButton.roster][pButton.filter]
-	-- else tTable = MultiBot.index[pButton.roster]
-	-- end
 	
     -- Autoriser la mise à jour conjointe roster+filter
     if (oRoster == nil and oFilter == nil) then
       MultiBot.ShowHideSwitch(tUnits)
     else
-      if (oRoster ~= nil) then
-        pButton.roster = oRoster
-        -- quitter Favorites quand on choisit un roster “classique”
-        pButton.favMode = false
-      end
-      if (oFilter ~= nil) then
-        if (oFilter == "Favorites") then
-          -- activer le mode Favoris sans toucher au filtre de classe
-          pButton.favMode = true
-        else
-          -- filtre de classe / autre
-          pButton.filter = oFilter
-        end
-      end
+      if (oRoster ~= nil) then pButton.roster = oRoster end
+      if (oFilter ~= nil) then pButton.filter = oFilter end
     end
+	
+	-- if(pButton.filter ~= "none")
+	-- then tTable = MultiBot.index.classes[pButton.roster][pButton.filter]
+	-- else tTable = MultiBot.index[pButton.roster]
+	-- end
 
-    -- Construire par intersection : roster ∩ (Favorites?) ∩ (Classe?)
-    local source = MultiBot.index[pButton.roster] or {}
-    tTable = {}
-    local needClass = (pButton.filter and pButton.filter ~= "none" and pButton.filter ~= "Favorites")
-    local classSet = nil
-    if needClass then
-      local classesByRoster = MultiBot.index.classes and MultiBot.index.classes[pButton.roster]
-      local clsList = classesByRoster and classesByRoster[pButton.filter]
-      if clsList then
-        classSet = {}
-        for _, n in ipairs(clsList) do classSet[n] = true end
-      end
-    end
-    for _, name in ipairs(source) do
-      local ok = true
-      if pButton.favMode then ok = ok and MultiBot.IsFavorite(name) end
-      if needClass then ok = ok and (classSet and classSet[name]) end
-      if ok then table.insert(tTable, name) end
-    end
+	if (pButton.filter == "Favorites") then
+		local source = MultiBot.index[pButton.roster] or {}
+		tTable = {}
+		for _, name in ipairs(source) do
+			if MultiBot.IsFavorite(name) then table.insert(tTable, name) end
+		end
+	elseif (pButton.filter ~= "none") then
+		tTable = MultiBot.index.classes[pButton.roster][pButton.filter]
+	else
+		tTable = MultiBot.index[pButton.roster]
+	end
  
    -- Sécurité : si la combinaison ne retourne rien, afficher tout le roster
    if tTable == nil then
