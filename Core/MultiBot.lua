@@ -141,8 +141,107 @@ MultiBot:SetPoint("BOTTOMRIGHT", 0, 0)
 MultiBot:SetSize(1, 1)
 MultiBot:Show()
 
-MultiBotSave = {}
-MultiBotGlobalSave = {}
+-- ============================================================================
+-- SANITY : reconstruire l'index 'players' à partir des boutons existants
+-- ============================================================================
+function MultiBot.RebuildPlayersIndexFromButtons()
+  if not (MultiBot.frames and MultiBot.frames["MultiBar"]
+          and MultiBot.frames["MultiBar"].frames
+          and MultiBot.frames["MultiBar"].frames["Units"]) then
+    return
+  end
+  local units = MultiBot.frames["MultiBar"].frames["Units"]
+  local buttons = units.buttons or {}
+  MultiBot.index.players = {}
+  MultiBot.index.classes.players = {}
+  for name, btn in pairs(buttons) do
+    if btn and (btn.roster == "players" or btn.roster == nil) then
+      table.insert(MultiBot.index.players, name)
+      local cls = (btn.class and MultiBot.toClass(btn.class)) or "UNKNOWN"
+      MultiBot.index.classes.players[cls] = MultiBot.index.classes.players[cls] or {}
+      table.insert(MultiBot.index.classes.players[cls], name)
+    end
+  end
+end  
+
+-- =====================================================================
+-- LOGIN/ROSTER FIX (no /reload needed)
+-- Demande la liste des bots au login et parse "Bot roster:" à la volée
+-- =====================================================================
+do
+  local f = CreateFrame("Frame")
+  f:RegisterEvent("PLAYER_ENTERING_WORLD")
+  f:RegisterEvent("CHAT_MSG_SYSTEM")
+
+  local function C_Timer_After(sec, func)
+    -- léger helper (Wrath n'a pas C_Timer)
+    local t, acc = 0, CreateFrame("Frame")
+    acc:SetScript("OnUpdate", function(_, dt)
+      t = t + dt
+      if t >= sec then acc:SetScript("OnUpdate", nil); func() end
+    end)
+  end
+
+  local function requestList()
+    if f._sent then return end
+    f._sent = true
+    if MultiBot.dprint then MultiBot.dprint("SEND .playerbot bot list") end
+    SendChatMessage(".playerbot bot list", "SAY")
+  end
+
+  -- Parse une ligne système "Bot roster: +Name Class, -Other Class, ..."
+  function MultiBot.ParseBotRosterFromSystem(msg)
+    if type(msg) ~= "string" then return end
+    -- Laisser la détection GM existante faire son boulot
+    if MultiBot.GM_DetectFromSystem then MultiBot.GM_DetectFromSystem(msg) end
+
+    local list = msg:match("^%s*Bot roster:%s*(.+)")
+    if not list then return end
+
+    if MultiBot.dprint then MultiBot.dprint("SYS Bot roster received") end
+    local count = 0
+      for chunk in list:gmatch("[^,]+") do
+        local part = (chunk:gsub("^%s+",""):gsub("%s+$",""))
+        local sign = part:match("^([%+%-])") or ""
+        part = part:gsub("^[%+%-]%s*","")
+        local name, classRaw = part:match("^([^%s]+)%s+(.+)$")
+        if name and classRaw then
+          local canon = MultiBot.NormalizeClass and MultiBot.NormalizeClass(classRaw) or classRaw
+          if MultiBot.addPlayer then MultiBot.addPlayer(canon or classRaw, name) end
+          count = count + 1
+        end
+      end
+    if MultiBot.dprint then MultiBot.dprint("ROSTER_PARSE_COUNT", count) end
+
+    -- Reconstruit les index si nécessaire (sécurisé/no-op si absent)
+    if MultiBot.RebuildPlayersIndexFromButtons then
+      MultiBot.RebuildPlayersIndexFromButtons()
+    end
+
+    -- Si l’UI "Units" est ouverte sur players, force un rafraîchissement doux
+    local units = MultiBot.frames and MultiBot.frames["MultiBar"]
+                 and MultiBot.frames["MultiBar"].frames
+                 and MultiBot.frames["MultiBar"].frames["Units"]
+    if units and units.doLeft then
+      units:doLeft("players")  -- signature utilisée par le code existant
+    end
+  end
+
+  f:SetScript("OnEvent", function(_, ev, ...)
+    if ev == "PLAYER_ENTERING_WORLD" then
+      -- Laisser le chat démarrer puis demander la liste
+      C_Timer_After(0.5, requestList)
+    elseif ev == "CHAT_MSG_SYSTEM" then
+      local msg = ...
+      MultiBot.ParseBotRosterFromSystem(msg)
+    end
+  end)
+end
+
+-- MultiBotSave = {}
+-- MultiBotGlobalSave = {}
+MultiBotSave = MultiBotSave or {}
+MultiBotGlobalSave = MultiBotGlobalSave or {}
 MultiBot.data = {}
 MultiBot.index = {}
 MultiBot.index.classes = {}
@@ -150,11 +249,14 @@ MultiBot.index.classes.actives = {}
 MultiBot.index.classes.players = {}
 MultiBot.index.classes.members = {}
 MultiBot.index.classes.friends = {}
+-- Per-character favorites
+MultiBot.index.classes.favorites = {}
 MultiBot.index.actives = {}
 MultiBot.index.players = {}
 MultiBot.index.members = {}
 MultiBot.index.friends = {}
 MultiBot.index.raidus = {}
+MultiBot.index.favorites = {}
 MultiBot.spells = {}
 MultiBot.frames = {}
 MultiBot.units = {}
@@ -169,6 +271,84 @@ MultiBot.auto.invite = false
 MultiBot.auto.release = false
 --MultiBot.auto.language = true
 -- MultiBot.auto.strategyAsk = false Lock pour spam chat en suspend
+
+-- =========================
+-- DEBUG helpers (trace chat)
+-- =========================
+MultiBot.debug = false
+local function MB_tostring(v)
+  if type(v) == "table" then
+    local ok, s = pcall(function() return tostring(v) end)
+    if ok then return s else return "<table>" end
+  end
+  return tostring(v)
+end
+function MultiBot.dprint(...)
+  if not MultiBot.debug then return end
+  local parts = {}
+  for i=1,select("#", ...) do
+    parts[#parts+1] = MB_tostring(select(i, ...))
+  end
+  if DEFAULT_CHAT_FRAME and DEFAULT_CHAT_FRAME.AddMessage then
+    DEFAULT_CHAT_FRAME:AddMessage("|cffff7f00[MultiBot]|r ".. table.concat(parts, " "))
+  else
+    print("[MultiBot] ".. table.concat(parts, " "))
+  end
+end
+
+
+-- ============================================================================
+-- FAVORITES (per-character)
+-- ============================================================================
+function MultiBot.EnsureFavorites()
+  MultiBotSave = MultiBotSave or {}
+  MultiBotSave.Favorites = MultiBotSave.Favorites or {}
+end
+
+function MultiBot.IsFavorite(name)
+  return MultiBotSave and MultiBotSave.Favorites and MultiBotSave.Favorites[name] == true
+end
+
+function MultiBot.UpdateFavoritesIndex()
+  MultiBot.index.favorites = {}
+  MultiBot.index.classes.favorites = {}
+  for name, _ in pairs(MultiBotSave.Favorites or {}) do
+    table.insert(MultiBot.index.favorites, name)
+    local cls = nil
+    -- 1) si le bouton d’unité existe déjà, on prend sa classe
+    local units = MultiBot.frames and MultiBot.frames["MultiBar"] and MultiBot.frames["MultiBar"].frames and MultiBot.frames["MultiBar"].frames["Units"]
+    local buttons = units and units.buttons or nil
+    if buttons and buttons[name] and buttons[name].class then
+      cls = buttons[name].class
+    else
+      -- 2) sinon on essaie via l’index players (après parsing bot list)
+      local byClass = MultiBot.index and MultiBot.index.classes and MultiBot.index.classes.players
+      if byClass then
+        for c, arr in pairs(byClass) do
+          for i = 1, (arr and #arr or 0) do
+            if arr[i] == name then cls = c break end
+          end
+          if cls then break end
+        end
+      end
+    end
+    cls = cls or "UNKNOWN"
+    MultiBot.index.classes.favorites[cls] = MultiBot.index.classes.favorites[cls] or {}
+    table.insert(MultiBot.index.classes.favorites[cls], name)
+  end
+end
+
+function MultiBot.SetFavorite(name, isFav)
+  MultiBot.EnsureFavorites()
+  if isFav then MultiBotSave.Favorites[name] = true
+           else MultiBotSave.Favorites[name] = nil
+  end
+  MultiBot.UpdateFavoritesIndex()
+end
+
+function MultiBot.ToggleFavorite(name)
+  MultiBot.SetFavorite(name, not MultiBot.IsFavorite(name))
+end
 
 MultiBot.timer = {}
 MultiBot.timer.sort = {}
@@ -283,7 +463,7 @@ function MultiBot.BuildClassMaps()
     end
   end
 
-  -- alias par locale (optionnels, tu peux enrichir au besoin)
+  -- alias par locale
   local loc = GetLocale and GetLocale() or "enUS"
   MultiBot.CLASS_EXTRA_ALIASES = MultiBot.CLASS_EXTRA_ALIASES or {
     frFR = { ["chevalier de la mort"]="DeathKnight", ["cdm"]="DeathKnight", ["prêtre"]="Priest" },
@@ -1241,6 +1421,12 @@ MultiBot.tips.units.friends =
 "The Friend-Roster does not show your Characters or Guild-Members.|r\n\n"..
 "|cffff0000Left-Click to select Friend-Roster|r\n"..
 "|cff999999(Execution-Order: System)|r";
+
+MultiBot.tips.units.favorites =
+"Roster Filter\n|cffffffff"..
+"Show only the Bots you marked as Favorites.|r\n\n"..
+"|cffff0000Left-click to activate|r\n"..
+"|cff999999(Executed by: System)|r";
 
 -- UNITS:BROWSE --
 
@@ -3476,6 +3662,13 @@ MultiBot.tips.every.misc =
 "Includes: Wipe, Autogear, etc.|r\n\n"..
 "|cffff0000Left-click to toggle this menu|r\n"..
 "|cff999999(Execution order: System)|r"
+
+-- Favorites
+MultiBot.tips.every.favorite =
+"Favorite|cffffffff\n"..
+"Add or remove this Bot from your Favorites (saved per character).|r\n\n"..
+"|cffff0000Left-click to toggle|r\n"..
+"|cff999999(Executed by: System)|r";
 
 MultiBot.tips.every.autogear =
 "AutoGear|cffffffff\n"..

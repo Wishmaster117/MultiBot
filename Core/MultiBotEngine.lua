@@ -1132,20 +1132,54 @@ MultiBot.addFrame = function(pName, pX, pY, pSize)
 	return tFrame
 end
 
-MultiBot.addSelf = function(pClass, pName)
+--[[MultiBot.addSelf = function(pClass, pName)
+MultiBot.dprint("addSelf", pName, pClass) -- DEBUG
 	if(MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] ~= nil) then return MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] end
 	local tClass = MultiBot.toClass(pClass)
 	local tButton = MultiBot.frames["MultiBar"].frames["Units"].addButton(pName, 0, 0, "inv_misc_head_clockworkgnome_01", MultiBot.tips.unit.selfbot)
 	if(MultiBot.index.classes.players[tClass] == nil) then MultiBot.index.classes.players[tClass] = {} end
 	table.insert(MultiBot.index.classes.players[tClass], pName)
-	table.insert(MultiBot.index.players, pName)
+	-- table.insert(MultiBot.index.players, pName)
+	table.insert(MultiBot.index.players, pName); MultiBot.dprint("players++", pName, "total", table.getn(MultiBot.index.players)) -- DEBUG
 	tButton.roster = "players"
 	tButton.class = tClass
 	tButton.name = pName
+	-- Si ce joueur est en favoris, on rafraîchit l’index
+	if MultiBot.IsFavorite and MultiBot.IsFavorite(pName) and MultiBot.UpdateFavoritesIndex then
+		MultiBot.UpdateFavoritesIndex()
+	end
 	return tButton
+end]]--
+
+MultiBot.addSelf = function(pClass, pName)
+  local units = MultiBot.frames["MultiBar"].frames["Units"]
+  local btn   = units.buttons[pName]
+  local tClass = (MultiBot.toClass and MultiBot.toClass(pClass)) or (pClass or "Unknown")
+  tClass = tClass or "Unknown"
+  if not btn then
+    btn = units.addButton(pName, 0, 0, "inv_misc_head_clockworkgnome_01", MultiBot.tips.unit.selfbot)
+  end
+  -- Assurer la présence dans les index (sans doublons)
+  MultiBot.index.classes.players[tClass] = MultiBot.index.classes.players[tClass] or {}
+  local byClass = MultiBot.index.classes.players[tClass]
+  local found = false
+  for i=1,#byClass do if byClass[i] == pName then found = true; break end end
+  if not found then table.insert(byClass, pName) end
+  local pidx = MultiBot.index.players
+  local found2 = false
+  for i=1,#pidx do if pidx[i] == pName then found2 = true; break end end
+  if not found2 then table.insert(pidx, pName) end
+  btn.roster = "players"
+  btn.class  = tClass
+  btn.name   = pName
+  if MultiBot.IsFavorite and MultiBot.IsFavorite(pName) and MultiBot.UpdateFavoritesIndex then
+    MultiBot.UpdateFavoritesIndex()
+  end
+  return btn
 end
 
-MultiBot.addPlayer = function(pClass, pName)
+--[[MultiBot.addPlayer = function(pClass, pName)
+MultiBot.dprint("addPlayer", pName, pClass) -- DEBUG
 	if(MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] ~= nil) then return MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] end
 	local tClass = MultiBot.toClass(pClass)
 	local tTexture = "Interface\\AddOns\\MultiBot\\Icons\\class_" .. string.lower(tClass) .. ".blp"
@@ -1157,6 +1191,33 @@ MultiBot.addPlayer = function(pClass, pName)
 	tButton.class = tClass
 	tButton.name = pName
 	return tButton
+end]]--
+
+MultiBot.addPlayer = function(pClass, pName)
+  local units = MultiBot.frames["MultiBar"].frames["Units"]
+  local btn   = units.buttons[pName]
+  local tClass = (MultiBot.toClass and MultiBot.toClass(pClass)) or (pClass or "Unknown")
+  tClass = tClass or "Unknown"
+  local tTexture = "Interface\\AddOns\\MultiBot\\Icons\\class_" .. string.lower(tClass) .. ".blp"
+  if not btn then
+    btn = units.addButton(pName, 0, 0, tTexture, MultiBot.toTip(tClass, nil, pName))
+  else
+    if btn.icon and tTexture then btn.icon:SetTexture(tTexture) end
+  end
+  -- Assurer la présence dans les index (sans doublons)
+  MultiBot.index.classes.players[tClass] = MultiBot.index.classes.players[tClass] or {}
+  local byClass = MultiBot.index.classes.players[tClass]
+  local found = false
+  for i=1,#byClass do if byClass[i] == pName then found = true; break end end
+  if not found then table.insert(byClass, pName) end
+  local pidx = MultiBot.index.players
+  local found2 = false
+  for i=1,#pidx do if pidx[i] == pName then found2 = true; break end end
+  if not found2 then table.insert(pidx, pName) end
+  btn.roster = "players"
+  btn.class  = tClass
+  btn.name   = pName
+  return btn
 end
 
 MultiBot.addMember = function(pClass, pLevel, pName)

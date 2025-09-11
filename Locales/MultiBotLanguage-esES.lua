@@ -867,6 +867,12 @@ MultiBot.tips.units.friends =
 "|cffff0000Clic izquierdo para seleccionar la lista de amigos|r\n"..
 "|cff999999(Orden de ejecución: Sistema)|r";
 
+MultiBot.tips.units.favorites =
+"Filtro de lista\n|cffffffff"..
+"Mostrar solo los Bots que has marcado como Favoritos.|r\n\n"..
+"|cffff0000Clic izquierdo para activar|r\n"..
+"|cff999999(Ejecutado por: Sistema)|r";
+
 -- UNITS:BROWSE --
 
 MultiBot.tips.units.browse =
@@ -3055,6 +3061,12 @@ MultiBot.tips.every.misc =
 "Incluye: Wipe, Autogear, etc.|r\n\n"..
 "|cffff0000Clic izquierdo para mostrar/ocultar este menú|r\n"..
 "|cff999999(Orden de ejecución: Sistema)|r"
+
+MultiBot.tips.every.favorite =
+"Favorito|cffffffff\n"..
+"Añadir o quitar este Bot de tus Favoritos (guardado por personaje).|r\n\n"..
+"|cffff0000Clic izquierdo para alternar|r\n"..
+"|cff999999(Ejecutado por: Sistema)|r";
 
 MultiBot.tips.every.autogear =
 "AutoGear|cffffffff\n"..
