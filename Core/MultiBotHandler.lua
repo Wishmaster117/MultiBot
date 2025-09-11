@@ -130,6 +130,12 @@ MultiBot:SetScript("OnEvent", function()
     if(event == "ADDON_LOADED" and arg1 == "MultiBot") then
 	-- print("MultiBot: ADDON_LOADED fired")
 	-- print("BuildOptionsPanel type:", type(MultiBot.BuildOptionsPanel))
+	
+        -- Initialize Favorites (per-character) and build first index
+        if MultiBot.EnsureFavorites then MultiBot.EnsureFavorites() end
+        if MultiBot.UpdateFavoritesIndex then MultiBot.UpdateFavoritesIndex() end
+
+
         -- [AJOUT] init config + applique timers + enregistre le panneau d'options
         if MultiBot.Config_Ensure then MultiBot.Config_Ensure() end
         if MultiBot.ApplyTimersToRuntime then MultiBot.ApplyTimersToRuntime() end
@@ -335,7 +341,7 @@ MultiBot:SetScript("OnEvent", function()
 	
 	-- PLAYER:ENTERING --
 	
-	if(event == "PLAYER_ENTERING_WORLD") then
+	--[[if(event == "PLAYER_ENTERING_WORLD") then
 		SendChatMessage(".account", "SAY")
 		
 		if(MultiBot.init == nil) then
@@ -345,11 +351,30 @@ MultiBot:SetScript("OnEvent", function()
 		end
 		
 		return
-	end
-	
+	end]]--if(event == "PLAYER_ENTERING_WORLD") then
+
+    if(event == "PLAYER_ENTERING_WORLD") then
+	MultiBot.dprint("EVT", "PLAYER_ENTERING_WORLD") -- DEBUG
+        SendChatMessage(".account", "SAY")
+        if(MultiBot.init == nil) then
+            MultiBot.init = true
+            if type(TimerAfter) == "function" then
+                TimerAfter(0.5, function()
+                    -- SendChatMessage(".playerbot bot list", "SAY")
+					MultiBot.dprint("SEND", ".playerbot bot list"); SendChatMessage(".playerbot bot list", "SAY")--Debug
+                end)
+            else
+                SendChatMessage(".playerbot bot list", "SAY")
+            end
+            return
+        end
+        return
+    end
+
 	-- CHAT:SYSTEM --
 	
 	if(event == "CHAT_MSG_SYSTEM") then
+	MultiBot.dprint("SYS", arg1) -- DEBUG
 		--[[if(MultiBot.isInside(arg1, "Accountlevel", "account level", "niveau de compte", "等级")) then
 			local tLevel = tonumber(MultiBot.doSplit(arg1, ": ")[2])
 			if(tLevel ~= nil) then MultiBot.GM = tLevel > 1 end
@@ -394,21 +419,30 @@ MultiBot:SetScript("OnEvent", function()
 		end
 		
 		if(string.sub(arg1, 1, 12) == "Bot roster: ") then
+			MultiBot.dprint("SYS", "Bot roster received") -- DEBUG
+			MultiBot.dprint("UIready",
+              (MultiBot.frames and MultiBot.frames["MultiBar"] and MultiBot.frames["MultiBar"].frames and MultiBot.frames["MultiBar"].frames["Units"]) and true or false) -- DEBUG
             -- ------------------------------------------------------------
             -- SECURITY : wait to MultiBar construction
             -- ------------------------------------------------------------
             if not (MultiBot.frames and MultiBot.frames["MultiBar"]
                     and MultiBot.frames["MultiBar"].frames
                     and MultiBot.frames["MultiBar"].frames["Units"]) then
-                -- we retry 0,1 s later
+                -- UI pas encore prête : on re-propulse le même event vers NOTRE OnEvent
+                local saved_msg = arg1
                 local df = CreateFrame("Frame")
                 df.t = 0
                 df:SetScript("OnUpdate", function(self, elapsed)
                     self.t = self.t + elapsed
-                    if self.t > 0.1 then
+                    if self.t > 0.2 then
                         self:SetScript("OnUpdate", nil)
-                        if MultiBot.handler and MultiBot.handler["CHAT_MSG_SYSTEM"] then
-                            MultiBot.handler["CHAT_MSG_SYSTEM"](arg1)
+                        local onEvent = MultiBot:GetScript("OnEvent")
+                        if onEvent then
+                            -- Sauvegarde/restaure les globals d’événement
+                            local _event, _arg1 = event, arg1
+                            event, arg1 = "CHAT_MSG_SYSTEM", saved_msg
+                            onEvent()
+                            event, arg1 = _event, _arg1
                         end
                     end
                 end)
@@ -430,6 +464,7 @@ MultiBot:SetScript("OnEvent", function()
 			-- PLAYERBOTS --
 			
 			local tTable = MultiBot.doSplit(string.sub(arg1, 13), ", ")
+						MultiBot.dprint("ROSTER_PARSE_COUNT", table.getn(tTable)) -- DEBUG
 			
 			for key, value in pairs(tTable) do
 				if(value == "") then break end
@@ -456,7 +491,41 @@ MultiBot:SetScript("OnEvent", function()
 					end
 				end
 			end
-			
+
+
+			MultiBot.dprint("INDEX_PLAYERS_SIZE", table.getn(MultiBot.index.players or {})) -- DEBUG
+			do local n=0; for _ in pairs(MultiBot.index.classes.players or {}) do n=n+1 end; MultiBot.dprint("INDEX_CLASSES_PLAYERS_KEYS", n) end -- DEBUG
+
+        -- La liste des players est prête : on met l’index Favoris à jour
+        if MultiBot.UpdateFavoritesIndex then MultiBot.UpdateFavoritesIndex() end
+
+        -- UI REFRESH (INCONDITIONNEL) :
+        -- Rafraîchit la vue en réutilisant le roster courant (players/favorites/actives/…)
+        -- pour ne pas écraser le choix de l’utilisateur.
+        do
+          local unitsBtn = MultiBot.frames
+                          and MultiBot.frames["MultiBar"]
+                          and MultiBot.frames["MultiBar"].buttons
+                          and MultiBot.frames["MultiBar"].buttons["Units"]
+          if unitsBtn and unitsBtn.doLeft then
+            local roster = unitsBtn.roster or "players"
+            unitsBtn.doLeft(unitsBtn, roster, unitsBtn.filter)
+          end
+        end
+        -- Retry différé : couvre le cas où l’UI n’est pas encore prête (timing au login)
+        if type(TimerAfter) == "function" then
+          TimerAfter(0.05, function()
+            local unitsBtn = MultiBot.frames
+                            and MultiBot.frames["MultiBar"]
+                            and MultiBot.frames["MultiBar"].buttons
+                            and MultiBot.frames["MultiBar"].buttons["Units"]
+            if unitsBtn and unitsBtn.doLeft then
+              local roster = unitsBtn.roster or "players"
+              unitsBtn.doLeft(unitsBtn, roster, unitsBtn.filter)
+            end
+          end)
+        end
+		
 			-- MEMBERBOTS --
 			
 			for i = 1, 50 do

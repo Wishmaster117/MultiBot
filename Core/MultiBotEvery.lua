@@ -33,22 +33,53 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
        end
     end
 
-	local dy = 26
-	local y  = 0
+	-- local dy = 26
+	-- local y  = 0
 	
-	for _, data in ipairs{
+	-- for _, data in ipairs{
+    local y, dy = 0, 28
+    -- Buttons inside the "Misc" sub-frame
+	for _, data in ipairs{	
 		{ "Wipe",        "Achievement_Halloween_Ghost_01", MultiBot.tips.every.wipe,        function(b) MultiBot.ActionToTarget("wipe", b.getName()) end },
 		--{ "Autogear",    "inv_misc_enggizmos_30",     MultiBot.tips.every.autogear,    function(b) SendChatMessage("autogear", "WHISPER", nil, b.getName()) end },
 		{ "Autogear",    "inv_misc_enggizmos_30",          MultiBot.tips.every.autogear,   function(b)
             StaticPopup_Show("MULTIBOT_AUTOGEAR_CONFIRM", b.getName(), nil, { target = b.getName() })
           end
         },
+        -- NEW: Favorite toggle (per-character)
+        { "Favorite",   "Interface\\RaidFrame\\ReadyCheck-Ready",  MultiBot.tips.every.favorite, function(b)
+            local name = b.getName()
+            MultiBot.ToggleFavorite(name)
+            if MultiBot.IsFavorite(name) then
+              b.icon:SetTexture("Interface\\RaidFrame\\ReadyCheck-NotReady")
+            else
+              b.icon:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
+            end
+            -- If the current roster filter is "favorites", refresh the list
+            local unitsBtn = MultiBot.frames and MultiBot.frames["MultiBar"] and MultiBot.frames["MultiBar"].buttons and MultiBot.frames["MultiBar"].buttons["Units"]
+            if unitsBtn and unitsBtn.roster == "favorites" then
+              unitsBtn.doLeft(unitsBtn, "favorites", unitsBtn.filter)
+            end
+          end
+        },		
 		{ "Maintenance", "Achievement_Halloween_Smiley_01",     MultiBot.tips.every.maintenance, function(b) SendChatMessage("maintenance", "WHISPER", nil, b.getName()) end },
 	} do
 		local btn = tMisc.addButton(data[1], 0, y, data[2], data[3])
 		btn.doLeft = data[4]
 		y = y + dy
 	end
+
+
+    -- Initialize the Favorite icon to the correct state if this bot is already saved
+    do
+      local favBtn = tMisc.buttons and tMisc.buttons["Favorite"]
+      if favBtn then
+        local name = favBtn.getName and favBtn.getName()
+        if name and MultiBot.IsFavorite and MultiBot.IsFavorite(name) then
+          favBtn.icon:SetTexture("Interface\\RaidFrame\\ReadyCheck-NotReady")
+        end
+      end
+    end
     -- MENU MISC END-----------------------------------------
 	   
 	pFrame.addButton("Summon", 94, 0, "ability_hunter_beastcall", MultiBot.tips.every.summon)

@@ -612,6 +612,8 @@ tButton.doRight = function(pButton)
 end
 
 tButton.doLeft = function(pButton, oRoster, oFilter)
+	MultiBot.dprint("Units.doLeft", "roster=", oRoster or pButton.roster, "filter=", oFilter or pButton.filter)-- DEBUG
+
 	local tUnits = pButton.parent.frames["Units"]
 	local tTable = nil
 	
@@ -624,10 +626,22 @@ tButton.doLeft = function(pButton, oRoster, oFilter)
 	elseif(oRoster ~= nil) then pButton.roster = oRoster
 	elseif(oFilter ~= nil) then pButton.filter = oFilter
 	end
-	
+
+    -- Filet de sécurité : si on veut 'players' mais l'index est vide, reconstruit ou redemande la liste
+    if oRoster == "players" or pButton.roster == "players" then
+      if not (MultiBot.index.players and table.getn(MultiBot.index.players) > 0) then
+        if MultiBot.RebuildPlayersIndexFromButtons then MultiBot.RebuildPlayersIndexFromButtons() end
+        if not (MultiBot.index.players and table.getn(MultiBot.index.players) > 0) then
+          -- toujours vide : on (re)demande la liste une fois
+          SendChatMessage(".playerbot bot list", "SAY")
+        end
+      end
+    end
+  	
 	if(pButton.filter ~= "none")
 	then tTable = MultiBot.index.classes[pButton.roster][pButton.filter]
 	else tTable = MultiBot.index[pButton.roster]
+	MultiBot.dprint("Units.tTable.size", tTable and table.getn(tTable) or 0) -- DEBUG
 	end
 	
 	local tButton = nil
@@ -821,6 +835,7 @@ function MultiBot.BuildRosterUI(tControl)
     local unitsBtn = MultiBot.frames.MultiBar.buttons.Units
     MultiBot.Select(b.parent, "Roster",
                     "Interface\\AddOns\\MultiBot\\Icons\\roster_players.blp")
+					MultiBot.dprint("Click Roster>Players") -- DEBUG
     unitsBtn.doLeft(unitsBtn, "players")
   end
 
@@ -833,12 +848,16 @@ function MultiBot.BuildRosterUI(tControl)
     { id="members", icon="roster_members", invite=true,  tip="members" },
     { id="players", icon="roster_players", invite=true,  tip="players" },
     { id="actives", icon="roster_actives", invite=false, tip="actives" },
+    -- Favorites (per-character)
+    { id="favorites", texture="Interface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1", invite=false, tip="favorites" },
   }
 
   -- 3. Helper bouton Roster
   local function AddRosterButton(cfg, idx)
     local x = -26 * (idx-1)
-    local tex = "Interface\\AddOns\\MultiBot\\Icons\\" .. cfg.icon .. ".blp"
+    -- local tex = "Interface\\AddOns\\MultiBot\\Icons\\" .. cfg.icon .. ".blp"
+    -- Allow either an addon icon name (cfg.icon) or a direct texture path (cfg.texture)
+    local tex = cfg.texture or ("Interface\\AddOns\\MultiBot\\Icons\\" .. cfg.icon .. ".blp")
 
     local btn = tRoster.addButton(cfg.id:gsub("^%l", string.upper), x, 0,
                                   tex, MultiBot.tips.units[cfg.tip])
@@ -866,6 +885,13 @@ end
 
 --  Function call
 MultiBot.BuildRosterUI(tControl)
+
+
+-- Force le roster par défaut sur "players" dès la construction
+TimerAfter(0.05, function()
+  local btn = tControl.buttons and tControl.buttons["Roster"]
+  if btn and btn.doRight then btn.doRight(btn) end
+end)
 
 -- UNITS:BROWSE --
 

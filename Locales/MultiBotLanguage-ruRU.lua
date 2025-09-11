@@ -864,6 +864,12 @@ MultiBot.tips.units.friends =
 "|cffff0000Левый клик - выбрать список друзей|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
+MultiBot.tips.units.favorites =
+"Фильтр состава\n|cffffffff"..
+"Показывать только тех ботов, которых вы отметили как избранных.|r\n\n"..
+"|cffff0000ЛКМ для активации|r\n"..
+"|cff999999(Выполняется: Система)|r";
+
 -- UNITS:BROWSE --
 
 MultiBot.tips.units.browse =
@@ -3049,6 +3055,12 @@ MultiBot.tips.every.misc =
 "Включает: Wipe, Autogear и т.д.|r\n\n"..
 "|cffff0000Левый клик для переключения этого меню|r\n"..
 "|cff999999(Порядок выполнения: Система)|r"
+
+MultiBot.tips.every.favorite =
+"Избранное|cffffffff\n"..
+"Добавить или удалить этого бота из избранных (сохраняется для каждого персонажа).|r\n\n"..
+"|cffff0000ЛКМ для переключения|r\n"..
+"|cff999999(Выполняется: Система)|r";
 
 MultiBot.tips.every.autogear =
 "Автоэкипировка|cffffffff\n"..
