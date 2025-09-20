@@ -536,7 +536,7 @@ end
 -- UNITS --
 
 local tButton = tMultiBar.addButton("Units", -38, 0, "inv_scroll_04", MultiBot.tips.units.master)
-tButton.roster = "players"
+tButton.roster = "actives"
 tButton.filter = "none"
 
 tButton.doRight = function(pButton)
@@ -887,10 +887,13 @@ end
 MultiBot.BuildRosterUI(tControl)
 
 
--- Force le roster par défaut sur "players" dès la construction
+-- Force default roster to "actives" (green) on startup
 TimerAfter(0.05, function()
-  local btn = tControl.buttons and tControl.buttons["Roster"]
-  if btn and btn.doRight then btn.doRight(btn) end
+  local rosterFrame = tControl.frames and tControl.frames["Roster"]
+  local actBtn = rosterFrame and rosterFrame.buttons and rosterFrame.buttons["Actives"]
+  if actBtn and actBtn.doLeft then
+    actBtn.doLeft(actBtn)
+  end
 end)
 
 -- UNITS:BROWSE --
