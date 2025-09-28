@@ -842,8 +842,7 @@ MultiBot.tips.units.roster =
 "Filtre de Rôle\n|cffffffff"..
 "Avec le Filtre de Rôle, vous pouvez basculer entre différents rôles.|r\n\n"..
 "|cffff0000Clic gauche pour afficher ou masquer les options|r\n"..
-"|cff999999(Ordre d'exécution : Système)|r\n\n"..
-"|cffff0000Clic droit pour réinitialiser le filtre|r\n"..
+"|cffff0000Clic droit bascule vers de Roster Actifs|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r";
 
 MultiBot.tips.units.actives =
