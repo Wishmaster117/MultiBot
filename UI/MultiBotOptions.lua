@@ -87,7 +87,15 @@ function MultiBot.BuildOptionsPanel()
   panel.name = "MultiBot"
   panel:Hide()
 
-  panel:SetScript("OnShow", function(self)
+  local scrollFrame = CreateFrame("ScrollFrame", PANEL_NAME.."ScrollFrame", panel, "UIPanelScrollFrameTemplate")
+  scrollFrame:SetPoint("TOPLEFT", 3, -4)
+  scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)
+
+  local scrollChild = CreateFrame("Frame", PANEL_NAME.."ScrollChild", scrollFrame)
+  scrollChild:SetSize(1, 1)
+  scrollFrame:SetScrollChild(scrollChild)
+
+  scrollChild:SetScript("OnShow", function(self)
     if self._initialized then return end
     self._initialized = true
 
@@ -95,8 +103,39 @@ function MultiBot.BuildOptionsPanel()
     title:SetPoint("TOPLEFT", 16, -16)
     title:SetText(MultiBot.tips.sliders.frametitle)
 
+    local strataDropDown = CreateFrame("Frame", "MultiBotStrataDropDown", self, "UIDropDownMenuTemplate")
+    strataDropDown:SetPoint("TOPLEFT", title, "BOTTOMLEFT", -14, -30)
+
+    local strataLabel = self:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    strataLabel:SetPoint("BOTTOMLEFT", strataDropDown, "TOPLEFT", 16, 3)
+    strataLabel:SetText("Frame Strata")
+
+    local strataLevels = { "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "TOOLTIP" }
+
+    local function OnClick(button)
+        UIDropDownMenu_SetSelectedID(strataDropDown, button:GetID())
+        MultiBotGlobalSave["Strata.Level"] = strataLevels[button:GetID()]
+        MultiBot.PromoteFrame(MultiBot.frames["MultiBar"], MultiBotGlobalSave["Strata.Level"])
+    end
+
+    local function Initialize(self, level)
+        local info
+        for k, v in ipairs(strataLevels) do
+            info = UIDropDownMenu_CreateInfo()
+            info.text = v
+            info.func = OnClick
+            UIDropDownMenu_AddButton(info, level)
+        end
+    end
+
+    UIDropDownMenu_Initialize(strataDropDown, Initialize)
+    UIDropDownMenu_SetWidth(strataDropDown, 120)
+    UIDropDownMenu_SetButtonWidth(strataDropDown, 144)
+    UIDropDownMenu_SetSelectedValue(strataDropDown, MultiBotGlobalSave["Strata.Level"] or "MEDIUM")
+    UIDropDownMenu_JustifyText(strataDropDown, "LEFT")
+      
     local sub = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    sub:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -6)
+    sub:SetPoint("TOPLEFT", strataDropDown, "BOTTOMLEFT", 20, -12)
     sub:SetText(MultiBot.tips.sliders.actionsinter)
 
     -- Sliders : on les crée puis on les ANCRE sous le sous-titre pour éviter tout chevauchement
