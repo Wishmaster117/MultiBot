@@ -832,8 +832,7 @@ MultiBot.tips.units.roster =
 "Roster-Filter\n|cffffffff"..
 "Mit dem Roster-Filter kann man zwischen den verschienden Rostern wechseln.|r\n\n"..
 "|cffff0000Linksklicken um die Optionen ein- und auszublenden|r\n"..
-"|cff999999(Ausführreihenfolge: System)|r\n\n"..
-"|cffff0000Rechtsklicken um den Filter zu entfernen|r\n"..
+"|cffff0000Rechtsklick, um zum aktiven Dienstplan zu wechseln|r\n"..
 "|cff999999(Ausführreihenfolge: System)|r";
 
 MultiBot.tips.units.actives =

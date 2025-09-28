@@ -638,11 +638,37 @@ tButton.doLeft = function(pButton, oRoster, oFilter)
       end
     end
   	
-	if(pButton.filter ~= "none")
+	--[[if(pButton.filter ~= "none")
 	then tTable = MultiBot.index.classes[pButton.roster][pButton.filter]
 	else tTable = MultiBot.index[pButton.roster]
 	MultiBot.dprint("Units.tTable.size", tTable and table.getn(tTable) or 0) -- DEBUG
-	end
+	end]]--
+
+    -- Construction de la table source selon roster/filtre
+    if pButton.roster == "players" then
+      -- On fusionne players ∪ actives pour que les bots déjà groupés apparaissent aussi
+      local function merge_lists(a, b)
+        local res, seen = {}, {}
+        if a then for i=1,#a do local n=a[i]; if n and not seen[n] then seen[n]=true; table.insert(res, n) end end end
+        if b then for i=1,#b do local n=b[i]; if n and not seen[n] then seen[n]=true; table.insert(res, n) end end end
+        return res
+      end
+      if pButton.filter ~= "none" then
+        local byClassPlayers = MultiBot.index.classes.players[pButton.filter]
+        local byClassActives = MultiBot.index.classes.actives[pButton.filter]
+        tTable = merge_lists(byClassPlayers, byClassActives)
+      else
+        tTable = merge_lists(MultiBot.index.players, MultiBot.index.actives)
+      end
+    else
+      if pButton.filter ~= "none" then
+        tTable = MultiBot.index.classes[pButton.roster][pButton.filter]
+      else
+        tTable = MultiBot.index[pButton.roster]
+      end
+    end
+    MultiBot.dprint("Units.tTable.size", tTable and table.getn(tTable) or 0) -- DEBUG
+	-- Fin Construction de la table source selon roster/filtre
 	
 	local tButton = nil
 	local tFrame = nil
@@ -826,10 +852,11 @@ function MultiBot.BuildRosterUI(tControl)
 
   -- 1. Main Button
   local rootBtn = tControl.addButton("Roster", 0, 30,
-                                     "Interface\\AddOns\\MultiBot\\Icons\\roster_players.blp",
+                                     --"Interface\\AddOns\\MultiBot\\Icons\\roster_players.blp",
+									 "Interface\\AddOns\\MultiBot\\Icons\\roster_players.blp",
                                      MultiBot.tips.units.roster)
 
-  -- Left Click = toggle sub frame  |  Right Click = select “Players”
+ --[[ -- Left Click = toggle sub frame  |  Right Click = select “Players”
   rootBtn.doLeft  = function(b) MultiBot.ShowHideSwitch(b.parent.frames.Roster) end
   rootBtn.doRight = function(b)
     local unitsBtn = MultiBot.frames.MultiBar.buttons.Units
@@ -837,6 +864,19 @@ function MultiBot.BuildRosterUI(tControl)
                     "Interface\\AddOns\\MultiBot\\Icons\\roster_players.blp")
 					MultiBot.dprint("Click Roster>Players") -- DEBUG
     unitsBtn.doLeft(unitsBtn, "players")
+  end]]--
+
+  -- Left Click = ouvre le menu, Right Click vas sur “Actives”
+  rootBtn.doLeft = function(b)
+    MultiBot.ShowHideSwitch(b.parent.frames.Roster)
+  end
+
+  -- Clic droit : aller directement sur "actives"
+  rootBtn.doRight = function(b)
+    local unitsBtn = MultiBot.frames.MultiBar.buttons.Units
+    MultiBot.Select(b.parent, "Roster",
+      "Interface\\AddOns\\MultiBot\\Icons\\roster_actives.blp")
+    unitsBtn.doLeft(unitsBtn, "actives")
   end
 
   -- 2. Frame and Config Table

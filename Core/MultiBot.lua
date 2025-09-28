@@ -1316,8 +1316,7 @@ MultiBot.tips.units.roster =
 "Roster-Filter\n|cffffffff"..
 "With the Roster-Filter you can switch between differned Rosters.|r\n\n"..
 "|cffff0000Left-Click to show or hide the Options|r\n"..
-"|cff999999(Execution-Order: System)|r\n\n"..
-"|cffff0000Right-Click to reset the Filter|r\n"..
+"|cffff0000Right-Click to switch to Active Roster|r\n"..
 "|cff999999(Execution-Order: System)|r";
 
 MultiBot.tips.units.actives =

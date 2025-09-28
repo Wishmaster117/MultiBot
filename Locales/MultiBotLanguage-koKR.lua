@@ -831,9 +831,8 @@ MultiBot.tips.units.roster =
 "팀 필터\n|cffffffff"..
 "팀 필터를 사용하면 여러 팀 간에 전환할 수 있습니다.|r\n\n"..
 "|cffff0000옵션을 표시하거나 숨기려면 왼쪽 클릭|r\n"..
+"|cffff0000활성 명단으로 전환하려면 마우스 오른쪽 버튼을 클릭하세요|r\n"..
 "|cff999999(명령 실행: 시스템)|r\n\n"..
-"|cffff0000필터를 재설정하려면 마우스 오른쪽 버튼을 클릭하세요|r\n"..
-"|cff999999(명령 실행: 시스템)|r";
 
 MultiBot.tips.units.actives =
 "팀 필터\n|cffffffff"..
