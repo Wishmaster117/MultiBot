@@ -790,7 +790,7 @@ MultiBot.tips.units.roster =
 "Filter PlayerBots by roster type.|r\n\n"..
 "|cffff0000Left-click to show or hide the Options|r\n"..
 "|cffff0000Right-Click to switch to Active Roster|r\n"..
-"|cff999999(Executed by: System)|r\n\n"..
+"|cff999999(Executed by: System)|r";
 
 MultiBot.tips.units.actives =
 "Filter |cffffffffActive|r PlayerBots\n|cffffffff"..

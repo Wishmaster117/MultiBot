@@ -837,7 +837,7 @@ MultiBot.tips.units.roster =
 "Con este filtro puedes alternar entre diferentes listas de unidades.|r\n\n"..
 "|cffff0000Clic izquierdo para mostrar u ocultar las Opciones|r\n"..
 "|cffff0000Clic direcho para ir al Roster Activos|r\n"..
-"|cff999999(Orden de ejecución: Sistema)|r\n\n"..
+"|cff999999(Orden de ejecución: Sistema)|r";
 
 MultiBot.tips.units.actives =
 "Roster-Filter\n|cffffffff"..  -- Línea que se mantiene en inglés

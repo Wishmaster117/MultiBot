@@ -832,7 +832,7 @@ MultiBot.tips.units.roster =
 "通过团队筛选器，你可以切换不同的团队。|r\n\n"..
 "|cffff0000左键单击显示或隐藏选项|r\n"..
 "|cffff0000右键单击切换到活动名册|r\n"..
-"|cff999999(执行命令: 系统)|r\n\n"..
+"|cff999999(执行命令: 系统)|r";
 
 MultiBot.tips.units.actives =
 "团队筛选器\n|cffffffff"..
