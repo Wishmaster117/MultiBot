@@ -826,7 +826,7 @@ function MultiBot.BuildRosterUI(tControl)
 
   -- 1. Main Button
   local rootBtn = tControl.addButton("Roster", 0, 30,
-                                     "Interface\\AddOns\\MultiBot\\Icons\\roster_players.blp",
+                                     "Interface\\AddOns\\MultiBot\\Icons\\roster_actives.blp",
                                      MultiBot.tips.units.roster)
 
   -- Left Click = toggle sub frame  |  Right Click = select “Players”
@@ -834,9 +834,9 @@ function MultiBot.BuildRosterUI(tControl)
   rootBtn.doRight = function(b)
     local unitsBtn = MultiBot.frames.MultiBar.buttons.Units
     MultiBot.Select(b.parent, "Roster",
-                    "Interface\\AddOns\\MultiBot\\Icons\\roster_players.blp")
-					MultiBot.dprint("Click Roster>Players") -- DEBUG
-    unitsBtn.doLeft(unitsBtn, "players")
+                    "Interface\\AddOns\\MultiBot\\Icons\\roster_actives.blp")
+					MultiBot.dprint("Click Roster>Actives") -- DEBUG
+    unitsBtn.doLeft(unitsBtn, "actives")
   end
 
   -- 2. Frame and Config Table
