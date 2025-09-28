@@ -17,7 +17,7 @@ end
 -- UI helper: promote a frame to the foreground without breaking tooltips
 function MultiBot.PromoteFrame(f, strata)
   if not f or not f.SetFrameStrata then return end
-  f:SetFrameStrata(strata or "DIALOG")
+  f:SetFrameStrata(strata or MultiBotGlobalSave["Strata.Level"] or "MEDIUM")
   if f.SetToplevel then f:SetToplevel(true) end
   if f.HookScript then
     f:HookScript("OnShow", function(self) if self.Raise then self:Raise() end end)
