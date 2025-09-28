@@ -336,8 +336,15 @@ MultiBot:SetScript("OnEvent", function()
 			end
 		end
 
-        if (MultiBotGlobalSave["Strata.Level"] ~= nil) then
-            MultiBot.PromoteFrame(MultiBot.frames["MultiBar"], MultiBotGlobalSave["Strata.Level"])
+        if MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"] ~= nil then
+          if MultiBot.ApplyGlobalStrata then
+            MultiBot.ApplyGlobalStrata()
+          else
+            -- minimal fallback if the function does not exist
+            if MultiBot.frames and MultiBot.frames["MultiBar"] then
+              MultiBot.PromoteFrame(MultiBot.frames["MultiBar"], MultiBotGlobalSave["Strata.Level"])
+            end
+          end
         end
 
 		return

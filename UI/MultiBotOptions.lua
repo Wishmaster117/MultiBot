@@ -110,12 +110,15 @@ function MultiBot.BuildOptionsPanel()
     strataLabel:SetPoint("BOTTOMLEFT", strataDropDown, "TOPLEFT", 16, 3)
     strataLabel:SetText("Frame Strata")
 
+    local current = (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or "DIALOG"
     local strataLevels = { "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "TOOLTIP" }
 
     local function OnClick(button)
         UIDropDownMenu_SetSelectedID(strataDropDown, button:GetID())
         MultiBotGlobalSave["Strata.Level"] = strataLevels[button:GetID()]
-        MultiBot.PromoteFrame(MultiBot.frames["MultiBar"], MultiBotGlobalSave["Strata.Level"])
+        if MultiBot.ApplyGlobalStrata then
+          MultiBot.ApplyGlobalStrata()
+        end
     end
 
     local function Initialize(self, level)
@@ -123,6 +126,7 @@ function MultiBot.BuildOptionsPanel()
         for k, v in ipairs(strataLevels) do
             info = UIDropDownMenu_CreateInfo()
             info.text = v
+            info.value = v
             info.func = OnClick
             UIDropDownMenu_AddButton(info, level)
         end
@@ -131,7 +135,7 @@ function MultiBot.BuildOptionsPanel()
     UIDropDownMenu_Initialize(strataDropDown, Initialize)
     UIDropDownMenu_SetWidth(strataDropDown, 120)
     UIDropDownMenu_SetButtonWidth(strataDropDown, 144)
-    UIDropDownMenu_SetSelectedValue(strataDropDown, MultiBotGlobalSave["Strata.Level"] or "MEDIUM")
+    UIDropDownMenu_SetSelectedValue(strataDropDown, current)
     UIDropDownMenu_JustifyText(strataDropDown, "LEFT")
 
     local sub = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")

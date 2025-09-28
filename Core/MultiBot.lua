@@ -17,13 +17,24 @@ end
 -- UI helper: promote a frame to the foreground without breaking tooltips
 function MultiBot.PromoteFrame(f, strata)
   if not f or not f.SetFrameStrata then return end
-  f:SetFrameStrata(strata or MultiBotGlobalSave["Strata.Level"] or "MEDIUM")
+  -- Add a default fallback kept at "DIALOG" to avoid regressions and it's safer
+  local level = strata or (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or "DIALOG"
+  f:SetFrameStrata(level)
   if f.SetToplevel then f:SetToplevel(true) end
   if f.HookScript then
     f:HookScript("OnShow", function(self) if self.Raise then self:Raise() end end)
   end
 end
 
+function MultiBot.ApplyGlobalStrata()
+  local level = (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or nil
+  if not MultiBot.frames then return end
+  for name, frm in pairs(MultiBot.frames) do
+    if type(frm) == "table" and frm.SetFrameStrata then
+      MultiBot.PromoteFrame(frm, level)
+    end
+  end
+end
 
 -- Account level detection (multi-locale, no hardcoding in handler) --
 -- Set your GM threshold here (>= value means GM). ONLY set it once.
