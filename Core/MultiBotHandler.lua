@@ -335,7 +335,15 @@ MultiBot:SetScript("OnEvent", function()
 				tButton.doLeft(tButton)
 			end
 		end
-		
+		if (MultiBotSave["Visible"] ~= nil) then
+            if (MultiBotSave["Visible"] == "true") then
+                for key, value in pairs(MultiBot.frames) do value:Show() end
+		        MultiBot.state = true
+            else
+                for key, value in pairs(MultiBot.frames) do value:Hide() end
+		        MultiBot.state = false
+            end
+        end
 		return
 	end
 	
@@ -1373,9 +1381,11 @@ SlashCmdList["MULTIBOT"] = function()
 	if(MultiBot.state) then
 		for key, value in pairs(MultiBot.frames) do value:Hide() end
 		MultiBot.state = false
+		MultiBotSave["Visible"] = "false"
 	else
 		for key, value in pairs(MultiBot.frames) do value:Show() end
 		MultiBot.state = true
+		MultiBotSave["Visible"] = "true"
 	end
 end
 
