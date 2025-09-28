@@ -162,81 +162,7 @@ function MultiBot.RebuildPlayersIndexFromButtons()
       table.insert(MultiBot.index.classes.players[cls], name)
     end
   end
-end  
-
--- =====================================================================
--- LOGIN/ROSTER FIX (no /reload needed)
--- Demande la liste des bots au login et parse "Bot roster:" à la volée
--- =====================================================================
-do
-  local f = CreateFrame("Frame")
-  f:RegisterEvent("PLAYER_ENTERING_WORLD")
-  f:RegisterEvent("CHAT_MSG_SYSTEM")
-
-  local function C_Timer_After(sec, func)
-    -- léger helper (Wrath n'a pas C_Timer)
-    local t, acc = 0, CreateFrame("Frame")
-    acc:SetScript("OnUpdate", function(_, dt)
-      t = t + dt
-      if t >= sec then acc:SetScript("OnUpdate", nil); func() end
-    end)
-  end
-
-  local function requestList()
-    if f._sent then return end
-    f._sent = true
-    if MultiBot.dprint then MultiBot.dprint("SEND .playerbot bot list") end
-    SendChatMessage(".playerbot bot list", "SAY")
-  end
-
-  -- Parse une ligne système "Bot roster: +Name Class, -Other Class, ..."
-  function MultiBot.ParseBotRosterFromSystem(msg)
-    if type(msg) ~= "string" then return end
-    -- Laisser la détection GM existante faire son boulot
-    if MultiBot.GM_DetectFromSystem then MultiBot.GM_DetectFromSystem(msg) end
-
-    local list = msg:match("^%s*Bot roster:%s*(.+)")
-    if not list then return end
-
-    if MultiBot.dprint then MultiBot.dprint("SYS Bot roster received") end
-    local count = 0
-      for chunk in list:gmatch("[^,]+") do
-        local part = (chunk:gsub("^%s+",""):gsub("%s+$",""))
-        local sign = part:match("^([%+%-])") or ""
-        part = part:gsub("^[%+%-]%s*","")
-        local name, classRaw = part:match("^([^%s]+)%s+(.+)$")
-        if name and classRaw then
-          local canon = MultiBot.NormalizeClass and MultiBot.NormalizeClass(classRaw) or classRaw
-          if MultiBot.addPlayer then MultiBot.addPlayer(canon or classRaw, name) end
-          count = count + 1
-        end
-      end
-    if MultiBot.dprint then MultiBot.dprint("ROSTER_PARSE_COUNT", count) end
-
-    -- Reconstruit les index si nécessaire (sécurisé/no-op si absent)
-    if MultiBot.RebuildPlayersIndexFromButtons then
-      MultiBot.RebuildPlayersIndexFromButtons()
-    end
-
-    -- Si l’UI "Units" est ouverte sur players, force un rafraîchissement doux
-    local units = MultiBot.frames and MultiBot.frames["MultiBar"]
-                 and MultiBot.frames["MultiBar"].frames
-                 and MultiBot.frames["MultiBar"].frames["Units"]
-    if units and units.doLeft then
-      units:doLeft("players")  -- signature utilisée par le code existant
-    end
-  end
-
-  f:SetScript("OnEvent", function(_, ev, ...)
-    if ev == "PLAYER_ENTERING_WORLD" then
-      -- Laisser le chat démarrer puis demander la liste
-      C_Timer_After(0.5, requestList)
-    elseif ev == "CHAT_MSG_SYSTEM" then
-      local msg = ...
-      MultiBot.ParseBotRosterFromSystem(msg)
-    end
-  end)
-end
+end 
 
 -- MultiBotSave = {}
 -- MultiBotGlobalSave = {}
@@ -270,7 +196,6 @@ MultiBot.auto.talent = false
 MultiBot.auto.invite = false
 MultiBot.auto.release = false
 --MultiBot.auto.language = true
--- MultiBot.auto.strategyAsk = false Lock pour spam chat en suspend
 
 -- =========================
 -- DEBUG helpers (trace chat)
