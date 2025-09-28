@@ -344,6 +344,9 @@ MultiBot:SetScript("OnEvent", function()
 		        MultiBot.state = false
             end
         end
+		if (MultiBotGlobalSave["Strata.Level"] ~= nil) then
+            MultiBot.PromoteFrame(MultiBot.frames["MultiBar"], MultiBotGlobalSave["Strata.Level"])
+        end
 		return
 	end
 	
