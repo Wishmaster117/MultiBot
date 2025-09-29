@@ -344,6 +344,16 @@ MultiBot:SetScript("OnEvent", function()
                 for key, value in pairs(MultiBot.frames) do value:Hide() end
 		        MultiBot.state = false
             end
+
+        if MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"] ~= nil then
+          if MultiBot.ApplyGlobalStrata then
+            MultiBot.ApplyGlobalStrata()
+          else
+            -- minimal fallback if the function does not exist
+            if MultiBot.frames and MultiBot.frames["MultiBar"] then
+              MultiBot.PromoteFrame(MultiBot.frames["MultiBar"], MultiBotGlobalSave["Strata.Level"])
+            end
+          end
         end
 
 		return
@@ -401,8 +411,6 @@ MultiBot:SetScript("OnEvent", function()
 
 		
 		if(MultiBot.isInside(arg1, "Possible strategies")) then
-		-- if(MultiBot.auto.strategyAsk and MultiBot.isInside(arg1, "Possible strategies")) then -- Changed because chat spam
-			-- arg1 = string.gsub(arg1, "^[Pp]ossible strategies:%s*", "")
 			local tStrategies = MultiBot.doSplit(arg1, ", ")
 			SendChatMessage("=== STRATEGIES ===", "SAY")
 			for i = 1, table.getn(tStrategies) do SendChatMessage(i .. " : " .. tStrategies[i], "SAY") end
@@ -427,6 +435,21 @@ MultiBot:SetScript("OnEvent", function()
 				return
 			end
 		end
+
+        -- Anti-dup: ignore the same "Bot roster:" line repeated in a short window
+        do
+          local text = (type(arg1) == "string") and arg1 or ""
+          local roster = text:match("^%s*[Bb]ot%W+[Rr]oster:%s*(.+)$")
+          if roster then
+            MultiBot._lastRosterMsg = MultiBot._lastRosterMsg or { txt = nil, t = 0 }
+            local now = (type(GetTime) == "function") and GetTime() or 0
+            if MultiBot._lastRosterMsg.txt == roster and (now - MultiBot._lastRosterMsg.t) < 1.0 then
+              return
+            end
+            MultiBot._lastRosterMsg.txt = roster
+            MultiBot._lastRosterMsg.t   = now
+          end
+        end
 		
 		if(string.sub(arg1, 1, 12) == "Bot roster: ") then
 			MultiBot.dprint("SYS", "Bot roster received") -- DEBUG
@@ -624,19 +647,23 @@ MultiBot:SetScript("OnEvent", function()
 			local tButton = MultiBot.frames["MultiBar"].frames["Units"].buttons[tName]
 			if(tButton == nil) then return end
 			
-			if(MultiBot.isMember(tName)) then
+			--[[if(MultiBot.isMember(tName)) then -- Removed to avoid double wisper of co ?
 				tButton.waitFor = "CO"
 				SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
-				SendChatMessage("co ?", "WHISPER", nil, tName)
-				--[[if MultiBot.auto.strategyAsk then -- a remplacer pour utiliser la variable
-					SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
-					SendChatMessage("co ?", "WHISPER", nil, tName)
-				end]]--				
+				SendChatMessage("co ?", "WHISPER", nil, tName)				
 				tButton.setEnable()
 				--MultiBot.doRaid()
 				return
-			end
-			
+			end]]--
+
+             if(MultiBot.isMember(tName)) then
+                -- On ne redemande plus les stratégies ici pour éviter les doublons.
+                -- Le flux normal via le WHISPER "Hello" s'en chargera.
+                tButton.waitFor = "CO"
+                tButton.setEnable()
+                return
+             end
+			 
 			if(GetNumPartyMembers() == 4) then ConvertToRaid() end
 			MultiBot.doSlash("/invite", tName)
 			return
@@ -666,14 +693,9 @@ MultiBot:SetScript("OnEvent", function()
 			local tButton = MultiBot.frames["MultiBar"].frames["Units"].buttons[tName]
 			if(tButton == nil) then return end
 			tButton.waitFor = "CO"
-			SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
+			-- SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
 			SendChatMessage("co ?", "WHISPER", nil, tName)
 			tButton.setEnable()
-			--[[if MultiBot.auto.strategyAsk then
-				SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
-				SendChatMessage("co ?", "WHISPER", nil, tName)
-			end
-			tButton.setEnable()]]--	A remplacer pour utiliser le lock
 			--MultiBot.doRaid()
 			return
 		end
@@ -1115,12 +1137,8 @@ MultiBot:SetScript("OnEvent", function()
 		
 		if(MultiBot.isInside(arg1, "Hello", "你好")) then
 			tButton.waitFor = "CO"
-			SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", arg2), "SAY")
-			SendChatMessage("co ?", "WHISPER", nil, arg2)
-			--[[if MultiBot.auto.strategyAsk then
-				SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", arg2), "SAY")
-				SendChatMessage("co ?", "WHISPER", nil, arg2)
-			end]]-- A utiliser pour utiliser le lock		
+			-- SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", arg2), "SAY")
+			SendChatMessage("co ?", "WHISPER", nil, arg2)	
 			--MultiBot.doRaid()
 			return
 		end
@@ -1184,22 +1202,15 @@ MultiBot:SetScript("OnEvent", function()
 			end
 			
 			tButton.setEnable()
-			SendChatMessage("ss ?", "WHISPER", nil, arg2)
-			--[[if MultiBot.auto.strategyAsk then
-				SendChatMessage("ss ?", "WHISPER", nil, arg2)
-			end]]--	A utiliser pour utiliser le lock	
+			SendChatMessage("ss ?", "WHISPER", nil, arg2)	
 			return
 		end
 		
 		if(tButton.waitFor == "CO" and MultiBot.isInside(arg1, "Strategies: ")) then
 			tButton.waitFor = "NC"
 			tButton.combat = string.sub(arg1, 13)
-			SendChatMessage(MultiBot.doReplace(MultiBot.info.normal, "NAME", arg2), "SAY")
-			SendChatMessage("nc ?", "WHISPER", nil, arg2)
-			--[[if MultiBot.auto.strategyAsk then
-				SendChatMessage(MultiBot.doReplace(MultiBot.info.normal, "NAME", arg2), "SAY")
-				SendChatMessage("nc ?", "WHISPER", nil, arg2)
-			end]]-- A utiliser pour utiliser le lock		
+			--SendChatMessage(MultiBot.doReplace(MultiBot.info.normal, "NAME", arg2), "SAY")
+			SendChatMessage("nc ?", "WHISPER", nil, arg2)		
 			return
 		end
 		
