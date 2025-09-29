@@ -836,8 +836,7 @@ MultiBot.tips.units.roster =
 "Roster-Filter\n|cffffffff"..  -- Línea que se mantiene en inglés
 "Con este filtro puedes alternar entre diferentes listas de unidades.|r\n\n"..
 "|cffff0000Clic izquierdo para mostrar u ocultar las Opciones|r\n"..
-"|cff999999(Orden de ejecución: Sistema)|r\n\n"..
-"|cffff0000Clic derecho para reiniciar el filtro|r\n"..
+"|cffff0000Clic direcho para ir al Roster Activos|r\n"..
 "|cff999999(Orden de ejecución: Sistema)|r";
 
 MultiBot.tips.units.actives =
@@ -2603,55 +2602,72 @@ MultiBot.tips.shaman.totemsmove =
 "Clic derecho para arrastrar y mover la barra de tótems";
 
 MultiBot.tips.shaman.ctotem.stoe =
-"Fuerza de la Tierra";
+"Fuerza de la Tierra\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.stoskin =
-"Piel de piedra";
+"Piel de piedra\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.tremor =
-"Temblor";
+"Temblor\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.eabind =
-"Vínculo terrestre";
+"Vínculo terrestre\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.searing =
-"Tótem abrasador";
+"Tótem abrasador\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.magma =      
-"Magma";
+"Magma\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.fltong =  
-"Lengua de fuego";
+"Lengua de fuego\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.towrath = 
-"Tótem de cólera";
+"Tótem de cólera\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.frostres = 
-"Resistencia a la escarcha";
+"Resistencia a la escarcha\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.healstream = 
-"Corriente de sanación";
+"Corriente de sanación\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.manasprin = 
-"Fuente de maná";
+"Fuente de maná\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.cleansing =
-"Purificación";
+"Purificación\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.fireres =
-"Resistencia al fuego";
+"Resistencia al fuego\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.wrhatair =
-"Ira del aire";
+"Ira del aire\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.windfury =
-"Viento furioso";
+"Viento furioso\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.natres =
-"Resistencia a la Naturaleza";
+"Resistencia a la Naturaleza\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.grounding =
-"Tótem de tremor";
+"Tótem de tremor\n\n"..
+"|cffff0000Clic izquierdo para seleccionar o deseleccionar este tótem|r\n";
 
 MultiBot.tips.shaman.ctotem.earthtot =
 "Tótems de tierra";

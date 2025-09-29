@@ -173,81 +173,7 @@ function MultiBot.RebuildPlayersIndexFromButtons()
       table.insert(MultiBot.index.classes.players[cls], name)
     end
   end
-end  
-
--- =====================================================================
--- LOGIN/ROSTER FIX (no /reload needed)
--- Demande la liste des bots au login et parse "Bot roster:" à la volée
--- =====================================================================
-do
-  local f = CreateFrame("Frame")
-  f:RegisterEvent("PLAYER_ENTERING_WORLD")
-  f:RegisterEvent("CHAT_MSG_SYSTEM")
-
-  local function C_Timer_After(sec, func)
-    -- léger helper (Wrath n'a pas C_Timer)
-    local t, acc = 0, CreateFrame("Frame")
-    acc:SetScript("OnUpdate", function(_, dt)
-      t = t + dt
-      if t >= sec then acc:SetScript("OnUpdate", nil); func() end
-    end)
-  end
-
-  local function requestList()
-    if f._sent then return end
-    f._sent = true
-    if MultiBot.dprint then MultiBot.dprint("SEND .playerbot bot list") end
-    SendChatMessage(".playerbot bot list", "SAY")
-  end
-
-  -- Parse une ligne système "Bot roster: +Name Class, -Other Class, ..."
-  function MultiBot.ParseBotRosterFromSystem(msg)
-    if type(msg) ~= "string" then return end
-    -- Laisser la détection GM existante faire son boulot
-    if MultiBot.GM_DetectFromSystem then MultiBot.GM_DetectFromSystem(msg) end
-
-    local list = msg:match("^%s*Bot roster:%s*(.+)")
-    if not list then return end
-
-    if MultiBot.dprint then MultiBot.dprint("SYS Bot roster received") end
-    local count = 0
-      for chunk in list:gmatch("[^,]+") do
-        local part = (chunk:gsub("^%s+",""):gsub("%s+$",""))
-        local sign = part:match("^([%+%-])") or ""
-        part = part:gsub("^[%+%-]%s*","")
-        local name, classRaw = part:match("^([^%s]+)%s+(.+)$")
-        if name and classRaw then
-          local canon = MultiBot.NormalizeClass and MultiBot.NormalizeClass(classRaw) or classRaw
-          if MultiBot.addPlayer then MultiBot.addPlayer(canon or classRaw, name) end
-          count = count + 1
-        end
-      end
-    if MultiBot.dprint then MultiBot.dprint("ROSTER_PARSE_COUNT", count) end
-
-    -- Reconstruit les index si nécessaire (sécurisé/no-op si absent)
-    if MultiBot.RebuildPlayersIndexFromButtons then
-      MultiBot.RebuildPlayersIndexFromButtons()
-    end
-
-    -- Si l’UI "Units" est ouverte sur players, force un rafraîchissement doux
-    local units = MultiBot.frames and MultiBot.frames["MultiBar"]
-                 and MultiBot.frames["MultiBar"].frames
-                 and MultiBot.frames["MultiBar"].frames["Units"]
-    if units and units.doLeft then
-      units:doLeft("players")  -- signature utilisée par le code existant
-    end
-  end
-
-  f:SetScript("OnEvent", function(_, ev, ...)
-    if ev == "PLAYER_ENTERING_WORLD" then
-      -- Laisser le chat démarrer puis demander la liste
-      C_Timer_After(0.5, requestList)
-    elseif ev == "CHAT_MSG_SYSTEM" then
-      local msg = ...
-      MultiBot.ParseBotRosterFromSystem(msg)
-    end
-  end)
-end
+end 
 
 -- MultiBotSave = {}
 -- MultiBotGlobalSave = {}
@@ -281,7 +207,6 @@ MultiBot.auto.talent = false
 MultiBot.auto.invite = false
 MultiBot.auto.release = false
 --MultiBot.auto.language = true
--- MultiBot.auto.strategyAsk = false Lock pour spam chat en suspend
 
 -- =========================
 -- DEBUG helpers (trace chat)
@@ -1402,8 +1327,7 @@ MultiBot.tips.units.roster =
 "Roster-Filter\n|cffffffff"..
 "With the Roster-Filter you can switch between differned Rosters.|r\n\n"..
 "|cffff0000Left-Click to show or hide the Options|r\n"..
-"|cff999999(Execution-Order: System)|r\n\n"..
-"|cffff0000Right-Click to reset the Filter|r\n"..
+"|cffff0000Right-Click to switch to Active Roster|r\n"..
 "|cff999999(Execution-Order: System)|r";
 
 MultiBot.tips.units.actives =
@@ -3206,55 +3130,72 @@ MultiBot.tips.shaman.totemsmove =
 "Right-Click to drag and move the TotemBar";
 
 MultiBot.tips.shaman.ctotem.stoe =
-"Strength of Earth";
+"Strength of Earth\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.stoskin =
-"Stoneskin";
+"stoneskin\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.tremor =
-"Tremor";
+"Tremor\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.eabind =
-"Earthbind";
+"Earthbind\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.searing =
-"Searing";
+"Searing\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.magma =      
-"Magma";
+"Magma\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.fltong =  
-"Flametongue";
+"Flametongue\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.towrath = 
-"Totem of Wrath";
+"Totem of Wrath\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.frostres = 
-"Frost Resistance";
+"Frost Resistance\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.healstream = 
-"Healing Stream";
+"Healing Stream\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.manasprin = 
-"Mana Spring";
+"Mana Spring\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.cleansing =
-"Cleansing";
+"Cleansing\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.fireres =
-"Fire Resistance";
+"Fire Resistance\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.wrhatair =
-"Wrath of Air";
+"Wrath of Air\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.windfury =
-"Windfury";
+"Windfury\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.natres =
-"Nature Resistance";
+"Nature Resistance\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.grounding =
-"Grounding";
+"Grounding\n\n"..
+"|cffff0000Left-Click to select or remove this Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.earthtot =
 "Earth Totems";
