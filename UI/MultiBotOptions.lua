@@ -110,7 +110,7 @@ function MultiBot.BuildOptionsPanel()
     strataLabel:SetPoint("BOTTOMLEFT", strataDropDown, "TOPLEFT", 16, 3)
     strataLabel:SetText("Frame Strata")
 
-    local current = (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or "DIALOG"
+    local current = (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or "HIGH"
     local strataLevels = { "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "TOOLTIP" }
 
     local function OnClick(button)
