@@ -684,7 +684,7 @@ MultiBot:SetScript("OnEvent", function()
 			local tButton = MultiBot.frames["MultiBar"].frames["Units"].buttons[tName]
 			if(tButton == nil) then return end
 			tButton.waitFor = "CO"
-			SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
+			-- SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
 			SendChatMessage("co ?", "WHISPER", nil, tName)
 			tButton.setEnable()
 			--MultiBot.doRaid()
@@ -1128,7 +1128,7 @@ MultiBot:SetScript("OnEvent", function()
 		
 		if(MultiBot.isInside(arg1, "Hello", "你好")) then
 			tButton.waitFor = "CO"
-			SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", arg2), "SAY")
+			-- SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", arg2), "SAY")
 			SendChatMessage("co ?", "WHISPER", nil, arg2)	
 			--MultiBot.doRaid()
 			return
@@ -1200,7 +1200,7 @@ MultiBot:SetScript("OnEvent", function()
 		if(tButton.waitFor == "CO" and MultiBot.isInside(arg1, "Strategies: ")) then
 			tButton.waitFor = "NC"
 			tButton.combat = string.sub(arg1, 13)
-			SendChatMessage(MultiBot.doReplace(MultiBot.info.normal, "NAME", arg2), "SAY")
+			--SendChatMessage(MultiBot.doReplace(MultiBot.info.normal, "NAME", arg2), "SAY")
 			SendChatMessage("nc ?", "WHISPER", nil, arg2)		
 			return
 		end
