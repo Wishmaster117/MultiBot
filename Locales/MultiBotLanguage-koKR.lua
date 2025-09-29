@@ -2584,55 +2584,72 @@ MultiBot.tips.shaman.totemsmove =
 "우클릭으로 토템바를 끌어서 이동합니다";
 
 MultiBot.tips.shaman.ctotem.stoe =
-"대지의 힘";
+"대지의 힘\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.stoskin =
-"돌가죽";
+"돌가죽\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.tremor =
-"진동";
+"진동\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.eabind =
-"속박의 토템";
+"속박의 토템\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.searing =
-"불타는 토템";
+"불타는 토템\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.magma =      
-"용암";
+"용암\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.fltong =  
-"불꽃의 혀";
+"불꽃의 혀\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.towrath = 
-"격노의 토템";
+"격노의 토템\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.frostres = 
-"냉기 저항";
+"냉기 저항\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.healstream = 
-"치유의 토템";
+"치유의 토템\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.manasprin = 
-"마나샘 토템";
+"마나샘 토템\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.cleansing =
-"정화의 토템";
+"정화의 토템\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.fireres =
-"화염 저항";
+"화염 저항\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.wrhatair =
-"질풍의 토템";
+"질풍의 토템\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.windfury =
-"질풍";
+"질풍\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.natres =
-"자연 저항";
+"자연 저항\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.grounding =
-"마법흡수 토템";
+"마법흡수 토템\n\n"..
+"|cffff0000이 토템을 선택하거나 선택 해제하려면 왼쪽 클릭하세요|r\n";
 
 MultiBot.tips.shaman.ctotem.earthtot =
 "대지 토템";

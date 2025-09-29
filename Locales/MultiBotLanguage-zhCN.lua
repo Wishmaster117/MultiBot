@@ -2583,55 +2583,72 @@ MultiBot.tips.shaman.totemsmove =
 "右键点击以拖动和移动图腾栏";
 
 MultiBot.tips.shaman.ctotem.stoe =
-"大地之力";
+"大地之力\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.stoskin =
-"石肤";
+"石肤\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.tremor =
-"战栗";
+"战栗\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.eabind =
-"地缚";
+"地缚\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.searing =
-"灼热";
+"灼热\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.magma =      
-"熔岩";
+"熔岩\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.fltong =  
-"火舌";
+"火舌\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.towrath = 
-"天怒图腾";
+"天怒图腾\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.frostres = 
-"冰霜抗性";
+"冰霜抗性\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.healstream = 
-"治疗之泉";
+"治疗之泉\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.manasprin = 
-"法力之泉";
+"法力之泉\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.cleansing =
-"祛病";
+"祛病\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.fireres =
-"火焰抗性";
+"火焰抗性\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.wrhatair =
-"风之优雅";
+"风之优雅\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.windfury =
-"风怒";
+"风怒\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.natres =
-"自然抗性";
+"自然抗性\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.grounding =
-"根基";
+"根基\n\n"..
+"|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
 MultiBot.tips.shaman.ctotem.earthtot =
 "大地图腾";

@@ -2585,55 +2585,72 @@ MultiBot.tips.shaman.totemsmove =
 "Rechtsklick, um die Totemleiste zu ziehen und zu bewegen";
 
 MultiBot.tips.shaman.ctotem.stoe =
-"Erdstärke";
+"Erdstärke\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.stoskin =
-"Steinhaut";
+"Steinhaut\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.tremor =
-"Erdzittern";
+"Erdzittern\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.eabind =
-"Erdfesselung";
+"Erdfesselung\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.searing =
-"Verbrennung";
+"Verbrennung\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.magma =      
-"Magma";
+"Magma\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.fltong =  
-"Flammenzunge";
+"Flammenzunge\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.towrath = 
-"Totem des Zorns";
+"Totem des Zorns\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.frostres = 
-"Frostwiderstand";
+"Frostwiderstand\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.healstream = 
-"Heilungsstrom";
+"Heilungsstrom\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.manasprin = 
-"Manaquelle";
+"Manaquelle\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.cleansing =
-"Reinigung";
+"Reinigung\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.fireres =
-"Feuerwiderstand";
+"Feuerwiderstand\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.wrhatair =
-"Zorn der Luft";
+"Zorn der Luft\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.windfury =
-"Windzorn";
+"Windzorn\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.natres =
-"Naturwiderstand";
+"Naturwiderstand\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.grounding =
-"Erdung";
+"Erdung\n\n"..
+"|cffff0000Linksklick, um dieses Totem auszuwählen oder die Auswahl aufzuheben|r\n";
 
 MultiBot.tips.shaman.ctotem.earthtot =
 "Erdtotems";

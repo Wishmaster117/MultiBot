@@ -5967,13 +5967,22 @@ if not MultiBot.InitHunterQuick then
 end
 -- End Hunter --
 
---[[-- SHAMAN TOTEMS QUICK BAR --
+-- SHAMAN TOTEMS QUICK BAR --
 if not MultiBot.InitShamanQuick then
   function MultiBot.InitShamanQuick()
     -- SavedVariables
     MultiBotSaved = MultiBotSaved or {}
     MultiBotSaved.pos = MultiBotSaved.pos or {}
     MultiBotSaved.pos.ShamanQuick = MultiBotSaved.pos.ShamanQuick or {}
+	MultiBotSaved.shamanTotems = MultiBotSaved.shamanTotems or {}
+
+    -- Helper: garantit l'existence de MultiBotSaved.pos.ShamanQuick
+    local function _MB_GetOrCreateShamanPos()
+      MultiBotSaved = MultiBotSaved or {}
+      MultiBotSaved.pos = MultiBotSaved.pos or {}
+      MultiBotSaved.pos.ShamanQuick = MultiBotSaved.pos.ShamanQuick or {}
+      return MultiBotSaved.pos.ShamanQuick
+    end
 
     local MBS = MultiBot.ShamanQuick or {}
     MultiBot.ShamanQuick = MBS
@@ -6009,12 +6018,16 @@ if not MultiBot.InitShamanQuick then
     MBS.frame:SetScript("OnDragStop" , function(self)
       self:StopMovingOrSizing()
       local p, _, rp, x, y = self:GetPoint()
-      MultiBotSaved.pos.ShamanQuick.frame = { point=p, relPoint=rp, x=x, y=y }
+      local _sp = _MB_GetOrCreateShamanPos()
+      _sp.frame = { point=p, relPoint=rp, x=x, y=y }
     end)
 
-    -- Restaure la position sauvegardée (si présente)
+    -- Restaure la position sauvegardée
     function MBS:RestorePosition()
-      local st = MultiBotSaved.pos.ShamanQuick.frame
+      -- Récupère la sous-table et la frame sauvegardée
+      local _sp = (_MB_GetOrCreateShamanPos and _MB_GetOrCreateShamanPos())
+                  or (MultiBotSaved and MultiBotSaved.pos and MultiBotSaved.pos.ShamanQuick)
+      local st = _sp and _sp.frame
       if not st then return end
       local f = self.frame
       if not f then return end
@@ -6033,19 +6046,137 @@ if not MultiBot.InitShamanQuick then
 
     local function SanitizeName(n) return (tostring(n):gsub("[^%w_]", "_")) end
 
-    local function AddTotemToggle(parentFrame, name, x, y, icon, label, spell, ownerName)
-      local b = parentFrame.addButton(name, x, y, icon, label)
+    -- Helper : appliquer une icône sur un bouton du wrapper MultiBot
+    local function SetBtnIcon(btn, iconPath)
+      if not btn or not iconPath then return end
+      -- Wrapper MultiBot, la plupart des boutons ont setTexture(...)
+      if btn.setTexture then
+        btn.setTexture(iconPath)
+        btn._mb_iconPath = iconPath
+        return
+      end
+      -- Bouton WoW “pur” : SetIcon / SetNormalTexture
+      if btn.SetIcon then
+        btn:SetIcon(iconPath)
+        btn._mb_iconPath = iconPath
+        return
+      end
+      if btn.SetNormalTexture then
+        btn:SetNormalTexture(iconPath)
+        btn._mb_iconPath = iconPath
+        return
+      end
+      -- 3) Dernier repli : region texture stockée par le wrapper (btn.icon ou btn.texture)
+      local tex = btn.icon or btn.texture
+      if tex and tex.SetTexture then
+        tex:SetTexture(iconPath)
+        btn._mb_iconPath = iconPath
+        return
+      end
+    end
+
+    -- Désaturation / grisage d'un bouton de totem
+    local function SetGrey(btn, isGrey)
+      if not btn then return end
+      local tex = btn.icon or btn.texture
+      if tex and tex.SetDesaturated then
+        tex:SetDesaturated(isGrey and true or false)
+      end
+      if tex and tex.SetVertexColor then
+        if isGrey then tex:SetVertexColor(0.5, 0.5, 0.5, 1) else tex:SetVertexColor(1, 1, 1, 1) end
+      end
+      if btn.setAlpha then
+        btn.setAlpha(isGrey and 0.6 or 1.0)
+      end
+      btn._mb_grey = isGrey and true or false
+    end
+
+    -- Ajoute un toggle de totem et relie l'élément (earth/fire/water/air) + la row propriétaire
+    local function AddTotemToggle(ownerRow, parentFrame, name, x, y, iconPath, label, spell, ownerName, elementKey)
+      local b = parentFrame.addButton(name, x, y, iconPath, label)
+      b._mb_key  = name
       b._mb_owner = ownerName
       b._mb_on    = false
+      b._mb_icon  = iconPath
+      b._mb_elem  = elementKey
+      b._mb_row   = ownerRow
+      -- indexe ce bouton dans la grille de l'élément pour la restauration
+      ownerRow._gridBtns              = ownerRow._gridBtns or {}
+      ownerRow._gridBtns[elementKey]  = ownerRow._gridBtns[elementKey] or {}
+      table.insert(ownerRow._gridBtns[elementKey], b)
+      -- helpers visuels grisage/dégrisage ciblant la vraie région d'icône
+      local function _Grey(btn, on)
+        if not btn then return end
+        local tex = btn.icon or btn.texture
+        if tex and tex.SetDesaturated then
+          tex:SetDesaturated(on and true or false)
+        end
+        if tex and tex.SetVertexColor then
+          if on then tex:SetVertexColor(0.5, 0.5, 0.5) else tex:SetVertexColor(1, 1, 1) end
+        end
+        if btn.setAlpha then btn.setAlpha(on and 0.6 or 1.0) end
+      end
       b.doLeft = function()
         local who = b._mb_owner
         if not who then return end
+        -- état par ligne/élément pour gérer l’exclusivité visuelle
+        local row = b._mb_row
+        local ek  = b._mb_elem
+        row._selectedBtn = row._selectedBtn or {}
         if b._mb_on then
           MultiBot.ActionToTarget("co -" .. spell .. ",?", who)
           b._mb_on = false
+          if row and ek and row._chosen and row._chosen[ek] == b._mb_icon then
+            row._chosen[ek] = nil
+            local btn = (row._elemBtns and row._elemBtns[ek]) or nil
+            local def = (row._defaults and row._defaults[ek]) or nil
+            if btn and def then SetBtnIcon(btn, def) end
+            -- dégrise le bouton si c'était le sélectionné
+            if row._selectedBtn[ek] == b then
+              _Grey(b, false)
+              row._selectedBtn[ek] = nil
+            end
+            -- Nettoie la sauvegarde pour cet élément
+            if MultiBotSaved and MultiBotSaved.shamanTotems and MultiBotSaved.shamanTotems[who] then
+              MultiBotSaved.shamanTotems[who][ek] = nil
+            end
+          end
+          -- Dégrise le bouton (retour visuel) + nettoie la sélection exclusive
+          SetGrey(b, false)
+          if row._selectedBtn[ek] == b then
+            row._selectedBtn[ek] = nil
+          end
         else
           MultiBot.ActionToTarget("co +" .. spell .. ",?", who)
-          b._mb_on = true
+          b._mb_on = tru
+          if row and ek then
+            row._chosen = row._chosen or {}
+            row._chosen[ek] = b._mb_icon
+            local btn = (row._elemBtns and row._elemBtns[ek]) or nil
+            if btn then SetBtnIcon(btn, b._mb_icon) end
+            -- Exclusivité visuelle : dégrise l'ancien, grise ce bouton
+            local prev = row._selectedBtn[ek]
+            if prev and prev ~= b then SetGrey(prev, false) end
+            SetGrey(b, true)
+            row._selectedBtn[ek] = b
+            -- dé-grise l'ancien sélectionné dans ce même élément, grise le nouveau
+            local prev = row._selectedBtn[ek]
+            if prev and prev ~= b then _Grey(prev, false) end
+            _Grey(b, true)
+            row._selectedBtn[ek] = b
+            -- Persiste pour ce bot + élément
+            MultiBotSaved.shamanTotems = MultiBotSaved.shamanTotems or {}
+            local perBot = MultiBotSaved.shamanTotems[who] or {}
+            perBot[ek] = b._mb_icon
+            MultiBotSaved.shamanTotems[who] = perBot
+          end
+          -- Grise le bouton sélectionné
+          local tex = b.icon or b.texture
+          if tex and tex.SetDesaturated then
+            tex:SetDesaturated(true)
+          elseif b.setAlpha then
+            b.setAlpha(0.6)
+          end
         end
       end
       return b
@@ -6060,6 +6191,16 @@ if not MultiBot.InitShamanQuick then
       row.owner = sName
       self.entries[san] = row
       row._expanded = false
+
+      -- Initialisations centralisées, disponibles pour tout le build
+      row._elemBtns = {}      -- boutons d’élément (earth/fire/water/air)
+      row._defaults = {       -- icônes par défaut des éléments
+        earth = "spell_nature_earthbindtotem",
+        fire  = "spell_fire_searingtotem",
+        water = "spell_nature_manaregentotem",
+        air   = "spell_nature_windfury",
+      }
+      row._chosen = { earth=nil, fire=nil, water=nil, air=nil } -- totems choisis courants
 	  
       row.mainBtn = row.addButton("ShamanQuickMain_"..san, 0, 0,
         "Interface\\AddOns\\MultiBot\\Icons\\class_shaman.blp",
@@ -6067,11 +6208,12 @@ if not MultiBot.InitShamanQuick then
       row.mainBtn:SetFrameStrata("HIGH")
       row.mainBtn:RegisterForDrag("RightButton")
       row.mainBtn:SetScript("OnDragStart", function() self.frame:StartMoving() end)
-      -- Stop + SAVE position quand on lâche le drag depuis le main bouton
+      -- Stop et save position quand on lâche le drag depuis le main bouton
       row.mainBtn:SetScript("OnDragStop" , function()
         self.frame:StopMovingOrSizing()
         local p, _, rp, x, y = self.frame:GetPoint()
-        MultiBotSaved.pos.ShamanQuick.frame = { point=p, relPoint=rp, x=x, y=y }
+        local _sp = _MB_GetOrCreateShamanPos()
+        _sp.frame = { point=p, relPoint=rp, x=x, y=y }
       end)
 
       row.mainBtn.doLeft = function()
@@ -6101,46 +6243,79 @@ if not MultiBot.InitShamanQuick then
       end
 
       -- Earth --
-      row.earthBtn = row.vmenu.addButton("ShamanEarthBtn_"..san, 0, 36, "spell_nature_earthbindtotem", MultiBot.tips.shaman.ctotem.earthtot)
-      row.earthGrp = row.addFrame("ShamanEarthGrp_"..san, 40, 0, 36, 36, 36*5); row.earthGrp:Hide()
+      row.earthBtn = row.vmenu.addButton("ShamanEarthBtn_"..san, 0, 36, row._defaults.earth, MultiBot.tips.shaman.ctotem.earthtot)
+      row.earthBtn._mb_key = "ShamanEarthBtn_"..san
+	  row.earthGrp = row.addFrame("ShamanEarthGrp_"..san, 40, 0, 36, 36, 36*5); row.earthGrp:Hide()
       row.earthBtn.doLeft = function() ToggleGroup(row.earthGrp) end
+	  row._elemBtns.earth = row.earthBtn
 
-      AddTotemToggle(row.earthGrp, "StrengthOfEarth_"..san,  0,   0, "spell_nature_earthbindtotem",         MultiBot.tips.shaman.ctotem.stoe,   "strength of earth", sName)
-      AddTotemToggle(row.earthGrp, "Stoneskin_"..san,        0,  36, "spell_nature_stoneskintotem",         MultiBot.tips.shaman.stoskin,       "stoneskin",         sName)
-      AddTotemToggle(row.earthGrp, "Tremor_"..san,           0,  72, "spell_nature_tremortotem",            MultiBot.tips.shaman.ctotem.tremor, "tremor",            sName)
-      AddTotemToggle(row.earthGrp, "Earthbind_"..san,        0, 108, "spell_nature_strengthofearthtotem02", MultiBot.tips.shaman.ctotem.eabind, "earthbind",         sName)
+      AddTotemToggle(row, row.earthGrp, "StrengthOfEarth_"..san,  0,   0, "spell_nature_earthbindtotem",         MultiBot.tips.shaman.ctotem.stoe,   "strength of earth", sName, "earth")
+      AddTotemToggle(row, row.earthGrp, "Stoneskin_"..san,        0,  36, "spell_nature_stoneskintotem",         MultiBot.tips.shaman.ctotem.stoskin,       "stoneskin",         sName, "earth")
+      AddTotemToggle(row, row.earthGrp, "Tremor_"..san,           0,  72, "spell_nature_tremortotem",            MultiBot.tips.shaman.ctotem.tremor, "tremor",            sName, "earth")
+      AddTotemToggle(row, row.earthGrp, "Earthbind_"..san,        0, 108, "spell_nature_strengthofearthtotem02", MultiBot.tips.shaman.ctotem.eabind, "earthbind",         sName, "earth")
  
       -- Fire --
-      row.fireBtn = row.vmenu.addButton("ShamanFireBtn_"..san, 0, 72, "spell_fire_searingtotem", MultiBot.tips.shaman.ctotem.firetot)
-      row.fireGrp = row.addFrame("ShamanFireGrp_"..san, 80, 0, 36, 36, 36*5); row.fireGrp:Hide()
+      row.fireBtn = row.vmenu.addButton("ShamanFireBtn_"..san, 0, 72, row._defaults.fire, MultiBot.tips.shaman.ctotem.firetot)
+      row.fireBtn._mb_key = "ShamanFireBtn_"..san
+	  row.fireGrp = row.addFrame("ShamanFireGrp_"..san, 80, 0, 36, 36, 36*5); row.fireGrp:Hide()
       row.fireBtn.doLeft = function() ToggleGroup(row.fireGrp) end
+	  row._elemBtns.fire = row.fireBtn
  
-      AddTotemToggle(row.fireGrp, "Searing_"..san,       0,   0, "spell_fire_searingtotem",   MultiBot.tips.shaman.ctotem.searing,  "searing",          sName)
-      AddTotemToggle(row.fireGrp, "Magma_"..san,         0,  36, "spell_fire_moltenblood",    MultiBot.tips.shaman.ctotem.magma,    "magma",            sName)
-      AddTotemToggle(row.fireGrp, "Flametongue_"..san,   0,  72, "spell_nature_guardianward", MultiBot.tips.shaman.ctotem.fltong,   "flametongue",      sName)
-      AddTotemToggle(row.fireGrp, "Wrath_"..san,         0, 108, "spell_fire_totemofwrath",   MultiBot.tips.shaman.ctotem.towrath,  "wrath",            sName)
-      AddTotemToggle(row.fireGrp, "FrostResist_"..san,   0, 144, "spell_frost_frostward",     MultiBot.tips.shaman.ctotem.frostres, "frost resistance", sName)
+      AddTotemToggle(row, row.fireGrp, "Searing_"..san,       0,   0, "spell_fire_searingtotem",   MultiBot.tips.shaman.ctotem.searing,  "searing",          sName, "fire")
+      AddTotemToggle(row, row.fireGrp, "Magma_"..san,         0,  36, "spell_fire_moltenblood",    MultiBot.tips.shaman.ctotem.magma,    "magma",            sName, "fire")
+      AddTotemToggle(row, row.fireGrp, "Flametongue_"..san,   0,  72, "spell_nature_guardianward", MultiBot.tips.shaman.ctotem.fltong,   "flametongue",      sName, "fire")
+      AddTotemToggle(row, row.fireGrp, "Wrath_"..san,         0, 108, "spell_fire_totemofwrath",   MultiBot.tips.shaman.ctotem.towrath,  "wrath",            sName, "fire")
+      AddTotemToggle(row, row.fireGrp, "FrostResist_"..san,   0, 144, "spell_frost_frostward",     MultiBot.tips.shaman.ctotem.frostres, "frost resistance", sName, "fire")
  
       -- Water --
-      row.waterBtn = row.vmenu.addButton("ShamanWaterBtn_"..san, 0, 108, "spell_nature_manaregentotem", MultiBot.tips.shaman.ctotem.watertot)
-      row.waterGrp = row.addFrame("ShamanWaterGrp_"..san, 120, 0, 36, 36, 36*4); row.waterGrp:Hide()
+      row.waterBtn = row.vmenu.addButton("ShamanWaterBtn_"..san, 0, 108, row._defaults.water, MultiBot.tips.shaman.ctotem.watertot)
+      row.waterBtn._mb_key = "ShamanWaterBtn_"..san
+	  row.waterGrp = row.addFrame("ShamanWaterGrp_"..san, 120, 0, 36, 36, 36*4); row.waterGrp:Hide()
       row.waterBtn.doLeft = function() ToggleGroup(row.waterGrp) end
+	  row._elemBtns.water = row.waterBtn
  
-      AddTotemToggle(row.waterGrp, "HealingStream_"..san, 0,   0, "spell_nature_healingwavelesser", MultiBot.tips.shaman.ctotem.healstream, "healing stream",  sName)
-      AddTotemToggle(row.waterGrp, "ManaSpring_"..san,    0,  36, "spell_nature_manaregentotem",    MultiBot.tips.shaman.ctotem.manasprin,  "mana spring",     sName)
-      AddTotemToggle(row.waterGrp, "Cleansing_"..san,     0,  72, "spell_nature_nullifydisease",    MultiBot.tips.shaman.ctotem.cleansing,  "cleansing",       sName)
-      AddTotemToggle(row.waterGrp, "FireResistW_"..san,   0, 108, "spell_fire_firearmor",           MultiBot.tips.shaman.ctotem.fireres,    "fire resistance", sName)
+      AddTotemToggle(row, row.waterGrp, "HealingStream_"..san, 0,   0, "spell_nature_healingwavelesser", MultiBot.tips.shaman.ctotem.healstream, "healing stream",  sName, "water")
+      AddTotemToggle(row, row.waterGrp, "ManaSpring_"..san,    0,  36, "spell_nature_manaregentotem",    MultiBot.tips.shaman.ctotem.manasprin,  "mana spring",     sName, "water")
+      AddTotemToggle(row, row.waterGrp, "Cleansing_"..san,     0,  72, "spell_nature_nullifydisease",    MultiBot.tips.shaman.ctotem.cleansing,  "cleansing",       sName, "water")
+      AddTotemToggle(row, row.waterGrp, "FireResistW_"..san,   0, 108, "spell_fire_firearmor",           MultiBot.tips.shaman.ctotem.fireres,    "fire resistance", sName, "water")
  
       -- Air --
-      row.airBtn = row.vmenu.addButton("ShamanAirBtn_"..san, 0, 144, "spell_nature_windfury", MultiBot.tips.shaman.ctotem.airtot)
-      row.airGrp = row.addFrame("ShamanAirGrp_"..san, 160, 0, 36, 36, 36*4); row.airGrp:Hide()
+      row.airBtn = row.vmenu.addButton("ShamanAirBtn_"..san, 0, 144, row._defaults.air, MultiBot.tips.shaman.ctotem.airtot)
+      row.airBtn._mb_key = "ShamanAirBtn_"..san
+	  row.airGrp = row.addFrame("ShamanAirGrp_"..san, 160, 0, 36, 36, 36*4); row.airGrp:Hide()
       row.airBtn.doLeft = function() ToggleGroup(row.airGrp) end
+	  row._elemBtns.air = row.airBtn
  
-      AddTotemToggle(row.airGrp, "WrathOfAir_"..san,   0,   0, "spell_nature_slowingtotem",         MultiBot.tips.shaman.ctotem.wrhatair,  "wrath of air",      sName)
-      AddTotemToggle(row.airGrp, "Windfury_"..san,     0,  36, "spell_nature_windfury",             MultiBot.tips.shaman.ctotem.windfury,  "windfury",          sName)
-      AddTotemToggle(row.airGrp, "NatureResist_"..san, 0,  72, "spell_nature_natureresistancetotem",MultiBot.tips.shaman.ctotem.natres,    "nature resistance", sName)
-      AddTotemToggle(row.airGrp, "Grounding_"..san,    0, 108, "spell_nature_groundingtotem",       MultiBot.tips.shaman.ctotem.grounding, "grounding",         sName)
+      AddTotemToggle(row, row.airGrp, "WrathOfAir_"..san,   0,   0, "spell_nature_slowingtotem",          MultiBot.tips.shaman.ctotem.wrhatair,  "wrath of air",      sName, "air")
+      AddTotemToggle(row, row.airGrp, "Windfury_"..san,     0,  36, "spell_nature_windfury",              MultiBot.tips.shaman.ctotem.windfury,  "windfury",          sName, "air")
+      AddTotemToggle(row, row.airGrp, "NatureResist_"..san, 0,  72, "spell_nature_natureresistancetotem", MultiBot.tips.shaman.ctotem.natres,    "nature resistance", sName, "air")
+      AddTotemToggle(row, row.airGrp, "Grounding_"..san,    0, 108, "spell_nature_groundingtotem",        MultiBot.tips.shaman.ctotem.grounding, "grounding",         sName, "air")
 
+      -- Restauration depuis SavedVariables (icône et grisé exclusif)
+      do
+        local saved = MultiBotSaved and MultiBotSaved.shamanTotems and MultiBotSaved.shamanTotems[sName]
+        if saved then
+          for ek, icon in pairs(saved) do
+            if icon and row._elemBtns[ek] then
+              -- remet l'icône choisie sur le bouton principal de l'élément
+              SetBtnIcon(row._elemBtns[ek], icon)
+              row._chosen[ek] = icon
+              -- retrouve le bouton de la grille correspondant et le grise
+              if row._gridBtns and row._gridBtns[ek] then
+                for _, tb in ipairs(row._gridBtns[ek]) do
+                  if tb._mb_icon == icon then
+                    SetGrey(tb, true)
+                    row._selectedBtn = row._selectedBtn or {}
+                    row._selectedBtn[ek] = tb
+                    break
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+	  
       return row
     end
 
@@ -6203,7 +6378,7 @@ do
       MultiBot.ShamanQuick:RefreshFromGroup()
     end
   end)
-end]]--
+end
 
 
 -- FINISH --

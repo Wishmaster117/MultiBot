@@ -2617,55 +2617,72 @@ MultiBot.tips.shaman.totemsmove =
 "Clic droit pour faire glisser et déplacer la barre des totems";
 
 MultiBot.tips.shaman.ctotem.stoe =
-"Force de la Terre";
+"Force de la Terre\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.stoskin =
-"Peau de pierre";
+"Peau de pierre\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.tremor =
-"Tremblement";
+"Tremblement\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.eabind =
-"Lien terrestre";
+"Lien terrestre\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.searing =
-"Totem incendiaire";
+"Totem incendiaire\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.magma =      
-"Magma";
+"Magma\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.fltong =  
-"Langue de feu";
+"Langue de feu\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.towrath = 
-"Totem de courroux";
+"Totem de courroux\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.frostres = 
-"Résistance au givre";
+"Résistance au givre\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.healstream = 
-"Guérisseur";
+"Guérisseur\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.manasprin = 
-"Fontaine de mana";
+"Fontaine de mana\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.cleansing =
-"Purification";
+"Purification\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.fireres =
-"Résistance au feu";
+"Résistance au feu\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.wrhatair =
-"Fureur de l’air";
+"Fureur de l’air\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.windfury =
-"Furie-des-vents";
+"Furie-des-vents\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.natres =
-"Résistance à la nature";
+"Résistance à la nature\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.grounding =
-"Totem de glèbe";
+"Totem de glèbe\n\n"..
+"|cffff0000Clic Gauche pour selectionner ou déselectionner ce Totem|r\n";
 
 MultiBot.tips.shaman.ctotem.earthtot =
 "Totems de terre";
