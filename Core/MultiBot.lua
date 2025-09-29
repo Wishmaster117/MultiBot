@@ -18,7 +18,7 @@ end
 function MultiBot.PromoteFrame(f, strata)
   if not f or not f.SetFrameStrata then return end
   -- Add a default fallback kept at "DIALOG" to avoid regressions and it's safer
-  local level = strata or (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or "DIALOG"
+  local level = strata or (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or "HIGH"
   f:SetFrameStrata(level)
   if f.SetToplevel then f:SetToplevel(true) end
   if f.HookScript then
