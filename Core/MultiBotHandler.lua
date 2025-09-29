@@ -148,6 +148,23 @@ MultiBot:SetScript("OnEvent", function()
             MultiBot.frames["MultiBar"].setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
         end	
 		
+        -- Restore MultiBot Bar state visible by default if key missing
+        local function affect(frmKey, frm)
+          return frmKey ~= "ShamanQuick" and frmKey ~= "HunterQuick"
+        end
+        if MultiBotSave["UIVisible"] == false then
+          for key, value in pairs(MultiBot.frames) do
+            if affect(key, value) then value:Hide() end
+          end
+          MultiBot.state = false
+        else
+          -- nil or true => we display main frame
+          for key, value in pairs(MultiBot.frames) do
+            if affect(key, value) then value:Show() end
+          end
+          MultiBot.state = true
+        end
+
 		if(MultiBotSave["InventoryPoint"] ~= nil) then
 			local tPoint = MultiBot.doSplit(MultiBotSave["InventoryPoint"], ", ")
 			MultiBot.inventory.setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
@@ -335,15 +352,6 @@ MultiBot:SetScript("OnEvent", function()
 				tButton.doLeft(tButton)
 			end
 		end
-		
-        if (MultiBotSave["Visible"] ~= nil) then
-            if (MultiBotSave["Visible"] == "true") then
-                for key, value in pairs(MultiBot.frames) do value:Show() end
-		        MultiBot.state = true
-            else
-                for key, value in pairs(MultiBot.frames) do value:Hide() end
-		        MultiBot.state = false
-            end
 
         if MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"] ~= nil then
           if MultiBot.ApplyGlobalStrata then
@@ -1391,15 +1399,23 @@ SLASH_MULTIBOT2 = "/mbot"
 SLASH_MULTIBOT3 = "/mb"
 
 SlashCmdList["MULTIBOT"] = function()
-	if(MultiBot.state) then
-		for key, value in pairs(MultiBot.frames) do value:Hide() end
-		MultiBot.state = false
-        MultiBotSave["Visible"] = "false"
-	else
-		for key, value in pairs(MultiBot.frames) do value:Show() end
-		MultiBot.state = true
-        MultiBotSave["Visible"] = "true"
+	-- don't touch Shaman/Hunter bars
+	local function affect(frmKey, frm)
+		return frmKey ~= "ShamanQuick" and frmKey ~= "HunterQuick"
 	end
+	if MultiBot.state then
+		for key, value in pairs(MultiBot.frames) do
+			if affect(key, value) then value:Hide() end
+		end
+		MultiBot.state = false
+	else
+		for key, value in pairs(MultiBot.frames) do
+			if affect(key, value) then value:Show() end
+		end
+		MultiBot.state = true
+	end
+	-- Persist by character
+	MultiBotSave["UIVisible"] = MultiBot.state and true or false
 end
 
 SLASH_MULTIBOTOPTIONS1 = "/mbopt"
