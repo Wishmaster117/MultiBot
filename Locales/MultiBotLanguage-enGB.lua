@@ -14,6 +14,22 @@ if(GetLocale() == "enGB") then
 
 -- INFO --
 
+-- MINIMAP BUTTON
+MultiBot.info.butttitle = 
+"|cffffd100MultiBot|r"
+
+MultiBot.info.buttontoggle =
+"|cff00ff00Left-click: toggle UI|r";
+
+MultiBot.info.buttonoptions =
+"|cffff0000Right-click: options|r";
+
+MultiBot.info.buttonoptionshide =
+"Hide minimap button";
+
+MultiBot.info.buttonoptionshidetooltip =
+"Hide or show the MultiBot minimap button.\n(Left-click: toggle UI, Right-click: open options)";
+
 -- GLYPHS
 MultiBot.info.glyphssocketnotunlocked =
 "This socket is not yet unlocked.";

@@ -1398,8 +1398,18 @@ SLASH_MULTIBOT1 = "/multibot"
 SLASH_MULTIBOT2 = "/mbot"
 SLASH_MULTIBOT3 = "/mb"
 
+--[[SlashCmdList["MULTIBOT"] = function()
+	if(MultiBot.state) then
+		for key, value in pairs(MultiBot.frames) do value:Hide() end
+		MultiBot.state = false
+	else
+		for key, value in pairs(MultiBot.frames) do value:Show() end
+		MultiBot.state = true
+	end
+end]]--
+
 SlashCmdList["MULTIBOT"] = function()
-	-- don't touch Shaman/Hunter bars
+	-- don't touch to Shaman/Hunter bars
 	local function affect(frmKey, frm)
 		return frmKey ~= "ShamanQuick" and frmKey ~= "HunterQuick"
 	end
