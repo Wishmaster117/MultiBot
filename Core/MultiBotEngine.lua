@@ -279,7 +279,7 @@ MultiBot.toTip = function(pClass, pLevel, pName)
 	return tTip
 end
 
-MultiBot.toPoint = function(pFrame)
+--[[MultiBot.toPoint = function(pFrame)
 	local tX = pFrame:GetRight()
 	local tY = pFrame:GetBottom()
 	local tResolution = MultiBot.doSplit(({ GetScreenResolutions() })[GetCurrentResolution()], "x")
@@ -287,6 +287,18 @@ MultiBot.toPoint = function(pFrame)
 	local tWidth = tonumber(tResolution[1])
 	local tScale = 1 / tWidth * MultiBot:GetRight()
 	return math.floor(tX - (tWidth * tScale)), math.floor(tY)
+end]]--
+
+MultiBot.toPoint = function(pFrame)
+    -- Mesurer par rapport au parent global stable et arrondir à l’unité.
+    local uiRight = (UIParent and UIParent:GetRight()) or GetScreenWidth()
+    local xRight  = pFrame:GetRight() or 0
+    local yBottom = pFrame:GetBottom() or 0
+    -- Offset vers BOTTOMRIGHT (négatif ou nul)
+    local offX = xRight - uiRight
+    local offY = yBottom
+    -- Arrondi au plus proche pour éviter la dérive cumulée
+    return math.floor(offX + 0.5), math.floor(offY + 0.5)
 end
 
 MultiBot.RaidPool = function(pUnit, oWho)
