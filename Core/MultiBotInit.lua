@@ -177,7 +177,10 @@ end
 
 local tMultiBar = MultiBot.addFrame("MultiBar", -322, 144, 36)
 MultiBot.PromoteFrame(tMultiBar)
+--tMultiBar:SetMovable(true)
 tMultiBar:SetMovable(true)
+-- Évite les micro-dépassements avec certains UI scale qui finissent par décaler Y
+tMultiBar:SetClampedToScreen(true)
 
 -- LEFT --
 
