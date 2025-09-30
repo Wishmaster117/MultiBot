@@ -155,7 +155,7 @@ function MultiBot.BuildOptionsPanel()
     panel.chkMinimapHide = chkMinimapHide
   
 
-    local current = (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or "DIALOG"
+    local current = (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or "HIGH"
     local strataLevels = { "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "TOOLTIP" }
 
     local function OnClick(button)
