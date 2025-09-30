@@ -12,6 +12,22 @@ if(GetLocale() == "ruRU") then
 [10] = "Воин"
 }]]--
 
+ -- MINIMAP BUTTON
+MultiBot.info.butttitle = 
+"|cffffd100MultiBot|r"
+ 
+MultiBot.info.buttontoggle =
+"|cff00ff00ЛКМ: переключить интерфейс|r";
+ 
+MultiBot.info.buttonoptions =
+"|cffff0000ПКМ: настройки|r";
+ 
+MultiBot.info.buttonoptionshide =
+"Скрыть кнопку на миникарте";
+ 
+MultiBot.info.buttonoptionshidetooltip =
+"Скрыть или показать кнопку MultiBot на миникарте.\n(ЛКМ: переключить интерфейс, ПКМ: открыть настройки)";
+
 -- GLYPHS
 MultiBot.info.glyphssocketnotunlocked =
 "Этот слот ещё не разблокирован.";

@@ -12,6 +12,22 @@ if(GetLocale() == "zhCN") then
 [10] = "战士"
 }]]--
 
+ -- MINIMAP BUTTON
+MultiBot.info.butttitle = 
+"|cffffd100MultiBot|r"
+ 
+MultiBot.info.buttontoggle =
+"|cff00ff00左键：切换界面|r";
+ 
+MultiBot.info.buttonoptions =
+"|cffff0000右键：选项|r";
+ 
+MultiBot.info.buttonoptionshide =
+"隐藏小地图按钮";
+ 
+MultiBot.info.buttonoptionshidetooltip =
+"隐藏或显示 MultiBot 的小地图按钮。\n（左键：切换界面，右键：打开选项）";
+
 -- GLYPHS
 MultiBot.info.glyphssocketnotunlocked =
 "该插槽尚未解锁。";

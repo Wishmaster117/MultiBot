@@ -12,6 +12,22 @@ if(GetLocale() == "esES") then
 [10] = "Guerrero"
 }]]--
 
+ -- MINIMAP BUTTON
+MultiBot.info.butttitle = 
+"|cffffd100MultiBot|r"
+ 
+MultiBot.info.buttontoggle =
+"|cff00ff00Clic izquierdo: alternar la interfaz|r";
+ 
+MultiBot.info.buttonoptions =
+"|cffff0000Clic derecho: opciones|r";
+ 
+MultiBot.info.buttonoptionshide =
+"Ocultar botón del minimapa";
+ 
+MultiBot.info.buttonoptionshidetooltip =
+"Ocultar o mostrar el botón del minimapa de MultiBot.\n(Clic izquierdo: alternar la interfaz, Clic derecho: abrir opciones)";
+
 -- GLYPHS
 MultiBot.info.glyphssocketnotunlocked =
 "Este hueco aún no está desbloqueado.";

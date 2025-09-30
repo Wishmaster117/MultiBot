@@ -12,6 +12,22 @@ if(GetLocale() == "deDE") then
 [10] = "Krieger"
 }]]--
 
+ -- MINIMAP BUTTON
+MultiBot.info.butttitle = 
+"|cffffd100MultiBot|r"
+ 
+MultiBot.info.buttontoggle =
+"|cff00ff00Linksklick: UI umschalten|r";
+ 
+MultiBot.info.buttonoptions =
+"|cffff0000Rechtsklick: Optionen|r";
+ 
+MultiBot.info.buttonoptionshide =
+"Minikarten-Schaltfläche ausblenden";
+ 
+MultiBot.info.buttonoptionshidetooltip =
+"Die MultiBot-Minikarten-Schaltfläche ausblenden oder anzeigen.\n(Linksklick: UI umschalten, Rechtsklick: Optionen öffnen)";
+
 -- GLYPHS
 MultiBot.info.glyphssocketnotunlocked =
 "Dieser Sockel ist noch nicht freigeschaltet.";

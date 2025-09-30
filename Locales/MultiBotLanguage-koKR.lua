@@ -12,6 +12,22 @@ if(GetLocale() == "koKR") then
 [10] = "전사"
 }]]--
 
+ -- MINIMAP BUTTON
+MultiBot.info.butttitle = 
+"|cffffd100MultiBot|r"
+ 
+MultiBot.info.buttontoggle =
+"|cff00ff00좌클릭: UI 전환|r";
+ 
+MultiBot.info.buttonoptions =
+"|cffff0000우클릭: 옵션|r";
+ 
+MultiBot.info.buttonoptionshide =
+"미니맵 버튼 숨기기";
+ 
+MultiBot.info.buttonoptionshidetooltip =
+"MultiBot 미니맵 버튼을 숨기거나 표시합니다.\n(좌클릭: UI 전환, 우클릭: 옵션 열기)";
+
 -- GLYPHS
 MultiBot.info.glyphssocketnotunlocked =
 "이 소켓은 아직 잠금 해제되지 않았습니다.";

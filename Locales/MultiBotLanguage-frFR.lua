@@ -12,6 +12,22 @@ if(GetLocale() == "frFR") then
 [10] = "Guerrier"
 }]]--
 
+ -- MINIMAP BUTTON
+MultiBot.info.butttitle = 
+"|cffffd100MultiBot|r"
+ 
+MultiBot.info.buttontoggle =
+"|cff00ff00Clic gauche : afficher/masquer l’interface|r";
+ 
+MultiBot.info.buttonoptions =
+"|cffff0000Clic droit : options|r";
+ 
+MultiBot.info.buttonoptionshide =
+"Masquer le bouton de la minicarte";
+ 
+MultiBot.info.buttonoptionshidetooltip =
+"Masquer ou afficher le bouton de la minicarte MultiBot.\n(Clic gauche : afficher/masquer l’interface, Clic droit : ouvrir les options)";
+
 -- GLYPHS
 MultiBot.info.glyphssocketnotunlocked =
 "Ce socket n’est pas encore débloqué.";

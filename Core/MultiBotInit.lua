@@ -1,3 +1,155 @@
+-- Init des préférences minimap
+MultiBotSave = MultiBotSave or {}
+MultiBotSave.Minimap = MultiBotSave.Minimap or {}
+
+-- =====================================================================
+--  MINIMAP BUTTON (simple, sans LibDBIcon)
+-- =====================================================================
+do
+  local BTN_NAME = "MultiBot_MinimapButton"
+  local RADIUS   = 80  -- rayon d’ancrage au bord de la minimap
+
+  local function deg2rad(d) return d * math.pi / 180 end
+
+  local function UpdatePosition(self, angle)
+    angle = angle or (MultiBotSave.Minimap and MultiBotSave.Minimap.angle) or 220
+    if not Minimap or not Minimap:GetCenter() then return end
+    local mx, my = Minimap:GetCenter()
+    local sx, sy = GetScreenWidth(), GetScreenHeight()
+    if not mx or not my or not sx or not sy then return end
+    local r = RADIUS * (Minimap:GetEffectiveScale() / UIParent:GetEffectiveScale())
+    local x = math.cos(deg2rad(angle)) * r
+    local y = math.sin(deg2rad(angle)) * r
+    self:ClearAllPoints()
+    self:SetPoint("CENTER", Minimap, "CENTER", x, y)
+  end
+
+  local function SaveAngleFromCursor(self)
+    local mx, my = Minimap:GetCenter()
+    local cx, cy = GetCursorPosition()
+    local scale  = UIParent:GetEffectiveScale()
+    cx, cy = cx/scale, cy/scale
+    local dx, dy = cx - mx, cy - my
+    local angle  = math.deg(math.atan2(dy, dx))
+    if angle < 0 then angle = angle + 360 end
+    MultiBotSave.Minimap = MultiBotSave.Minimap or {}
+    MultiBotSave.Minimap.angle = angle
+    UpdatePosition(self, angle)
+  end
+
+  function MultiBot.Minimap_Create()
+    if _G[BTN_NAME] then
+      MultiBot.Minimap_Refresh()
+      return _G[BTN_NAME]
+    end
+    -- Respecter l’éventuel “hide”
+    MultiBotSave.Minimap = MultiBotSave.Minimap or {}
+    if MultiBotSave.Minimap.hide then return nil end
+
+    local b = CreateFrame("Button", BTN_NAME, Minimap)
+    b:SetSize(31, 31)
+    b:SetFrameStrata("MEDIUM")
+    b:SetFrameLevel(8)
+    b:SetMovable(true)
+    b:SetClampedToScreen(true)
+    b:RegisterForDrag("LeftButton")
+    b:RegisterForClicks("AnyUp")
+
+    -- Anneau/bord standard de la minimap
+    local overlay = b:CreateTexture(nil, "OVERLAY")
+    overlay:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+    overlay:SetSize(56, 56)
+    overlay:SetPoint("TOPLEFT")
+
+    -- Icône (prends un pictogramme existant du pack)
+    local icon = b:CreateTexture(nil, "ARTWORK")
+    icon:SetTexture("Interface\\AddOns\\MultiBot\\Icons\\browse.blp")
+    icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+    icon:SetSize(20, 20)
+    icon:SetPoint("CENTER", 0, 0)
+    b.icon = icon
+
+    local hl = b:CreateTexture(nil, "HIGHLIGHT")
+    hl:SetTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
+    hl:SetBlendMode("ADD")
+    hl:SetAllPoints(b)
+
+    b:SetScript("OnDragStart", function(self)
+      self:SetScript("OnUpdate", SaveAngleFromCursor)
+    end)
+    b:SetScript("OnDragStop", function(self)
+      self:SetScript("OnUpdate", nil)
+      SaveAngleFromCursor(self)
+    end)
+
+    b:SetScript("OnEnter", function(self)
+      GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+      GameTooltip:ClearLines()
+      GameTooltip:AddLine(MultiBot.info.butttitle, 1, 1, 1)
+      GameTooltip:AddLine(MultiBot.info.buttontoggle, 0.9, 0.9, 0.9)
+      GameTooltip:AddLine(MultiBot.info.buttonoptions, 0.9, 0.9, 0.9)
+      GameTooltip:Show()
+    end)
+    b:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+    b:SetScript("OnClick", function(self, btn)
+      if btn == "RightButton" then
+        if MultiBot.ToggleOptionsPanel then
+          MultiBot.ToggleOptionsPanel()
+        elseif InterfaceOptionsFrame_OpenToCategory and MultiBot.BuildOptionsPanel then
+          MultiBot.BuildOptionsPanel()
+          InterfaceOptionsFrame_OpenToCategory("MultiBot")
+          InterfaceOptionsFrame_OpenToCategory("MultiBot")
+        end
+      else
+        -- Clic gauche: même effet que /mb
+        if SlashCmdList and SlashCmdList["MULTIBOT"] then
+          SlashCmdList["MULTIBOT"]()
+        else
+          -- fallback local si jamais les slash ne sont pas dispo
+          local function affect(k, f)
+            return k ~= "ShamanQuick" and k ~= "HunterQuick"
+          end
+          if MultiBot.state then
+            for k, frm in pairs(MultiBot.frames or {}) do
+              if affect(k, frm) then frm:Hide() end
+            end
+            MultiBot.state = false
+          else
+            for k, frm in pairs(MultiBot.frames or {}) do
+              if affect(k, frm) then frm:Show() end
+            end
+            MultiBot.state = true
+          end
+          MultiBotSave["UIVisible"] = MultiBot.state and true or false
+        end
+      end
+    end)
+
+    UpdatePosition(b)
+    b:Show()
+    MultiBot.MinimapButton = b
+    return b
+  end
+
+  function MultiBot.Minimap_Refresh()
+    -- Toujours disposer d’une table SV valide ici
+    MultiBotSave = MultiBotSave or {}
+    MultiBotSave.Minimap = MultiBotSave.Minimap or {}
+
+    local b = _G[BTN_NAME] or MultiBot.MinimapButton
+    if MultiBotSave.Minimap and MultiBotSave.Minimap.hide then
+      if b then b:Hide() end
+      return
+    end
+    if not b then b = MultiBot.Minimap_Create() end
+    if b then
+      UpdatePosition(b)
+      b:Show()
+    end
+  end
+end
+
 -- ------------------------------------------------------------------
 --  Helper universel : TimerAfter 
 -- ------------------------------------------------------------------
@@ -6380,6 +6532,25 @@ do
   end)
 end
 
+-- Créer/Afficher (ou cacher) le bouton minimap APRÈS chargement complet
+do
+  local ev = CreateFrame("Frame")
+  ev:RegisterEvent("PLAYER_LOGIN")
+  ev:SetScript("OnEvent", function(self, event)
+    self:UnregisterEvent("PLAYER_LOGIN")
+    -- SV garanties ici ; appliquer l’état mémorisé proprement
+    if MultiBot and MultiBot.Minimap_Refresh then
+      MultiBot.Minimap_Refresh()
+    elseif MultiBot and MultiBot.Minimap_Create then
+      -- Fallback hyper défensif si Refresh pas encore défini
+      if not (MultiBotSave and MultiBotSave.Minimap and MultiBotSave.Minimap.hide) then
+        MultiBot.Minimap_Create()
+      else
+        -- hide=true => ne crée pas le bouton
+      end
+    end
+  end)
+end
 
 -- FINISH --
 
