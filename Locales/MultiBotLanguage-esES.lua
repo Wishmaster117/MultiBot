@@ -12,6 +12,16 @@ if(GetLocale() == "esES") then
 [10] = "Guerrero"
 }]]--
 
+-- ITEMS
+MultiBot.info.itemdestroyalert =
+"¿REALMENTE quieres destruir este objeto?\n%s";
+
+MultiBot.info.keydestroyalert =
+"No venderé llaves.";
+
+MultiBot.info.itemsellalert =
+"No puedo vender este objeto.";
+
  -- MINIMAP BUTTON
 MultiBot.info.butttitle = 
 "|cffffd100MultiBot|r"
