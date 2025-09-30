@@ -1161,51 +1161,134 @@ tInvite.addButton("Raid+40", 108, 0, "Interface\\AddOns\\MultiBot\\Icons\\invite
 	SendChatMessage(MultiBot.info.starting, "SAY")
 end
 
+--tControl.addButton("Browse", 0, 90, "Interface\\AddOns\\MultiBot\\Icons\\browse.blp", MultiBot.tips.units.browse)
+--.doLeft = function(pButton)
+--	local tMaster = MultiBot.frames["MultiBar"].buttons["Units"]
+--	local tFrom = tMaster.from + 10
+--	local tTo = tMaster.to + 10
+--	
+--	if(tMaster.filter ~= "none")
+--	then tTable = MultiBot.index.classes[tMaster.roster][tMaster.filter]
+--	else tTable = MultiBot.index[tMaster.roster]
+--	end
+--	
+--	local tUnits = tMaster.parent.frames["Units"]
+--	local tButton = nil
+--	local tFrame = nil
+--	local tIndex = 0
+--	
+--	if(tFrom > tMaster.limit) then
+--		tFrom = 1
+--		tTo = 10
+--	end
+--	
+--	if(tTo > tMaster.limit) then
+--		tTo = tMaster.limit
+--	end
+--	
+--	for i = 1, tMaster.limit do
+--		tFrame = tUnits.frames[tTable[i]]
+--		tButton = tUnits.buttons[tTable[i]]
+--		
+--		--[[if(tMaster.from <= i and tMaster.to >= i) then
+--			if(tFrame ~= nil) then tFrame:Hide() end
+--			tButton:Hide()
+--		end]]--
+--        if (tMaster.from <= i and tMaster.to >= i) then
+--            if (tFrame ~= nil) then tFrame:Hide() end
+--            if (tButton ~= nil) then tButton:Hide() end
+--        end
+--		
+--		if(tFrom <= i and tTo >= i) then
+--			--if(tFrame ~= nil and tButton.state) then tFrame:Show() end 
+--			--tButton:Show()
+--            -- Afficher uniquement si le bouton existe
+--            if (tButton ~= nil) then
+--				tIndex = tIndex + 1
+--                -- Montrer le frame si présent et si le bouton est actif
+--                if (tFrame ~= nil and tButton.state) then
+--                    tFrame:Show()
+--                end
+--                tButton:Show()
+--            end
+--		end
+--	end
+--	
+--	tMaster.from = tFrom
+--	tMaster.to = tTo
+--	
+--	tUnits.frames["Control"].setPoint(-2, (tUnits.size + 2) * tIndex)
+--end
+
+-- Fonction Browse corrigée
 tControl.addButton("Browse", 0, 90, "Interface\\AddOns\\MultiBot\\Icons\\browse.blp", MultiBot.tips.units.browse)
 .doLeft = function(pButton)
-	local tMaster = MultiBot.frames["MultiBar"].buttons["Units"]
-	local tFrom = tMaster.from + 10
-	local tTo = tMaster.to + 10
-	
-	if(tMaster.filter ~= "none")
-	then tTable = MultiBot.index.classes[tMaster.roster][tMaster.filter]
-	else tTable = MultiBot.index[tMaster.roster]
-	end
-	
-	local tUnits = tMaster.parent.frames["Units"]
-	local tButton = nil
-	local tFrame = nil
-	local tIndex = 0
-	
-	if(tFrom > tMaster.limit) then
-		tFrom = 1
-		tTo = 10
-	end
-	
-	if(tTo > tMaster.limit) then
-		tTo = tMaster.limit
-	end
-	
-	for i = 1, tMaster.limit do
-		tFrame = tUnits.frames[tTable[i]]
-		tButton = tUnits.buttons[tTable[i]]
-		
-		if(tMaster.from <= i and tMaster.to >= i) then
-			if(tFrame ~= nil) then tFrame:Hide() end
-			tButton:Hide()
-		end
-		
-		if(tFrom <= i and tTo >= i) then
-			tIndex = tIndex + 1
-			if(tFrame ~= nil and tButton.state) then tFrame:Show() end 
-			tButton:Show()
-		end
-	end
-	
-	tMaster.from = tFrom
-	tMaster.to = tTo
-	
-	tUnits.frames["Control"].setPoint(-2, (tUnits.size + 2) * tIndex)
+  local tMaster = MultiBot.frames.MultiBar.buttons.Units
+  local tUnits  = tMaster.parent.frames.Units
+
+  -- Recalcule la table source EXACTEMENT comme dans Units.doLeft
+  local function merge_lists(a, b)
+    local res, seen = {}, {}
+    if a then for i = 1, #a do local n = a[i]; if n and not seen[n] then seen[n] = true; table.insert(res, n) end end end
+    if b then for i = 1, #b do local n = b[i]; if n and not seen[n] then seen[n] = true; table.insert(res, n) end end end
+    return res
+  end
+
+  local tTable
+  if tMaster.roster == "players" then
+    if tMaster.filter ~= "none" then
+      local byClassPlayers = MultiBot.index.classes.players[tMaster.filter]
+      local byClassActives = MultiBot.index.classes.actives[tMaster.filter]
+      tTable = merge_lists(byClassPlayers, byClassActives)
+    else
+      tTable = merge_lists(MultiBot.index.players, MultiBot.index.actives)
+    end
+  else
+    if tMaster.filter ~= "none" then
+      tTable = MultiBot.index.classes[tMaster.roster][tMaster.filter]
+    else
+      tTable = MultiBot.index[tMaster.roster]
+    end
+  end
+
+  local total    = tTable and #tTable or 0
+  if total == 0 then return end
+
+  -- Calcule la page suivante (10 par page), avec wrap
+  local pageSize = 10
+  local from     = (tMaster.to or pageSize) + 1
+  local to       = from + pageSize - 1
+  if from > total then
+    from, to = 1, math.min(pageSize, total)
+  end
+  if to > total then to = total end
+
+  -- Cache l’ancienne page en étant tolérant aux boutons/frames manquants
+  for i = tMaster.from or 1, tMaster.to or 0 do
+    local name  = tTable[i]
+    local btn   = name and tUnits.buttons[name]
+    local frame = name and tUnits.frames[name]
+    if frame then frame:Hide() end
+    if btn   then btn:Hide()   end
+  end
+
+  -- Affiche la nouvelle page et re-positionne proprement
+  local idx = 0
+  for i = from, to do
+    local name  = tTable[i]
+    local btn   = name and tUnits.buttons[name]
+    local frame = name and tUnits.frames[name]
+    if btn then
+      idx = idx + 1
+      btn.setPoint(0, (tUnits.size + 2) * (idx - 1))
+      if frame then frame.setPoint(-34, (tUnits.size + 2) * (idx - 1) + 2) end
+      if frame and btn.state then frame:Show() end
+      btn:Show()
+    end
+  end
+
+  tMaster.from, tMaster.to = from, to
+  tUnits.frames.Control.setPoint(-2, (tUnits.size + 2) * idx)
 end
 
 -- MAIN --
