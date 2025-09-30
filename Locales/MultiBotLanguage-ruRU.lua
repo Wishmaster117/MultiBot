@@ -12,6 +12,16 @@ if(GetLocale() == "ruRU") then
 [10] = "Воин"
 }]]--
 
+-- ITEMS
+MultiBot.info.itemdestroyalert =
+"Вы ДЕЙСТВИТЕЛЬНО хотите уничтожить этот предмет?\n%s";
+
+MultiBot.info.keydestroyalert =
+"Я не продаю ключи.";
+
+MultiBot.info.itemsellalert =
+"Я не могу продать этот предмет.";
+
  -- MINIMAP BUTTON
 MultiBot.info.butttitle = 
 "|cffffd100MultiBot|r"

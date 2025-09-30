@@ -12,6 +12,16 @@ if(GetLocale() == "koKR") then
 [10] = "전사"
 }]]--
 
+-- ITEMS
+MultiBot.info.itemdestroyalert =
+"이 아이템을 정말로 파기하시겠습니까?\n%s";
+
+MultiBot.info.keydestroyalert =
+"열쇠는 판매하지 않습니다.";
+
+MultiBot.info.itemsellalert =
+"이 아이템은 판매할 수 없습니다.";
+
  -- MINIMAP BUTTON
 MultiBot.info.butttitle = 
 "|cffffd100MultiBot|r"

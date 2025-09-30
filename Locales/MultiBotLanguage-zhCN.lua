@@ -12,7 +12,17 @@ if(GetLocale() == "zhCN") then
 [10] = "战士"
 }]]--
 
- -- MINIMAP BUTTON
+-- ITEMS
+MultiBot.info.itemdestroyalert =
+"你真的要销毁这个物品吗？\n%s";
+
+MultiBot.info.keydestroyalert =
+"我不会出售钥匙。";
+
+MultiBot.info.itemsellalert =
+"我无法出售该物品。";
+
+-- MINIMAP BUTTON
 MultiBot.info.butttitle = 
 "|cffffd100MultiBot|r"
  

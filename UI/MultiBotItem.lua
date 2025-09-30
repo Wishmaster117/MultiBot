@@ -32,9 +32,10 @@ MultiBot.addItem = function(pFrame, pInfo)
 		end
 		
 		if(tAction == "s" and MultiBot.isTarget()) then
-			if(pButton.item.id == "6948") then return SendChatMessage("I cant sell this Item.", "SAY") end
-			if(MultiBot.isInside(pButton.item.info, "key")) then return SendChatMessage("I will not sell Keys.", "SAY") end
-			if(MultiBot.isInside(pButton.item.info, "Key")) then return SendChatMessage("I will not sell Keys.", "SAY") end
+			if(pButton.item.id == "6948") then return SendChatMessage(MultiBot.info.itemsellalert, "SAY") end
+			--if(MultiBot.isInside(pButton.item.info, "key")) then return SendChatMessage("I will not sell Keys.", "SAY") end
+			--if(MultiBot.isInside(pButton.item.info, "Key")) then return SendChatMessage("I will not sell Keys.", "SAY") end
+			if(MultiBot.isInside(pButton.item.info or "", "%f[%a][Kk]ey%f[%A]")) then return SendChatMessage(MultiBot.info.keydestroyalert, "SAY") end
 			SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, tName)
 			pButton:Hide()
 			return
@@ -45,11 +46,43 @@ MultiBot.addItem = function(pFrame, pInfo)
 			return
 		end
 		
-		if(tAction == "destroy") then
+		--[[if(tAction == "destroy") then
 			if(pButton.item.id == "6948") then return SendChatMessage("I cant drop this Item.", "SAY") end
 			if(MultiBot.isInside(pButton.item.info, "key")) then return SendChatMessage("I will not drop Keys.", "SAY") end
 			if(MultiBot.isInside(pButton.item.info, "Key")) then return SendChatMessage("I will not drop Keys.", "SAY") end
 			if(pButton.item.rare > 3) then return SendChatMessage("I will not drop that good Items.", "SAY") end
+			SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, tName)
+			pButton:Hide()
+			return
+		end]]--
+		if(tAction == "destroy") then
+			local needsConfirm = false
+			if(pButton.item.id == "6948") then needsConfirm = true end -- Hearthstone
+			--if(MultiBot.isInside(pButton.item.info, "key")) then needsConfirm = true end
+			--if(MultiBot.isInside(pButton.item.info, "Key")) then needsConfirm = true end
+			if(MultiBot.isInside(pButton.item.info, "%f[%a][Kk]ey%f[%A]")) then needsConfirm = true end
+			if(pButton.item.rare > 3) then needsConfirm = true end -- Épique ou mieux
+			if needsConfirm then
+				if not StaticPopupDialogs["MULTIBOT_CONFIRM_DESTROY"] then
+					StaticPopupDialogs["MULTIBOT_CONFIRM_DESTROY"] = {
+						text = MultiBot.info.itemdestroyalert,
+						button1 = OKAY,
+						button2 = CANCEL,
+						timeout = 0,
+						whileDead = 1,
+						hideOnEscape = 1,
+						OnAccept = function(self, data)
+							if not data or not data.button then return end
+							SendChatMessage("destroy" .. " " .. data.button.tip, "WHISPER", nil, data.tName)
+							data.button:Hide()
+						end,
+					}
+				end
+				local data = { button = pButton, tName = tName }
+				StaticPopup_Show("MULTIBOT_CONFIRM_DESTROY", pButton.item.link, nil, data)
+				return
+			end
+			-- Pas de confirmation requise
 			SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, tName)
 			pButton:Hide()
 			return

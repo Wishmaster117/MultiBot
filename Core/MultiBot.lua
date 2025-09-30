@@ -491,6 +491,16 @@ end
 MultiBot.info = {}
 MultiBot.info.shorts = {}
 
+-- ITEMS
+MultiBot.info.itemdestroyalert = 
+"Do you REALLY want to destroy this item?\n%s";
+
+MultiBot.info.keydestroyalert = 
+"I will not sell Keys.";
+
+MultiBot.info.itemsellalert = 
+"I cant sell this Item.";
+
 -- MINIMAP BUTTON
 MultiBot.info.butttitle = 
 "|cffffd100MultiBot|r"
