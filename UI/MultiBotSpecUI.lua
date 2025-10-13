@@ -433,10 +433,42 @@ local current = Spec.currentBuild[botKey]
             df:SetBackdropColor(0, 0, 0, 0.8)
         end
         df:SetFrameStrata("DIALOG")
+        -- Rendre la liste de spé déplaçable et mémoriser la position (par personnage)
+        if not df._mb_movable_init then
+            df:SetMovable(true)
+            df:EnableMouse(true)
+            df:RegisterForDrag("LeftButton")
+            df:SetClampedToScreen(true)
+            df:SetScript("OnDragStart", df.StartMoving)
+            df:SetScript("OnDragStop", function(self)
+                self:StopMovingOrSizing()
+                -- Sauvegarde relative au centre de l'écran (par personnage)
+                local cx, cy = self:GetCenter()
+                local ux, uy = UIParent:GetCenter()
+                local dx, dy = (cx - ux), (cy - uy)
+                MultiBotSave = MultiBotSave or {}
+                MultiBotSave.SpecDropdown = MultiBotSave.SpecDropdown or {}
+                local charKey = (UnitName("player") or "Player") .. "-" .. (GetRealmName() or "")
+                MultiBotSave.SpecDropdown[charKey] = { point = "CENTER", x = dx, y = dy }
+            end)
+            df._mb_movable_init = true
+        end
         self.dropdown = df
     end
     df:ClearAllPoints()
-    df:SetPoint("TOP", p.anchor, "BOTTOM", 0, -4)
+    -- Restaure la position mémorisée (par personnage) si elle existe
+    local restored = false
+    local charKey = (UnitName("player") or "Player") .. "-" .. (GetRealmName() or "")
+    if MultiBotSave and MultiBotSave.SpecDropdown and MultiBotSave.SpecDropdown[charKey] then
+        local pos = MultiBotSave.SpecDropdown[charKey]
+        if type(pos) == "table" and pos.point then
+            df:SetPoint(pos.point, UIParent, pos.point, pos.x or 0, pos.y or 0)
+            restored = true
+        end
+    end
+    if not restored then
+        df:SetPoint("TOP", p.anchor, "BOTTOM", 0, -4)
+    end
 
     -- 2) Boutons --------------------------------------------------------
     local step, needed = 37, #p.specs
