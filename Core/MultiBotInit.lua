@@ -695,7 +695,7 @@ tButton.roster = "players"
 tButton.filter = "none"
 
 tButton.doRight = function(pButton)
-	-- MEMBERBOTS --
+--[[	-- MEMBERBOTS --
 	
 	for i = 1, 50 do
 		local tName, tRank, tIndex, tLevel, tClass = GetGuildRosterInfo(i)
@@ -763,7 +763,151 @@ tButton.doRight = function(pButton)
 		end
 	end
 	
-	pButton.doLeft(pButton, pButton.roster, pButton.filter)
+	pButton.doLeft(pButton, pButton.roster, pButton.filter)]]--
+
+  -- Always refresh guild/friend rosters so their indexes stay in sync
+  if(type(GuildRoster) == "function") then GuildRoster() end
+  if(type(ShowFriends) == "function") then ShowFriends() end
+
+  -- Reset indexes before rebuilding them
+  MultiBot.index.members = {}
+  MultiBot.index.classes.members = {}
+  MultiBot.index.friends = {}
+  MultiBot.index.classes.friends = {}
+
+  -- MEMBERBOTS --
+  local tMaxMembers = type(GetNumGuildMembers) == "function" and GetNumGuildMembers() or 50
+  for i = 1, tMaxMembers do
+    local tName, _, _, tLevel, tClass = GetGuildRosterInfo(i)
+    if(tName ~= nil and tLevel ~= nil and tClass ~= nil and tName ~= UnitName("player")) then
+      local tMember = MultiBot.addMember(tClass, tLevel, tName)
+      if(tMember.state == false) then
+        tMember.setDisable()
+      else
+        tMember.setEnable()
+      end
+
+      tMember.doRight = function(pButton)
+        if(pButton.state == false) then return end
+        SendChatMessage(".playerbot bot remove " .. pButton.name, "SAY")
+        if(pButton.parent.frames[pButton.name] ~= nil) then pButton.parent.frames[pButton.name]:Hide() end
+        pButton.setDisable()
+      end
+
+      tMember.doLeft = function(pButton)
+        if(pButton.state) then
+          if(pButton.parent.frames[pButton.name] ~= nil) then MultiBot.ShowHideSwitch(pButton.parent.frames[pButton.name]) end
+        else
+          SendChatMessage(".playerbot bot add " .. pButton.name, "SAY")
+          pButton.setEnable()
+        end
+      end
+    elseif(tName == nil) then
+      break
+    end
+  end
+
+  -- FRIENDBOTS --
+  local tMaxFriends = type(GetNumFriends) == "function" and GetNumFriends() or 50
+  for i = 1, tMaxFriends do
+    local tName, tLevel, tClass = GetFriendInfo(i)
+    if(tName ~= nil and tLevel ~= nil and tClass ~= nil and tName ~= UnitName("player")) then
+      local tFriend = MultiBot.addFriend(tClass, tLevel, tName)
+      if(tFriend.state == false) then
+        tFriend.setDisable()
+      else
+        tFriend.setEnable()
+      end
+
+      tFriend.doRight = function(pButton)
+        if(pButton.state == false) then return end
+        SendChatMessage(".playerbot bot remove " .. pButton.name, "SAY")
+        if(pButton.parent.frames[pButton.name] ~= nil) then pButton.parent.frames[pButton.name]:Hide() end
+        pButton.setDisable()
+      end
+
+      tFriend.doLeft = function(pButton)
+        if(pButton.state) then
+          if(pButton.parent.frames[pButton.name] ~= nil) then MultiBot.ShowHideSwitch(pButton.parent.frames[pButton.name]) end
+        else
+          SendChatMessage(".playerbot bot add " .. pButton.name, "SAY")
+          pButton.setEnable()
+        end
+      end
+    elseif(tName == nil) then
+      break
+    end
+  end
+
+  -- Roster requiring server feedback (players/actives/favorites)
+  local tRoster = pButton.roster or "players"
+  if(tRoster == "players" or tRoster == "actives" or tRoster == "favorites") then
+    SendChatMessage(".playerbot bot list", "SAY")
+    if(tRoster == "favorites" and MultiBot.UpdateFavoritesIndex ~= nil) then
+      MultiBot.UpdateFavoritesIndex()
+    end
+  end
+
+  -- Pour les bots déjà groupés : relance un cycle "co ?" afin qu'ils renvoient leurs stratégies
+  local function RefreshStrategiesFor(name)
+    if not name or name == UnitName("player") then return end
+
+    local rosters = { "actives", "players", "members", "friends", "favorites" }
+    local isBot = false
+    local hasAnyRoster = false
+
+    if MultiBot.isRoster and MultiBot.index then
+      for i = 1, #rosters do
+        local rosterName = rosters[i]
+        local list = MultiBot.index[rosterName]
+        if list and next(list) ~= nil then
+          hasAnyRoster = true
+        end
+        if list and MultiBot.isRoster(rosterName, name) then
+          isBot = true
+          break
+        end
+      end
+    end
+
+    if not isBot then
+      -- Si aucun index n'est encore alimenté (ex: au login), on tente quand même la requête
+      if hasAnyRoster then return end
+    end
+
+    local unitsFrame = MultiBot.frames
+                      and MultiBot.frames["MultiBar"]
+                      and MultiBot.frames["MultiBar"].frames
+                      and MultiBot.frames["MultiBar"].frames["Units"]
+    local btn = unitsFrame and unitsFrame.buttons and unitsFrame.buttons[name]
+    if btn then btn.waitFor = "CO" end
+
+    SendChatMessage("co ?", "WHISPER", nil, name)
+  end
+
+  if IsInRaid() then
+    for i = 1, GetNumGroupMembers() do
+      RefreshStrategiesFor(UnitName("raid" .. i))
+    end
+  elseif IsInGroup() then
+    for i = 1, GetNumSubgroupMembers() do
+      RefreshStrategiesFor(UnitName("party" .. i))
+    end
+  end
+
+  pButton.doLeft(pButton, pButton.roster, pButton.filter)
+
+  if type(TimerAfter) == "function" then
+    TimerAfter(0.25, function()
+      local btn = MultiBot.frames
+                  and MultiBot.frames["MultiBar"]
+                  and MultiBot.frames["MultiBar"].buttons
+                  and MultiBot.frames["MultiBar"].buttons["Units"]
+      if btn and btn.doLeft then
+        btn.doLeft(btn, btn.roster, btn.filter)
+      end
+    end)
+  end
 end
 
 tButton.doLeft = function(pButton, oRoster, oFilter)
@@ -823,38 +967,87 @@ tButton.doLeft = function(pButton, oRoster, oFilter)
       end
     end
     MultiBot.dprint("Units.tTable.size", tTable and table.getn(tTable) or 0) -- DEBUG
-	-- Fin Construction de la table source selon roster/filtre
-	
-	local tButton = nil
-	local tFrame = nil
-	local tIndex = 0
-	
-	if(tTable ~= nil)
-	then pButton.limit = table.getn(tTable)
-	else pButton.limit = 0
-	end
-	
-	pButton.from = 1
-	pButton.to = 10
-	
-	for i = 1, pButton.limit do
-		tIndex = (i - 1)%10 + 1
-		tFrame = tUnits.frames[tTable[i]]
-		tButton = tUnits.buttons[tTable[i]]
-		tButton.setPoint(0, (tUnits.size + 2) * (tIndex - 1))
-		if(tFrame ~=nil) then tFrame.setPoint(-34, (tUnits.size + 2) * (tIndex - 1) + 2) end
+--	-- Fin Construction de la table source selon roster/filtre
+--	
+--	local tButton = nil
+--	local tFrame = nil
+--	local tIndex = 0
+--	
+--	if(tTable ~= nil)
+--	then pButton.limit = table.getn(tTable)
+--	else pButton.limit = 0
+--	end
+--	
+--	pButton.from = 1
+--	pButton.to = 10
+--	
+--	for i = 1, pButton.limit do
+--		tIndex = (i - 1)%10 + 1
+--		tFrame = tUnits.frames[tTable[i]]
+--		tButton = tUnits.buttons[tTable[i]]
+--		tButton.setPoint(0, (tUnits.size + 2) * (tIndex - 1))
+--		if(tFrame ~=nil) then tFrame.setPoint(-34, (tUnits.size + 2) * (tIndex - 1) + 2) end
+--		
+--		if(pButton.from <= i and pButton.to >= i) then
+--			if(tFrame ~= nil and tButton.state) then tFrame:Show() end
+--			tButton:Show()
+--		end
+--	end
+--	
+--	if(pButton.limit < pButton.to)
+--	then tUnits.frames["Control"].setPoint(-2, (tUnits.size + 2) * pButton.limit)
+--	else tUnits.frames["Control"].setPoint(-2, (tUnits.size + 2) * pButton.to)
+--	end
+
+        -- Fin Construction de la table source selon roster/filtre
+
+        local tButton = nil
+        local tFrame = nil
+        local tIndex = 0
+
+        --
+        -- Certains favoris peuvent être chargés avant que leurs boutons ne soient créés
+        -- (par exemple juste après un login, avant le retour de `.playerbot bot list`).
+        -- On filtre donc la liste à afficher pour ne conserver que les entrées disposant
+        -- d'un bouton, afin d'éviter les erreurs Lua tout en laissant la vue se remplir
+        -- dès que les données arrivent.
+        --
+        local tDisplay = {}
+        if tTable ~= nil then
+          for i = 1, table.getn(tTable) do
+            local name = tTable[i]
+            if name ~= nil and tUnits.buttons[name] ~= nil then
+              table.insert(tDisplay, name)
+            else
+              MultiBot.dprint("Units.skip", name or "<nil>", "(bouton manquant)")
+            end
+          end
+        end
+
+        pButton.limit = table.getn(tDisplay)
+
+        pButton.from = 1
+        pButton.to = 10
+
+        for i = 1, pButton.limit do
+                tIndex = (i - 1)%10 + 1
+                local unitName = tDisplay[i]
+                tFrame = tUnits.frames[unitName]
+                tButton = tUnits.buttons[unitName]
+                if(tButton ~= nil) then tButton.setPoint(0, (tUnits.size + 2) * (tIndex - 1)) end
+                if(tFrame ~=nil) then tFrame.setPoint(-34, (tUnits.size + 2) * (tIndex - 1) + 2) end
+
+                if(pButton.from <= i and pButton.to >= i) then
+                        if(tFrame ~= nil and tButton ~= nil and tButton.state) then tFrame:Show() end
+                        if(tButton ~= nil) then tButton:Show() end
+                end
+        end
+
+        if(pButton.limit < pButton.to)
+        then tUnits.frames["Control"].setPoint(-2, (tUnits.size + 2) * pButton.limit)
+        else tUnits.frames["Control"].setPoint(-2, (tUnits.size + 2) * pButton.to)
+        end
 		
-		if(pButton.from <= i and pButton.to >= i) then
-			if(tFrame ~= nil and tButton.state) then tFrame:Show() end
-			tButton:Show()
-		end
-	end
-	
-	if(pButton.limit < pButton.to)
-	then tUnits.frames["Control"].setPoint(-2, (tUnits.size + 2) * pButton.limit)
-	else tUnits.frames["Control"].setPoint(-2, (tUnits.size + 2) * pButton.to)
-	end
-	
 	if(pButton.limit < 11)
 	then tUnits.frames["Control"].buttons["Browse"]:Hide()
 	else tUnits.frames["Control"].buttons["Browse"]:Show()

@@ -1232,8 +1232,16 @@ MultiBot.addPlayer = function(pClass, pName)
   return btn
 end
 
+local function MB_InsertUnique(pTable, pValue)
+  if(pTable == nil) then return end
+  for i = 1, table.getn(pTable) do
+    if(pTable[i] == pValue) then return end
+  end
+  table.insert(pTable, pValue)
+end
+
 MultiBot.addMember = function(pClass, pLevel, pName)
-	if(MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] ~= nil) then return MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] end
+	--[[if(MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] ~= nil) then return MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] end
 	local tClass = MultiBot.toClass(pClass)
 	local tTexture = "Interface\\AddOns\\MultiBot\\Icons\\class_" .. string.lower(tClass) .. ".blp"
 	local tButton = MultiBot.frames["MultiBar"].frames["Units"].addButton(pName, 0, 0, tTexture, MultiBot.toTip(tClass, pLevel, pName))
@@ -1243,11 +1251,29 @@ MultiBot.addMember = function(pClass, pLevel, pName)
 	tButton.roster = "members"
 	tButton.class = tClass
 	tButton.name = pName
-	return tButton
+	return tButton]]--
+  local tUnits = MultiBot.frames["MultiBar"].frames["Units"]
+  local tButton = tUnits.buttons[pName]
+  local tClass = MultiBot.toClass(pClass)
+  local tTexture = "Interface\\AddOns\\MultiBot\\Icons\\class_" .. string.lower(tClass) .. ".blp"
+  if(tButton == nil) then
+    tButton = tUnits.addButton(pName, 0, 0, tTexture, MultiBot.toTip(tClass, pLevel, pName))
+  else
+    if(tButton.setButton ~= nil) then
+      tButton.setButton(tTexture, MultiBot.toTip(tClass, pLevel, pName))
+    end
+  end
+  if(MultiBot.index.classes.members[tClass] == nil) then MultiBot.index.classes.members[tClass] = {} end
+  MB_InsertUnique(MultiBot.index.classes.members[tClass], pName)
+  MB_InsertUnique(MultiBot.index.members, pName)
+  tButton.roster = "members"
+  tButton.class = tClass
+  tButton.name = pName
+  return tButton	
 end
 
 MultiBot.addFriend = function(pClass, pLevel, pName)
-	if(MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] ~= nil) then return MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] end
+	--[[if(MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] ~= nil) then return MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] end
 	local tClass = MultiBot.toClass(pClass)
 	local tTexture = "Interface\\AddOns\\MultiBot\\Icons\\class_" .. string.lower(tClass) .. ".blp"
 	local tButton = MultiBot.frames["MultiBar"].frames["Units"].addButton(pName, 0, 0, tTexture, MultiBot.toTip(tClass, pLevel, pName))
@@ -1257,7 +1283,26 @@ MultiBot.addFriend = function(pClass, pLevel, pName)
 	tButton.roster = "friends"
 	tButton.class = tClass
 	tButton.name = pName
-	return tButton
+	return tButton]]--
+
+  local tUnits = MultiBot.frames["MultiBar"].frames["Units"]
+  local tButton = tUnits.buttons[pName]
+  local tClass = MultiBot.toClass(pClass)
+  local tTexture = "Interface\\AddOns\\MultiBot\\Icons\\class_" .. string.lower(tClass) .. ".blp"
+  if(tButton == nil) then
+    tButton = tUnits.addButton(pName, 0, 0, tTexture, MultiBot.toTip(tClass, pLevel, pName))
+  else
+    if(tButton.setButton ~= nil) then
+      tButton.setButton(tTexture, MultiBot.toTip(tClass, pLevel, pName))
+    end
+  end
+  if(MultiBot.index.classes.friends[tClass] == nil) then MultiBot.index.classes.friends[tClass] = {} end
+  MB_InsertUnique(MultiBot.index.classes.friends[tClass], pName)
+  MB_InsertUnique(MultiBot.index.friends, pName)
+  tButton.roster = "friends"
+  tButton.class = tClass
+  tButton.name = pName
+  return tButton
 end
 
 MultiBot.addActive = function(pClass, pLevel, pName)
