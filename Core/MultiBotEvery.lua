@@ -94,12 +94,21 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 		pButton.doHide()
 	end
 	
-	pFrame.addButton("Invite", 124, 0, "inv_misc_groupneedmore", MultiBot.tips.every.invite).doHide()
+	--[[pFrame.addButton("Invite", 124, 0, "inv_misc_groupneedmore", MultiBot.tips.every.invite).doHide()
 	.doLeft = function(pButton)
 		MultiBot.doSlash("/invite", pButton.getName())
 		pButton.getButton("Uninvite").doShow()
 		pButton.doHide()
-	end
+	end]]--
+	
+    pFrame.addButton("Invite", 124, 0, "inv_misc_groupneedmore", MultiBot.tips.every.invite).doHide()
+    .doLeft = function(pButton)
+        -- (Re)log le bot par son nom, le module l’ajoute ensuite au groupe automatiquement
+        MultiBot.loginBotByName(pButton.getName())
+        -- Optionnel : garde l’UX actuelle (affiche le bouton Uninvite tout de suite)
+        pButton.getButton("Uninvite").doShow()
+        pButton.doHide()
+    end
 	
 	pFrame.addButton("Food", 154, 0, "inv_drink_24_sealwhey", MultiBot.tips.every.food).setDisable()
 	.doLeft = function(pButton)
