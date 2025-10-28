@@ -1,5 +1,5 @@
 # MultiBot
-User interface for AzerothCore-Module "Playerbot" by Liyunfan1223.<br>
+User interface for AzerothCore-Module "Playerbots" by Playerbots team https://github.com/mod-playerbots/mod-playerbots.<br>
 Tested with American and German 3.3.5 Wotlk-Client.
 # Installation
 Simply place the files in a folder called "MultiBot" in your World of Warcraft AddOns directory.<br>
@@ -315,7 +315,6 @@ Screens:
 </table>
 
 # Comming soon
-Currently i am working on the Group- and Raid-Controls.
+Share your ideas
 
 # Currently not supported
-QUEST
