@@ -1321,3 +1321,22 @@ end
 MultiBot.getBot = function(pName)
 	return MultiBot.frames["MultiBar"].frames["Units"].buttons[pName]
 end
+
+-- Envoie une commande telle quelle (y compris les commandes qui commencent par '.')
+function MultiBot.sendCommand(text)
+    -- Bouton cliqué => évènement utilisateur : autorisé par le client 3.3.5
+    if ChatFrame1EditBox then
+        ChatFrame1EditBox:SetText(text)
+        ChatEdit_SendText(ChatFrame1EditBox)
+    else
+        -- Fallback très conservateur
+        SendChatMessage(text, "SAY")
+    end
+end
+
+-- (Re)connecte un bot par son nom via le module playerbots
+function MultiBot.loginBotByName(name)
+    -- Utilise la commande existante côté serveur :
+    -- .playerbots bot add <name>  => connecte le bot et l’invite au groupe
+    MultiBot.sendCommand(".playerbots bot add " .. tostring(name))
+end
