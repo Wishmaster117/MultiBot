@@ -5,6 +5,11 @@ MultiBot.addItem = function(pFrame, pInfo)
 	local tIcon = GetItemIcon(tID)
 	local tName, tLink, tRare = GetItemInfo(tID)
 	
+	-- Fallback icon if not cached/known yet
+	if tIcon == nil or tIcon == "" then
+		tIcon = "INV_Misc_QuestionMark"
+	end
+	
 	local tX = (pFrame.index%8) * 38
 	local tY = math.floor(pFrame.index/8) * -37.1
 	
