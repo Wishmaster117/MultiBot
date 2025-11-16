@@ -1,5 +1,5 @@
 -- UI/MultiBotPVPUI.lua
--- MultiBot PvP UI minimal & robust for WoW 3.3.5a
+-- MultiBot PvP UI
 local ADDON = "MultiBot"
 
 local function CreateStyledFrame()
@@ -14,7 +14,7 @@ local function CreateStyledFrame()
     f:SetScript("OnDragStart", function(self) self:StartMoving() end)
     f:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 
-    -- Backdrop (compatible 3.3.5a)
+    -- Backdrop
     f:SetBackdrop({
         bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
