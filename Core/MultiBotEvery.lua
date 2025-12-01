@@ -41,7 +41,6 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
     -- Buttons inside the "Misc" sub-frame
 	for _, data in ipairs{	
 		{ "Wipe",        "Achievement_Halloween_Ghost_01", MultiBot.tips.every.wipe,        function(b) MultiBot.ActionToTarget("wipe", b.getName()) end },
-		--{ "Autogear",    "inv_misc_enggizmos_30",     MultiBot.tips.every.autogear,    function(b) SendChatMessage("autogear", "WHISPER", nil, b.getName()) end },
 		{ "Autogear",    "inv_misc_enggizmos_30",          MultiBot.tips.every.autogear,   function(b)
             StaticPopup_Show("MULTIBOT_AUTOGEAR_CONFIRM", b.getName(), nil, { target = b.getName() })
           end

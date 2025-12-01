@@ -1,4 +1,3 @@
--- UI/MultiBotPVPUI.lua
 -- MultiBot PvP UI
 local ADDON = "MultiBot"
 
@@ -84,7 +83,7 @@ local function CreateStyledFrame()
     -- Header that will display bot name (updated from whisper sender)
     local customHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     customHeader:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -top)
-    customHeader:SetText("Données PvP custom")
+    customHeader:SetText(MultiBot.tips.every.pvp.custom)
     top = top + 18 + 6
 
     -- HONNEUR section: only one row "Honneur"
@@ -94,7 +93,7 @@ local function CreateStyledFrame()
     -- Column header labels for Honneur (1st renamed Total)
     local hdr1 = honor:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     hdr1:SetPoint("TOPRIGHT", honor, "TOPRIGHT", colOffsets[1], -2)
-    hdr1:SetText("Total")
+    hdr1:SetText(MultiBot.tips.every.pvp.total)
     --local hdr2 = honor:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     --hdr2:SetPoint("TOPRIGHT", honor, "TOPRIGHT", colOffsets[2], -2)
     --hdr2:SetText("Hier")
@@ -131,7 +130,7 @@ local function CreateStyledFrame()
     -- Points d'Arène (affiché à gauche de la section Arène)
     arena.pointsLabel = arena:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     arena.pointsLabel:SetPoint("TOPLEFT", arena, "TOPLEFT", 120, 0)
-    arena.pointsLabel:SetText("Points d'Arène:")
+    arena.pointsLabel:SetText(MultiBot.tips.every.pvp.arenapoints)
 
     arena.pointsValue = arena:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     arena.pointsValue:SetPoint("LEFT", arena.pointsLabel, "RIGHT", 6, 0)
@@ -142,17 +141,17 @@ local function CreateStyledFrame()
         -- mode title (e.g., "Mode: 2v2")
         local modeText = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         modeText:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -offsetY -32)
-        modeText:SetText("Mode: " .. modeLabel)
+        modeText:SetText(MultiBot.tips.every.pvp.arenamode .. modeLabel)
 
         -- team name
         local teamText = parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         teamText:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -offsetY - 50)
-        teamText:SetText("Equipe: No team")
+        teamText:SetText(MultiBot.tips.every.pvp.arenanoteam)
 
         -- rating
         local ratingText = parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         ratingText:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -8, -offsetY - 34)
-        ratingText:SetText("Cote équipe: -")
+        ratingText:SetText(MultiBot.tips.every.pvp.arenanoteamrank)
 
         return { mode = modeText, team = teamText, rating = ratingText }
     end
@@ -237,7 +236,7 @@ loader:SetScript("OnEvent", function(self, event, ...)
         if sender and MultiBotPVPFrame._customHeader then
             local simpleName = sender:match("([^%-]+)") or sender
             simpleName = simpleName:match("([^%.%-]+)") or simpleName
-            MultiBotPVPFrame._customHeader:SetText("Données PvP " .. simpleName)
+            MultiBotPVPFrame._customHeader:SetText(MultiBot.tips.every.pvp.arenadata .. simpleName)
         end
 
         -- Parse Honor Points (both languages)

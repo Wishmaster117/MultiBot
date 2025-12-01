@@ -3088,6 +3088,36 @@ MultiBot.tips.every.misc =
 "|cffff0000좌클릭으로 이 메뉴를 전환|r\n"..
 "|cff999999(실행 순서: 시스템)|r"
 
+MultiBot.tips.every.pvp =
+"Send PvP command to bot|cffffffff\n"..
+"Display pvp bots informations.|r\n\n"..
+"|cffff0000Left-click to send command|r\n"..
+"|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.every.pvp.title =
+"MultiBot PvP Panel";
+
+MultiBot.tips.every.pvp.custom =
+"Custom PVP Datas";
+
+MultiBot.tips.every.pvp.total =
+"Total";
+
+MultiBot.tips.every.pvp.arenapoints =
+"Arena Points";
+
+MultiBot.tips.every.pvp.arenamode =
+"Mode";
+
+MultiBot.tips.every.pvp.arenanoteam =
+"Team: No team";
+
+MultiBot.tips.every.pvp.arenanoteamrank =
+"Team Rank: -";
+
+MultiBot.tips.every.pvp.arenadata =
+"PvP Datas ";
+
 MultiBot.tips.every.favorite =
 "즐겨찾기|cffffffff\n"..
 "이 봇을 즐겨찾기에 추가하거나 제거합니다 (캐릭터별 저장).|r\n\n"..

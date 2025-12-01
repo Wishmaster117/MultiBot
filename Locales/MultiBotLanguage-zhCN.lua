@@ -2952,6 +2952,36 @@ MultiBot.tips.every.misc =
 "|cffff0000左键单击切换此菜单|r\n"..
 "|cff999999(执行顺序：系统)|r"
 
+MultiBot.tips.every.pvp =
+"Send PvP command to bot|cffffffff\n"..
+"Display pvp bots informations.|r\n\n"..
+"|cffff0000Left-click to send command|r\n"..
+"|cff999999(Execution order: Bot)|r";
+
+MultiBot.tips.every.pvp.title =
+"MultiBot PvP Panel";
+
+MultiBot.tips.every.pvp.custom =
+"Custom PVP Datas";
+
+MultiBot.tips.every.pvp.total =
+"Total";
+
+MultiBot.tips.every.pvp.arenapoints =
+"Arena Points";
+
+MultiBot.tips.every.pvp.arenamode =
+"Mode";
+
+MultiBot.tips.every.pvp.arenanoteam =
+"Team: No team";
+
+MultiBot.tips.every.pvp.arenanoteamrank =
+"Team Rank: -";
+
+MultiBot.tips.every.pvp.arenadata =
+"PvP Datas ";
+
 MultiBot.tips.every.favorite =
 "收藏|cffffffff\n"..
 "将此机器人添加到收藏或从收藏中移除（按角色保存）。|r\n\n"..

@@ -3121,6 +3121,36 @@ MultiBot.tips.every.misc =
 "|cffff0000Clic gauche pour afficher/masquer ce menu|r\n"..
 "|cff999999(Ordre d'exécution : Système)|r"
 
+MultiBot.tips.every.pvp =
+"Envoyer la commande PvP au bot|cffffffff\n"..
+"Afficher les statistiques pvp du bots.|r\n\n"..
+"|cffff0000Clic gauche pour envoyer|r\n"..
+"|cff999999(Exécuté par : Bot)|r";
+
+MultiBot.tips.every.pvp.title =
+"MultiBot Panel PvP";
+
+MultiBot.tips.every.pvp.custom =
+"Données PvP Custom";
+
+MultiBot.tips.every.pvp.total =
+"Totale";
+
+MultiBot.tips.every.pvp.arenapoints =
+"Points d'Arène";
+
+MultiBot.tips.every.pvp.arenamode =
+"Mode";
+
+MultiBot.tips.every.pvp.arenanoteam =
+"Equipe: Pas d'équipe";
+
+MultiBot.tips.every.pvp.arenanoteamrank =
+"Côté Equipe: -";
+
+MultiBot.tips.every.pvp.arenadata =
+"Données PvP ";
+
 MultiBot.tips.every.favorite =
 "Favori|cffffffff\n"..
 "Ajouter ou retirer ce Bot de vos Favoris (sauvegardé par personnage).|r\n\n"..
