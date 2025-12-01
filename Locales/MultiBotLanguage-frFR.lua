@@ -3127,28 +3127,28 @@ MultiBot.tips.every.pvp =
 "|cffff0000Clic gauche pour envoyer|r\n"..
 "|cff999999(Exécuté par : Bot)|r";
 
-MultiBot.tips.every.pvp.title =
+MultiBot.tips.every.pvptitle =
 "MultiBot Panel PvP";
 
-MultiBot.tips.every.pvp.custom =
+MultiBot.tips.every.pvpcustom =
 "Données PvP Custom";
 
-MultiBot.tips.every.pvp.total =
+MultiBot.tips.every.pvptotal =
 "Totale";
 
-MultiBot.tips.every.pvp.arenapoints =
+MultiBot.tips.every.pvparenapoints =
 "Points d'Arène";
 
-MultiBot.tips.every.pvp.arenamode =
+MultiBot.tips.every.pvparenamode =
 "Mode";
 
-MultiBot.tips.every.pvp.arenanoteam =
+MultiBot.tips.every.pvparenanoteam =
 "Equipe: Pas d'équipe";
 
-MultiBot.tips.every.pvp.arenanoteamrank =
+MultiBot.tips.every.pvparenanoteamrank =
 "Côté Equipe: -";
 
-MultiBot.tips.every.pvp.arenadata =
+MultiBot.tips.every.pvparenadata =
 "Données PvP ";
 
 MultiBot.tips.every.favorite =

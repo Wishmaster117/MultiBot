@@ -35,7 +35,8 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 
 	-- local dy = 26
 	-- local y  = 0
-	
+    -- Texture étoile
+    local STAR_TEX = "Interface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1"	
 	-- for _, data in ipairs{
     local y, dy = 0, 28
     -- Buttons inside the "Misc" sub-frame
@@ -46,13 +47,25 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
           end
         },
         -- NEW: Favorite toggle (per-character)
-        { "Favorite",   "Interface\\RaidFrame\\ReadyCheck-Ready",  MultiBot.tips.every.favorite, function(b)
+        -- { "Favorite",   "Interface\\RaidFrame\\ReadyCheck-Ready",  MultiBot.tips.every.favorite, function(b)
+        -- Favorite toggle (per-character) - étoile
+        { "Favorite",   STAR_TEX,  MultiBot.tips.every.favorite, function(b)
             local name = b.getName()
             MultiBot.ToggleFavorite(name)
-            if MultiBot.IsFavorite(name) then
+            --[[if MultiBot.IsFavorite(name) then
               b.icon:SetTexture("Interface\\RaidFrame\\ReadyCheck-NotReady")
             else
               b.icon:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
+            end--]]
+            local tex = b.icon
+            if tex then
+              tex:SetTexture(STAR_TEX)
+              local isFav = MultiBot.IsFavorite(name)
+              -- Griser l’étoile quand favori, sinon couleur normale
+              if tex.SetDesaturated then tex:SetDesaturated(isFav) end
+              if tex.SetVertexColor then
+                if isFav then tex:SetVertexColor(0.5, 0.5, 0.5) else tex:SetVertexColor(1, 1, 1) end
+              end
             end
             -- If the current roster filter is "favorites", refresh the list
             local unitsBtn = MultiBot.frames and MultiBot.frames["MultiBar"] and MultiBot.frames["MultiBar"].buttons and MultiBot.frames["MultiBar"].buttons["Units"]
@@ -87,9 +100,19 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
       local favBtn = tMisc.buttons and tMisc.buttons["Favorite"]
       if favBtn then
         local name = favBtn.getName and favBtn.getName()
-        if name and MultiBot.IsFavorite and MultiBot.IsFavorite(name) then
+        --[[if name and MultiBot.IsFavorite and MultiBot.IsFavorite(name) then
           favBtn.icon:SetTexture("Interface\\RaidFrame\\ReadyCheck-NotReady")
-        end
+        end--]]
+        local tex = favBtn.icon
+        if tex then
+          tex:SetTexture(STAR_TEX)
+          local isFav = (name and MultiBot.IsFavorite and MultiBot.IsFavorite(name)) and true or false
+          -- Appliquer l’état visuel au chargement
+          if tex.SetDesaturated then tex:SetDesaturated(isFav) end
+          if tex.SetVertexColor then
+            if isFav then tex:SetVertexColor(0.5, 0.5, 0.5) else tex:SetVertexColor(1, 1, 1) end
+          end
+        end 
       end
     end
     -- MENU MISC END-----------------------------------------

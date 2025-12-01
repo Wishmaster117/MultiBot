@@ -1144,57 +1144,6 @@ end
 --  We call the function after tControl creation
 MultiBot.BuildFilterUI(tControl)
 
---[[-- UNITS:ROSTER --
-
-local tButton = tControl.addButton("Roster", 0, 30, "Interface\\AddOns\\MultiBot\\Icons\\roster_players.blp", MultiBot.tips.units.roster)
-tButton.doRight = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent, "Roster", "Interface\\AddOns\\MultiBot\\Icons\\roster_players.blp")
-	tButton.doLeft(tButton, "players")
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ShowHideSwitch(pButton.parent.frames["Roster"])
-end
-
-local tRoster = tControl.addFrame("Roster", -30, 32)
-tRoster:Hide()
-
-tRoster.addButton("Friends", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\roster_friends.blp", MultiBot.tips.units.friends)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Roster", pButton.texture)
-	pButton.parent.parent.buttons["Invite"].setEnable()
-	pButton.parent.parent.frames["Invite"]:Hide()
-	tButton.doLeft(tButton, "friends")
-end
-
-tRoster.addButton("Members", -26, 0, "Interface\\AddOns\\MultiBot\\Icons\\roster_members.blp", MultiBot.tips.units.members)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Roster", pButton.texture)
-	pButton.parent.parent.buttons["Invite"].setEnable()
-	pButton.parent.parent.frames["Invite"]:Hide()
-	tButton.doLeft(tButton, "members")
-end
-
-tRoster.addButton("Players", -52, 0, "Interface\\AddOns\\MultiBot\\Icons\\roster_players.blp", MultiBot.tips.units.players)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Roster", pButton.texture)
-	pButton.parent.parent.buttons["Invite"].setEnable()
-	pButton.parent.parent.frames["Invite"]:Hide()
-	tButton.doLeft(tButton, "players")
-end
-
-tRoster.addButton("Actives", -78, 0, "Interface\\AddOns\\MultiBot\\Icons\\roster_actives.blp", MultiBot.tips.units.actives)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].buttons["Units"]
-	MultiBot.Select(pButton.parent.parent, "Roster", pButton.texture)
-	pButton.parent.parent.buttons["Invite"].setDisable()
-	pButton.parent.parent.frames["Invite"]:Hide()
-	tButton.doLeft(tButton, "actives")
-end]]--
-
 -- UNITS:ROSTER REFACTORED --
 function MultiBot.BuildRosterUI(tControl)
 
@@ -1223,8 +1172,8 @@ function MultiBot.BuildRosterUI(tControl)
   rootBtn.doRight = function(b)
     local unitsBtn = MultiBot.frames.MultiBar.buttons.Units
     MultiBot.Select(b.parent, "Roster",
-      "Interface\\AddOns\\MultiBot\\Icons\\roster_actives.blp")
-    unitsBtn.doLeft(unitsBtn, "actives")
+      "Interface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1")
+    unitsBtn.doLeft(unitsBtn, "favorites")
   end
 
   -- 2. Frame and Config Table
@@ -1273,7 +1222,6 @@ end
 
 --  Function call
 MultiBot.BuildRosterUI(tControl)
-
 
 -- Force le roster par défaut sur "players" dès la construction
 TimerAfter(0.05, function()
