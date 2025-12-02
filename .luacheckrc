@@ -1,9 +1,8 @@
 -- Configuration Luacheck
 std = "lua53"
 
--- Interdire les tabulations
-ignore = {}
-codes = { "111" } -- 111 = indentation with tabs
+-- Interdire les tabulations (luacheck a une option dédiée)
+no_tab_indent = true
 
--- Indentation à 4 espaces
+-- Taille d'indentation (4 espaces)
 indent_size = 4
