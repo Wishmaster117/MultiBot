@@ -58,6 +58,60 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
     btnBuff.setDisable()
     btnBuff.doLeft = function() end
 
+    -- Helper commun pour (dé)saturer les icônes (réutilisé par pierres / pets / malédictions)
+    local _MB_setDesat = _MB_setDesat
+    if not _MB_setDesat then
+        local function __getIcon(btn)
+            if not btn then return nil end
+            if btn.icon and btn.icon.GetObjectType and btn.icon:GetObjectType() == "Texture" then
+                return btn.icon
+            end
+            if btn.GetNormalTexture then
+                local nt = btn:GetNormalTexture()
+                if nt and nt.GetObjectType and nt:GetObjectType() == "Texture" then
+                    return nt
+                end
+            end
+            if btn.Icon and btn.Icon.GetObjectType and btn.Icon:GetObjectType() == "Texture" then
+                return btn.Icon
+            end
+            if btn.texture and btn.texture.GetObjectType and btn.texture:GetObjectType() == "Texture" then
+                return btn.texture
+            end
+            return nil
+        end
+
+        local function __apply(tex, isDesat)
+            if not tex then return end
+            local ok = false
+            if tex.SetDesaturated then
+                ok = pcall(tex.SetDesaturated, tex, isDesat and true or false)
+            end
+            if not ok then
+                if isDesat then
+                    tex:SetVertexColor(0.35, 0.35, 0.35, 1)
+                else
+                    tex:SetVertexColor(1, 1, 1, 1)
+                end
+            else
+                if not isDesat then
+                    tex:SetVertexColor(1, 1, 1, 1)
+                end
+            end
+        end
+
+        function _MB_setDesat(btn, isDesat)
+            local tex = __getIcon(btn)
+            __apply(tex, isDesat)
+            if btn and btn.GetNormalTexture then
+                local nt = btn:GetNormalTexture()
+                if nt and nt ~= tex then
+                    __apply(nt, isDesat)
+                end
+            end
+        end
+    end
+
 	-- STONES (Spellstone / Firestone) --
 	local btnStones = pFrame.addButton("StonesSelect", -150, 0,
 		"inv_misc_orb_05",
@@ -67,38 +121,6 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 	local fStones = pFrame.addFrame("Stones", -152, 30)
 	fStones:Hide()
 	fStones.activeStone = nil
-
-	local _MB_getIcon      = _MB_getIcon
-	local _MB_applyDesat   = _MB_applyDesatToTexture
-	local _MB_setDesat     = _MB_setDesat
-	if not _MB_setDesat then
-		local function __getIcon(btn)
-			if not btn then return nil end
-			if btn.icon and btn.icon.GetObjectType and btn.icon:GetObjectType()=="Texture" then return btn.icon end
-			if btn.GetNormalTexture then local nt=btn:GetNormalTexture();
-			if nt and nt.GetObjectType and nt:GetObjectType()=="Texture" then return nt end end
-			if btn.Icon and btn.Icon.GetObjectType and btn.Icon:GetObjectType()=="Texture" then return btn.Icon end
-			if btn.texture and btn.texture.GetObjectType and btn.texture:GetObjectType()=="Texture" then return btn.texture end
-			return nil
-		end
-		local function __apply(tex, isDesat)
-			if not tex then return end
-			local ok=false
-			if tex.SetDesaturated then ok=pcall(tex.SetDesaturated, tex, isDesat and true or false) end
-			if not ok then
-				if isDesat then tex:SetVertexColor(0.35,0.35,0.35,1) else tex:SetVertexColor(1,1,1,1) end
-			else
-				if not isDesat then tex:SetVertexColor(1,1,1,1) end
-			end
-		end
-		function _MB_setDesat(btn, isDesat)
-			local tex = __getIcon(btn); __apply(tex, isDesat)
-			if btn and btn.GetNormalTexture then local nt=btn:GetNormalTexture();
-			   if nt and nt~=tex then __apply(nt, isDesat)
-			   end
-			end
-		end
-	end
 
 	btnStones.doLeft = function() MultiBot.ShowHideSwitch(fStones) end
 
@@ -266,48 +288,6 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
       {"Felguard",   "felguard",   "spell_shadow_summonfelguard"},
     }
 
-    local _MB_getIcon    = _MB_getIcon
-    local _MB_applyDesat = _MB_applyDesatToTexture
-    local _MB_setDesat   = _MB_setDesat
-    if not _MB_setDesat then
-      local function __getIcon(btn)
-        if not btn then return nil end
-        if btn.icon and btn.icon.GetObjectType and btn.icon:GetObjectType()=="Texture" then
-            return btn.icon
-        end
-        if btn.GetNormalTexture then local nt=btn:GetNormalTexture();
-            if nt and nt.GetObjectType and nt:GetObjectType()=="Texture" then 
-                return nt
-            end
-        end
-        if btn.Icon and btn.Icon.GetObjectType and btn.Icon:GetObjectType()=="Texture" then
-            return btn.Icon
-        end
-        if btn.texture and btn.texture.GetObjectType and btn.texture:GetObjectType()=="Texture" then
-            return btn.texture
-        end
-
-        return nil
-      end
-      local function __apply(tex, isDesat)
-        if not tex then return end
-        local ok=false
-        if tex.SetDesaturated then ok=pcall(tex.SetDesaturated, tex, isDesat and true or false) end
-        if not ok then
-          if isDesat then tex:SetVertexColor(0.35,0.35,0.35,1) else tex:SetVertexColor(1,1,1,1) end
-        else
-          if not isDesat then tex:SetVertexColor(1,1,1,1) end
-        end
-      end
-      function _MB_setDesat(btn, isDesat)
-        local tex = __getIcon(btn); __apply(tex, isDesat)
-        if btn and btn.GetNormalTexture then
-          local nt = btn:GetNormalTexture()
-          if nt and nt ~= tex then __apply(nt, isDesat) end
-        end
-      end
-    end
-
     local petButtons = {}
 
     local function UpdatePetIcons(active)
@@ -459,43 +439,6 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
    local fCurses = pFrame.addFrame("Curses", -122, 30)
    fCurses:Hide()
    fCurses.activeCurse = nil
-
-   local _MB_getIcon      = _MB_getIcon
-   local _MB_applyDesat   = _MB_applyDesatToTexture
-   local _MB_setDesat     = _MB_setDesat
-   if not _MB_setDesat then
-     local function __getIcon(btn)
-        if not btn then return nil end
-        if btn.icon and btn.icon.GetObjectType and btn.icon:GetObjectType()=="Texture" then return btn.icon end
-        if btn.GetNormalTexture then local nt=btn:GetNormalTexture();
-		if nt and nt.GetObjectType and nt:GetObjectType()=="Texture" then return nt end end
-        if btn.Icon and btn.Icon.GetObjectType and btn.Icon:GetObjectType()=="Texture" then return btn.Icon end
-        if btn.texture and 
-           btn.texture.GetObjectType and
-		   btn.texture:GetObjectType()=="Texture" then
-		   return btn.texture
-	    end
-       return nil
-     end
-     local function __apply(tex, isDesat)
-        if not tex then return end
-        local ok=false
-        if tex.SetDesaturated then ok=pcall(tex.SetDesaturated, tex, isDesat and true or false) end
-        if not ok then
-          if isDesat then tex:SetVertexColor(0.35,0.35,0.35,1) else tex:SetVertexColor(1,1,1,1) end
-        else
-          if not isDesat then tex:SetVertexColor(1,1,1,1) end
-        end
-      end
-      function _MB_setDesat(btn, isDesat)
-        local tex = __getIcon(btn); __apply(tex, isDesat)
-        if btn and btn.GetNormalTexture then 
-	        local nt=btn:GetNormalTexture();
-		        if nt and nt~=tex then __apply(nt, isDesat)
-			 end
-         end
-      end
-    end
 
    btnCurses.doLeft = function() MultiBot.ShowHideSwitch(fCurses) end
 
