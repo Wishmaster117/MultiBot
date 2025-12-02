@@ -71,9 +71,9 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
               end
             end
             -- If the current roster filter is "favorites", refresh the list
-            local unitsBtn = MultiBot.frames and 
+            local unitsBtn = MultiBot.frames and
                 MultiBot.frames["MultiBar"] and
-                MultiBot.frames["MultiBar"].buttons and 
+                MultiBot.frames["MultiBar"].buttons and
                 MultiBot.frames["MultiBar"].buttons["Units"]
             if unitsBtn and unitsBtn.roster == "favorites" then
               unitsBtn.doLeft(unitsBtn, "favorites", unitsBtn.filter)
@@ -81,7 +81,9 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
           end
         },
         -- NEW PVP tab
-        { "PvP", "INV_BannerPVP_02", MultiBot.tips and MultiBot.tips.every and MultiBot.tips.every.pvp or "Send PvP command to bot",
+        { "PvP", "INV_BannerPVP_02", MultiBot.tips and
+            MultiBot.tips.every and
+            MultiBot.tips.every.pvp or "Send PvP command to bot",
           function(b)
             local name = b.getName()
             if name then
@@ -95,7 +97,7 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
         },
 		{ "Maintenance", "Achievement_Halloween_Smiley_01", MultiBot.tips.every.maintenance, function(b)
             SendChatMessage("maintenance", "WHISPER", nil, b.getName())
-        end 
+        end
         },
 	} do
 		local btn = tMisc.addButton(data[1], 0, y, data[2], data[3])
@@ -170,7 +172,7 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 			pButton.setDisable()
 		else
 			local tUnits = MultiBot.frames["MultiBar"].frames["Units"]
-			for key, value in pairs(MultiBot.index.actives) do 
+			for key, value in pairs(MultiBot.index.actives) do
 				if(tUnits.buttons[value].name ~= UnitName("player")) then
 					tUnits.frames[value].getButton("Inventory").setDisable()
 				end
@@ -215,7 +217,7 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 		else
 			MultiBot.talent:Hide()
 			MultiBot.talent.doClear()
-			
+
 			local tUnits = MultiBot.frames["MultiBar"].frames["Units"]
 			for key, value in pairs(MultiBot.index.actives) do
 				if(tUnits.buttons[value].name ~= UnitName("player")) then
@@ -225,7 +227,7 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 
 			InspectUnit(MultiBot.toUnit(pButton.getName()))
 			pButton.setEnable()
-			
+
 			MultiBot.talent.name = pButton.getName()
 			MultiBot.talent.class = pButton.getClass()
 			MultiBot.auto.talent = true
