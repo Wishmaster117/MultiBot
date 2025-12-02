@@ -5,7 +5,7 @@ MultiBot.getSpellID = function(pInfo)
 end
 
 MultiBot.addSpell = function(pInfo, pName)
-	local tInfo = MultiBot.doSplit(pInfo, "|")
+	-- local tInfo = MultiBot.doSplit(pInfo, "|")
 	local tID = MultiBot.getSpellID(pInfo)
 	if(tID == 0) then return end
 
