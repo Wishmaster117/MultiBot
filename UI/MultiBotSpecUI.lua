@@ -11,11 +11,11 @@ local defaultIcon = "Interface\\Icons\\Achievement_Reputation_08"
 -- canonicalisation des petits préfixes
 local specCanonical = {
   -- Paladin
-  holy        = "Holy", 
-  ret         = "Ret",  
+  holy        = "Holy",
+  ret         = "Ret",
   -- Druid
   balance     = "Balance",
-  bear        = "Bear",  
+  bear        = "Bear",
   cat         = "Cat",
   resto       = "Restoration",
   -- Shaman
@@ -32,10 +32,10 @@ local specCanonical = {
   -- Priest
   shadow      = "Shadow",
   disc        = "Discipline",
-  -- Mage	
+  -- Mage
   arcane      = "Arcane",
   fire        = "Fire",
-  frostfire   = "Frostfire",  
+  frostfire   = "Frostfire",
   frost       = "Frost",
   -- Warlock
   affli       = "Affliction",
@@ -68,7 +68,7 @@ local specIconMap = {
     },
     Double = {
       pve = { icon = icons[5946], tip = MultiBot.tips.spec.dkdoublepve },
-    },	
+    },
   },
 
   Druid = {
@@ -82,7 +82,7 @@ local specIconMap = {
     },
     Bear       = {
       pve = { icon = icons[325] , tip = MultiBot.tips.spec.druidbearpve },
-    },	
+    },
     Restoration = {
       pve = { icon = icons[5745]  , tip = MultiBot.tips.spec.druidrestopve },
       pvp = { icon = icons[5745], tip = MultiBot.tips.spec.druidrestopvp },
@@ -115,7 +115,7 @@ local specIconMap = {
     },
     Frostfire   = {
       pve = { icon = icons[200] , tip = MultiBot.tips.spec.magefrostfirepve },
-    },	
+    },
     Frost  = {
       pve = { icon = icons[5521] , tip = MultiBot.tips.spec.magefrostpve },
       pvp = { icon = icons[5521], tip = MultiBot.tips.spec.magefrostpvp},
@@ -217,9 +217,9 @@ local specIconMap = {
 -- Helper TimerAfter
 ---------------------------------------------------------------------
 local function TimerAfter(delay, callback)
-    if C_Timer and C_Timer.After then            
+    if C_Timer and C_Timer.After then    
         return C_Timer.After(delay, callback)
-    end                                          
+    end                                  
     local f = CreateFrame("Frame")
     f.elapsed = 0
     f:SetScript("OnUpdate", function(self, dt)
@@ -265,7 +265,7 @@ Spec.pending, Spec.buttons = nil, {}
 function Spec:RequestList(bot, wrapper)
     if self.busy then
         return                  --    on ignore le clic
-    end                        
+    end                  
     local frame = unwrapFrame(wrapper)
     if type(frame) ~= "userdata" then
         -- print("|cffff0000[SpecUI] impossible de localiser le frame du bouton|r")
