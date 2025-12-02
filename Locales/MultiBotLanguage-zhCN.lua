@@ -194,10 +194,10 @@ MultiBot.info.talent.Level =
 MultiBot.info.talent.OutOfRange =
 "机器人超出范围。";
 
-MultiBot.info.talent.Apply = 
+MultiBot.info.talent.Apply =
 "应用";
 
-MultiBot.info.talent.Copy = 
+MultiBot.info.talent.Copy =
 "复制";
 
 MultiBot.info.talent.Title =
@@ -307,10 +307,10 @@ MultiBot.tips.move.stats =
 MultiBot.tips.move.itemus =
 "右键点击并按住以移动物品统计";
 
-MultiBot.tips.move.iconos = 
+MultiBot.tips.move.iconos =
 "右键点击并按住以移动图标";
 
-MultiBot.tips.move.spellbook = 
+MultiBot.tips.move.spellbook =
 "右键点击并按住以移动魔法书";
 
 MultiBot.tips.move.reward =
@@ -324,7 +324,7 @@ MultiBot.tips.move.raidus =
 
 -- 坦克 --
 
-MultiBot.tips.tanker.master = 
+MultiBot.tips.tanker.master =
 "坦克攻击\n|cffffffff"..
 "按此按钮坦克开始攻击你的目标。\n"..
 "执行命令时显示命令的接收者。|r\n\n"..
@@ -333,7 +333,7 @@ MultiBot.tips.tanker.master =
 
 -- 攻击 --
 
-MultiBot.tips.attack.master = 
+MultiBot.tips.attack.master =
 "攻击控制\n|cffffffff"..
 "使用此控制，您可以发出攻击命令。\n"..
 "右键点击选项来定义新的默认动作。\n"..
@@ -343,7 +343,7 @@ MultiBot.tips.attack.master =
 "|cffff0000右键点击显示或隐藏选项|r\n"..
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.attack.attack = 
+MultiBot.tips.attack.attack =
 "攻击\n|cffffffff".. 
 "使用此命令，整个团队或小队将开始攻击你的目标。|r\n\n".. 
 "|cffff0000左键点击执行攻击|r\n".. 
@@ -351,7 +351,7 @@ MultiBot.tips.attack.attack =
 "|cffff0000右键点击设为默认动作|r\n".. 
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.attack.ranged = 
+MultiBot.tips.attack.ranged =
 "远程攻击\n|cffffffff".. 
 "使用此命令，远程攻击者将开始攻击你的目标。|r\n\n".. 
 "|cffff0000左键点击执行远程攻击|r\n".. 
@@ -359,7 +359,7 @@ MultiBot.tips.attack.ranged =
 "|cffff0000右键点击设为默认动作|r\n".. 
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.attack.melee = 
+MultiBot.tips.attack.melee =
 "近战攻击\n|cffffffff".. 
 "使用此命令，近战攻击者将开始攻击你的目标。|r\n\n".. 
 "|cffff0000左键点击执行近战攻击|r\n".. 
@@ -367,7 +367,7 @@ MultiBot.tips.attack.melee =
 "|cffff0000右键点击设为默认动作|r\n".. 
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.attack.healer = 
+MultiBot.tips.attack.healer =
 "治疗攻击\n|cffffffff".. 
 "使用此命令，治疗者将开始攻击你的目标。|r\n\n".. 
 "|cffff0000左键点击执行治疗攻击|r\n".. 
@@ -375,7 +375,7 @@ MultiBot.tips.attack.healer =
 "|cffff0000右键点击设为默认动作|r\n".. 
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.attack.dps = 
+MultiBot.tips.attack.dps =
 "DPS攻击\n|cffffffff".. 
 "使用此命令，DPS将开始攻击你的目标。|r\n\n".. 
 "|cffff0000左键点击执行DPS攻击|r\n".. 
@@ -383,7 +383,7 @@ MultiBot.tips.attack.dps =
 "|cffff0000右键点击设为默认动作|r\n".. 
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.attack.tank = 
+MultiBot.tips.attack.tank =
 "坦克攻击\n|cffffffff".. 
 "使用此命令，坦克将开始攻击你的目标。|r\n\n".. 
 "|cffff0000左键点击执行坦克攻击|r\n".. 
@@ -393,7 +393,7 @@ MultiBot.tips.attack.tank =
 
 -- 模式 --
 
-MultiBot.tips.mode.master = 
+MultiBot.tips.mode.master =
 "模式控制\n|cffffffff".. 
 "此控制允许你开启或关闭战斗模式。\n".. 
 "左键点击选项可选择另一种战斗模式。\n".. 
@@ -403,7 +403,7 @@ MultiBot.tips.mode.master =
 "|cffff0000右键点击显示或隐藏选项|r\n".. 
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.mode.passive = 
+MultiBot.tips.mode.passive =
 "被动模式\n|cffffffff"..
 "在被动模式下，你的机器人不会攻击任何对手。\n"..
 "此模式在拉怪时防止坦克冲向敌人时非常有用。\n"..
@@ -412,7 +412,7 @@ MultiBot.tips.mode.passive =
 "|cffff0000左键点击选择并激活被动模式|r\n".. 
 "|cff999999(执行命令: 团队, 小队)|r";
 
-MultiBot.tips.mode.grind = 
+MultiBot.tips.mode.grind =
 "打怪模式\n|cffffffff".. 
 "在打怪模式下，机器人会自主攻击敌人。\n".. 
 "此模式可让你的机器人独立升级。|r\n\n".. 
@@ -421,7 +421,7 @@ MultiBot.tips.mode.grind =
 
 -- 停留|跟随 --
 
-MultiBot.tips.stallow.stay = 
+MultiBot.tips.stallow.stay =
 "停留|跟随\n|cffffffff".. 
 "使用此按钮，你可以立即发出停留命令。\n".. 
 "此命令可取消被动模式，在组合使用时应先下达停留命令。\n"..
@@ -429,7 +429,7 @@ MultiBot.tips.stallow.stay =
 "|cffff0000左键点击执行停留|r\n".. 
 "|cff999999(执行命令: 团队, 小队)|r";
 
-MultiBot.tips.stallow.follow = 
+MultiBot.tips.stallow.follow =
 "停留|跟随\n|cffffffff".. 
 "使用此按钮，你可以立即发出跟随命令。\n"..
 "此命令可取消被动模式，在组合使用时应先下达跟随命令。\n"..
@@ -437,7 +437,7 @@ MultiBot.tips.stallow.follow =
 "|cffff0000左键点击执行跟随|r\n".. 
 "|cff999999(执行命令: 团队, 小队)|r";
 
-MultiBot.tips.expand.stay = 
+MultiBot.tips.expand.stay =
 "停留\n|cffffffff".. 
 "使用此按钮，你可以立即发出停留命令。\n".. 
 "此命令可取消被动模式，在组合使用时应先下达停留命令。\n"..
@@ -445,7 +445,7 @@ MultiBot.tips.expand.stay =
 "|cffff0000左键点击执行停留|r\n".. 
 "|cff999999(执行命令: 团队, 小队)|r";
 
-MultiBot.tips.expand.follow = 
+MultiBot.tips.expand.follow =
 "跟随\n|cffffffff".. 
 "使用此按钮，你可以立即发出跟随命令。\n"..
 "此命令可取消被动模式，在组合使用时应先下达跟随命令。\n"..
@@ -455,7 +455,7 @@ MultiBot.tips.expand.follow =
 
 -- 逃跑 --
 
-MultiBot.tips.flee.master = 
+MultiBot.tips.flee.master =
 "逃跑控制\n|cffffffff".. 
 "使用此控制，你可以发出逃跑命令。\n".. 
 "右键点击选项以定义新的默认动作。\n".. 
@@ -465,7 +465,7 @@ MultiBot.tips.flee.master =
 "|cffff0000右键点击显示或隐藏选项|r\n".. 
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.flee.flee = 
+MultiBot.tips.flee.flee =
 "逃跑\n|cffffffff".. 
 "使用此命令，整个团队或小队将开始逃跑。|r\n\n".. 
 "|cffff0000左键点击执行逃跑|r\n".. 
@@ -473,7 +473,7 @@ MultiBot.tips.flee.flee =
 "|cffff0000右键点击设为默认动作|r\n".. 
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.flee.ranged = 
+MultiBot.tips.flee.ranged =
 "远程逃跑\n|cffffffff".. 
 "使用此命令，远程战斗者将开始逃跑。|r\n\n".. 
 "|cffff0000左键点击执行远程逃跑|r\n".. 
@@ -481,7 +481,7 @@ MultiBot.tips.flee.ranged =
 "|cffff0000右键点击设为默认动作|r\n".. 
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.flee.melee = 
+MultiBot.tips.flee.melee =
 "近战逃跑\n|cffffffff".. 
 "使用此命令，近战战斗者将开始逃跑。|r\n\n".. 
 "|cffff0000左键点击执行近战逃跑|r\n".. 
@@ -489,7 +489,7 @@ MultiBot.tips.flee.melee =
 "|cffff0000右键点击设为默认动作|r\n".. 
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.flee.healer = 
+MultiBot.tips.flee.healer =
 "治疗逃跑\n|cffffffff".. 
 "使用此命令，治疗者将开始逃跑。|r\n\n".. 
 "|cffff0000左键点击执行治疗逃跑|r\n".. 
@@ -497,7 +497,7 @@ MultiBot.tips.flee.healer =
 "|cffff0000右键点击设为默认动作|r\n".. 
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.flee.dps = 
+MultiBot.tips.flee.dps =
 "DPS逃跑\n|cffffffff".. 
 "使用此命令，DPS将开始逃跑。|r\n\n".. 
 "|cffff0000左键点击执行DPS逃跑|r\n".. 
@@ -505,7 +505,7 @@ MultiBot.tips.flee.dps =
 "|cffff0000右键点击设为默认动作|r\n".. 
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.flee.tank = 
+MultiBot.tips.flee.tank =
 "坦克逃跑\n|cffffffff".. 
 "使用此命令，坦克将开始逃跑。|r\n\n".. 
 "|cffff0000左键点击执行坦克逃跑|r\n".. 
@@ -513,7 +513,7 @@ MultiBot.tips.flee.tank =
 "|cffff0000右键点击设为默认动作|r\n".. 
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.flee.target = 
+MultiBot.tips.flee.target =
 "目标逃跑\n|cffffffff".. 
 "使用此命令，目标将开始逃跑。|r\n\n".. 
 "|cffff0000左键点击执行目标逃跑|r\n".. 
@@ -523,7 +523,7 @@ MultiBot.tips.flee.target =
 
 -- 阵型 --
 
-MultiBot.tips.format.master = 
+MultiBot.tips.format.master =
 "阵型控制\n|cffffffff".. 
 "此控制允许你改变机器人阵型。\n".. 
 "执行命令时显示命令的接收者。|r\n\n".. 
@@ -532,7 +532,7 @@ MultiBot.tips.format.master =
 "|cffff0000右键点击询问当前阵型|r\n".. 
 "|cff999999(执行命令: 团队, 小队)|r";
 
-MultiBot.tips.format.arrow = 
+MultiBot.tips.format.arrow =
 "箭头阵型\n|cffffffff".. 
 "机器人排列成箭头阵型。\n".. 
 "机器人的视线方向朝向你。\n\n".. 
@@ -543,49 +543,49 @@ MultiBot.tips.format.arrow =
 "|cffff0000左键点击选择箭头阵型|r\n".. 
 "|cff999999(执行命令: 团队, 小队)|r";
 
-MultiBot.tips.format.queue = 
+MultiBot.tips.format.queue =
 "队列阵型\n|cffffffff".. 
 "机器人排列成防御阵型。\n".. 
 "机器人的视线方向朝向你。|r\n\n".. 
 "|cffff0000左键点击选择队列阵型|r\n".. 
 "|cff999999(执行命令: 团队, 小队)|r";
 
-MultiBot.tips.format.near = 
+MultiBot.tips.format.near =
 "近距离阵型\n|cffffffff".. 
 "机器人在你附近排列。\n".. 
 "机器人的视线方向朝向你。|r\n\n".. 
 "|cffff0000左键点击选择近距离阵型|r\n".. 
 "|cff999999(执行命令: 团队, 小队)|r";
 
-MultiBot.tips.format.melee = 
+MultiBot.tips.format.melee =
 "近战阵型\n|cffffffff".. 
 "机器人为近战战斗排列。\n".. 
 "机器人的视线方向朝向你。|r\n\n".. 
 "|cffff0000左键点击选择近战阵型|r\n".. 
 "|cff999999(执行命令: 团队, 小队)|r";
 
-MultiBot.tips.format.line = 
+MultiBot.tips.format.line =
 "直线阵型\n|cffffffff".. 
 "机器人在左侧和右侧排列成平行的直线。\n".. 
 "机器人的视线方向朝向你。|r\n\n".. 
 "|cffff0000左键点击选择直线阵型|r\n".. 
 "|cff999999(执行命令: 团队, 小队)|r";
 
-MultiBot.tips.format.circle = 
+MultiBot.tips.format.circle =
 "圆形阵型\n|cffffffff".. 
 "机器人围绕你排列成圆形。\n".. 
 "机器人的视线朝向外部。|r\n\n".. 
 "|cffff0000左键点击选择圆形阵型|r\n".. 
 "|cff999999(执行命令: 团队, 小队)|r";
 
-MultiBot.tips.format.chaos = 
+MultiBot.tips.format.chaos =
 "混乱阵型\n|cffffffff".. 
 "每个机器人各自跟随你。\n".. 
 "他们会随意排列，视线可以朝向任意方向。|r\n\n".. 
 "|cffff0000左键点击选择混乱阵型|r\n".. 
 "|cff999999(执行命令: 团队, 小队)|r";
 
-MultiBot.tips.format.shield = 
+MultiBot.tips.format.shield =
 "盾牌阵型\n|cffffffff".. 
 "机器人在前方、左侧和右侧排列。\n".. 
 "机器人的视线方向朝向你。|r\n\n".. 
@@ -594,7 +594,7 @@ MultiBot.tips.format.shield =
 
 -- 兽王猎人 --
 
-MultiBot.tips.beast.master = 
+MultiBot.tips.beast.master =
 "兽王控制\n|cffffffff".. 
 "此控制用于 Azerothcore 的 Mod-兽王。\n".. 
 "Mod-兽王允许每个角色像猎人一样拥有宠物。\n".. 
@@ -636,7 +636,7 @@ MultiBot.tips.beast.call =
 
 -- 创建机器人 --
 
-MultiBot.tips.creator.master = 
+MultiBot.tips.creator.master =
 "创建控制台\n|cffffffff"..
 "这个控制器允许你按职业创建机器人。\n"..
 "每个账号默认最多可创建40个机器人。\n"..
@@ -706,22 +706,22 @@ MultiBot.tips.creator.deathknight =
 "|cffff0000左键点击选择死亡骑士的性别。|r\n"..
 "|cff999999（执行顺序：系统）|r";
 
-MultiBot.tips.creator.notarget = 
+MultiBot.tips.creator.notarget =
 "你没有目标。";
 
-MultiBot.tips.creator.gendermale = 
+MultiBot.tips.creator.gendermale =
 "创建一位男性伙伴。\n|cffffffff"..
 "强壮、果断，总是准备战斗……或者喝酒。|r\n\n"..
 "|cffff0000左键点击以创建|r\n"..
 "|cff999999（执行顺序：系统）|r";
 
-MultiBot.tips.creator.genderfemale = 
+MultiBot.tips.creator.genderfemale =
 "创建一位女性伙伴。\n|cffffffff"..
 "优雅、致命，绝不可低估。|r\n\n"..
 "|cffff0000左键点击以创建|r\n"..
 "|cff999999（执行顺序：系统）|r";
 
-MultiBot.tips.creator.genderrandom = 
+MultiBot.tips.creator.genderrandom =
 "创建一个随机性别的机器人。\n|cffffffff"..
 "命运将做出选择！|r\n\n"..
 "|cffff0000左键点击以创建|r\n"..
@@ -1137,7 +1137,7 @@ MultiBot.tips.game.memory =
 "|cffff0000右键单击忘记该位置|r\n"..
 "|cff999999(执行命令: 目标)|r";
 
-MultiBot.tips.game.itemus = 
+MultiBot.tips.game.itemus =
 "物品生成器\n|cffffffff"..
 "游戏管理员工具箱中包含所有物品。\n"..
 "只需选择玩家或机器人，然后左键单击物品，愿望即可成真。\n"..
@@ -1146,7 +1146,7 @@ MultiBot.tips.game.itemus =
 "|cffff0000左键单击打开或关闭物品生成器|r\n"..
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.game.iconos = 
+MultiBot.tips.game.iconos =
 "图标生成器\n|cffffffff"..
 "此工具中包含所有图标及其路径。\n"..
 "执行命令时显示命令的接收者。|r\n\n"..
@@ -1211,49 +1211,49 @@ MultiBot.tips.quests.talk =
 MultiBot.tips.quests.talkerror =
 "请选择一个要对话的NPC。";
 
-MultiBot.tips.quests.questcomperror = 
+MultiBot.tips.quests.questcomperror =
 "请选择一个机器人以查询其任务。";
 
 MultiBot.tips.quests.sendwhisp =
 "向机器人询问";
 
-MultiBot.tips.quests.sendpartyraid = 
+MultiBot.tips.quests.sendpartyraid =
 "向队伍或团队询问。";
 
-MultiBot.tips.quests.completed = 
+MultiBot.tips.quests.completed =
 "已完成任务\n|cffffffff"..
 "此按钮可让你向单个或所有机器人请求已完成任务列表。\n\n"..
 "|cffff0000左键点击打开子菜单|r\n"..
 "|cff999999（执行顺序：团队、副本、机器人）|r";
 
-MultiBot.tips.quests.incompleted = 
+MultiBot.tips.quests.incompleted =
 "未完成任务\n|cffffffff"..
 "此按钮可让你向单个或所有机器人请求未完成任务列表。\n\n"..
 "|cffff0000左键点击打开子菜单|r\n"..
 "|cff999999（执行顺序：团队、副本、机器人）|r";
 
-MultiBot.tips.quests.allcompleted = 
+MultiBot.tips.quests.allcompleted =
 "所有任务\n|cffffffff"..
 "此按钮可让你向单个或所有机器人请求所有任务的列表。\n\n"..
 "|cffff0000左键点击打开子菜单|r\n"..
 "|cff999999（执行顺序：团队、副本、机器人）|r";
 
-MultiBot.tips.quests.incomplist = 
+MultiBot.tips.quests.incomplist =
 "当前机器人任务列表";
 
-MultiBot.tips.quests.complist = 
+MultiBot.tips.quests.complist =
 "机器人已完成任务列表";
 
-MultiBot.tips.quests.alllist = 
+MultiBot.tips.quests.alllist =
 "机器人所有任务";
 
-MultiBot.tips.quests.compheader = 
+MultiBot.tips.quests.compheader =
 "** 已完成任务 **";
 
-MultiBot.tips.quests.incompheader = 
+MultiBot.tips.quests.incompheader =
 "** 未完成任务 **";
 
-MultiBot.tips.quests.botsword = 
+MultiBot.tips.quests.botsword =
 "机器人：";
 
 -- 使用GOBs --
@@ -1263,22 +1263,22 @@ MultiBot.tips.quests.gobsmaster =
 "|cffff0000左键点击打开|r\n"..
 "|cff999999（执行顺序：系统）|r";
 
-MultiBot.tips.quests.gobenter = 
+MultiBot.tips.quests.gobenter =
 "使用游戏对象\n|cffffffff"..
 "此按钮弹出窗口输入游戏对象名称。\n\n"..
 "|cffff0000左键点击打开输入窗口|r\n"..
 "|cff999999（执行顺序：机器人）|r";
 
-MultiBot.tips.quests.gobsearch = 
+MultiBot.tips.quests.gobsearch =
 "搜索游戏对象\n|cffffffff"..
 "此按钮打开窗口，显示机器人可用的游戏对象。\n\n"..
 "|cffff0000左键点击打开窗口|r\n"..
 "|cff999999（执行顺序：系统）|r";
 
-MultiBot.tips.quests.goberrorname = 
+MultiBot.tips.quests.goberrorname =
 "请输入有效的游戏对象名称。";
 
-MultiBot.tips.quests.gobselectboterror = 
+MultiBot.tips.quests.gobselectboterror =
 "请选择一个机器人来发送指令。";
 
 MultiBot.tips.quests.gobsnameerror =
@@ -1287,18 +1287,18 @@ MultiBot.tips.quests.gobsnameerror =
 MultiBot.tips.quests.gobctrlctocopy =
 "CTRL + C 复制";
 
-MultiBot.tips.quests.gobselectall = 
+MultiBot.tips.quests.gobselectall =
 "全选";
 
-MultiBot.tips.quests.gobsfound = 
+MultiBot.tips.quests.gobsfound =
 "找到的游戏对象";
 
-MultiBot.tips.quests.gobpromptname = 
+MultiBot.tips.quests.gobpromptname =
 "游戏对象名称";
 
 -- 饮用 --
 
-MultiBot.tips.drink.group = 
+MultiBot.tips.drink.group =
 "团队饮水\n|cffffffff"..
 "使用此按钮命令团队饮水。\n"..
 "执行命令时显示命令的接收者。|r\n\n"..
@@ -1307,7 +1307,7 @@ MultiBot.tips.drink.group =
 
 -- 释放 --
 
-MultiBot.tips.release.group = 
+MultiBot.tips.release.group =
 "团队释放\n|cffffffff"..
 "使用此按钮，死亡的机器人将释放其灵魂到下一个墓地。\n"..
 "执行命令时显示命令的接收者。|r\n\n"..
@@ -1316,7 +1316,7 @@ MultiBot.tips.release.group =
 
 -- 复活 --
 
-MultiBot.tips.revive.group = 
+MultiBot.tips.revive.group =
 "团队复活\n|cffffffff"..
 "使用此按钮，灵魂状态的机器人将在下一个墓地复活。\n"..
 "执行命令时显示命令的接收者。|r\n\n"..
@@ -1325,7 +1325,7 @@ MultiBot.tips.revive.group =
 
 -- 召唤 --
 
-MultiBot.tips.summon.group = 
+MultiBot.tips.summon.group =
 "团队召唤\n|cffffffff"..
 "使用此按钮将团队召唤到你的位置。\n"..
 "执行命令时显示命令的接收者。|r\n\n"..
@@ -1879,7 +1879,7 @@ MultiBot.tips.druid.dps.dpsAoe =
 "|cffff0000左键点击启用或禁用DPS范围攻击|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.druid.dps.dps = 
+MultiBot.tips.druid.dps.dps =
 "DPS|cffffffff\n"..
 "启用DPS策略。\n"..
 "德鲁伊只能在猫形态下使用伤害输出策略。\n"..
@@ -1897,7 +1897,7 @@ MultiBot.tips.druid.dps.offheal =
 "|cffff0000左键点击以启用或禁用辅助治疗|r\n"..
 "|cff999999（执行顺序：Bot）|r";
 
-MultiBot.tips.druid.tankAssist = 
+MultiBot.tips.druid.tankAssist =
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..
 "DPS范围攻击、DPS辅助和坦克辅助相互排斥。\n"..
@@ -1905,7 +1905,7 @@ MultiBot.tips.druid.tankAssist =
 "|cffff0000左键单击以启用或禁用坦克辅助|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.druid.tank = 
+MultiBot.tips.druid.tank =
 "坦克|cffffffff\n"..
 "它启用了坦克策略。\n"..
 "德鲁伊只能在熊形态下充当坦克。\n"..
@@ -1916,31 +1916,31 @@ MultiBot.tips.druid.tank =
 
 -- HUNTER --
 
-MultiBot.tips.hunter.pet.master = 
+MultiBot.tips.hunter.pet.master =
 "宠物指令|cffffffff\n"..
 "打开一个包含多个召唤宠物选项的工具栏。|r\n\n"..
 "|cffff0000左键点击显示选项|r\n"..
 "|cff999999（执行顺序：系统）|r";
 
-MultiBot.tips.hunter.pet.name = 
+MultiBot.tips.hunter.pet.name =
 "通过 |cff00ff00名字|r 召唤宠物\n"..
 "|cffffffff打开可用宠物列表，点击名字进行召唤。|r\n\n"..
 "|cffff0000左键点击打开列表|r\n"..
 "|cff999999（执行顺序：Bot）|r";
 
-MultiBot.tips.hunter.pet.id = 
+MultiBot.tips.hunter.pet.id =
 "通过 |cff00ff00数据库ID|r 召唤宠物\n"..
 "|cffffffff使用生物的数据库ID直接召唤。|r\n\n"..
 "|cffff0000左键点击输入ID|r\n"..
 "|cff999999（执行顺序：Bot）|r";
 
-MultiBot.tips.hunter.pet.family = 
+MultiBot.tips.hunter.pet.family =
 "通过 |cff00ff00类型|r 随机召唤宠物\n"..
 "|cffffffff选择一个宠物类型，随机召唤该类型的宠物。|r\n\n"..
 "|cffff0000左键点击选择类型|r\n"..
 "|cff999999（执行顺序：Bot）|r";
 
-MultiBot.tips.hunter.pet.rename = 
+MultiBot.tips.hunter.pet.rename =
 "重命名当前宠物\n"..
 "|cffffffff打开输入框为当前宠物设置新名字。|r\n\n"..
 "|cffff0000左键点击重命名|r\n"..
@@ -2378,7 +2378,7 @@ MultiBot.tips.paladin.dps.dpsAssist =
 "|cffff0000左键点击启用或禁用DPS辅助|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.paladin.dps.dpsAoe = 
+MultiBot.tips.paladin.dps.dpsAoe =
 "DPS范围攻击|cffffffff\n"..
 "启用DPS范围攻击策略。\n"..
 "DPS范围攻击、DPS辅助和坦克辅助相互排斥。\n"..
@@ -2386,7 +2386,7 @@ MultiBot.tips.paladin.dps.dpsAoe =
 "|cffff0000左键点击启用或禁用DPS范围攻击|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.paladin.dps.dps = 
+MultiBot.tips.paladin.dps.dps =
 "DPS|cffffffff\n"..
 "启用DPS策略。\n"..
 "DPS范围攻击、DPS辅助和坦克辅助相互排斥。\n"..
@@ -2410,7 +2410,7 @@ MultiBot.tips.paladin.dps.healerdps =
 "|cffff0000Left-Click to enable or disable HealerDps|r\n"..
 "|cf9999999(Execution-Order: Bot)|r";
 
-MultiBot.tips.paladin.tankAssist = 
+MultiBot.tips.paladin.tankAssist =
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..
 "DPS范围攻击、DPS辅助和坦克辅助相互排斥。\n"..
@@ -2418,7 +2418,7 @@ MultiBot.tips.paladin.tankAssist =
 "|cffff0000左键单击以启用或禁用坦克辅助|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.paladin.tank = 
+MultiBot.tips.paladin.tank =
 "坦克|cffffffff\n"..
 "启用坦克策略。\n"..
 "坦克、DPS和治疗相互排斥。\n"..
@@ -2511,7 +2511,7 @@ MultiBot.tips.priest.dps.dpsDebuff =
 "|cffff0000左键单击以启用或禁用DPS减益|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.priest.dps.dpsAoe = 
+MultiBot.tips.priest.dps.dpsAoe =
 "DPS范围攻击|cffffffff\n"..
 "启用DPS范围攻击策略。\n"..
 "DPS范围攻击、DPS辅助('治疗者输出')和坦克辅助相互排斥。\n"..
@@ -2519,13 +2519,13 @@ MultiBot.tips.priest.dps.dpsAoe =
 "|cffff0000左键点击启用或禁用DPS范围攻击|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.priest.dps.dps = 
+MultiBot.tips.priest.dps.dps =
 "DPS|cffffffff\n"..
 "启用DPS策略。\n"..
 "|cffff0000左键单击以启用或禁用DPS策略|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.priest.tankAssist = 
+MultiBot.tips.priest.tankAssist =
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..
 "DPS范围攻击、DPS辅助('治疗者输出')和坦克辅助相互排斥。\n"..
@@ -2549,7 +2549,7 @@ MultiBot.tips.rogue.dps.dpsAssist =
 "|cffff0000左键单击以启用或禁用DPS辅助|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.rogue.dps.dpsAoe = 
+MultiBot.tips.rogue.dps.dpsAoe =
 "DPS范围攻击|cffffffff\n"..
 "启用DPS范围攻击策略。\n"..
 "DPS范围攻击、DPS辅助和坦克辅助相互排斥。\n"..
@@ -2557,7 +2557,7 @@ MultiBot.tips.rogue.dps.dpsAoe =
 "|cffff0000左键点击启用或禁用DPS范围攻击|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.rogue.dps.dps = 
+MultiBot.tips.rogue.dps.dps =
 "DPS|cffffffff\n"..
 "启用DPS策略。|r\n\n"..
 "|cffff0000左键单击以启用或禁用DPS|r\n"..
@@ -2587,7 +2587,7 @@ MultiBot.tips.rogue.dps.boost =
 "|cffff0000左键点击 启用/停用 爆发|r\n"..
 "（执行顺序：Bot）|r";
 	
-MultiBot.tips.rogue.tankAssist = 
+MultiBot.tips.rogue.tankAssist =
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..
 "DPS范围攻击、DPS辅助和坦克辅助相互排斥。\n"..
@@ -2628,27 +2628,27 @@ MultiBot.tips.shaman.ctotem.searing =
 "灼热\n\n"..
 "|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
-MultiBot.tips.shaman.ctotem.magma =      
+MultiBot.tips.shaman.ctotem.magma =
 "熔岩\n\n"..
 "|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
-MultiBot.tips.shaman.ctotem.fltong =  
+MultiBot.tips.shaman.ctotem.fltong =
 "火舌\n\n"..
 "|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
-MultiBot.tips.shaman.ctotem.towrath = 
+MultiBot.tips.shaman.ctotem.towrath =
 "天怒图腾\n\n"..
 "|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
-MultiBot.tips.shaman.ctotem.frostres = 
+MultiBot.tips.shaman.ctotem.frostres =
 "冰霜抗性\n\n"..
 "|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
-MultiBot.tips.shaman.ctotem.healstream = 
+MultiBot.tips.shaman.ctotem.healstream =
 "治疗之泉\n\n"..
 "|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
-MultiBot.tips.shaman.ctotem.manasprin = 
+MultiBot.tips.shaman.ctotem.manasprin =
 "法力之泉\n\n"..
 "|cffff0000左键单击以选择或取消选择此图腾|r\n";
 
@@ -2782,7 +2782,7 @@ MultiBot.tips.shaman.dps.dpsAssist =
 "|cffff0000左键点击启用或禁用DPS辅助|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.shaman.dps.dpsAoe = 
+MultiBot.tips.shaman.dps.dpsAoe =
 "DPS范围攻击|cffffffff\n"..
 "启用DPS范围攻击策略。\n"..
 "DPS范围攻击、DPS辅助和坦克辅助相互排斥。\n"..
@@ -2806,7 +2806,7 @@ MultiBot.tips.shaman.dps.healerdps =
 "|cffff0000左键点击以启用或禁用治疗者-DPS|r\n"..
 "|cf9999999(执行顺序: Bot)|r";
 
-MultiBot.tips.shaman.tankAssist = 
+MultiBot.tips.shaman.tankAssist =
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..
 "DPS范围攻击、DPS辅助和坦克辅助相互排斥。\n"..
@@ -2862,7 +2862,7 @@ MultiBot.tips.warlock.dps.dpsDebuff =
 "|cffff0000左键单击以启用或禁用DPS减益|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.warlock.dps.dpsAoe = 
+MultiBot.tips.warlock.dps.dpsAoe =
 "DPS范围攻击|cffffffff\n"..
 "启用DPS范围攻击策略。\n"..
 "DPS范围攻击、DPS辅助和坦克辅助相互排斥。\n"..
@@ -2870,7 +2870,7 @@ MultiBot.tips.warlock.dps.dpsAoe =
 "|cffff0000左键点击启用或禁用DPS范围攻击|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.warlock.dps.dps = 
+MultiBot.tips.warlock.dps.dps =
 "DPS|cffffffff\n"..
 "启用DPS策略。\n"..
 "DPS范围攻击、DPS辅助和坦克辅助相互排斥。\n"..
@@ -2888,7 +2888,7 @@ MultiBot.tips.warlock.dps.metamelee =
 "|cffff0000左键点击以启用或禁用近战形态|r\n"..
 "|cff999999(执行顺序: Bot)|r";
 
-MultiBot.tips.warlock.tankAssist = 
+MultiBot.tips.warlock.tankAssist =
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..
 "DPS范围攻击、DPS辅助和坦克辅助相互排斥。\n"..
@@ -2896,7 +2896,7 @@ MultiBot.tips.warlock.tankAssist =
 "|cffff0000左键单击以启用或禁用坦克辅助|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.warlock.tank = 
+MultiBot.tips.warlock.tank =
 "坦克|cffffffff\n"..
 "启用坦克策略。\n"..
 "坦克、DPS和治疗相互排斥。\n"..
@@ -2920,7 +2920,7 @@ MultiBot.tips.warrior.dps.dpsAssist =
 "|cffff0000左键点击启用或禁用DPS辅助|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.warrior.dps.dpsAoe = 
+MultiBot.tips.warrior.dps.dpsAoe =
 "DPS范围攻击|cffffffff\n"..
 "启用DPS范围攻击策略。\n"..
 "DPS范围攻击、DPS辅助和坦克辅助相互排斥。\n"..
@@ -2928,7 +2928,7 @@ MultiBot.tips.warrior.dps.dpsAoe =
 "|cffff0000左键点击启用或禁用DPS范围攻击|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.warrior.tankAssist = 
+MultiBot.tips.warrior.tankAssist =
 "坦克辅助|cffffffff\n"..
 "启用坦克辅助策略。\n"..
 "DPS范围攻击、DPS辅助和坦克辅助相互排斥。\n"..
@@ -2936,7 +2936,7 @@ MultiBot.tips.warrior.tankAssist =
 "|cffff0000左键点击启用或禁用坦克辅助|r\n"..
 "|cf9999999(执行命令: 机器人)|r";
 
-MultiBot.tips.warrior.tank = 
+MultiBot.tips.warrior.tank =
 "坦克|cffffffff\n"..
 "启用坦克策略。\n"..
 "|cffff0000左键点击启用或禁用坦克辅助|r\n"..
@@ -3064,7 +3064,7 @@ MultiBot.tips.every.talent =
 
 -- WIPE COMMAND --
 
-MultiBot.tips.every.wipe = 
+MultiBot.tips.every.wipe =
 "Wipe|cffffffff\n"..
 "通过击杀并复活来完全重置机器人，\n".. 
 "有助于清除其状态（位置、生命值、法力值等）。|r\n\n"..
@@ -3496,92 +3496,92 @@ MultiBot.tips.warlock.curses = {}
 MultiBot.tips.warlock.stones = {}
 MultiBot.tips.warlock.pets = {}
 
-MultiBot.tips.warlock.stones.master = 
+MultiBot.tips.warlock.stones.master =
 "武器魔石选择|cffffffff\n"..
 "选择机器人将使用哪种武器魔石。|r\n\n"..
 "|cffff0000左键点击打开菜单|r\n"..
 "|cff999999（执行顺序：机器人）|r";
 
-MultiBot.tips.warlock.stones.spellstone = 
+MultiBot.tips.warlock.stones.spellstone =
 "法术石|cffffffff\n"..
 "应用法术石（非战斗策略）|r\n\n"..
 "|cffff0000左键点击以应用|r\n"..
 "|cffff0000再次左键点击以移除|r\n"..
 "|cff999999（执行顺序：机器人）|r";
 
-MultiBot.tips.warlock.stones.firestone = 
+MultiBot.tips.warlock.stones.firestone =
 "火焰石|cffffffff\n"..
 "应用火焰石（非战斗策略）|r\n\n"..
 "|cffff0000左键点击以应用|r\n"..
 "|cffff0000再次左键点击以移除|r\n"..
 "|cff999999（执行顺序：机器人）|r";
 
-MultiBot.tips.warlock.soulstones.masterbutton = 
+MultiBot.tips.warlock.soulstones.masterbutton =
 "灵魂石菜单（NC）|cffffffff\n"..
 "选择哪个机器人施放灵魂石。|r\n\n"..
 "|cffff0000左键点击打开菜单|r\n"..
 "|cff999999（执行顺序：机器人）|r";
 
-MultiBot.tips.warlock.soulstones.self = 
+MultiBot.tips.warlock.soulstones.self =
 "自身|cffffffff\n"..
 "机器人将在自己身上施放灵魂石（非战斗策略）|r\n\n"..
 "|cffff0000左键点击启用|r\n"..
 "|cffff0000再次点击关闭|r\n"..
 "|cff999999（执行顺序：机器人）|r";
 
-MultiBot.tips.warlock.soulstones.master = 
+MultiBot.tips.warlock.soulstones.master =
 "主人|cffffffff\n"..
 "机器人将在你身上施放灵魂石（非战斗策略）|r\n\n"..
 "|cffff0000左键点击启用|r\n"..
 "|cffff0000再次点击关闭|r\n"..
 "|cff999999（执行顺序：机器人）|r";
 
-MultiBot.tips.warlock.soulstones.tank = 
+MultiBot.tips.warlock.soulstones.tank =
 "坦克|cffffffff\n"..
 "机器人将在坦克身上施放灵魂石（非战斗策略）|r\n\n"..
 "|cffff0000左键点击启用|r\n"..
 "|cffff0000再次点击关闭|r\n"..
 "|cff999999（执行顺序：机器人）|r";
 
-MultiBot.tips.warlock.soulstones.healer = 
+MultiBot.tips.warlock.soulstones.healer =
 "治疗|cffffffff\n"..
 "机器人将在治疗者身上施放灵魂石（非战斗策略）|r\n\n"..
 "|cffff0000左键点击启用|r\n"..
 "|cffff0000再次点击关闭|r\n"..
 "|cff999999（执行顺序：机器人）|r";
 
-MultiBot.tips.warlock.pets.master = 
+MultiBot.tips.warlock.pets.master =
 "宠物选择|cffffffff\n"..
 "选择机器人应召唤的恶魔。|r\n\n"..
 "|cffff0000左键点击应用|r\n"..
 "|cffff0000右键点击移除|r\n"..
 "|cff999999(执行顺序：机器人)|r";
 
-MultiBot.tips.warlock.pets.imp = 
+MultiBot.tips.warlock.pets.imp =
 "小鬼|cffffffff\n"..
 "召唤小鬼|r\n\n"..
 "|cffff0000左键点击召唤|r\n"..
 "|cff999999(执行顺序：机器人)|r";
 
-MultiBot.tips.warlock.pets.voidwalker = 
+MultiBot.tips.warlock.pets.voidwalker =
 "虚空行者|cffffffff\n"..
 "召唤虚空行者|r\n\n"..
 "|cffff0000左键点击召唤|r\n"..
 "|cff999999(执行顺序：机器人)|r";
 
-MultiBot.tips.warlock.pets.succubus = 
+MultiBot.tips.warlock.pets.succubus =
 "魅魔|cffffffff\n"..
 "召唤魅魔|r\n\n"..
 "|cffff0000左键点击召唤|r\n"..
 "|cff999999(执行顺序：机器人)|r";
 
-MultiBot.tips.warlock.pets.felhunter = 
+MultiBot.tips.warlock.pets.felhunter =
 "地狱猎犬|cffffffff\n"..
 "召唤地狱猎犬|r\n\n"..
 "|cffff0000左键点击召唤|r\n"..
 "|cff999999(执行顺序：机器人)|r";
 
-MultiBot.tips.warlock.pets.felguard = 
+MultiBot.tips.warlock.pets.felguard =
 "地狱守卫|cffffffff\n"..
 "召唤地狱守卫|r\n\n"..
 "|cffff0000左键点击召唤|r\n"..
@@ -3595,32 +3595,32 @@ MultiBot.tips.warlock.curses.master =
 "当前激活的诅咒以灰色显示。|r\n"..
 "|cff999999(执行顺序：机器人)|r";
 
-MultiBot.tips.warlock.curses.agony = 
+MultiBot.tips.warlock.curses.agony =
 "痛苦诅咒|cffffffff|r\n\n"..
 "|cffff0000左键点击施放此诅咒。|r\n"..
 "|cff999999(执行顺序：机器人)|r";
 
-MultiBot.tips.warlock.curses.elements = 
+MultiBot.tips.warlock.curses.elements =
 "元素诅咒|cffffffff|r\n\n"..
 "|cffff0000左键点击施放此诅咒。|r\n"..
 "|cff999999(执行顺序：机器人)|r";
 
-MultiBot.tips.warlock.curses.exhaustion = 
+MultiBot.tips.warlock.curses.exhaustion =
 "疲劳诅咒|cffffffff|r\n\n"..
 "|cffff0000左键点击施放此诅咒。|r\n"..
 "|cff999999(执行顺序：机器人)|r";
 
-MultiBot.tips.warlock.curses.doom = 
+MultiBot.tips.warlock.curses.doom =
 "末日诅咒|cffffffff|r\n\n"..
 "|cffff0000左键点击施放此诅咒。|r\n"..
 "|cff999999(执行顺序：机器人)|r";
 
-MultiBot.tips.warlock.curses.weakness = 
+MultiBot.tips.warlock.curses.weakness =
 "虚弱诅咒|cffffffff|r\n\n"..
 "|cffff0000左键点击施放此诅咒。|r\n"..
 "|cff999999(执行顺序：机器人)|r";
 
-MultiBot.tips.warlock.curses.tongues = 
+MultiBot.tips.warlock.curses.tongues =
 "语言诅咒|cffffffff|r\n\n"..
 "|cffff0000左键点击施放此诅咒。|r\n"..
 "|cff999999(执行顺序：机器人)|r";
@@ -3724,7 +3724,7 @@ MultiBot.tips.spec.warriorprotecpvp =
 
 -- RTSC --
 
-MultiBot.tips.rtsc.master = 
+MultiBot.tips.rtsc.master =
 "RTSC 控制\n|cffffffff"..
 "通过此控制，您可以定义位置并将机器人发送到那里。\n"..
 "执行命令显示突击队的接收者。|r\n\n"..
@@ -3733,7 +3733,7 @@ MultiBot.tips.rtsc.master =
 "|cffff0000右键点击启用 RTSC 策略|r\n"..
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.rtsc.macro = 
+MultiBot.tips.rtsc.macro =
 "位置存储 \n|cffffffff"..
 "此按钮允许你保存一个位置。\n"..
 "左键点击，然后使用 AEDM 技能标记一个位置。|r\n\n"..
@@ -3749,7 +3749,7 @@ MultiBot.tips.rtsc.spot =
 "|cffff0000右键点击删除位置|r\n"..
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.rtsc.group1 = 
+MultiBot.tips.rtsc.group1 =
 "队伍选择器\n|cffffffff"..
 "此按钮用于选择第一组队伍并将其派往指定位置\n"..
 "左键点击，然后使用 AEDM 技能标记一个位置。|r\n\n"..
@@ -3758,7 +3758,7 @@ MultiBot.tips.rtsc.group1 =
 "|cffff0000右键点击可选择第一组队伍|r\n"..
 "|cff999999(执行命令：队伍，团队)|r";
 
-MultiBot.tips.rtsc.group2 = 
+MultiBot.tips.rtsc.group2 =
 "队伍选择器\n|cffffffff"..
 "此按钮用于选择第二组队伍并将其派往指定位置。\n"..
 "左键点击，然后使用 AEDM 技能标记一个位置|r\n\n"..
@@ -3767,7 +3767,7 @@ MultiBot.tips.rtsc.group2 =
 "|cffff0000右键点击可选择第二组队伍|r\n"..
 "|cff999999(执行命令：队伍，团队)|r";
 
-MultiBot.tips.rtsc.group3 = 
+MultiBot.tips.rtsc.group3 =
 "队伍选择器\n|cffffffff"..
 "此按钮用于选择第三组队伍并将其派往指定位置。\n"..
 "左键点击，然后使用 AEDM 技能标记一个位置。|r\n\n"..
@@ -3776,7 +3776,7 @@ MultiBot.tips.rtsc.group3 =
 "|cffff0000右键点击可选择第三组队伍|r\n"..
 "|cff999999(执行命令：队伍，团队)|r";
 
-MultiBot.tips.rtsc.group4 = 
+MultiBot.tips.rtsc.group4 =
 "队伍选择器\n|cffffffff"..
 "此按钮用于选择第四组队伍并将其派往指定位置。\n"..
 "左键点击，然后使用 AEDM 技能标记一个位置。|r\n\n"..
@@ -3785,7 +3785,7 @@ MultiBot.tips.rtsc.group4 =
 "|cffff0000右键点击可选择第四组队伍|r\n"..
 "|cff999999(执行命令：队伍，团队)|r";
 
-MultiBot.tips.rtsc.group5 = 
+MultiBot.tips.rtsc.group5 =
 "队伍选择器\n|cffffffff"..
 "此按钮用于选择第五组队伍并将其派往指定位置。\n"..
 "左键点击，然后使用 AEDM 技能标记一个位置。|r\n\n"..
@@ -3794,7 +3794,7 @@ MultiBot.tips.rtsc.group5 =
 "|cffff0000右键点击可选择第五组队伍|r\n"..
 "|cff999999(执行命令：队伍，团队)|r";
 
-MultiBot.tips.rtsc.tank = 
+MultiBot.tips.rtsc.tank =
 "坦克选择器\n|cffffffff"..
 "此按钮用于选择坦克机器人并将它们发送到某个位置。\n"..
 "左键点击，然后使用 AEDM 技能标记一个位置。|r\n\n"..
@@ -3803,7 +3803,7 @@ MultiBot.tips.rtsc.tank =
 "|cffff0000右键点击选择坦克机器人|r\n"..
 "|cff999999(执行命令: 系统)|r";
 
-MultiBot.tips.rtsc.dps = 
+MultiBot.tips.rtsc.dps =
 "DPS 选择器\n|cffffffff"..
 "此按钮用于选择 DPS 机器人并将它们发送到一个位置。\n"..
 "左键点击，然后使用 AEDM 法术标记一个位置。|r\n\n"..
@@ -3812,7 +3812,7 @@ MultiBot.tips.rtsc.dps =
 "|cffff0000右键点击选择 DPS 机器人。|r\n"..
 "|cff999999(执行命令：队伍，团队)|r";
 
-MultiBot.tips.rtsc.healer = 
+MultiBot.tips.rtsc.healer =
 "治疗者选择器\n|cffffffff"..
 "此按钮用于选择治疗者机器人并将它们发送到一个位置。\n"..
 "左键点击，然后使用 AEDM 技能标记一个位置。|r\n\n"..
@@ -3821,7 +3821,7 @@ MultiBot.tips.rtsc.healer =
 "|cffff0000右键点击选择治疗者机器人。|r\n"..
 "|cff999999(执行命令：队伍，团队)|r";
 
-MultiBot.tips.rtsc.melee = 
+MultiBot.tips.rtsc.melee =
 "近战选择器\n|cffffffff"..
 "此按钮用于选择近战战士并将他们发送到一个位置。\n"..
 "左键点击，然后使用 AEDM 法术标记一个位置。|r\n\n"..
@@ -3830,7 +3830,7 @@ MultiBot.tips.rtsc.melee =
 "|cffff0000右键点击选择近战战士。|r\n"..
 "|cff999999(执行命令：队伍，团队)|r";
 
-MultiBot.tips.rtsc.ranged = 
+MultiBot.tips.rtsc.ranged =
 "远程选择器\n|cffffffff"..
 "这个按钮用于选择远程战士并将他们发送到一个位置。\n"..
 "左键点击，然后使用 AEDM 法术标记一个位置。|r\n\n"..
@@ -3855,7 +3855,7 @@ MultiBot.tips.rtsc.rangeddps =
 "|cffff0000右键选择|r\n"..
 "|cff999999(执行者：团队、小队)|r";
 
-MultiBot.tips.rtsc.all = 
+MultiBot.tips.rtsc.all =
 "全选器\n|cffffffff"..
 "此按钮用于选择所有机器人并将它们发送到一个位置。\n"..
 "左键点击，然后使用 AEDM 法术标记一个位置。|r\n\n"..
@@ -3864,7 +3864,7 @@ MultiBot.tips.rtsc.all =
 "|cffff0000右键点击选择所有机器人。|r\n"..
 "|cff999999(执行命令：队伍，团队)|r";
 
-MultiBot.tips.rtsc.browse = 
+MultiBot.tips.rtsc.browse =
 "浏览选择器\n|cffffffff"..
 "此按钮用于切换不同的选择栏。|r\n\n"..
 "|cffff0000左键点击以切换选择栏|r\n"..

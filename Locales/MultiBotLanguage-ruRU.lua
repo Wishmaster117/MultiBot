@@ -23,7 +23,7 @@ MultiBot.info.itemsellalert =
 "Я не могу продать этот предмет.";
 
  -- MINIMAP BUTTON
-MultiBot.info.butttitle = 
+MultiBot.info.butttitle =
 "|cffffd100MultiBot|r"
  
 MultiBot.info.buttontoggle =
@@ -163,7 +163,7 @@ MultiBot.info.saving =
 MultiBot.info.action =
 "Мне нужно выбрать действие.";
 
-MultiBot.info.combination = 
+MultiBot.info.combination =
 "Нет предметов для этой комбинации.";
 
 --MultiBot.info.language =
@@ -195,10 +195,10 @@ MultiBot.info.talent.Level =
 MultiBot.info.talent.OutOfRange =
 "Бот вне зоны досягаемости.";
 
-MultiBot.info.talent.Apply = 
+MultiBot.info.talent.Apply =
 "Применить";
 
-MultiBot.info.talent.Copy = 
+MultiBot.info.talent.Copy =
 "Копировать";
 
 MultiBot.info.talent.Title =
@@ -325,7 +325,7 @@ MultiBot.tips.move.raidus =
 
 -- TANKER --
 
-MultiBot.tips.tanker.master = 
+MultiBot.tips.tanker.master =
 "Танковая атака\n|cffffffff"..
 "С помощью этой кнопки танки атакуют вашу цель.\n"..
 "Порядок выполнения показывает получателя команд.|r\n\n"..
@@ -334,7 +334,7 @@ MultiBot.tips.tanker.master =
 
 -- ATTACK --
 
-MultiBot.tips.attack.master = 
+MultiBot.tips.attack.master =
 "Управление атакой\n|cffffffff"..
 "С помощью этого элемента вы можете отдавать команду на атаку.\n"..
 "Правый клик по опциям, чтобы задать новое действие по умолчанию.\n"..
@@ -344,7 +344,7 @@ MultiBot.tips.attack.master =
 "|cffff0000Правый клик для показа/скрытия опций|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.attack.attack = 
+MultiBot.tips.attack.attack =
 "Атака\n|cffffffff"..
 "По этой команде весь рейд или группа атакуют вашу цель.|r\n\n"..
 "|cffff0000Левый клик - выполнить Атаку|r\n"..
@@ -352,7 +352,7 @@ MultiBot.tips.attack.attack =
 "|cffff0000Правый клик - установить как действие по умолчанию|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.attack.ranged = 
+MultiBot.tips.attack.ranged =
 "Дальний бой\n|cffffffff"..
 "По этой команде бойцы дальнего боя атакуют вашу цель.|r\n\n"..
 "|cffff0000Левый клик - выполнить атаку дальнего боя|r\n"..
@@ -360,7 +360,7 @@ MultiBot.tips.attack.ranged =
 "|cffff0000Правый клик - установить как действие по умолчанию|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.attack.melee = 
+MultiBot.tips.attack.melee =
 "Ближний бой\n|cffffffff"..
 "По этой команде бойцы ближнего боя атакуют вашу цель.|r\n\n"..
 "|cffff0000Левый клик - выполнить атаку ближнего боя|r\n"..
@@ -368,7 +368,7 @@ MultiBot.tips.attack.melee =
 "|cffff0000Правый клик - установить как действие по умолчанию|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.attack.healer = 
+MultiBot.tips.attack.healer =
 "Атака лекарей\n|cffffffff"..
 "По этой команде лекари атакуют вашу цель.|r\n\n"..
 "|cffff0000Левый клик - выполнить атаку лекарей|r\n"..
@@ -376,7 +376,7 @@ MultiBot.tips.attack.healer =
 "|cffff0000Правый клик - установить как действие по умолчанию|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.attack.dps = 
+MultiBot.tips.attack.dps =
 "Атака ДПС\n|cffffffff"..
 "По этой команде ДПС атакуют вашу цель.|r\n\n"..
 "|cffff0000Левый клик - выполнить атаку ДПС|r\n"..
@@ -384,7 +384,7 @@ MultiBot.tips.attack.dps =
 "|cffff0000Правый клик - установить как действие по умолчанию|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.attack.tank = 
+MultiBot.tips.attack.tank =
 "Танковая атака\n|cffffffff"..
 "По этой команде танки атакуют вашу цель.|r\n\n"..
 "|cffff0000Левый клик - выполнить танковую атаку|r\n"..
@@ -394,7 +394,7 @@ MultiBot.tips.attack.tank =
 
 -- MODE --
 
-MultiBot.tips.mode.master = 
+MultiBot.tips.mode.master =
 "Управление режимами\n|cffffffff"..
 "Этот элемент позволяет включать и выключать боевые режимы.\n"..
 "Левый клик по опциям для выбора другого боевого режима.\n"..
@@ -404,7 +404,7 @@ MultiBot.tips.mode.master =
 "|cffff0000Правый клик - показать/скрыть опции|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.mode.passive = 
+MultiBot.tips.mode.passive =
 "Пассивный режим\n|cffffffff"..
 "В пассивном режиме ваши боты не будут атаковать противников.\n"..
 "Этот режим полезен, чтобы предотвратить атаку танком противников при пуле.\n"..
@@ -413,7 +413,7 @@ MultiBot.tips.mode.passive =
 "|cffff0000Левый клик - выбрать и активировать пассивный режим|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.mode.grind = 
+MultiBot.tips.mode.grind =
 "Режим гринд\n|cffffffff"..
 "В режиме гринд ваши боты самостоятельно атакуют противников.\n"..
 "Этот режим полезен для прокачки ваших ботов.|r\n\n"..
@@ -422,7 +422,7 @@ MultiBot.tips.mode.grind =
 
 -- STAY|FOLLOW --
 
-MultiBot.tips.stallow.stay = 
+MultiBot.tips.stallow.stay =
 "Стоять|Следовать\n|cffffffff"..
 "Этой кнопкой вы можете отдать команду 'Стоять'.\n"..
 "Эта команда отменяет пассивный режим, в комбинации должна идти первой.\n"..
@@ -430,7 +430,7 @@ MultiBot.tips.stallow.stay =
 "|cffff0000Левый клик - выполнить 'Стоять'|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.stallow.follow = 
+MultiBot.tips.stallow.follow =
 "Стоять|Следовать\n|cffffffff"..
 "Этой кнопкой вы можете отдать команду 'Следовать'.\n"..
 "Эта команда отменяет пассивный режим, в комбинации должна идти первой.\n"..
@@ -438,7 +438,7 @@ MultiBot.tips.stallow.follow =
 "|cffff0000Левый клик - выполнить 'Следовать'|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.expand.stay = 
+MultiBot.tips.expand.stay =
 "Стоять\n|cffffffff"..
 "Этой кнопкой вы можете немедленно отдать команду 'Стоять'.\n"..
 "Эта команда отменяет пассивный режим, в комбинации должна идти первой.\n"..
@@ -446,7 +446,7 @@ MultiBot.tips.expand.stay =
 "|cffff0000Левый клик - выполнить 'Стоять'|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.expand.follow = 
+MultiBot.tips.expand.follow =
 "Следовать\n|cffffffff"..
 "Этой кнопкой вы можете немедленно отдать команду 'Следовать'.\n"..
 "Эта команда отменяет пассивный режим, в комбинации должна идти первой.\n"..
@@ -456,7 +456,7 @@ MultiBot.tips.expand.follow =
 
 -- FLEE --
 
-MultiBot.tips.flee.master = 
+MultiBot.tips.flee.master =
 "Управление отступлением\n|cffffffff"..
 "Этой кнопкой вы можете отдать команду к отступлению.\n"..
 "Правый клик по опциям для определения нового действия по умолчанию.\n"..
@@ -466,7 +466,7 @@ MultiBot.tips.flee.master =
 "|cffff0000Правый клик - показать/скрыть опции|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.flee.flee = 
+MultiBot.tips.flee.flee =
 "Отступление\n|cffffffff"..
 "Этой кнопкой весь рейд или группа отступают.|r\n\n"..
 "|cffff0000Левый клик - выполнить отступление|r\n"..
@@ -474,7 +474,7 @@ MultiBot.tips.flee.flee =
 "|cffff0000Правый клик - установить как действие по умолчанию|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.flee.ranged = 
+MultiBot.tips.flee.ranged =
 "Отступление дальнего боя\n|cffffffff"..
 "Этой кнопкой бойцы дальнего боя отступают.|r\n\n"..
 "|cffff0000Левый клик - выполнить отступление дальнего боя|r\n"..
@@ -482,7 +482,7 @@ MultiBot.tips.flee.ranged =
 "|cffff0000Правый клик - установить как действие по умолчанию|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.flee.melee = 
+MultiBot.tips.flee.melee =
 "Отступление ближнего боя\n|cffffffff"..
 "Этой кнопкой бойцы ближнего боя отступают.|r\n\n"..
 "|cffff0000Левый клик - выполнить отступление ближнего боя|r\n"..
@@ -490,7 +490,7 @@ MultiBot.tips.flee.melee =
 "|cffff0000Правый клик - установить как действие по умолчанию|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.flee.healer = 
+MultiBot.tips.flee.healer =
 "Отступление лекарей\n|cffffffff"..
 "Этой кнопкой лекари отступают.|r\n\n"..
 "|cffff0000Левый клик - выполнить отступление лекарей|r\n"..
@@ -498,7 +498,7 @@ MultiBot.tips.flee.healer =
 "|cffff0000Правый клик - установить как действие по умолчанию|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.flee.dps = 
+MultiBot.tips.flee.dps =
 "Отступление ДПС\n|cffffffff"..
 "Этой кнопкой ДПС отступают.|r\n\n"..
 "|cffff0000Левый клик - выполнить отступление ДПС|r\n"..
@@ -506,7 +506,7 @@ MultiBot.tips.flee.dps =
 "|cffff0000Правый клик - установить как действие по умолчанию|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.flee.tank = 
+MultiBot.tips.flee.tank =
 "Отступление танков\n|cffffffff"..
 "Этой кнопкой танки отступают.|r\n\n"..
 "|cffff0000Левый клик - выполнить отступление танков|r\n"..
@@ -514,7 +514,7 @@ MultiBot.tips.flee.tank =
 "|cffff0000Правый клик - установить как действие по умолчанию|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.flee.target = 
+MultiBot.tips.flee.target =
 "Отступление цели\n|cffffffff"..
 "Этой кнопкой цель отступает.|r\n\n"..
 "|cffff0000Левый клик - выполнить отступление цели|r\n"..
@@ -524,7 +524,7 @@ MultiBot.tips.flee.target =
 
 -- FORMATION --
 
-MultiBot.tips.format.master = 
+MultiBot.tips.format.master =
 "Управление построением\n|cffffffff"..
 "Эта кнопка позволяет изменить построение ваших ботов.\n"..
 "Порядок выполнения показывает получателя команд.|r\n\n"..
@@ -533,7 +533,7 @@ MultiBot.tips.format.master =
 "|cffff0000Правый клик - запросить текущее построение|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.format.arrow = 
+MultiBot.tips.format.arrow =
 "Клин\n|cffffffff"..
 "Боты выстраиваются клином.\n"..
 "Направление взгляда ботов - в вашу сторону.\n\n"..
@@ -544,42 +544,42 @@ MultiBot.tips.format.arrow =
 "|cffff0000Левый клик - выбрать построение клином|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.format.queue = 
+MultiBot.tips.format.queue =
 "Колонна\n|cffffffff"..
 "Боты выстраиваются в оборонительную колонну.\n"..
 "Направление взгляда ботов - в вашу сторону.|r\n\n"..
 "|cffff0000Левый клик - выбрать построение колонной|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.format.near = 
+MultiBot.tips.format.near =
 "Скученное построение\n|cffffffff"..
 "Боты собираются рядом.\n"..
 "Направление взгляда ботов - в вашу сторону.|r\n\n"..
 "|cffff0000Левый клик - выбрать скученное построение|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.format.melee = 
+MultiBot.tips.format.melee =
 "Построение для ближнего боя\n|cffffffff"..
 "Боты выстраиваются для ближнего боя.\n"..
 "Направление взгляда ботов - в вашу сторону.|r\n\n"..
 "|cffff0000Левый клик - выбрать построение для ближнего боя|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.format.line = 
+MultiBot.tips.format.line =
 "Шеренга\n|cffffffff"..
 "Боты выстраиваются в параллельные линии слева и справа.\n"..
 "Направление взгляда ботов - в вашу сторону.|r\n\n"..
 "|cffff0000Левый клик - выбрать построение шеренгой|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.format.circle = 
+MultiBot.tips.format.circle =
 "Круг\n|cffffffff"..
 "Боты окружают вас кольцом.\n"..
 "Направление взгляда ботов - наружу.|r\n\n"..
 "|cffff0000Левый клик - выбрать круговое построение|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.format.chaos = 
+MultiBot.tips.format.chaos =
 "Хаотичное построение\n|cffffffff"..
 "Каждый бот следует за вами самостоятельно.\n"..
 "Они располагаются как придётся.\n"..
@@ -587,7 +587,7 @@ MultiBot.tips.format.chaos =
 "|cffff0000Левый клик - выбрать хаотичное построение|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.format.shield = 
+MultiBot.tips.format.shield =
 "Щит\n|cffffffff"..
 "Боты выстраиваются впереди, слева и справа.\n"..
 "Направление взгляда ботов - в вашу сторону.|r\n\n"..
@@ -596,7 +596,7 @@ MultiBot.tips.format.shield =
 
 -- BEASTMASTER --
 
-MultiBot.tips.beast.master = 
+MultiBot.tips.beast.master =
 "Управление звероводством\n|cffffffff"..
 "Эта кнопка для мода NPC-Beastmaster Azerothcore.\n"..
 "Мод позволяет любому персонажу иметь питомца, как у охотников.\n"..
@@ -638,7 +638,7 @@ MultiBot.tips.beast.call =
 
 -- CREATOR --
 
-MultiBot.tips.creator.master = 
+MultiBot.tips.creator.master =
 "Управление созданием\n|cffffffff"..
 "Этот интерфейс позволяет создавать ботов по классам.\n"..
 "По умолчанию разрешено до 40 ботов на аккаунт.\n"..
@@ -708,22 +708,22 @@ MultiBot.tips.creator.deathknight =
 "|cffff0000Левый клик для выбора пола Рыцаря Смерти.|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.creator.notarget = 
+MultiBot.tips.creator.notarget =
 "У меня нет цели.";
 
-MultiBot.tips.creator.gendermale = 
+MultiBot.tips.creator.gendermale =
 "Создать мужского спутника.\n|cffffffff"..
 "Сильный, смелый и всегда готов к бою... или к кружке пива.|r\n\n"..
 "|cffff0000Левый клик для создания|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.creator.genderfemale = 
+MultiBot.tips.creator.genderfemale =
 "Создать женского спутника.\n|cffffffff"..
 "Элегантна, смертоносна и её никогда нельзя недооценивать.|r\n\n"..
 "|cffff0000Левый клик для создания|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.creator.genderrandom = 
+MultiBot.tips.creator.genderrandom =
 "Создать бота со случайным полом.\n|cffffffff"..
 "Судьба решит за тебя!|r\n\n"..
 "|cffff0000Левый клик для создания|r\n"..
@@ -1151,7 +1151,7 @@ MultiBot.tips.game.memory =
 "|cffff0000Right-Click to forget the Location|r\n"..
 "|cff999999(Execution-Order: Yourself)|r";
 
-MultiBot.tips.game.itemus = 
+MultiBot.tips.game.itemus =
 "Itemus\n|cffffffff"..
 "Содержит все предметы для Гейммастера.\n"..
 "Выберите цель, кликните на предмет - и желание исполнится.\n"..
@@ -1160,7 +1160,7 @@ MultiBot.tips.game.itemus =
 "|cffff0000Левый клик - открыть/закрыть Itemus|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.game.iconos = 
+MultiBot.tips.game.iconos =
 "Iconos\n|cffffffff"..
 "Содержит все иконки и их пути.\n"..
 "Порядок выполнения показывает получателя команд.|r\n\n"..
@@ -1225,49 +1225,49 @@ MultiBot.tips.quests.talk =
 MultiBot.tips.quests.talkerror =
 "Пожалуйста, выберите NPC для разговора.";
 
-MultiBot.tips.quests.questcomperror = 
+MultiBot.tips.quests.questcomperror =
 "Пожалуйста, выберите бота для просмотра его квестов.";
 
 MultiBot.tips.quests.sendwhisp =
 "Спросить бота";
 
-MultiBot.tips.quests.sendpartyraid = 
+MultiBot.tips.quests.sendpartyraid =
 "Спросить группу или рейд.";
 
-MultiBot.tips.quests.completed = 
+MultiBot.tips.quests.completed =
 "Выполненные квесты\n|cffffffff"..
 "Эта кнопка позволяет узнать у бота или у всех ботов список выполненных квестов.\n\n"..
 "|cffff0000Левый клик — открыть подменю|r\n"..
 "|cff999999(Порядок выполнения: рейд, группа, бот)|r";
 
-MultiBot.tips.quests.incompleted = 
+MultiBot.tips.quests.incompleted =
 "Невыполненные квесты\n|cffffffff"..
 "Эта кнопка позволяет узнать у бота или у всех ботов список невыполненных квестов.\n\n"..
 "|cffff0000Левый клик — открыть подменю|r\n"..
 "|cff999999(Порядок выполнения: рейд, группа, бот)|r";
 
-MultiBot.tips.quests.allcompleted = 
+MultiBot.tips.quests.allcompleted =
 "Все квесты\n|cffffffff"..
 "Эта кнопка позволяет узнать у бота или всех ботов список всех квестов.\n\n"..
 "|cffff0000Левый клик — открыть подменю|r\n"..
 "|cff999999(Порядок выполнения: рейд, группа, бот)|r";
 
-MultiBot.tips.quests.incomplist = 
+MultiBot.tips.quests.incomplist =
 "Текущие квесты бота(ов)";
 
-MultiBot.tips.quests.complist = 
+MultiBot.tips.quests.complist =
 "Список выполненных квестов бота(ов)";
 
-MultiBot.tips.quests.alllist = 
+MultiBot.tips.quests.alllist =
 "Все квесты бота(ов)";
 
-MultiBot.tips.quests.compheader = 
+MultiBot.tips.quests.compheader =
 "** Выполненные квесты **";
 
-MultiBot.tips.quests.incompheader = 
+MultiBot.tips.quests.incompheader =
 "** Невыполненные квесты **";
 
-MultiBot.tips.quests.botsword = 
+MultiBot.tips.quests.botsword =
 "Боты : ";
 
 -- ИСПОЛЬЗОВАТЬ GOBs --
@@ -1277,22 +1277,22 @@ MultiBot.tips.quests.gobsmaster =
 "|cffff0000Левый клик — открыть|r\n"..
 "|cff999999(Порядок выполнения: система)|r";
 
-MultiBot.tips.quests.gobenter = 
+MultiBot.tips.quests.gobenter =
 "Использовать игровой объект\n|cffffffff"..
 "Эта кнопка открывает окно для ввода названия игрового объекта.\n\n"..
 "|cffff0000Левый клик — открыть окно ввода|r\n"..
 "|cff999999(Порядок выполнения: бот)|r";
 
-MultiBot.tips.quests.gobsearch = 
+MultiBot.tips.quests.gobsearch =
 "Поиск игрового объекта\n|cffffffff"..
 "Эта кнопка открывает окно со списком игровых объектов, доступных ботам.\n\n"..
 "|cffff0000Левый клик — открыть окно|r\n"..
 "|cff999999(Порядок выполнения: система)|r";
 
-MultiBot.tips.quests.goberrorname = 
+MultiBot.tips.quests.goberrorname =
 "Пожалуйста, введите корректное название игрового объекта.";
 
-MultiBot.tips.quests.gobselectboterror = 
+MultiBot.tips.quests.gobselectboterror =
 "Пожалуйста, выберите бота для отправки команды.";
 
 MultiBot.tips.quests.gobsnameerror =
@@ -1301,18 +1301,18 @@ MultiBot.tips.quests.gobsnameerror =
 MultiBot.tips.quests.gobctrlctocopy =
 "CTRL + C для копирования";
 
-MultiBot.tips.quests.gobselectall = 
+MultiBot.tips.quests.gobselectall =
 "Выбрать все";
 
-MultiBot.tips.quests.gobsfound = 
+MultiBot.tips.quests.gobsfound =
 "Найденные игровые объекты";
 
-MultiBot.tips.quests.gobpromptname = 
+MultiBot.tips.quests.gobpromptname =
 "Имя игрового объекта";
 
 -- DRINK --
 
-MultiBot.tips.drink.group = 
+MultiBot.tips.drink.group =
 "Групповое питьё\n|cffffffff"..
 "Приказывает группе попить.\n"..
 "Порядок выполнения показывает получателя команд.|r\n\n"..
@@ -1321,7 +1321,7 @@ MultiBot.tips.drink.group =
 
 -- RELEASE --
 
-MultiBot.tips.release.group = 
+MultiBot.tips.release.group =
 "Групповое освобождение\n|cffffffff"..
 "Мёртвые боты освобождают призраков к ближайшему кладбищу.\n"..
 "Порядок выполнения показывает получателя команд.|r\n\n"..
@@ -1330,7 +1330,7 @@ MultiBot.tips.release.group =
 
 -- REVIVE --
 
-MultiBot.tips.revive.group = 
+MultiBot.tips.revive.group =
 "Групповое воскрешение\n|cffffffff"..
 "Призраки ботов воскресают на ближайшем кладбище.\n"..
 "Порядок выполнения показывает получателя команд.|r\n\n"..
@@ -1339,7 +1339,7 @@ MultiBot.tips.revive.group =
 
 -- SUMALL --
 
-MultiBot.tips.summon.group = 
+MultiBot.tips.summon.group =
 "Групповой призыв\n|cffffffff"..
 "Призывает группу к вашей позиции.\n"..
 "Порядок выполнения показывает получателя команд.|r\n\n"..
@@ -1884,7 +1884,7 @@ MultiBot.tips.druid.dps.dpsDebuff =
 "|cffff0000Левый клик - включить/отключить DPS-дебаффы|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.druid.dps.dpsAoe = 
+MultiBot.tips.druid.dps.dpsAoe =
 "DPS-AOE|cffffffff\n"..
 "Активирует стратегии урона по области.\n"..
 "Друид может использовать AOE только в форме кошки или заклинателя.\n"..
@@ -1894,7 +1894,7 @@ MultiBot.tips.druid.dps.dpsAoe =
 "|cffff0000Левый клик - включить/отключить DPS-AOE|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.druid.dps.dps = 
+MultiBot.tips.druid.dps.dps =
 "DPS|cffffffff\n"..
 "Активирует стратегии нанесения урона.\n"..
 "Друид может использовать DPS-стратегии только в форме кошки.\n"..
@@ -1911,7 +1911,7 @@ MultiBot.tips.druid.dps.offheal =
 "|cffff0000ЛКМ, чтобы включить или отключить доп. исцеление|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.druid.tankAssist = 
+MultiBot.tips.druid.tankAssist =
 "Танк-ассист|cffffffff\n"..
 "Включает стратегии танк-ассиста.\n"..
 "DPS-AOE, DPS-ассист и Танк-ассист взаимоисключающие.\n"..
@@ -1919,7 +1919,7 @@ MultiBot.tips.druid.tankAssist =
 "|cffff0000Левый клик - вкл/выкл танк-ассист|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.druid.tank = 
+MultiBot.tips.druid.tank =
 "Танк|cffffffff\n"..
 "Активирует танковые стратегии.\n"..
 "Друид может танковать только в форме медведя.\n"..
@@ -1930,31 +1930,31 @@ MultiBot.tips.druid.tank =
 
 -- HUNTER --
 
-MultiBot.tips.hunter.pet.master = 
+MultiBot.tips.hunter.pet.master =
 "Команды питомца|cffffffff\n"..
 "Открывает панель с несколькими вариантами призыва питомца.|r\n\n"..
 "|cffff0000ЛКМ — показать опции|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.hunter.pet.name = 
+MultiBot.tips.hunter.pet.name =
 "Призыв питомца по |cff00ff00имени|r\n"..
 "|cffffffffОткрывает список доступных питомцев. Нажмите на имя, чтобы призвать.|r\n\n"..
 "|cffff0000ЛКМ — открыть список|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.hunter.pet.id = 
+MultiBot.tips.hunter.pet.id =
 "Призыв питомца по |cff00ff00ID из БД|r\n"..
 "|cffffffffИспользуйте ID существа из базы данных для прямого призыва.|r\n\n"..
 "|cffff0000ЛКМ — ввести ID|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.hunter.pet.family = 
+MultiBot.tips.hunter.pet.family =
 "Случайный призыв по |cff00ff00СЕМЕЙСТВУ|r\n"..
 "|cffffffffВыберите семейство, чтобы призвать случайного питомца этого типа.|r\n\n"..
 "|cffff0000ЛКМ — выбрать семейство|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.hunter.pet.rename = 
+MultiBot.tips.hunter.pet.rename =
 "Переименовать текущего питомца\n"..
 "|cffffffffОткрывает окно ввода нового имени для активного питомца.|r\n\n"..
 "|cffff0000ЛКМ — переименовать|r\n"..
@@ -2084,7 +2084,7 @@ MultiBot.tips.hunter.dps.dpsDebuff =
 "|cffff0000Левый клик - вкл/выкл DPS-дебафф|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.hunter.dps.dpsAoe = 
+MultiBot.tips.hunter.dps.dpsAoe =
 "DPS-AOE|cffffffff\n"..
 "Включает AOE-стратегии.\n"..
 "DPS-AOE, DPS-ассист и Танк-ассист взаимоисключающие.\n"..
@@ -2092,7 +2092,7 @@ MultiBot.tips.hunter.dps.dpsAoe =
 "|cffff0000Левый клик - вкл/выкл DPS-AOE|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.hunter.dps.dps = 
+MultiBot.tips.hunter.dps.dps =
 "DPS|cffffffff\n"..
 "Включает DPS-стратегии.|r\n\n"..
 "|cffff0000Левый клик - вкл/выкл DPS|r\n"..
@@ -2105,7 +2105,7 @@ MultiBot.tips.hunter.trapweave =
 "|cffff0000ЛКМ — включить/выключить «Вплетение ловушек»|r\n"..
 "|cff999999(Порядок выполнения: Bot)|r";
 
-MultiBot.tips.hunter.tankAssist = 
+MultiBot.tips.hunter.tankAssist =
 "Танк-ассист|cffffffff\n"..
 "Включает стратегии танк-ассиста.\n"..
 "DPS-AOE, DPS-ассист и Танк-ассист взаимоисключающие.\n"..
@@ -2220,7 +2220,7 @@ MultiBot.tips.mage.dps.dpsAssist =
 "|cffff0000Левый клик - вкл/выкл DPS-ассист|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.mage.dps.dpsAoe = 
+MultiBot.tips.mage.dps.dpsAoe =
 "DPS-AOE|cffffffff\n"..
 "Включает AOE-стратегии.\n"..
 "DPS-AOE, DPS-ассист и Танк-ассист взаимоисключающие.\n"..
@@ -2228,7 +2228,7 @@ MultiBot.tips.mage.dps.dpsAoe =
 "|cffff0000Левый клик - вкл/выкл DPS-AOE|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.mage.tankAssist = 
+MultiBot.tips.mage.tankAssist =
 "Танк-ассист|cffffffff\n"..
 "Включает стратегии танк-ассиста.\n"..
 "DPS-AOE, DPS-ассист и Танк-ассист взаимоисключающие.\n"..
@@ -2392,7 +2392,7 @@ MultiBot.tips.paladin.dps.dpsAssist =
 "|cffff0000Левый клик - вкл/выкл DPS-ассист|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.paladin.dps.dpsAoe = 
+MultiBot.tips.paladin.dps.dpsAoe =
 "DPS-AOE|cffffffff\n"..
 "Включает AOE-стратегии.\n"..
 "DPS-AOE, DPS-ассист и Танк-ассист взаимоисключающие.\n"..
@@ -2400,7 +2400,7 @@ MultiBot.tips.paladin.dps.dpsAoe =
 "|cffff0000Левый клик - вкл/выкл DPS-AOE|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.paladin.dps.dps = 
+MultiBot.tips.paladin.dps.dps =
 "DPS|cffffffff\n"..
 "Включает DPS-стратегии.\n"..
 "Танк, DPS и Лекарь взаимоисключающие.\n"..
@@ -2424,7 +2424,7 @@ MultiBot.tips.paladin.dps.healerdps =
 "|cffff0000Left-Click to enable or disable HealerDps|r\n"..
 "|cf9999999(Execution-Order: Bot)|r";
 
-MultiBot.tips.paladin.tankAssist = 
+MultiBot.tips.paladin.tankAssist =
 "Танк-ассист|cffffffff\n"..
 "Включает стратегии танк-ассиста.\n"..
 "DPS-AOE, DPS-ассист и Танк-ассист взаимоисключающие.\n"..
@@ -2432,7 +2432,7 @@ MultiBot.tips.paladin.tankAssist =
 "|cffff0000Левый клик - вкл/выкл танк-ассист|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.paladin.tank = 
+MultiBot.tips.paladin.tank =
 "Танк|cffffffff\n"..
 "Включает танковые стратегии.\n"..
 "Танк, DPS и Лекарь взаимоисключающие.\n"..
@@ -2525,7 +2525,7 @@ MultiBot.tips.priest.dps.dpsDebuff =
 "|cffff0000Левый клик - вкл/выкл DPS-дебафф|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.priest.dps.dpsAoe = 
+MultiBot.tips.priest.dps.dpsAoe =
 "DPS-AOE|cffffffff\n"..
 "Включает AOE-стратегии.\n"..
 "DPS-AOE, DPS-ассист ('Лекарь-DPS') и Танк-ассист взаимоисключающие.\n"..
@@ -2533,13 +2533,13 @@ MultiBot.tips.priest.dps.dpsAoe =
 "|cffff0000Левый клик - вкл/выкл DPS-AOE|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.priest.dps.dps = 
+MultiBot.tips.priest.dps.dps =
 "DPS|cffffffff\n"..
 "Включает DPS-стратегии.|r\n\n"..
 "|cffff0000Левый клик - вкл/выкл DPS|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.priest.tankAssist = 
+MultiBot.tips.priest.tankAssist =
 "Танк-ассист|cffffffff\n"..
 "Включает стратегии танк-ассиста.\n"..
 "DPS-AOE, DPS-ассист ('Лекарь-DPS') и Танк-ассист взаимоисключающие.\n"..
@@ -2563,7 +2563,7 @@ MultiBot.tips.rogue.dps.dpsAssist =
 "|cffff0000Левый клик - вкл/выкл DPS-ассист|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.rogue.dps.dpsAoe = 
+MultiBot.tips.rogue.dps.dpsAoe =
 "DPS-AOE|cffffffff\n"..
 "Включает AOE-стратегии.\n"..
 "DPS-AOE, DPS-ассист и Танк-ассист взаимоисключающие.\n"..
@@ -2571,7 +2571,7 @@ MultiBot.tips.rogue.dps.dpsAoe =
 "|cffff0000Левый клик - вкл/выкл DPS-AOE|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.rogue.dps.dps = 
+MultiBot.tips.rogue.dps.dps =
 "DPS|cffffffff\n"..
 "Включает DPS-стратегии.|r\n\n"..
 "|cffff0000Левый клик - вкл/выкл DPS|r\n"..
@@ -2601,7 +2601,7 @@ MultiBot.tips.rogue.dps.boost =
 "|cffff0000ЛКМ — включить/выключить Бурст|r\n"..
 "|cff999999(Порядок выполнения: бот)|r";
 	
-MultiBot.tips.rogue.tankAssist = 
+MultiBot.tips.rogue.tankAssist =
 "Танк-ассист|cffffffff\n"..
 "Включает стратегии танк-ассиста.\n"..
 "DPS-AOE, DPS-ассист и Танк-ассист взаимоисключающие.\n"..
@@ -2642,27 +2642,27 @@ MultiBot.tips.shaman.ctotem.searing =
 "Опаляющий\n\n"..
 "|cffff0000Щелкните левой кнопкой мыши, чтобы выбрать или отменить выбор этого тотема|r\n";
 
-MultiBot.tips.shaman.ctotem.magma =      
+MultiBot.tips.shaman.ctotem.magma =
 "Магма\n\n"..
 "|cffff0000Щелкните левой кнопкой мыши, чтобы выбрать или отменить выбор этого тотема|r\n";
 
-MultiBot.tips.shaman.ctotem.fltong =  
+MultiBot.tips.shaman.ctotem.fltong =
 "Язык пламени\n\n"..
 "|cffff0000Щелкните левой кнопкой мыши, чтобы выбрать или отменить выбор этого тотема|r\n";
 
-MultiBot.tips.shaman.ctotem.towrath = 
+MultiBot.tips.shaman.ctotem.towrath =
 "Тотем гнева\n\n"..
 "|cffff0000Щелкните левой кнопкой мыши, чтобы выбрать или отменить выбор этого тотема|r\n";
 
-MultiBot.tips.shaman.ctotem.frostres = 
+MultiBot.tips.shaman.ctotem.frostres =
 "Сопротивление льду\n\n"..
 "|cffff0000Щелкните левой кнопкой мыши, чтобы выбрать или отменить выбор этого тотема|r\n";
 
-MultiBot.tips.shaman.ctotem.healstream = 
+MultiBot.tips.shaman.ctotem.healstream =
 "Целительный поток\n\n"..
 "|cffff0000Щелкните левой кнопкой мыши, чтобы выбрать или отменить выбор этого тотема|r\n";
 
-MultiBot.tips.shaman.ctotem.manasprin = 
+MultiBot.tips.shaman.ctotem.manasprin =
 "Источник маны\n\n"..
 "|cffff0000Щелкните левой кнопкой мыши, чтобы выбрать или отменить выбор этого тотема|r\n";
 
@@ -2796,7 +2796,7 @@ MultiBot.tips.shaman.dps.dpsAssist =
 "|cffff0000Левый клик – включить/отключить помощь в уроне|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.shaman.dps.dpsAoe = 
+MultiBot.tips.shaman.dps.dpsAoe =
 "AOE-урон|cffffffff\n"..
 "Активирует стратегии урона по области.\n"..
 "AOE-урон, Помощь в уроне и Помощь танку взаимоисключают друг друга.\n"..
@@ -2820,7 +2820,7 @@ MultiBot.tips.shaman.dps.healerdps =
 "|cffff0000ЛКМ, чтобы включить или отключить Хилер-DPS|r\n"..
 "|cf9999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.shaman.tankAssist = 
+MultiBot.tips.shaman.tankAssist =
 "Помощь танку|cffffffff\n"..
 "Активирует стратегии поддержки танка.\n"..
 "AOE-урон, Помощь в уроне и Помощь танку взаимоисключают друг друга.\n"..
@@ -2835,54 +2835,54 @@ MultiBot.tips.warlock.curses = {}
 MultiBot.tips.warlock.stones = {}
 MultiBot.tips.warlock.pets = {}
 
-MultiBot.tips.warlock.stones.master = 
+MultiBot.tips.warlock.stones.master =
 "Выбор камня для оружия|cffffffff\n"..
 "Выберите, какой камень применит бот.|r\n\n"..
 "|cffff0000ЛКМ — открыть меню|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.warlock.stones.spellstone = 
+MultiBot.tips.warlock.stones.spellstone =
 "Камень чар|cffffffff\n"..
 "Применить Камень чар (вне боя)|r\n\n"..
 "|cffff0000ЛКМ — применить|r\n"..
 "|cffff0000Повторный ЛКМ — убрать|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.warlock.stones.firestone = 
+MultiBot.tips.warlock.stones.firestone =
 "Огненный камень|cffffffff\n"..
 "Применить Огненный камень (вне боя)|r\n\n"..
 "|cffff0000ЛКМ — применить|r\n"..
 "|cffff0000Повторный ЛКМ — убрать|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.warlock.soulstones.masterbutton = 
+MultiBot.tips.warlock.soulstones.masterbutton =
 "Меню Камня души (NC)|cffffffff\n"..
 "Укажите, на какого бота наложить Камень души.|r\n\n"..
 "|cffff0000ЛКМ — открыть меню|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.warlock.soulstones.self = 
+MultiBot.tips.warlock.soulstones.self =
 "На себя|cffffffff\n"..
 "Бот применит Камень души на себя (стратегия вне боя)|r\n\n"..
 "|cffff0000ЛКМ — включить|r\n"..
 "|cffff0000Повторный ЛКМ — выключить|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.warlock.soulstones.master = 
+MultiBot.tips.warlock.soulstones.master =
 "На игрока|cffffffff\n"..
 "Бот применит Камень души на вас (стратегия вне боя)|r\n\n"..
 "|cffff0000ЛКМ — включить|r\n"..
 "|cffff0000Повторный ЛКМ — выключить|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.warlock.soulstones.tank = 
+MultiBot.tips.warlock.soulstones.tank =
 "Танк|cffffffff\n"..
 "Бот применит Камень души на танка (стратегия вне боя)|r\n\n"..
 "|cffff0000ЛКМ — включить|r\n"..
 "|cffff0000Повторный ЛКМ — выключить|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.warlock.soulstones.healer = 
+MultiBot.tips.warlock.soulstones.healer =
 "Лекарь|cffffffff\n"..
 "Бот применит Камень души на лекаря (стратегия вне боя)|r\n\n"..
 "|cffff0000ЛКМ — включить|r\n"..
@@ -3009,7 +3009,7 @@ MultiBot.tips.warlock.dps.dpsDebuff =
 "|cffff0000Левый клик – включить/отключить дебаффы урона|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.warlock.dps.dpsAoe = 
+MultiBot.tips.warlock.dps.dpsAoe =
 "AOE-урон|cffffffff\n"..
 "Активирует стратегии урона по области.\n"..
 "AOE-урон, Помощь в уроне и Помощь танку взаимоисключают друг друга.\n"..
@@ -3017,7 +3017,7 @@ MultiBot.tips.warlock.dps.dpsAoe =
 "|cffff0000Левый клик – включить/отключить AOE-урон|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.warlock.dps.dps = 
+MultiBot.tips.warlock.dps.dps =
 "Урон|cffffffff\n"..
 "Активирует стратегии нанесения урона.\n"..
 "Урон и Танк взаимоисключают друг друга.\n"..
@@ -3035,7 +3035,7 @@ MultiBot.tips.warlock.dps.metamelee =
 "|cffff0000Левый клик, чтобы включить или отключить мета-ближний бой|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.warlock.tankAssist = 
+MultiBot.tips.warlock.tankAssist =
 "Помощь танку|cffffffff\n"..
 "Активирует стратегии поддержки танка.\n"..
 "AOE-урон, Помощь в уроне и Помощь танку взаимоисключают друг друга.\n"..
@@ -3043,7 +3043,7 @@ MultiBot.tips.warlock.tankAssist =
 "|cffff0000Левый клик – включить/отключить помощь танку|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.warlock.tank = 
+MultiBot.tips.warlock.tank =
 "Танк|cffffffff\n"..
 "Активирует танковые стратегии.\n"..
 "Урон и Танк взаимоисключают друг друга.\n"..
@@ -3067,7 +3067,7 @@ MultiBot.tips.warrior.dps.dpsAssist =
 "|cffff0000Левый клик – включить/отключить помощь в уроне|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.warrior.dps.dpsAoe = 
+MultiBot.tips.warrior.dps.dpsAoe =
 "AOE-урон|cffffffff\n"..
 "Активирует стратегии урона по области.\n"..
 "AOE-урон, Помощь в уроне и Помощь танку взаимоисключают друг друга.\n"..
@@ -3075,7 +3075,7 @@ MultiBot.tips.warrior.dps.dpsAoe =
 "|cffff0000Левый клик – включить/отключить AOE-урон|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.warrior.tankAssist = 
+MultiBot.tips.warrior.tankAssist =
 "Помощь танку|cffffffff\n"..
 "Активирует стратегии поддержки танка.\n"..
 "AOE-урон, Помощь в уроне и Помощь танку взаимоисключают друг друга.\n"..
@@ -3083,7 +3083,7 @@ MultiBot.tips.warrior.tankAssist =
 "|cffff0000Левый клик – включить/отключить помощь танку|r\n"..
 "|cff999999(Порядок выполнения: Бот)|r";
 
-MultiBot.tips.warrior.tank = 
+MultiBot.tips.warrior.tank =
 "Танк|cffffffff\n"..
 "Активирует танковые стратегии.|r\n\n"..
 "|cffff0000Левый клик – включить/отключить танк|r\n"..
@@ -3210,7 +3210,7 @@ MultiBot.tips.every.talent =
 
 -- WIPE COMMAND --
 
-MultiBot.tips.every.wipe = 
+MultiBot.tips.every.wipe =
 "Wipe|cffffffff\n"..
 "Полностью сбрасывает бота, убивая его и воскрешая,\n".. 
 "полезно для очистки его состояния (позиции, здоровья, маны и т.д.).|r\n\n"..
@@ -3742,7 +3742,7 @@ MultiBot.tips.spec.warriorprotecpvp =
 
 -- RTSC --
 
-MultiBot.tips.rtsc.master = 
+MultiBot.tips.rtsc.master =
 "Управление RTSC\n|cffffffff"..
 "Позволяет задавать локации и отправлять ботов в указанные точки.\n"..
 "Порядок выполнения показывает получателя команд.|r\n\n"..
@@ -3751,7 +3751,7 @@ MultiBot.tips.rtsc.master =
 "|cffff0000Правый клик - включить стратегию RTSC|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.rtsc.macro = 
+MultiBot.tips.rtsc.macro =
 "Хранилище локаций\n|cffffffff"..
 "Позволяет сохранять локации.\n"..
 "Нажмите левой кнопкой, затем используйте заклинание AEDM для отметки локации.|r\n\n"..
@@ -3767,7 +3767,7 @@ MultiBot.tips.rtsc.spot =
 "|cffff0000Правый клик - удалить локацию|r\n"..
 "|cff999999(Порядок выполнения: Система)|r";
 
-MultiBot.tips.rtsc.group1 = 
+MultiBot.tips.rtsc.group1 =
 "Выбор группы 1\n|cffffffff"..
 "Выбирает 1-ю группу и отправляет её в указанную локацию.\n"..
 "Нажмите левой кнопкой, затем используйте заклинание AEDM для отметки локации.|r\n\n"..
@@ -3776,7 +3776,7 @@ MultiBot.tips.rtsc.group1 =
 "|cffff0000Правый клик - выбрать 1-ю группу|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.rtsc.group2 = 
+MultiBot.tips.rtsc.group2 =
 "Выбор группы 2\n|cffffffff"..
 "Выбирает 2-ю группу и отправляет её в указанную локацию.\n"..
 "Нажмите левой кнопкой, затем используйте заклинание AEDM для отметки локации.|r\n\n"..
@@ -3785,7 +3785,7 @@ MultiBot.tips.rtsc.group2 =
 "|cffff0000Правый клик - выбрать 2-ю группу|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.rtsc.group3 = 
+MultiBot.tips.rtsc.group3 =
 "Выбор группы 3\n|cffffffff"..
 "Выбирает 3-ю группу и отправляет её в указанную локацию.\n"..
 "Нажмите левой кнопкой, затем используйте заклинание AEDM для отметки локации.|r\n\n"..
@@ -3794,7 +3794,7 @@ MultiBot.tips.rtsc.group3 =
 "|cffff0000Правый клик - выбрать 3-ю группу|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.rtsc.group4 = 
+MultiBot.tips.rtsc.group4 =
 "Выбор группы 4\n|cffffffff"..
 "Выбирает 4-ю группу и отправляет её в указанную локацию.\n"..
 "Нажмите левой кнопкой, затем используйте заклинание AEDM для отметки локации.|r\n\n"..
@@ -3803,7 +3803,7 @@ MultiBot.tips.rtsc.group4 =
 "|cffff0000Правый клик - выбрать 4-ю группу|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.rtsc.group5 = 
+MultiBot.tips.rtsc.group5 =
 "Выбор группы 5\n|cffffffff"..
 "Выбирает 5-ю группу и отправляет её в указанную локацию.\n"..
 "Нажмите левой кнопкой, затем используйте заклинание AEDM для отметки локации.|r\n\n"..
@@ -3812,7 +3812,7 @@ MultiBot.tips.rtsc.group5 =
 "|cffff0000Правый клик - выбрать 5-ю группу|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.rtsc.tank = 
+MultiBot.tips.rtsc.tank =
 "Выбор танков\n|cffffffff"..
 "Выбирает ботов-танков и отправляет их в указанную локацию.\n"..
 "Нажмите левой кнопкой, затем используйте заклинание AEDM для отметки локации.|r\n\n"..
@@ -3821,7 +3821,7 @@ MultiBot.tips.rtsc.tank =
 "|cffff0000Правый клик - выбрать танков|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.rtsc.dps = 
+MultiBot.tips.rtsc.dps =
 "Выбор ДПС\n|cffffffff"..
 "Выбирает ботов-ДПС и отправляет их в указанную локацию.\n"..
 "Нажмите левой кнопкой, затем используйте заклинание AEDM для отметки локации.|r\n\n"..
@@ -3830,7 +3830,7 @@ MultiBot.tips.rtsc.dps =
 "|cffff0000Правый клик - выбрать ДПС|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.rtsc.healer = 
+MultiBot.tips.rtsc.healer =
 "Выбор лекарей\n|cffffffff"..
 "Выбирает ботов-лекарей и отправляет их в указанную локацию.\n"..
 "Нажмите левой кнопкой, затем используйте заклинание AEDM для отметки локации.|r\n\n"..
@@ -3839,7 +3839,7 @@ MultiBot.tips.rtsc.healer =
 "|cffff0000Правый клик - выбрать лекарей|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.rtsc.melee = 
+MultiBot.tips.rtsc.melee =
 "Выбор ближнего боя\n|cffffffff"..
 "Выбирает бойцов ближнего боя и отправляет их в указанную локацию.\n"..
 "Нажмите левой кнопкой, затем используйте заклинание AEDM для отметки локации.|r\n\n"..
@@ -3848,7 +3848,7 @@ MultiBot.tips.rtsc.melee =
 "|cffff0000Правый клик - выбрать ближний бой|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.rtsc.ranged = 
+MultiBot.tips.rtsc.ranged =
 "Выбор дальнего боя\n|cffffffff"..
 "Выбирает бойцов дальнего боя и отправляет их в указанную локацию.\n"..
 "Нажмите левой кнопкой, затем используйте заклинание AEDM для отметки локации.|r\n\n"..
@@ -3873,7 +3873,7 @@ MultiBot.tips.rtsc.rangeddps =
 "|cffff0000ПКМ для выбора|r\n"..
 "|cff999999(Выполняют: Рейд, Группа)|r";
 
-MultiBot.tips.rtsc.all = 
+MultiBot.tips.rtsc.all =
 "Выбор всех ботов\n|cffffffff"..
 "Выбирает всех ботов и отправляет их в указанную локацию.\n"..
 "Нажмите левой кнопкой, затем используйте заклинание AEDM для отметки локации.|r\n\n"..
@@ -3882,7 +3882,7 @@ MultiBot.tips.rtsc.all =
 "|cffff0000Правый клик - выбрать всех ботов|r\n"..
 "|cff999999(Порядок выполнения: Рейд, Группа)|r";
 
-MultiBot.tips.rtsc.browse = 
+MultiBot.tips.rtsc.browse =
 "Переключатель\n|cffffffff"..
 "Переключает между различными панелями выбора.|r\n\n"..
 "|cffff0000Левый клик - переключить панель выбора|r\n"..
