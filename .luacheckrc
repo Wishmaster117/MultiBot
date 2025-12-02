@@ -10,7 +10,12 @@ globals = {
     "iName", "iLink", "iRare", "iMinLevel", "iType", "iSubType", "iStack", "GetItemInfo", "floor", "tIcon", "tBody", "GetMacroInfo",
     "CreateMacro", "PickupMacro", "UnitSex", "UnitRace", "substr", "StaticPopupDialogs", "ACCEPT", "CANCEL", "StaticPopup_Show",
     "MultiBotPVPFrame", "GetItemIcon", "OKAY", "_MB_getIcon", "_MB_applyDesat", "_MB_applyDesatToTexture", "_MB_setDesat", "unpack",
-	"CheckInteractDistance"
+	"CheckInteractDistance", "Minimap", "GetScreenHeight", "GetCursorPosition", "InterfaceOptionsFrame_OpenToCategory", "TimerAfter",
+	"UnitExists", "UnitIsPlayer", "GuildRoster", "ShowFriends", "GetNumGuildMembers", "GetGuildRosterInfo", "GetNumFriends", "GetFriendInfo",
+	"UnitFactionGroup", "IsUnitOnQuest", "GetNumQuestLogEntries", "GetQuestLink", "YES", "NO", "GetQuestLogTitle", "GetNumQuestLeaderBoards",
+	"GetNumQuestLogEntries", "SelectQuestLogEntry", "SetAbandonQuest", "QuestLogPushQuest", "UIErrorsFrame", "SendAll", "CancelTrade", "InitiateTrade",
+	"GetNumMacroIcons", "gApply", "GetActiveTalentGroup", "GetTalentInfo", "GetUnspentTalentPoints", "GetTalentLink", "GetCursorInfo", "strsplit",
+	"GetSpellTexture", "ClearCursor", "MBHunterPetPreview", "tru"
 }
 
 -- Interdire les tabulations

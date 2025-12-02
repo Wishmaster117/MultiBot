@@ -151,7 +151,7 @@ do
 end
 
 -- ------------------------------------------------------------------
---  Helper universel : TimerAfter 
+--  Helper universel : TimerAfter
 -- ------------------------------------------------------------------
 if not TimerAfter then
     function TimerAfter(delay, callback)
@@ -6620,53 +6620,74 @@ if not MultiBot.InitShamanQuick then
       end
 
       -- Earth --
-      row.earthBtn = row.vmenu.addButton("ShamanEarthBtn_"..san, 0, 36, row._defaults.earth, MultiBot.tips.shaman.ctotem.earthtot)
+      row.earthBtn = row.vmenu.addButton("ShamanEarthBtn_"..san, 0, 36, row._defaults.earth,
+        MultiBot.tips.shaman.ctotem.earthtot)
       row.earthBtn._mb_key = "ShamanEarthBtn_"..san
 	  row.earthGrp = row.addFrame("ShamanEarthGrp_"..san, 40, 0, 36, 36, 36*5); row.earthGrp:Hide()
       row.earthBtn.doLeft = function() ToggleGroup(row.earthGrp) end
 	  row._elemBtns.earth = row.earthBtn
 
-      AddTotemToggle(row, row.earthGrp, "StrengthOfEarth_"..san,  0,   0, "spell_nature_earthbindtotem",         MultiBot.tips.shaman.ctotem.stoe,   "strength of earth", sName, "earth")
-      AddTotemToggle(row, row.earthGrp, "Stoneskin_"..san,        0,  36, "spell_nature_stoneskintotem",         MultiBot.tips.shaman.ctotem.stoskin,       "stoneskin",         sName, "earth")
-      AddTotemToggle(row, row.earthGrp, "Tremor_"..san,           0,  72, "spell_nature_tremortotem",            MultiBot.tips.shaman.ctotem.tremor, "tremor",            sName, "earth")
-      AddTotemToggle(row, row.earthGrp, "Earthbind_"..san,        0, 108, "spell_nature_strengthofearthtotem02", MultiBot.tips.shaman.ctotem.eabind, "earthbind",         sName, "earth")
+      AddTotemToggle(row, row.earthGrp, "StrengthOfEarth_"..san, 0, 0, "spell_nature_earthbindtotem",
+        MultiBot.tips.shaman.ctotem.stoe,   "strength of earth", sName, "earth")
+      AddTotemToggle(row, row.earthGrp, "Stoneskin_"..san, 0,  36, "spell_nature_stoneskintotem",
+        MultiBot.tips.shaman.ctotem.stoskin,       "stoneskin", sName, "earth")
+      AddTotemToggle(row, row.earthGrp, "Tremor_"..san, 0,  72, "spell_nature_tremortotem",
+        MultiBot.tips.shaman.ctotem.tremor, "tremor", sName, "earth")
+      AddTotemToggle(row, row.earthGrp, "Earthbind_"..san, 0, 108, "spell_nature_strengthofearthtotem02",
+        MultiBot.tips.shaman.ctotem.eabind, "earthbind",         sName, "earth")
  
       -- Fire --
-      row.fireBtn = row.vmenu.addButton("ShamanFireBtn_"..san, 0, 72, row._defaults.fire, MultiBot.tips.shaman.ctotem.firetot)
+      row.fireBtn = row.vmenu.addButton("ShamanFireBtn_"..san, 0, 72, row._defaults.fire,
+        MultiBot.tips.shaman.ctotem.firetot)
       row.fireBtn._mb_key = "ShamanFireBtn_"..san
 	  row.fireGrp = row.addFrame("ShamanFireGrp_"..san, 80, 0, 36, 36, 36*5); row.fireGrp:Hide()
       row.fireBtn.doLeft = function() ToggleGroup(row.fireGrp) end
 	  row._elemBtns.fire = row.fireBtn
  
-      AddTotemToggle(row, row.fireGrp, "Searing_"..san,       0,   0, "spell_fire_searingtotem",   MultiBot.tips.shaman.ctotem.searing,  "searing",          sName, "fire")
-      AddTotemToggle(row, row.fireGrp, "Magma_"..san,         0,  36, "spell_fire_moltenblood",    MultiBot.tips.shaman.ctotem.magma,    "magma",            sName, "fire")
-      AddTotemToggle(row, row.fireGrp, "Flametongue_"..san,   0,  72, "spell_nature_guardianward", MultiBot.tips.shaman.ctotem.fltong,   "flametongue",      sName, "fire")
-      AddTotemToggle(row, row.fireGrp, "Wrath_"..san,         0, 108, "spell_fire_totemofwrath",   MultiBot.tips.shaman.ctotem.towrath,  "wrath",            sName, "fire")
-      AddTotemToggle(row, row.fireGrp, "FrostResist_"..san,   0, 144, "spell_frost_frostward",     MultiBot.tips.shaman.ctotem.frostres, "frost resistance", sName, "fire")
+      AddTotemToggle(row, row.fireGrp, "Searing_"..san, 0, 0, "spell_fire_searingtotem",
+        MultiBot.tips.shaman.ctotem.searing,  "searing", sName, "fire")
+      AddTotemToggle(row, row.fireGrp, "Magma_"..san, 0,  36, "spell_fire_moltenblood",
+        MultiBot.tips.shaman.ctotem.magma,    "magma", sName, "fire")
+      AddTotemToggle(row, row.fireGrp, "Flametongue_"..san, 0,  72, "spell_nature_guardianward",
+        MultiBot.tips.shaman.ctotem.fltong,   "flametongue", sName, "fire")
+      AddTotemToggle(row, row.fireGrp, "Wrath_"..san, 0, 108, "spell_fire_totemofwrath",
+        MultiBot.tips.shaman.ctotem.towrath,  "wrath", sName, "fire")
+      AddTotemToggle(row, row.fireGrp, "FrostResist_"..san, 0, 144, "spell_frost_frostward",
+        MultiBot.tips.shaman.ctotem.frostres, "frost resistance", sName, "fire")
  
       -- Water --
-      row.waterBtn = row.vmenu.addButton("ShamanWaterBtn_"..san, 0, 108, row._defaults.water, MultiBot.tips.shaman.ctotem.watertot)
+      row.waterBtn = row.vmenu.addButton("ShamanWaterBtn_"..san, 0, 108, row._defaults.water,
+        MultiBot.tips.shaman.ctotem.watertot)
       row.waterBtn._mb_key = "ShamanWaterBtn_"..san
 	  row.waterGrp = row.addFrame("ShamanWaterGrp_"..san, 120, 0, 36, 36, 36*4); row.waterGrp:Hide()
       row.waterBtn.doLeft = function() ToggleGroup(row.waterGrp) end
 	  row._elemBtns.water = row.waterBtn
  
-      AddTotemToggle(row, row.waterGrp, "HealingStream_"..san, 0,   0, "spell_nature_healingwavelesser", MultiBot.tips.shaman.ctotem.healstream, "healing stream",  sName, "water")
-      AddTotemToggle(row, row.waterGrp, "ManaSpring_"..san,    0,  36, "spell_nature_manaregentotem",    MultiBot.tips.shaman.ctotem.manasprin,  "mana spring",     sName, "water")
-      AddTotemToggle(row, row.waterGrp, "Cleansing_"..san,     0,  72, "spell_nature_nullifydisease",    MultiBot.tips.shaman.ctotem.cleansing,  "cleansing",       sName, "water")
-      AddTotemToggle(row, row.waterGrp, "FireResistW_"..san,   0, 108, "spell_fire_firearmor",           MultiBot.tips.shaman.ctotem.fireres,    "fire resistance", sName, "water")
+      AddTotemToggle(row, row.waterGrp, "HealingStream_"..san, 0, 0, "spell_nature_healingwavelesser",
+        MultiBot.tips.shaman.ctotem.healstream, "healing stream", sName, "water")
+      AddTotemToggle(row, row.waterGrp, "ManaSpring_"..san, 0, 36, "spell_nature_manaregentotem",
+        MultiBot.tips.shaman.ctotem.manasprin, "mana spring", sName, "water")
+      AddTotemToggle(row, row.waterGrp, "Cleansing_"..san, 0, 72, "spell_nature_nullifydisease",
+        MultiBot.tips.shaman.ctotem.cleansing, "cleansing", sName, "water")
+      AddTotemToggle(row, row.waterGrp, "FireResistW_"..san, 0, 108, "spell_fire_firearmor",
+        MultiBot.tips.shaman.ctotem.fireres, "fire resistance", sName, "water")
  
       -- Air --
-      row.airBtn = row.vmenu.addButton("ShamanAirBtn_"..san, 0, 144, row._defaults.air, MultiBot.tips.shaman.ctotem.airtot)
+      row.airBtn = row.vmenu.addButton("ShamanAirBtn_"..san, 0, 144, row._defaults.air,
+        MultiBot.tips.shaman.ctotem.airtot)
       row.airBtn._mb_key = "ShamanAirBtn_"..san
 	  row.airGrp = row.addFrame("ShamanAirGrp_"..san, 160, 0, 36, 36, 36*4); row.airGrp:Hide()
       row.airBtn.doLeft = function() ToggleGroup(row.airGrp) end
 	  row._elemBtns.air = row.airBtn
  
-      AddTotemToggle(row, row.airGrp, "WrathOfAir_"..san,   0,   0, "spell_nature_slowingtotem",          MultiBot.tips.shaman.ctotem.wrhatair,  "wrath of air",      sName, "air")
-      AddTotemToggle(row, row.airGrp, "Windfury_"..san,     0,  36, "spell_nature_windfury",              MultiBot.tips.shaman.ctotem.windfury,  "windfury",          sName, "air")
-      AddTotemToggle(row, row.airGrp, "NatureResist_"..san, 0,  72, "spell_nature_natureresistancetotem", MultiBot.tips.shaman.ctotem.natres,    "nature resistance", sName, "air")
-      AddTotemToggle(row, row.airGrp, "Grounding_"..san,    0, 108, "spell_nature_groundingtotem",        MultiBot.tips.shaman.ctotem.grounding, "grounding",         sName, "air")
+      AddTotemToggle(row, row.airGrp, "WrathOfAir_"..san, 0, 0, "spell_nature_slowingtotem",
+        MultiBot.tips.shaman.ctotem.wrhatair, "wrath of air", sName, "air")
+      AddTotemToggle(row, row.airGrp, "Windfury_"..san, 0, 36, "spell_nature_windfury",
+        MultiBot.tips.shaman.ctotem.windfury, "windfury", sName, "air")
+      AddTotemToggle(row, row.airGrp, "NatureResist_"..san, 0, 72, "spell_nature_natureresistancetotem",
+        MultiBot.tips.shaman.ctotem.natres, "nature resistance", sName, "air")
+      AddTotemToggle(row, row.airGrp, "Grounding_"..san, 0, 108, "spell_nature_groundingtotem",
+        MultiBot.tips.shaman.ctotem.grounding, "grounding", sName, "air")
 
       -- Restauration depuis SavedVariables (icône et grisé exclusif)
       do
@@ -6692,7 +6713,7 @@ if not MultiBot.InitShamanQuick then
           end
         end
       end
-	  
+
       return row
     end
 
@@ -6770,7 +6791,7 @@ do
       -- Fallback hyper défensif si Refresh pas encore défini
       if not (MultiBotSave and MultiBotSave.Minimap and MultiBotSave.Minimap.hide) then
         MultiBot.Minimap_Create()
-      else
+      --else
         -- hide=true => ne crée pas le bouton
       end
     end
