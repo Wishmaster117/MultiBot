@@ -6028,10 +6028,8 @@ MultiBot.iconos.addIcons = function(pNow)
 	for i = tFrom, tTo do
 		local tIcon = tTable[i]
 		local tName = string.sub(tIcon, 17)
-		
 		local tX = (tIndex%8) * 38
 		local tY = math.floor(tIndex/8) * -37.25
-		
 		local tButton = tIcons.addButton(i, tX, tY, tIcon, tName .. "\n|cffffffff" .. tTable[i] .. "|r")
 		tIndex = tIndex + 1
 	end

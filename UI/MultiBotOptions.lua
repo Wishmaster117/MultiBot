@@ -121,7 +121,7 @@ function MultiBot.BuildOptionsPanel()
 
       -- État initial
       chkMinimapHide:SetChecked(MultiBotSave.Minimap.hide and true or false)
-  
+
       chkMinimapHide:SetScript("OnClick", function(btn)
         local hide = btn:GetChecked() and true or false
 	  MultiBotSave.Minimap = MultiBotSave.Minimap or {}

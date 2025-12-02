@@ -33,8 +33,6 @@ MultiBot.addItem = function(pFrame, pInfo)
 
 		if(tAction == "s" and MultiBot.isTarget()) then
 			if(pButton.item.id == "6948") then return SendChatMessage(MultiBot.info.itemsellalert, "SAY") end
-			--if(MultiBot.isInside(pButton.item.info, "key")) then return SendChatMessage("I will not sell Keys.", "SAY") end
-			--if(MultiBot.isInside(pButton.item.info, "Key")) then return SendChatMessage("I will not sell Keys.", "SAY") end
 			if(MultiBot.isInside(pButton.item.info or "", "%f[%a][Kk]ey%f[%A]")) then
                 return SendChatMessage(MultiBot.info.keydestroyalert, "SAY")
 			end
@@ -48,20 +46,9 @@ MultiBot.addItem = function(pFrame, pInfo)
 			return
 		end
 
-		--[[if(tAction == "destroy") then
-			if(pButton.item.id == "6948") then return SendChatMessage("I cant drop this Item.", "SAY") end
-			if(MultiBot.isInside(pButton.item.info, "key")) then return SendChatMessage("I will not drop Keys.", "SAY") end
-			if(MultiBot.isInside(pButton.item.info, "Key")) then return SendChatMessage("I will not drop Keys.", "SAY") end
-			if(pButton.item.rare > 3) then return SendChatMessage("I will not drop that good Items.", "SAY") end
-			SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, tName)
-			pButton:Hide()
-			return
-		end]]--
 		if(tAction == "destroy") then
 			local needsConfirm = false
 			if(pButton.item.id == "6948") then needsConfirm = true end -- Hearthstone
-			--if(MultiBot.isInside(pButton.item.info, "key")) then needsConfirm = true end
-			--if(MultiBot.isInside(pButton.item.info, "Key")) then needsConfirm = true end
 			if(MultiBot.isInside(pButton.item.info, "%f[%a][Kk]ey%f[%A]")) then needsConfirm = true end
 			if(pButton.item.rare > 3) then needsConfirm = true end -- Épique ou mieux
 			if needsConfirm then
