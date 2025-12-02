@@ -5,10 +5,10 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 	tButton.doLeft = function(pButton)
 		MultiBot.ShowHideSwitch(pButton.parent.frames["Buff"])
 	end
-	
+
 	local tFrame = pFrame.addFrame("Buff", -2, 30)
 	tFrame:Hide()
-	
+
 	tFrame.addButton("BuffHealth", 0, 0, "spell_shadow_lifedrain02", MultiBot.tips.warlock.buff.bhealth)
 	.doLeft = function(pButton)
 		MultiBot.SelectToTarget(pButton.get(), "Buff", pButton.texture, "nc +bhealth,?", pButton.getName())
@@ -16,7 +16,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 			MultiBot.OnOffActionToTarget(pButton, "nc +bhealth,?", "nc -bhealth,?", pButton.getName())
 		end
 	end
-	
+
 	tFrame.addButton("BuffMana", 0, 26, "spell_shadow_siphonmana", MultiBot.tips.warlock.buff.bmana)
 	.doLeft = function(pButton)
 		MultiBot.SelectToTarget(pButton.get(), "Buff", pButton.texture, "nc +bmana,?", pButton.getName())
@@ -24,7 +24,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 			MultiBot.OnOffActionToTarget(pButton, "nc +bmana,?", "nc -bmana,?", pButton.getName())
 		end
 	end
-	
+
 	tFrame.addButton("BuffDps", 0, 52, "spell_shadow_haunting", MultiBot.tips.warlock.buff.bdps)
 	.doLeft = function(pButton)
 		MultiBot.SelectToTarget(pButton.get(), "Buff", pButton.texture, "nc +bdps,?", pButton.getName())
@@ -34,7 +34,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 	end
 
 	-- STRATEGIES:BUFF --
-	
+
 	if(MultiBot.isInside(pNormal, "bhealth")) then
 		tButton.setTexture("spell_shadow_lifedrain02").setEnable().doRight = function(pButton)
 			MultiBot.OnOffActionToTarget(pButton, "nc +bhealth,?", "nc -bhealth,?", pButton.getName())
@@ -48,7 +48,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 			MultiBot.OnOffActionToTarget(pButton, "nc +bdps,?", "nc -bdps,?", pButton.getName())
 		end
 	end]]--
-	
+
     -- BUFF — non supporté pour Warlock bouton placeholder désactivé
     local btnBuff = pFrame.addButton(
         "Buff", 0, 0, "spell_shadow_lifedrain02",
@@ -56,8 +56,8 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
           .. "|n|cffff0000Not available for Warlock.|r"
     )
     btnBuff.setDisable()
-    btnBuff.doLeft = function() end	
-	
+    btnBuff.doLeft = function() end
+
 	-- STONES (Spellstone / Firestone) --
 	local btnStones = pFrame.addButton("StonesSelect", -150, 0,
 		"inv_misc_orb_05",
@@ -160,7 +160,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 	UpdateStoneIcons(fStones.activeStone)
 	fStones:SetScript("OnShow", function(self) UpdateStoneIcons(self.activeStone) end)
 	-- FIN STONES --
- 
+
 	-- SOULSTONES (stratégies) --
 	local btnSoulstones = pFrame.addButton("SoulstonesSelect", -180, 0,
 		"inv_misc_orb_04",
@@ -248,12 +248,12 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
       MultiBot.tips.warlock.pets.master
     )
     btnPets._defaultIcon = "ability_druid_forceofnature"
-    
+
     local fPets = pFrame.addFrame("Pets", -212, 30)
     fPets:Hide()
     fPets.activePet = nil
     btnPets.doLeft = function() MultiBot.ShowHideSwitch(fPets) end
-    
+
     local petList = {
       {"Imp",        "imp",        "spell_shadow_summonimp"},
       {"Voidwalker", "voidwalker", "spell_shadow_summonvoidwalker"},
@@ -261,17 +261,28 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
       {"Felhunter",  "felhunter",  "spell_shadow_summonfelhunter"},
       {"Felguard",   "felguard",   "spell_shadow_summonfelguard"},
     }
-    
+
     local _MB_getIcon    = _MB_getIcon
     local _MB_applyDesat = _MB_applyDesatToTexture
     local _MB_setDesat   = _MB_setDesat
     if not _MB_setDesat then
       local function __getIcon(btn)
         if not btn then return nil end
-        if btn.icon and btn.icon.GetObjectType and btn.icon:GetObjectType()=="Texture" then return btn.icon end
-        if btn.GetNormalTexture then local nt=btn:GetNormalTexture(); if nt and nt.GetObjectType and nt:GetObjectType()=="Texture" then return nt end end
-        if btn.Icon and btn.Icon.GetObjectType and btn.Icon:GetObjectType()=="Texture" then return btn.Icon end
-        if btn.texture and btn.texture.GetObjectType and btn.texture:GetObjectType()=="Texture" then return btn.texture end
+        if btn.icon and btn.icon.GetObjectType and btn.icon:GetObjectType()=="Texture" then
+            return btn.icon
+        end
+        if btn.GetNormalTexture then local nt=btn:GetNormalTexture();
+            if nt and nt.GetObjectType and nt:GetObjectType()=="Texture" then 
+                return nt
+            end
+        end
+        if btn.Icon and btn.Icon.GetObjectType and btn.Icon:GetObjectType()=="Texture" then
+            return btn.Icon
+        end
+        if btn.texture and btn.texture.GetObjectType and btn.texture:GetObjectType()=="Texture" then
+            return btn.texture
+        end
+
         return nil
       end
       local function __apply(tex, isDesat)
