@@ -4,12 +4,12 @@ MultiBot.addStats = function(pFrame, pIndex, pX, pY, pSize, pWidth, pHeight)
 	tAddon.addTexture("Interface\\AddOns\\MultiBot\\Icons\\xp_progress_99_percent.blp")
 	tFrame.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Stats.blp")
 	tFrame:Hide()
-	
+
 	tFrame.addText("Name", "", "TOPLEFT", 54, -11, 11)
 	tFrame.addText("Values", "", "TOPLEFT", 54, -27, 11)
 	tAddon.addText("Percent", "", "CENTER", 0, 0, 11)
 	tFrame.addText("Level", "", "CENTER", 85.25, 5, 11)
-	
+
 	tFrame.setProgress = function(frame, pProgress)
 		local addonFrame = frame.frames["Addon"]
 
@@ -63,7 +63,7 @@ MultiBot.addStats = function(pFrame, pIndex, pX, pY, pSize, pWidth, pHeight)
 
 		return pProgress
 	end
-	
+
 	tFrame.setStats = function(pName, pLevel, pStats, oPlayer)
 		local statsFrame = MultiBot.stats.frames[MultiBot.toUnit(pName)]
 		local addonFrame = statsFrame.frames["Addon"]
