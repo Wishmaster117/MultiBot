@@ -118,10 +118,10 @@ function MultiBot.BuildOptionsPanel()
     chkMinimapHide:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -10)
     _G[chkMinimapHide:GetName().."Text"]:SetText(MultiBot.info.buttonoptionshide)
     chkMinimapHide.tooltipText = MultiBot.info.buttonoptionshidetooltip
-  
+
     -- État initial
     chkMinimapHide:SetChecked(MultiBotSave.Minimap.hide and true or false)
-  
+
     chkMinimapHide:SetScript("OnClick", function(self)
       local hide = self:GetChecked() and true or false
 	  MultiBotSave.Minimap = MultiBotSave.Minimap or {}
@@ -136,7 +136,7 @@ function MultiBot.BuildOptionsPanel()
         end
       end
     end)
-	
+
     -- Replacer le dropdown de Strata SOUS la checkbox
     strataDropDown:ClearAllPoints()
     strataDropDown:SetPoint("TOPLEFT", chkMinimapHide, "BOTTOMLEFT", -14, -18)
@@ -144,16 +144,15 @@ function MultiBot.BuildOptionsPanel()
     local strataLabel = self:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     strataLabel:SetPoint("BOTTOMLEFT", strataDropDown, "TOPLEFT", 16, 3)
     strataLabel:SetText("Frame Strata")
-  
+
     -- Petite aide visuelle sous la case
     -- local hint = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
 	local hint = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
     hint:SetPoint("TOPLEFT", chkMinimapHide, "BOTTOMLEFT", 28, -4)
     --hint:SetText("Tip: drag the button around the minimap to reposition it.")
-  
+
     -- Conserver la référence
     panel.chkMinimapHide = chkMinimapHide
-  
 
     local current = (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or "HIGH"
     local strataLevels = { "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "TOOLTIP" }
@@ -200,19 +199,19 @@ function MultiBot.BuildOptionsPanel()
     -- Ré-ancrage vertical
     self.s_stats:ClearAllPoints()
     self.s_stats:SetPoint("TOPLEFT", sub, "BOTTOMLEFT", 0, -16)
-    
+
     self.s_talent:ClearAllPoints()
     self.s_talent:SetPoint("TOPLEFT", self.s_stats, "BOTTOMLEFT", 0, -36)
-    
+
     self.s_invite:ClearAllPoints()
     self.s_invite:SetPoint("TOPLEFT", self.s_talent, "BOTTOMLEFT", 0, -36)
-    
+
     self.s_sort:ClearAllPoints()
     self.s_sort:SetPoint("TOPLEFT", self.s_invite, "BOTTOMLEFT", 0, -36)
-    
+
     self.s_thr_rate:ClearAllPoints()
     self.s_thr_rate:SetPoint("TOPLEFT", self.s_sort, "BOTTOMLEFT", 0, -36)
-    
+
     self.s_thr_burst:ClearAllPoints()
     self.s_thr_burst:SetPoint("TOPLEFT", self.s_thr_rate, "BOTTOMLEFT", 0, -36)
 
@@ -229,7 +228,7 @@ function MultiBot.BuildOptionsPanel()
       MultiBot.SetTimer("invite", 5)
       MultiBot.SetTimer("sort",   1)
       self.s_stats._refresh(); self.s_talent._refresh(); self.s_invite._refresh(); self.s_sort._refresh()
-    
+
       -- Throttle (défauts)
       MultiBot.SetThrottleRate(5)
       MultiBot.SetThrottleBurst(8)
