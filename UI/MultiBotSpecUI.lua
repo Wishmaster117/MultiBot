@@ -217,15 +217,15 @@ local specIconMap = {
 -- Helper TimerAfter
 ---------------------------------------------------------------------
 local function TimerAfter(delay, callback)
-    if C_Timer and C_Timer.After then    
+    if C_Timer and C_Timer.After then
         return C_Timer.After(delay, callback)
-    end                                  
+    end
     local f = CreateFrame("Frame")
     f.elapsed = 0
-    f:SetScript("OnUpdate", function(self, dt)
-        self.elapsed = self.elapsed + dt
-        if self.elapsed >= delay then
-            self:SetScript("OnUpdate", nil)
+    f:SetScript("OnUpdate", function(frame, dt)
+        frame.elapsed = frame.elapsed + dt
+        if frame.elapsed >= delay then
+            frame:SetScript("OnUpdate", nil)
             if callback then pcall(callback) end
         end
     end)
@@ -290,17 +290,17 @@ function Spec:RequestList(bot, wrapper)
     local t = self._timerFrame or CreateFrame("Frame")
     self._timerFrame = t
     t.elapsed = 0
-    t:SetScript("OnUpdate", function(self, delta)
-        self.elapsed = self.elapsed + delta
-        if self.elapsed >= 0.2 then
+    t:SetScript("OnUpdate", function(frame, delta)
+        frame.elapsed = frame.elapsed + delta
+        if frame.elapsed >= 0.2 then
             -- si on est toujours sur le même bot, on demande la liste
             if Spec.pending and Spec.pending.bot == bot then
                 SendChatMessage("talents spec list", "WHISPER", nil, bot)
                 -- print("|cffffff00[SpecDEBUG]|r Message talents spec list envoyé!!!!!!!!!!!!!!!!!")
             end
             -- on désactive l’OnUpdate et reset le timer
-            self:SetScript("OnUpdate", nil)
-            self.elapsed = 0
+            frame:SetScript("OnUpdate", nil)
+            frame.elapsed = 0
         end
     end)
 end
@@ -326,7 +326,7 @@ whisperFrame:SetScript("OnEvent", function(_, _, msg, sender)
         :gsub("|r", "")
         :gsub("\r?\n", " ")               -- retours à la ligne → espace
 
-    --[[if not clean:match("^%s*My current talent spec is:") 
+    --[[if not clean:match("^%s*My current talent spec is:")
        and not (Spec.pending and short(sender) == short(Spec.pending.bot)) then
         -- Pas un message talent, on ne fait RIEN ici!
         return
@@ -348,7 +348,7 @@ whisperFrame:SetScript("OnEvent", function(_, _, msg, sender)
         end
 
         ----------------------------------------------------------------
-        -- 2-bis) refresh en attente 
+        -- 2-bis) refresh en attente
         ----------------------------------------------------------------
         if Spec.pendingRefresh and short(sender) == short(Spec.pendingRefresh) then
             local unit = MultiBot.toUnit(sender)
@@ -440,10 +440,10 @@ local current = Spec.currentBuild[botKey]
             df:RegisterForDrag("LeftButton")
             df:SetClampedToScreen(true)
             df:SetScript("OnDragStart", df.StartMoving)
-            df:SetScript("OnDragStop", function(self)
-                self:StopMovingOrSizing()
+            df:SetScript("OnDragStop", function(frame)
+                frame:StopMovingOrSizing()
                 -- Sauvegarde relative au centre de l'écran (par personnage)
-                local cx, cy = self:GetCenter()
+                local cx, cy = frame:GetCenter()
                 local ux, uy = UIParent:GetCenter()
                 local dx, dy = (cx - ux), (cy - uy)
                 MultiBotSave = MultiBotSave or {}
@@ -511,17 +511,15 @@ local current = Spec.currentBuild[botKey]
 
             -- 3) CLIC -----------------------------------------------------
             local bot = p.bot
-			    local buildNum   = (build   and strtrim(build))   or ""
-				local currentNum = (current and strtrim(current)) or ""
-				if (not alreadyMarked) and build == current then
-				alreadyMarked = true
-				b:SetAlpha(0.4)
-				local tex = b:GetNormalTexture()
-				if tex and tex.SetDesaturated then tex:SetDesaturated(true) end
-				b:SetScript("OnClick", nil)
+            if (not alreadyMarked) and build == current then
+                alreadyMarked = true
+                b:SetAlpha(0.4)
+                local tex = b:GetNormalTexture()
+                if tex and tex.SetDesaturated then tex:SetDesaturated(true) end
+                b:SetScript("OnClick", nil)
             else
                 b:SetAlpha(1)
-                b:SetScript("OnClick", function(self, btn)
+                b:SetScript("OnClick", function(_, btn)
                     if Spec.busy then return end
                     Spec.busy = true
 
@@ -570,8 +568,8 @@ local current = Spec.currentBuild[botKey]
                 end)
             end
 
-            b:SetScript("OnEnter", function(self)
-                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            b:SetScript("OnEnter", function(button)
+                GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
                 GameTooltip:SetText(tip, nil, nil, nil, nil, true)
             end)
             b:SetScript("OnLeave", GameTooltip_Hide)
