@@ -135,7 +135,7 @@ local function CreateStyledFrame()
     arena.pointsValue = arena:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     arena.pointsValue:SetPoint("LEFT", arena.pointsLabel, "RIGHT", 6, 0)
     arena.pointsValue:SetText("-")
-	
+
     -- helper to create per-mode display inside arena
     local function CreateArenaModeRow(parent, idx, modeLabel, offsetY)
         -- mode title (e.g., "Mode: 2v2")
@@ -246,13 +246,18 @@ loader:SetScript("OnEvent", function(self, event, ...)
         end
 
         -- Parse Arena points (English or localized variants)
-        local arenaPoints = msg:match("Arena points:%s*(%d+)") or msg:match("Arena points%s*[:]%s*(%d+)") or msg:match("Points d'Arène:%s*(%d+)")
+        local arenaPoints = msg:match("Arena points:%s*(%d+)") or
+            msg:match("Arena points%s*[:]%s*(%d+)") or
+            msg:match("Points d'Arène:%s*(%d+)")
         if arenaPoints and MultiBotPVPFrame._arena then
             MultiBotPVPFrame._arena.pointsValue:SetText(arenaPoints)
         end
-		
+
         -- Detect explicit "no team" messages (English/French)
-        local noTeamMsg = msg:lower():find("no[%s_-]*team") or msg:lower():find("i have no arena team") or msg:lower():find("pas d'?équipe") or msg:lower():find("pas d'?équipe d'arène")
+        local noTeamMsg = msg:lower():find("no[%s_-]*team") or
+            msg:lower():find("i have no arena team") or
+            msg:lower():find("pas d'?équipe") or
+            msg:lower():find("pas d'?équipe d'arène")
         if noTeamMsg then
             -- Set all modes to No team / rating 0
             for _, mode in ipairs({"2v2","3v3","5v5"}) do
