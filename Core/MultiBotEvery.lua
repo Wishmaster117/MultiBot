@@ -36,13 +36,16 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 	-- local dy = 26
 	-- local y  = 0
     -- Texture étoile
-    local STAR_TEX = "Interface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1"	
+    local STAR_TEX = "Interface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1"
 	-- for _, data in ipairs{
     local y, dy = 0, 28
     -- Buttons inside the "Misc" sub-frame
-	for _, data in ipairs{	
-		{ "Wipe",        "Achievement_Halloween_Ghost_01", MultiBot.tips.every.wipe,        function(b) MultiBot.ActionToTarget("wipe", b.getName()) end },
-		{ "Autogear",    "inv_misc_enggizmos_30",          MultiBot.tips.every.autogear,   function(b)
+	for _, data in ipairs{
+		{ "Wipe", "Achievement_Halloween_Ghost_01", MultiBot.tips.every.wipe, function(b)
+		    MultiBot.ActionToTarget("wipe", b.getName())
+          end
+		},
+		{ "Autogear", "inv_misc_enggizmos_30", MultiBot.tips.every.autogear, function(b)
             StaticPopup_Show("MULTIBOT_AUTOGEAR_CONFIRM", b.getName(), nil, { target = b.getName() })
           end
         },
@@ -68,7 +71,10 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
               end
             end
             -- If the current roster filter is "favorites", refresh the list
-            local unitsBtn = MultiBot.frames and MultiBot.frames["MultiBar"] and MultiBot.frames["MultiBar"].buttons and MultiBot.frames["MultiBar"].buttons["Units"]
+            local unitsBtn = MultiBot.frames and 
+                MultiBot.frames["MultiBar"] and
+                MultiBot.frames["MultiBar"].buttons and 
+                MultiBot.frames["MultiBar"].buttons["Units"]
             if unitsBtn and unitsBtn.roster == "favorites" then
               unitsBtn.doLeft(unitsBtn, "favorites", unitsBtn.filter)
             end
@@ -87,7 +93,10 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
             end
           end
         },
-		{ "Maintenance", "Achievement_Halloween_Smiley_01",     MultiBot.tips.every.maintenance, function(b) SendChatMessage("maintenance", "WHISPER", nil, b.getName()) end },
+		{ "Maintenance", "Achievement_Halloween_Smiley_01", MultiBot.tips.every.maintenance, function(b)
+            SendChatMessage("maintenance", "WHISPER", nil, b.getName())
+        end 
+        },
 	} do
 		local btn = tMisc.addButton(data[1], 0, y, data[2], data[3])
 		btn.doLeft = data[4]

@@ -123,7 +123,7 @@ MultiBot.isActive = function(pName)
 	return false
 end
 
-MultiBot.isInside = function(pString, p1stPattern, o2ndPattern, o3rdPattern, o4thPattern, o5thPattern, o6thPattern, o7thPattern, o8thPattern, o9thPattern)
+--[[MultiBot.isInside = function(pString, p1stPattern, o2ndPattern, o3rdPattern, o4thPattern, o5thPattern, o6thPattern, o7thPattern, o8thPattern, o9thPattern)
 	if(pString == nil) then return false end
 	if(p1stPattern ~= nil and string.find(pString, p1stPattern)) then return true end
 	if(o2ndPattern ~= nil and string.find(pString, o2ndPattern)) then return true end
@@ -135,9 +135,20 @@ MultiBot.isInside = function(pString, p1stPattern, o2ndPattern, o3rdPattern, o4t
 	if(o8thPattern ~= nil and string.find(pString, o8thPattern)) then return true end
 	if(o9thPattern ~= nil and string.find(pString, o9thPattern)) then return true end
 	return false
+end]]--
+
+MultiBot.isInside = function(pString, ...)
+	if(pString == nil) then return false end
+	for i = 1, select("#", ...) do
+		local pattern = select(i, ...)
+		if(pattern ~= nil and string.find(pString, pattern)) then
+			return true
+		end
+	end
+	return false
 end
 
-MultiBot.beInside = function(pString, p1stPattern, o2ndPattern, o3rdPattern, o4thPattern, o5thPattern, o6thPattern, o7thPattern, o8thPattern, o9thPattern)
+--[[MultiBot.beInside = function(pString, p1stPattern, o2ndPattern, o3rdPattern, o4thPattern, o5thPattern, o6thPattern, o7thPattern, o8thPattern, o9thPattern)
 	if(pString == nil) then return false end
 	if(p1stPattern ~= nil and nil == string.find(pString, p1stPattern)) then return false end
 	if(o2ndPattern ~= nil and nil == string.find(pString, o2ndPattern)) then return false end
@@ -148,6 +159,17 @@ MultiBot.beInside = function(pString, p1stPattern, o2ndPattern, o3rdPattern, o4t
 	if(o7thPattern ~= nil and nil == string.find(pString, o7thPattern)) then return false end
 	if(o8thPattern ~= nil and nil == string.find(pString, o8thPattern)) then return false end
 	if(o9thPattern ~= nil and nil == string.find(pString, o9thPattern)) then return false end
+	return true
+end]]--
+
+MultiBot.beInside = function(pString, ...)
+	if(pString == nil) then return false end
+	for i = 1, select("#", ...) do
+		local pattern = select(i, ...)
+		if(pattern ~= nil and nil == string.find(pString, pattern)) then
+			return false
+		end
+	end
 	return true
 end
 
