@@ -75,7 +75,8 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 		local function __getIcon(btn)
 			if not btn then return nil end
 			if btn.icon and btn.icon.GetObjectType and btn.icon:GetObjectType()=="Texture" then return btn.icon end
-			if btn.GetNormalTexture then local nt=btn:GetNormalTexture(); if nt and nt.GetObjectType and nt:GetObjectType()=="Texture" then return nt end end
+			if btn.GetNormalTexture then local nt=btn:GetNormalTexture();
+			if nt and nt.GetObjectType and nt:GetObjectType()=="Texture" then return nt end end
 			if btn.Icon and btn.Icon.GetObjectType and btn.Icon:GetObjectType()=="Texture" then return btn.Icon end
 			if btn.texture and btn.texture.GetObjectType and btn.texture:GetObjectType()=="Texture" then return btn.texture end
 			return nil
@@ -92,7 +93,10 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 		end
 		function _MB_setDesat(btn, isDesat)
 			local tex = __getIcon(btn); __apply(tex, isDesat)
-			if btn and btn.GetNormalTexture then local nt=btn:GetNormalTexture(); if nt and nt~=tex then __apply(nt, isDesat) end end
+			if btn and btn.GetNormalTexture then local nt=btn:GetNormalTexture();
+			   if nt and nt~=tex then __apply(nt, isDesat)
+			   end
+			end
 		end
 	end
 
@@ -303,9 +307,9 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
         end
       end
     end
-    
+
     local petButtons = {}
-    
+
     local function UpdatePetIcons(active)
       for label, b in pairs(petButtons) do
         _MB_setDesat(b, label ~= active)
@@ -328,7 +332,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
         _MB_setDesat(btnPets, true)
       end
     end
-    
+
     local function TogglePet(pButton, label, cmd)
       local target = pButton.getName()
       if fPets.activePet == label then
@@ -350,7 +354,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
       UpdatePetIcons(fPets.activePet)
       fPets:Hide()
     end
-    
+
     for i, v in ipairs(petList) do
       local label, cmd, icon = unpack(v)
       local b = fPets.addButton("Pet"..label, 0, (i-1)*26, icon,
@@ -358,35 +362,34 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
       )
       petButtons[label] = b
       _MB_setDesat(b, true)
-    
+
       b.doLeft  = function(pButton) TogglePet(pButton, label, cmd) end
       b.doRight = b.doLeft
     end
-    
+
     for _, v in ipairs(petList) do
       if MultiBot.isInside(pNormal, v[2]) then fPets.activePet = v[1]; break end
     end
     UpdatePetIcons(fPets.activePet)
-    
+
     fPets:SetScript("OnShow", function(self)
       UpdatePetIcons(self.activePet)
     end)
-    
-    -- FIN PETS --
-	
-	
-	-- COMBAT STRATEGIES --
 
+    -- FIN PETS --
+
+
+	-- COMBAT STRATEGIES --
 	-- DPS --
-	
+
 	pFrame.addButton("DpsControl", -30, 0, "ability_warrior_challange", MultiBot.tips.warlock.dps.master)
 	.doLeft = function(pButton)
 		MultiBot.ShowHideSwitch(pButton.getFrame("DpsControl"))
 	end
-	
+
 	local tFrame = pFrame.addFrame("DpsControl", -32, 30)
 	tFrame:Hide()
-	
+
 	tFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.tips.warlock.dps.dpsAssist).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps assist,?", "co -dps assist,?", pButton.getName())) then
@@ -394,12 +397,12 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 			pButton.getButton("DpsAoe").setDisable()
 		end
 	end
-	
+
 	tFrame.addButton("DpsDebuff", 0, 26, "spell_holy_restoration", MultiBot.tips.warlock.dps.dpsDebuff).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "co +dps debuff,?", "co -dps debuff,?", pButton.getName())
 	end
-	
+
 	tFrame.addButton("DpsAoe", 0, 52, "spell_holy_surgeoflight", MultiBot.tips.warlock.dps.dpsAoe).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps aoe,?", "co -dps aoe,?", pButton.getName())) then
@@ -407,7 +410,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 			pButton.getButton("DpsAssist").setDisable()
 		end
 	end
-	
+
 	tFrame.addButton("Dps", 0, 78, "spell_holy_divinepurpose", MultiBot.tips.warlock.dps.dps).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps,?", "co -dps,?", pButton.getName())) then
@@ -421,13 +424,13 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
       (MultiBot.tips.warlock.dps and MultiBot.tips.warlock.dps.metamelee)
     )
     btnMeta.setDisable()
-    
+
     btnMeta.doLeft = function(pButton)
       MultiBot.OnOffActionToTarget(pButton, "co +meta melee,?", "co -meta melee,?", pButton.getName())
     end
-    	
+
 		-- ASSIST --
-	
+
 	pFrame.addButton("TankAssist", -60, 0, "ability_warrior_innerrage", MultiBot.tips.warlock.tankAssist).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +tank assist,?", "co -tank assist,?", pButton.getName())) then
@@ -435,9 +438,9 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 			pButton.getButton("DpsAoe").setDisable()
 		end
 	end
-	
+
 	-- TANK --
-	
+
 	pFrame.addButton("Tank", -90, 0, "ability_warrior_shieldmastery", MultiBot.tips.warlock.tank).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +tank,?", "co -tank,?", pButton.getName())) then
@@ -452,43 +455,52 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
      MultiBot.tips.warlock.curses.master
    )
    btnCurses._defaultIcon = "ability_warlock_avoidance"
-   
+
    local fCurses = pFrame.addFrame("Curses", -122, 30)
    fCurses:Hide()
    fCurses.activeCurse = nil
-   
+
    local _MB_getIcon      = _MB_getIcon
    local _MB_applyDesat   = _MB_applyDesatToTexture
    local _MB_setDesat     = _MB_setDesat
    if not _MB_setDesat then
      local function __getIcon(btn)
-       if not btn then return nil end
-       if btn.icon and btn.icon.GetObjectType and btn.icon:GetObjectType()=="Texture" then return btn.icon end
-       if btn.GetNormalTexture then local nt=btn:GetNormalTexture(); if nt and nt.GetObjectType and nt:GetObjectType()=="Texture" then return nt end end
-       if btn.Icon and btn.Icon.GetObjectType and btn.Icon:GetObjectType()=="Texture" then return btn.Icon end
-       if btn.texture and btn.texture.GetObjectType and btn.texture:GetObjectType()=="Texture" then return btn.texture end
+        if not btn then return nil end
+        if btn.icon and btn.icon.GetObjectType and btn.icon:GetObjectType()=="Texture" then return btn.icon end
+        if btn.GetNormalTexture then local nt=btn:GetNormalTexture();
+		if nt and nt.GetObjectType and nt:GetObjectType()=="Texture" then return nt end end
+        if btn.Icon and btn.Icon.GetObjectType and btn.Icon:GetObjectType()=="Texture" then return btn.Icon end
+        if btn.texture and 
+           btn.texture.GetObjectType and
+		   btn.texture:GetObjectType()=="Texture" then
+		   return btn.texture
+	    end
        return nil
      end
      local function __apply(tex, isDesat)
-       if not tex then return end
-       local ok=false
-       if tex.SetDesaturated then ok=pcall(tex.SetDesaturated, tex, isDesat and true or false) end
-       if not ok then
-         if isDesat then tex:SetVertexColor(0.35,0.35,0.35,1) else tex:SetVertexColor(1,1,1,1) end
-       else
-         if not isDesat then tex:SetVertexColor(1,1,1,1) end
-       end
-     end
-     function _MB_setDesat(btn, isDesat)
-       local tex = __getIcon(btn); __apply(tex, isDesat)
-       if btn and btn.GetNormalTexture then local nt=btn:GetNormalTexture(); if nt and nt~=tex then __apply(nt, isDesat) end end
-     end
-   end
-   
+        if not tex then return end
+        local ok=false
+        if tex.SetDesaturated then ok=pcall(tex.SetDesaturated, tex, isDesat and true or false) end
+        if not ok then
+          if isDesat then tex:SetVertexColor(0.35,0.35,0.35,1) else tex:SetVertexColor(1,1,1,1) end
+        else
+          if not isDesat then tex:SetVertexColor(1,1,1,1) end
+        end
+      end
+      function _MB_setDesat(btn, isDesat)
+        local tex = __getIcon(btn); __apply(tex, isDesat)
+        if btn and btn.GetNormalTexture then 
+	        local nt=btn:GetNormalTexture();
+		        if nt and nt~=tex then __apply(nt, isDesat)
+			 end
+         end
+      end
+    end
+
    btnCurses.doLeft = function() MultiBot.ShowHideSwitch(fCurses) end
-   
+
    local curseButtons = {}
-   
+
    local curseList = {
      {"Agony",      "curse of agony",      "Spell_Shadow_CurseOfSargeras"},
      {"Elements",   "curse of elements",   "Spell_Shadow_ChillTouch"},
@@ -497,12 +509,12 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
      {"Weakness",   "curse of weakness",   "Spell_Shadow_CurseOfMannoroth"},
      {"Tongues",    "curse of tongues",    "Spell_Shadow_CurseOfTounges"},
    }
-   
+
    local function UpdateCurseIcons(active)
      for label, b in pairs(curseButtons) do
        _MB_setDesat(b, label ~= active)
      end
-   
+
      if active and curseButtons[active] then
        local icon=nil
        for _,v in ipairs(curseList) do if v[1]==active then icon=v[3]; break end end
@@ -521,19 +533,19 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
        _MB_setDesat(btnCurses, true)
      end
    end
-   
+
    for i, v in ipairs(curseList) do
      local label, cmd, icon = unpack(v)
      local b = fCurses.addButton("Curse"..label, 0, (i-1)*26, icon,
        MultiBot.tips.warlock.curses[label:lower()]
      )
      curseButtons[label] = b
-   
+
      _MB_setDesat(b, true)
-   
+
      b.doLeft = function(pButton)
        local target = pButton.getName()
-   
+
        if fCurses.activeCurse == label then
          SendChatMessage("co -" .. cmd .. ",?", "WHISPER", nil, target)
          fCurses.activeCurse = nil
@@ -541,7 +553,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
          fCurses:Hide()
          return
        end
-   
+
        if fCurses.activeCurse then
          local old = fCurses.activeCurse
          for _,vv in ipairs(curseList) do
@@ -553,17 +565,17 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
        end
        SendChatMessage("co +" .. cmd .. ",?", "WHISPER", nil, target)
        fCurses.activeCurse = label
-   
+
        UpdateCurseIcons(fCurses.activeCurse)
        fCurses:Hide()
      end
    end
-   
+
    for _,v in ipairs(curseList) do
      if MultiBot.isInside(pCombat, v[2]) then fCurses.activeCurse = v[1]; break end
    end
    UpdateCurseIcons(fCurses.activeCurse)
-   
+
    fCurses:SetScript("OnShow", function(self)
      UpdateCurseIcons(self.activeCurse)
    end)
@@ -578,7 +590,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
     if(MultiBot.isInside(pCombat, "tank assist")) then pFrame.getButton("TankAssist").setEnable() end
     if(MultiBot.isInside(pCombat, "tank")) then pFrame.getButton("Tank").setEnable() end
     if(MultiBot.isInside(pCombat, "meta melee")) then pFrame.getButton("MetaMelee").setEnable() end
-	
+
     -- parent buttons des menus)
     if fCurses   and fCurses.activeCurse then   pFrame.getButton("CursesSelect").setEnable()   end
     if fStones   and fStones.activeStone then   pFrame.getButton("StonesSelect").setEnable()   end
