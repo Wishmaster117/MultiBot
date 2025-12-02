@@ -265,7 +265,7 @@ Spec.pending, Spec.buttons = nil, {}
 function Spec:RequestList(bot, wrapper)
     if self.busy then
         return                  --    on ignore le clic
-    end           
+    end
     local frame = unwrapFrame(wrapper)
     if type(frame) ~= "userdata" then
         -- print("|cffff0000[SpecUI] impossible de localiser le frame du bouton|r")
