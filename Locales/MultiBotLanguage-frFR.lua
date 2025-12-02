@@ -856,19 +856,6 @@ if GetLocale() == "frFR" then
 		.. "|cffff0000Cliquez-gauche pour activer ou désactiver le contrôle Maître des Bêtes|r\n"
 		.. "|cff999999(Ordre d'exécution : Système)|r"
 
-	--[[ 
-MultiBot.tips.main.lang.master =
-"Sélecteur de Langue|cffffffff\n".. 
-"Ce contrôle vous permet de sélectionner la langue de MultiBot.\n".. 
-"Si ce contrôle est actif, MultiBot peut avoir une langue différente de celle du client.\n".. 
-"L'Ordre d'exécution montre le destinataire des commandes.|r\n\n".. 
-"|cffff0000Clic gauche pour afficher ou masquer les options|r\n".. 
-"|cff999999(Ordre d'exécution : Système)|r\n\n".. 
-"|cffff0000Clic droit pour activer ou désactiver le Sélecteur de Langue|r\n".. 
-"|cff999999(Ordre d'exécution : Système)|r"; 
-]]
-	--
-
 	MultiBot.tips.main.expand = "Contrôle Rester-Suivre\n|cffffffff"
 		.. "Ce bouton développera ou réduira la fonction Rester-Suivre.\n"
 		.. "|cffff0000Clic gauche pour développer ou réduire le Contrôle Rester-Suivre|r\n"
