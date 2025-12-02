@@ -265,7 +265,7 @@ Spec.pending, Spec.buttons = nil, {}
 function Spec:RequestList(bot, wrapper)
     if self.busy then
         return                  --    on ignore le clic
-    end                  
+    end           
     local frame = unwrapFrame(wrapper)
     if type(frame) ~= "userdata" then
         -- print("|cffff0000[SpecUI] impossible de localiser le frame du bouton|r")
@@ -290,17 +290,17 @@ function Spec:RequestList(bot, wrapper)
     local t = self._timerFrame or CreateFrame("Frame")
     self._timerFrame = t
     t.elapsed = 0
-    t:SetScript("OnUpdate", function(frame, delta)
-        frame.elapsed = frame.elapsed + delta
-        if frame.elapsed >= 0.2 then
+    t:SetScript("OnUpdate", function(timerFrame, delta)
+        timerFrame.elapsed = timerFrame.elapsed + delta
+        if timerFrame.elapsed >= 0.2 then
             -- si on est toujours sur le même bot, on demande la liste
             if Spec.pending and Spec.pending.bot == bot then
                 SendChatMessage("talents spec list", "WHISPER", nil, bot)
                 -- print("|cffffff00[SpecDEBUG]|r Message talents spec list envoyé!!!!!!!!!!!!!!!!!")
             end
             -- on désactive l’OnUpdate et reset le timer
-            frame:SetScript("OnUpdate", nil)
-            frame.elapsed = 0
+            timerFrame:SetScript("OnUpdate", nil)
+            timerFrame.elapsed = 0
         end
     end)
 end
