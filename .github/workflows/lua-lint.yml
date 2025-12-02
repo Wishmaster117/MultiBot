@@ -1,0 +1,16 @@
+name: Lua Lint
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Lua and Luacheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.3 luarocks
+          luarocks install luacheck
+      - name: Run Luacheck
+        run: luacheck .
