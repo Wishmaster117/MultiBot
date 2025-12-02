@@ -2,7 +2,7 @@
 std = "lua53"
 
 -- Autoriser la globale MultiBot
-globals = { "MultiBot", "GetLocale", "GetSpellInfo", "GetSpellLink" }
+globals = { "MultiBot", "GetLocale", "GetSpellInfo", "GetSpellLink", "MultiBotSave", "SendChatMessage" }
 
 -- Interdire les tabulations
 no_tab_indent = true
