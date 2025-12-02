@@ -1,5 +1,5 @@
 -- MultiBot PvP UI
-local ADDON = "MultiBot"
+-- local ADDON = "MultiBot"
 
 local function CreateStyledFrame()
     -- Main frame
@@ -121,11 +121,11 @@ local function CreateStyledFrame()
     local arena = CreateSection(content, top, arenaBlockHeight * 3 + spacing * 2, "Arène")
 
     -- separator
-    local sepH = arena:CreateTexture(nil, "ARTWORK")
-    sepH:SetHeight(1)
-    sepH:SetPoint("TOPLEFT", arena, "TOPLEFT", 0, -18)
-    sepH:SetPoint("TOPRIGHT", arena, "TOPRIGHT", 0, -18)
-    sepH:SetTexture(0.5, 0.5, 0.5, 0.6)
+    local arenaSep = arena:CreateTexture(nil, "ARTWORK")
+    arenaSep:SetHeight(1)
+    arenaSep:SetPoint("TOPLEFT", arena, "TOPLEFT", 0, -18)
+    arenaSep:SetPoint("TOPRIGHT", arena, "TOPRIGHT", 0, -18)
+    arenaSep:SetTexture(0.5, 0.5, 0.5, 0.6)
 
     -- Points d'Arène (affiché à gauche de la section Arène)
     arena.pointsLabel = arena:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -160,12 +160,11 @@ local function CreateStyledFrame()
     local modes = { "2v2", "3v3", "5v5" }
     local arenaRows = {}
     for i = 1, 3 do
-        local offset = 0 + (i-1) * (arenaBlockHeight + spacing)
+        -- local offset = 0 + (i-1) * (arenaBlockHeight + spacing)
         arenaRows[modes[i]] = CreateArenaModeRow(arena, i, modes[i], 0 + (i-1) * (arenaBlockHeight + 6))
     end
 
-    top = top + arenaBlockHeight * 3 + spacing * 2
-
+    --top = top + arenaBlockHeight * 3 + spacing * 2
     -- Tabs (bottom)
     local tabs = {}
     --local tabNames = { "JcJ", "Dummy" }
@@ -274,7 +273,8 @@ loader:SetScript("OnEvent", function(self, event, ...)
         -- Otherwise parse per-mode lines and update matching rows
         for _, modePattern in ipairs({ "2v2", "3v3", "5v5" }) do
             -- try strict pattern: mode followed by colon and <Team> and (rating N)
-            local pattern1 = modePattern .. "%s*[:]?%s*<([^>]+)>%s*%(%s*rating%s*(%d+)%s*%)"
+            local pattern1 = modePattern ..
+                "%s*[:]?%s*<([^>]+)>%s*%(%s*rating%s*(%d+)%s*%)"
             local team1, rating1 = msg:match(pattern1)
             if team1 then
                 local row = MultiBotPVPFrame._arenaRows[modePattern]
