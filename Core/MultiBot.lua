@@ -30,7 +30,7 @@ function MultiBot.ApplyGlobalStrata()
   local level = (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or nil
   if not MultiBot.frames then return end
   --for name, frm in pairs(MultiBot.frames) do
-    for _, frm in pairs(MultiBot.frames) do  
+    for _, frm in pairs(MultiBot.frames) do
     if type(frm) == "table" and frm.SetFrameStrata then
       MultiBot.PromoteFrame(frm, level)
     end
@@ -100,12 +100,17 @@ function MultiBot.ParseAccountLevel(msg)
 end
 
 function MultiBot.GM_DetectFromSystem(msg)
-  MultiBot.LastAccountLevel = lvl
   local lvl = MultiBot.ParseAccountLevel(msg)
+  MultiBot.LastAccountLevel = lvl
 
   if MultiBot.DEBUG_GM and DEFAULT_CHAT_FRAME then
-    DEFAULT_CHAT_FRAME:AddMessage(("[GMDetect] msg='%s' -> lvl=%s, thr=%d"):format(tostring(msg),
-        tostring(lvl), MultiBot.GM_THRESHOLD))
+    DEFAULT_CHAT_FRAME:AddMessage(
+      ("[GMDetect] msg='%s' -> lvl=%s, thr=%d"):format(
+        tostring(msg),
+        tostring(lvl),
+        MultiBot.GM_THRESHOLD
+      )
+    )
   end
 
   if lvl ~= nil then
@@ -114,21 +119,22 @@ function MultiBot.GM_DetectFromSystem(msg)
       DEFAULT_CHAT_FRAME:AddMessage(("[GMDetect] GM=%s"):format(tostring(MultiBot.GM)))
     end
     --if MultiBot.RaidPool then MultiBot.RaidPool("player") end
-	if MultiBot.RaidPool then
-       -- petit helper timer si absent
-       C_Timer_After = C_Timer_After or function(sec, func)
-         local f, t = CreateFrame("Frame"), 0
-         f:SetScript("OnUpdate", function(_, dt)
-           t = t + dt
-           if t >= sec then f:SetScript("OnUpdate", nil); func() end
-         end)
-       end
-       C_Timer_After(0.2, function() MultiBot.RaidPool("player") end)
-     end
+    if MultiBot.RaidPool then
+      -- petit helper timer si absent
+      C_Timer_After = C_Timer_After or function(sec, func)
+        local f, t = CreateFrame("Frame"), 0
+        f:SetScript("OnUpdate", function(_, dt)
+          t = t + dt
+          if t >= sec then f:SetScript("OnUpdate", nil); func() end
+        end)
+      end
+      C_Timer_After(0.2, function() MultiBot.RaidPool("player") end)
+    end
     return true
   end
   return false
 end
+
 -- end account level detection --
 
 MultiBot:RegisterEvent("ADDON_LOADED")
@@ -255,8 +261,13 @@ function MultiBot.UpdateFavoritesIndex()
     table.insert(MultiBot.index.favorites, name)
     local cls = nil
     -- 1) si le bouton d’unité existe déjà, on prend sa classe
-    local units = MultiBot.frames and MultiBot.frames["MultiBar"] and MultiBot.frames["MultiBar"].frames
-        and MultiBot.frames["MultiBar"].frames["Units"]
+    local units = nil
+    if MultiBot.frames and MultiBot.frames["MultiBar"]
+       and MultiBot.frames["MultiBar"].frames
+       and MultiBot.frames["MultiBar"].frames["Units"]
+    then
+      units = MultiBot.frames["MultiBar"].frames["Units"]
+    end
     local buttons = units and units.buttons or nil
     if buttons and buttons[name] and buttons[name].class then
       cls = buttons[name].class
@@ -352,12 +363,6 @@ end
 -- (On copie pour éviter les mutations involontaires.)
 MultiBot.data.classes.input  = MultiBot.data.classes.input  or _mb_copy(MultiBot.CLASSES_CANON)
 MultiBot.data.classes.output = MultiBot.data.classes.output or _mb_copy(MultiBot.CLASSES_CANON)
-
-
--- CLASS DETECTION (locale-aware) --
--- Canonical list (on gardes les noms actuels, attendus partout dans le code)
-MultiBot.CLASSES_CANON = { "DeathKnight","Druid","Hunter","Mage","Paladin",
-                           "Priest","Rogue","Shaman","Warlock","Warrior" }
 
 -- Construction des maps
 function MultiBot.BuildClassMaps()
