@@ -103,7 +103,8 @@ function MultiBot.GM_DetectFromSystem(msg)
   local lvl = MultiBot.ParseAccountLevel(msg)
 
   if MultiBot.DEBUG_GM and DEFAULT_CHAT_FRAME then
-    DEFAULT_CHAT_FRAME:AddMessage(("[GMDetect] msg='%s' -> lvl=%s, thr=%d"):format(tostring(msg), tostring(lvl), MultiBot.GM_THRESHOLD))
+    DEFAULT_CHAT_FRAME:AddMessage(("[GMDetect] msg='%s' -> lvl=%s, thr=%d"):format(tostring(msg),
+        tostring(lvl), MultiBot.GM_THRESHOLD))
   end
 
   if lvl ~= nil then
@@ -253,7 +254,8 @@ function MultiBot.UpdateFavoritesIndex()
     table.insert(MultiBot.index.favorites, name)
     local cls = nil
     -- 1) si le bouton d’unité existe déjà, on prend sa classe
-    local units = MultiBot.frames and MultiBot.frames["MultiBar"] and MultiBot.frames["MultiBar"].frames and MultiBot.frames["MultiBar"].frames["Units"]
+    local units = MultiBot.frames and MultiBot.frames["MultiBar"] and MultiBot.frames["MultiBar"].frames
+        and MultiBot.frames["MultiBar"].frames["Units"]
     local buttons = units and units.buttons or nil
     if buttons and buttons[name] and buttons[name].class then
       cls = buttons[name].class
@@ -353,7 +355,8 @@ MultiBot.data.classes.output = MultiBot.data.classes.output or _mb_copy(MultiBot
 
 -- CLASS DETECTION (locale-aware) --
 -- Canonical list (on gardes les noms actuels, attendus partout dans le code)
-MultiBot.CLASSES_CANON = { "DeathKnight","Druid","Hunter","Mage","Paladin","Priest","Rogue","Shaman","Warlock","Warrior" }
+MultiBot.CLASSES_CANON = { "DeathKnight","Druid","Hunter","Mage","Paladin",
+                           "Priest","Rogue","Shaman","Warlock","Warrior" }
 
 -- Construction des maps
 function MultiBot.BuildClassMaps()
@@ -1668,7 +1671,8 @@ MultiBot.tips.game.appear =
 "|cff999999(Execution-Order: Target)|r";
 
 MultiBot.tips.game.delsvwarning =
-"|cffff4444WARNING|r : you are about to delete ALL MultiBot saved variables.\nThis action is irreversible.\n\nDo you want to continue?";
+"|cffff4444WARNING|r : you are about to delete ALL MultiBot saved variables.\n"..
+"This action is irreversible.\n\nDo you want to continue?";
 
 MultiBot.tips.game.delsv =
 "Delete Saved Variables\n|cffffffff"..
@@ -3757,7 +3761,7 @@ MultiBot.tips.every.talent =
 
 MultiBot.tips.every.wipe =
 "Wipe|cffffffff\n"..
-"Fully resets the bot by killing it and resurrecting it,\n".. 
+"Fully resets the bot by killing it and resurrecting it,\n"..
 "useful to clear its state (position, health, mana, etc.).|r\n\n"..
 "|cffff0000Left-click: sends the wipe command to the selected bot|r\n"..
 "|cff999999(Execution order: Bot)|r";
