@@ -29,7 +29,8 @@ end
 function MultiBot.ApplyGlobalStrata()
   local level = (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or nil
   if not MultiBot.frames then return end
-  for name, frm in pairs(MultiBot.frames) do
+  --for name, frm in pairs(MultiBot.frames) do
+    for _, frm in pairs(MultiBot.frames) do  
     if type(frm) == "table" and frm.SetFrameStrata then
       MultiBot.PromoteFrame(frm, level)
     end
