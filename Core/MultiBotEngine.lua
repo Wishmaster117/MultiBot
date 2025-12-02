@@ -58,7 +58,7 @@ MultiBot.doDotWithTarget = function(pCommand, oArguments)
 		then SendChatMessage(pCommand .. " " .. tName .. " " .. oArguments)
 		else SendChatMessage(pCommand .. " " .. tName)
 		end
-	
+
 		return true
 	end
 
@@ -179,7 +179,7 @@ end
 MultiBot.isTarget = function()
 	local tName = UnitName("target")
 
-	if(tName ~= nil and tName ~=  "Unknown Entity") then	
+	if(tName ~= nil and tName ~=  "Unknown Entity") then
 		return true
 	end
 
@@ -200,18 +200,18 @@ end
 --[[MultiBot.toClass = function(pClass)
 	local pLower = string.lower(pClass)
 	local pStart = string.sub(pLower, 1, 5)
-	
+
 	for i = 1, 10 do
 		local tOutput = MultiBot.data.classes.output[i]
 		local tInput = MultiBot.data.classes.input[i]
 		local tLower = string.lower(tInput)
 		local tStart = string.sub(tLower, 1, 5)
-		
+
 		if(pClass == tInput) then return tOutput end
 		if(pLower == tLower) then return tOutput end
 		if(pStart == tStart) then return tOutput end
 	end
-	
+
 	local tClass = string.lower(string.sub(pClass, 1, 1) .. string.sub(pClass, 4, 4))
 	if(tClass == "te" or tClass == "dt") then return "DeathKnight" end
 	if(tClass == "di" or tClass == "di") then return "Druid" end
@@ -375,7 +375,7 @@ MultiBot.ItemLevel = function(pUnit)
 	local tTitan = IsSpellKnown(49152) -- Titan's Grip
 	local tCount = 16
 	local tScore = 0
-	
+
 	for i = 1, 18, 1 do
 		local tItem = GetInventoryItemLink(pUnit, i)
 		if(tItem ~= nil and i ~= 4) then
@@ -384,7 +384,7 @@ MultiBot.ItemLevel = function(pUnit)
 			tScore = tScore + iLevel
 		end
 	end
-	
+
 	return floor(tScore / tCount), tCount
 end
 
@@ -413,25 +413,25 @@ end
 
 MultiBot.SpellToMacro = function(pName, pSpell, pTexture)
 	local tGlobal, tAmount = GetNumMacros()
-	
+
 	if(pSpell == nil or pSpell == 0) then return SendChatMessage(MultiBot.info.spell, "SAY") end
 	if(tAmount == 18) then return SendChatMessage(MultiBot.info.macro, "SAY") end
-	
+
 	local tMacro = string.sub(pName, 1, 14) .. tAmount
 	local tSpell, tIcon, tBody = GetMacroInfo(tMacro)
-	
+
 	if(tSpell == nil) then CreateMacro(tMacro, MultiBot.spellbook.icons[pTexture], "/t " .. pName .. " cast " .. pSpell, true) end
 	PickupMacro(tMacro)
 end
 
 MultiBot.ActionToTarget = function(pAction, oTarget)
 	local tName = MultiBot.IF(oTarget == nil, UnitName("target"), oTarget)
-	
+
 	if(tName ~= nil and tName ~= "Unknown Entity") then
 		SendChatMessage(pAction, "WHISPER", nil, tName)
 		return true
 	end
-	
+
 	SendChatMessage(MultiBot.info.target, "SAY")
 	return false
 end
@@ -443,17 +443,17 @@ MultiBot.ActionToTargetOrGroup = function(pAction)
 		SendChatMessage(pAction, "WHISPER", nil, tName)
 		return true
 	end
-	
+
 	if(GetNumRaidMembers() > 5) then
 		SendChatMessage(pAction, "RAID")
 		return true
 	end
-	
+
 	if(GetNumPartyMembers() > 0) then
 		SendChatMessage(pAction, "PARTY")
 		return true
 	end
-	
+
 	SendChatMessage(MultiBot.info.neither, "SAY")
 	return false
 end
@@ -463,12 +463,12 @@ MultiBot.ActionToGroup = function(pAction)
 		SendChatMessage(pAction, "RAID")
 		return true
 	end
-	
+
 	if(GetNumPartyMembers() > 0) then
 		SendChatMessage(pAction, "PARTY")
 		return true
 	end
-	
+
 	SendChatMessage(MultiBot.info.group, "SAY")
 	return false
 end
@@ -481,7 +481,7 @@ MultiBot.SelectToTarget = function(pParent, pIndex, pTexture, pAction, oTarget)
 		tFrame:Hide()
 		return true
 	end
-	
+
 	return false
 end
 
@@ -520,7 +520,7 @@ MultiBot.SelectToGroup = function(pParent, pIndex, pTexture, pAction)
 		tFrame:Hide()
 		return true
 	end
-	
+
 	return false
 end
 
@@ -537,7 +537,7 @@ MultiBot.ShowHideSwitch = function(pFrame)
 		pFrame:Hide()
 		return false
 	end
-	
+
 	pFrame:Show()
 	return true
 end
@@ -570,16 +570,16 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
 	local frame = CreateFrame("Frame", nil, pParent)
 	frame:SetPoint(MultiBot.IF(oAlign ~= nil, oAlign, "BOTTOMRIGHT"), pX, pY)
 	frame:Show()
-	
+
 	if(oWidth ~= nil and oHeight ~= nil)
 	then frame:SetSize(oWidth, oHeight)
 	else frame:SetSize(pSize, pSize)
 	end
-	
+
 	frame.buttons = {}
 	frame.frames = {}
 	frame.texts = {}
-	
+
 	frame.parent = pParent
 	frame.height = MultiBot.IF(oHeight ~= nil, oHeight, pSize)
 	frame.width = MultiBot.IF(oWidth ~= nil, oWidth, pSize)
@@ -587,9 +587,9 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
 	frame.size = pSize
 	frame.x = pX
 	frame.y = pY
-	
+
 	-- ADD --
-	
+
 	frame.addTexture = function(pTexture)
 		if(frame.texture ~= nil) then frame.texture:Hide() end
 		frame.texture = frame:CreateTexture(nil, "BACKGROUND")
@@ -598,7 +598,7 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
 		frame.texture:Show()
 		return frame.texture
 	end
-	
+
 	frame.addModel = function(pName, pX, pY, pWidth, pHeight, oScale)
 		if(frame.model ~= nil) then frame.model:Hide() end
 		frame.model = CreateFrame("DressUpModel", "MyModel" .. pName, frame)
@@ -608,7 +608,7 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
 		if(oScale ~= nil) then frame.model:SetScale(oScale) end
 		return frame.model
 	end
-	
+
 	frame.addText = function(pIndex, pText, pAlign, pX, pY, pSize)
 		if(frame.texts[pIndex] ~= nil) then frame.texts[pIndex]:Hide() end
 		frame.texts[pIndex] = frame:CreateFontString(nil, "ARTWORK")
@@ -618,135 +618,135 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
 		frame.texts[pIndex]:Show()
 		return frame.texts[pIndex]
 	end
-	
+
 	frame.wowButton = function(pName, pX, pY, pWidth, pHeight, pSize)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
 		frame.buttons[pName] = MultiBot.wowButton(frame, pName, pX, pY, pWidth, pHeight, pSize)
 		return frame.buttons[pName]
 	end
-	
+
 	frame.addButton = function(pName, pX, pY, pTexture, pTip, oTemplate)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
 		frame.buttons[pName] = MultiBot.newButton(frame, pX, pY, frame.size, pTexture, pTip, oTemplate)
 		return frame.buttons[pName]
 	end
-	
+
 	frame.movButton = function(pName, pX, pY, pSize, pTip, oFrame)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
 		frame.buttons[pName] = MultiBot.movButton(frame, pX, pY, pSize, pTip, oFrame)
 		return frame.buttons[pName]
 	end
-	
+
 	frame.boxButton = function(pName, pX, pY, pSize, pState)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
 		frame.buttons[pName] = MultiBot.boxButton(frame, pX, pY, pSize, pState)
 		return frame.buttons[pName]
 	end
-	
+
 	frame.catButton = function(pName, pX, pY, pWidth, pHeight)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
 		frame.buttons[pName] = MultiBot.catButton(frame, pX, pY, pWidth, pHeight)
 		return frame.buttons[pName]
 	end
-	
+
 	frame.addFrame = function(pName, pX, pY, oSize, oWidth, oHeight)
 		if(frame.frames[pName] ~= nil) then frame.frames[pName]:Hide() end
 		frame.frames[pName] = MultiBot.newFrame(frame, pX, pY, MultiBot.IF(oSize ~= nil, oSize, frame.size - 4), oWidth, oHeight)
 		return frame.frames[pName]
 	end
-	
+
 	-- SET --
-	
+
 	frame.setPoint = function(pX, pY)
 		frame:SetPoint("BOTTOMRIGHT", pX, pY)
 		frame.x = pX
 		frame.y = pY
 		return frame
 	end
-	
+
 	frame.setButton = function(pIndex, pTexture, pTip)
 		frame.buttons[pIndex].setButton(pTexture, pTip)
 		return frame
 	end
-	
+
 	frame.setTexture = function(pTexture)
 		frame.texture:SetTexture(MultiBot.IF(string.sub(pTexture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. pTexture)
 		frame.texture:SetAllPoints(frame)
 		frame.texture:Show()
 		return frame
 	end
-	
+
 	frame.setText = function(pIndex, pText)
 		frame.texts[pIndex]:SetText(pText)
 		frame.texts[pIndex]:Show()
 		return frame
 	end
-	
+
 	frame.setLevel = function(pLevel)
 		frame:SetFrameLevel(pLevel)
 		return frame
 	end
-	
+
 	frame.setAlpha = function(pAlpha)
 		frame:SetAlpha(pAlpha)
 		return frame
 	end
-	
+
 	-- GET --
-	
+
 	frame.getButton = function(pIndex)
 		if(frame.buttons[pIndex] ~= nil) then
 			return frame.buttons[pIndex]
 		end
-		
+
 		for key, value in pairs(frame.frames) do
 			local tButton = value.getButton(pIndex)
 			if(tButton ~= nil) then return tButton end
 		end
-		
+
 		return nil
 	end
-	
+
 	frame.getFrame = function(pIndex)
 		if(frame.frames[pIndex] ~= nil) then
 			return frame.frames[pIndex]
 		end
-		
+
 		for key, value in pairs(frame.frames) do
 			local tFrame = value.getFrame(pIndex)
 			if(tFrame ~= nil) then return tFrame end
 		end
-		
+
 		return nil
 	end
-	
+
 	frame.getClass = function()
 		if(frame.class ~= nil) then return frame.class end
 		return frame.parent.getClass()
 	end
-	
+
 	frame.getName = function()
 		if(frame.name ~= nil) then return frame.name end
 		return frame.parent.getName()
 	end
-	
+
 	frame.get = function()
 		if(frame.name ~= nil) then return frame end
 		return frame.parent.get()
 	end
-	
+
 	-- DO --
-	
+
 	frame.doShow = function()
 		frame:Show()
 		return frame
 	end
-	
+
 	frame.doHide = function()
 		frame:Hide()
 		return frame
 	end
-	
+
 	return frame
 end
 
@@ -757,48 +757,48 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 	button:SetPoint("BOTTOMRIGHT", pX, pY)
 	button:SetSize(pSize, pSize)
 	button:Show()
-	
+
 	button.icon = button:CreateTexture(nil, "BACKGROUND")
 	button.icon:SetTexture(MultiBot.IF(string.sub(pTexture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. pTexture)
 	button.icon:SetAllPoints(button)
 	button.icon:Show()
-	
+
 	button.border = button:CreateTexture(nil, "ARTWORK")
 	button.border:SetTexture("Interface\\AddOns\\MultiBot\\Icons\\border.blp")
 	button.border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2)
 	button.border:SetSize(pSize + 4, pSize + 4)
 	button.border:Hide()
-	
+
 	button:EnableMouse(true)
 	button:RegisterForClicks("LeftButtonDown", "RightButtonDown")
 	button:SetHighlightTexture("Interface/Buttons/ButtonHilight-Square", "ADD")
 	button:SetPushedTexture("Interface/Buttons/UI-Quickslot-Depress")
 	button:SetNormalTexture("")
-	
+
 	button.texture = pTexture
 	button.parent = pParent
 	button.size = pSize
 	button.tip = pTip
 	button.x = pX
 	button.y = pY
-	
+
 	-- ADD --
-	
+
 	button.addMacro = function(pType, pMacro)
 		button:SetAttribute("macrotext", pMacro);
 		button:SetAttribute(pType, "macro");
 		return button
 	end
-	
+
 	-- SET --
-	
+
 	button.setPoint = function(pX, pY)
 		button:SetPoint("BOTTOMRIGHT", pX, pY)
 		button.x = pX
 		button.y = pY
 		return button
 	end
-	
+
 	button.setButton = function(pTexture, pTip)
 		button.icon:SetTexture(MultiBot.IF(string.sub(pTexture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. pTexture)
 		button.icon:SetAllPoints(button)
@@ -806,19 +806,19 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 		button.tip = pTip
 		return button
 	end
-	
+
 	button.setTexture = function(pTexture)
 		button.icon:SetTexture(MultiBot.IF(string.sub(pTexture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. pTexture)
 		button.icon:SetAllPoints(button)
 		button.texture = pTexture
 		return button
 	end
-	
+
 	button.setHighlight = function(pTexture)
 		button:SetHighlightTexture(pTexture, "ADD")
 		return button
 	end
-	
+
 	button.setAmount = function(pAmount)
 		if(button.amount ~= nil) then button.amount:Hide() end
 		button.amount = button:CreateFontString(nil, "ARTWORK")
@@ -827,7 +827,7 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 		button.amount:SetText(pAmount)
 		return button
 	end
-	
+
 	button.setDisable = function(oBorder)
 		button.icon:SetDesaturated(1)
 		if(oBorder == nil) then oBorder = true end
@@ -835,7 +835,7 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 		button.state = false
 		return button
 	end
-	
+
 	button.setEnable = function(oBorder)
 		button.icon:SetDesaturated(nil)
 		if(oBorder == nil) then oBorder = true end
@@ -843,29 +843,29 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 		button.state = true
 		return button
 	end
-	
+
 	-- GET --
-	
+
 	button.getButton = function(pIndex)
 		return button.parent.get().getButton(pIndex)
 	end
-	
+
 	button.getFrame = function(pIndex)
 		return button.parent.get().getFrame(pIndex)
 	end
-	
+
 	button.getClass = function()
 		return button.parent.getClass()
 	end
-	
+
 	button.getName = function()
 		return button.parent.getName()
 	end
-	
+
 	button.get = function()
 		return button.parent.get()
 	end
-	
+
 	-- DO --
 	
 	button.doHide = function()
@@ -874,16 +874,16 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 		button:Hide()
 		return button
 	end
-	
+
 	button.doShow = function()
 		button:SetPoint("BOTTOMRIGHT", button.x, button.y)
 		button:SetSize(button.size, button.size)
 		button:Show()
 		return button
 	end
-	
+
 	-- EVENT --
-	
+
 	button:SetScript("OnEnter", function()
 		if(type(button.tip) == "string") then
 			GameTooltip:SetOwner(button, "ANCHOR_TOPRIGHT", 0 - button.size, 2)
@@ -891,38 +891,38 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 			GameTooltip:Show()
 			return
 		end
-		
+
 		if(type(button.tip) == "table") then
 			button.tip:Show()
 			return
 		end
 	end)
-	
+
 	button:SetScript("OnLeave", function()
 		button:SetPoint("BOTTOMRIGHT", button.x, button.y)
 		button:SetSize(button.size, button.size)
-		
+
 		button.border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2)
 		button.border:SetSize(button.size + 4, button.size + 4)
-		
+
 		if(type(button.tip) == "string") then GameTooltip:Hide() end
 		if(type(button.tip) == "table") then button.tip:Hide() end
 	end)
-	
+
 	button:SetScript("PostClick", function(pSelf, pEvent)
 		button:SetPoint("BOTTOMRIGHT", button.x - 1, button.y + 1)
 		button:SetSize(button.size - 2, button.size - 2)
-		
+
 		button.border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2)
 		button.border:SetSize(button.size + 2, button.size + 2)
-		
+
 		if(type(button.tip) == "string") then GameTooltip:Hide() end
 		if(type(button.tip) == "table") then button.tip:Hide() end
-		
+
 		if(pEvent == "RightButton" and button.doRight ~= nil) then button.doRight(button) end
 		if(pEvent == "LeftButton" and button.doLeft ~= nil) then button.doLeft(button) end
 	end)
-	
+
 	return button
 end
 
@@ -933,84 +933,84 @@ MultiBot.wowButton = function(pParent, pName, pX, pY, pWidth, pHeight, pSize)
 	button:SetPoint("BOTTOMRIGHT", pX, pY)
 	button:SetSize(pWidth, pHeight)
 	button:Show()
-	
+
 	button.text = button:CreateFontString(nil, "ARTWORK")
 	button.text:SetFont("Fonts\\ARIALN.ttf", pSize, "OUTLINE")
 	button.text:SetPoint("CENTER", 0, 0)
 	button.text:SetText("|cffffcc00" .. pName .. "|r")
 	button.text:Show()
-	
+
 	button:EnableMouse(true)
 	button:RegisterForClicks("LeftButtonDown", "RightButtonDown")
-	
+
 	button.parent = pParent
 	button.state = true
 	button.y = pY
 	button.x = pX
-	
+
 	-- GET --
-	
+
 	button.getButton = function(pIndex)
 		return button.parent.get().getButton(pIndex)
 	end
-	
+
 	button.getFrame = function(pIndex)
 		return button.parent.get().getFrame(pIndex)
 	end
-	
+
 	button.getClass = function()
 		return button.parent.getClass()
 	end
-	
+
 	button.getName = function()
 		return button.parent.getName()
 	end
-	
+
 	button.get = function()
 		return button.parent.get()
 	end
-	
+
 	-- SET --
-	
+
 	button.setDisable = function()
 		button:GetNormalTexture():SetDesaturated(1)
 		button.state = false
 		return button
 	end
-	
+
 	button.setEnable = function()
 		button:GetNormalTexture():SetDesaturated(nil)
 		button.state = true
 		return button
 	end
-	
+
 	-- DO --
-	
+
 	button.doHide = function()
 		button:Hide()
 		return button
 	end
-	
+
 	button.doShow = function()
 		button:Show()
 		return button
 	end
-	
+
 	-- EVENT --
-	
+
 	button:SetScript("OnEnter", function()
 	end)
-	
+
 	button:SetScript("OnLeave", function()
 		button.text:SetPoint("CENTER", 0, 0)
 	end)
-	
+
 	button:SetScript("OnClick", function(pSelf, pEvent)
 		button.text:SetPoint("CENTER", -1, -1)
 		if(pEvent == "RightButton" and button.doRight ~= nil) then button.doRight(button) end
 		if(pEvent == "LeftButton" and button.doLeft ~= nil) then button.doLeft(button) end
 	end)
-	
+
 	return button
 end
 
@@ -1021,42 +1021,42 @@ MultiBot.movButton = function(pParent, pX, pY, pSize, pTip, oFrame)
 	button:SetPoint("BOTTOMRIGHT", pX, pY)
 	button:SetSize(pSize, pSize)
 	button:Show()
-	
+
 	button:EnableMouse(true)
 	button:RegisterForClicks("RightButtonDown")
 	button:RegisterForDrag("RightButton")
-	
+
 	button.parent = pParent
 	button.frame = oFrame
 	button.size = pSize
 	button.tip = pTip
 	button.x = pX
 	button.y = pY
-	
+
 	-- EVENT --
-	
+
 	button:SetScript("OnEnter", function()
 		GameTooltip:SetOwner(button, "ANCHOR_TOPRIGHT", 0 - button.size, 2)
 		GameTooltip:SetText(button.tip)
 		GameTooltip:Show()
 	end)
-	
+
 	button:SetScript("OnLeave", function()
 		GameTooltip:Hide()
 	end)
-	
+
 	button:SetScript("OnClick", function(pSelf, pEvent)
 		GameTooltip:Hide()
 	end)
-	
+
 	button:SetScript("OnDragStart", function()
 		if(button.frame ~= nil) then button.frame:StartMoving() else button.parent:StartMoving() end
 	end)
-	
+
 	button:SetScript("OnDragStop", function()
 		if(button.frame ~= nil) then button.frame:StopMovingOrSizing() else button.parent:StopMovingOrSizing() end
 	end)
-	
+
 	return button
 end
 
@@ -1069,53 +1069,53 @@ MultiBot.boxButton = function(pParent, pX, pY, pSize, pState)
 	button:SetSize(pSize, pSize)
 	button:SetChecked(pState)
 	button:Show()
-	
+
 	button.parent = pParent
 	button.state = pState
 	button.size = pSize
 	button.x = pX
 	button.y = pY
-	
+
 	-- GET --
-	
+
 	button.getButton = function(pIndex)
 		return button.parent.get().getButton(pIndex)
 	end
-	
+
 	button.getFrame = function(pIndex)
 		return button.parent.get().getFrame(pIndex)
 	end
-	
+
 	button.getClass = function()
 		return button.parent.getClass()
 	end
-	
+
 	button.getName = function()
 		return button.parent.getName()
 	end
-	
+
 	button.get = function()
 		return button.parent.get()
 	end
-	
+
 	-- DO --
-	
+
 	button.doHide = function()
 		button:Hide()
 		return button
 	end
-	
+
 	button.doShow = function()
 		button:Show()
 		return button
 	end
-	
+
 	-- EVENT --
-	
+
 	button:SetScript("OnClick", function()
 		if(button.doClick ~= nil) then button.doClick(button) end
 	end)
-	
+
 	return button;
 end
 
@@ -1126,13 +1126,13 @@ MultiBot.catButton = function(pParent, pX, pY, pWidth, pHeight)
 	button:SetPoint("BOTTOMRIGHT", pX, pY)
 	button:SetSize(pWidth, pHeight)
 	button:Show()
-	
+
 	-- EVENT --
-	
+
 	button:SetScript("OnClick", function()
 		if(button.doClick ~= nil) then button.doClick(button) end
 	end)
-	
+
 	return button;
 end
 
