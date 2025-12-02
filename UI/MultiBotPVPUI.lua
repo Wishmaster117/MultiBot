@@ -169,12 +169,14 @@ local function CreateStyledFrame()
     local tabs = {}
     --local tabNames = { "JcJ", "Dummy" }
 	local tabNames = { "JcJ" }
+
     for i, name in ipairs(tabNames) do
         local template = (_G["CharacterFrameTabButtonTemplate"] and "CharacterFrameTabButtonTemplate") or "UIPanelButtonTemplate"
         local tab = CreateFrame("Button", f:GetName() .. "Tab" .. i, f, template)
         tab:SetSize(90, 22)
         tab:SetText(name)
-        tab:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 12 + (i - 1) * 98, 12)
+        tab:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT",
+            12 + (i - 1) * 98, 12)
         tab.id = i
         tabs[i] = tab
     end
