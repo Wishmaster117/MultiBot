@@ -10,7 +10,7 @@ MultiBot.CLEAR = function(pString, pAmount, o1, o2, o3)
 			if(o3 ~= nil) then pString = MultiBot.doReplace(pString, o1, "") end
 		end
 	end
-	
+
 	return pString
 end
 
@@ -33,14 +33,14 @@ end
 
 MultiBot.doSlash = function(pCommand, pArguments)
 	local tCommand = string.upper(string.sub(pCommand, 2))
-	
+
 	for tKey, tFunc in pairs(SlashCmdList) do
 		if(tKey == tCommand) then
 			tFunc(pArguments)
 			return true
 		end
 	end
-	
+
 	SendChatMessage(MultiBot.info.command, "SAY")
 	return false
 end
@@ -52,16 +52,16 @@ end
 
 MultiBot.doDotWithTarget = function(pCommand, oArguments)
 	local tName = UnitName("target")
-	
+
 	if(tName ~= nil and tName ~= "Unknown Entity") then
 		if(oArguments ~= nil)
 		then SendChatMessage(pCommand .. " " .. tName .. " " .. oArguments)
 		else SendChatMessage(pCommand .. " " .. tName)
 		end
-		
+	
 		return true
 	end
-	
+
 	SendChatMessage(MultiBot.info.target, "SAY")
 	return false
 end
@@ -73,13 +73,13 @@ MultiBot.doSplit = function(pString, pPattern)
 	local tResult = {}
 	local tStart = 1
 	local tFrom, tTo = string.find(pString, pPattern, tStart)
-	
+
 	while tFrom do
 		table.insert(tResult, string.sub(pString, tStart, tFrom - 1))
 		tStart = tTo + 1
 		tFrom, tTo = string.find(pString, pPattern, tStart)
 	end
-	
+
 	table.insert(tResult, string.sub(pString, tStart))
 	return tResult
 end
@@ -93,14 +93,14 @@ end
 MultiBot.doRemove = function(pIndex, pName)
 	if(pIndex == nil) then return end
 	local tFound = 0
-	
+
 	for i = 1, table.getn(pIndex) do
 		if(pIndex[i] == pName) then
 			tFound = i
 			break
 		end
 	end
-	
+
 	if(tFound == 0) then return false end
 	table.remove(pIndex, tFound)
 	return true
@@ -162,38 +162,38 @@ MultiBot.isMember = function(pName)
 			if(UnitName("raid" .. i) == pName) then return true end
 		end
 	end
-	
+
 	if(GetNumPartyMembers() > 0) then
 		for i = 1, 4 do
 			if(UnitName("party" .. i) == pName) then return true end
 		end
 	end
-	
+
 	if(UnitName("player") == pName) then
 		return true
 	end
-	
+
 	return false
 end
 
 MultiBot.isTarget = function()
 	local tName = UnitName("target")
-	
+
 	if(tName ~= nil and tName ~=  "Unknown Entity") then	
 		return true
 	end
-	
+
 	SendChatMessage(MultiBot.info.target, "SAY")
 	return false
 end
 
 MultiBot.isUnit = function(pUnit)
 	local tName = UnitName(pUnit)
-	
+
 	if(tName == nil or tName == "Unknown Entity") then
 		return false
 	end
-	
+
 	return true
 end
 
@@ -253,7 +253,7 @@ MultiBot.toUnit = function(pName)
 			end
 		end
 	end
-	
+
 	if(GetNumPartyMembers() > 0) then
 		for i = 1, GetNumPartyMembers() do
 			if(UnitName("party" .. i) == pName) then
@@ -261,11 +261,11 @@ MultiBot.toUnit = function(pName)
 			end
 		end
 	end
-	
+
 	if(UnitName("player") == pName) then
 		return "player"
 	end
-	
+
 	return nil
 end
 
@@ -303,7 +303,7 @@ end
 
 MultiBot.RaidPool = function(pUnit, oWho)
 	if(pUnit ~= "player" and MultiBot.getBot(pUnit) == nil) then return end
-	
+
 	local tGender = MultiBot.CASE(UnitSex(pUnit), "[U]", "[N]", "[M]", "[F]")
 	local tLocalClass, tClass = UnitClass(pUnit)
 	local tLocalRace, tRace = UnitRace(pUnit)
@@ -312,25 +312,25 @@ MultiBot.RaidPool = function(pUnit, oWho)
 	local tIndex = { 4, 5, 6 }
 	local tTabs = {}
 	local tScore = ""
-	
+
 	if(oWho ~= nil) then
 		local tWho = MultiBot.CLEAR(oWho, 20)
 		tWho = MultiBot.doReplace(tWho, "beast mastery", "Beast-Mastery")
 		tWho = MultiBot.doReplace(tWho, "feral combat", "Feral-Combat")
 		tWho = MultiBot.doReplace(tWho, "Blood Elf", "Blood-Elf")
 		tWho = MultiBot.doReplace(tWho, "Night Elf", "Night-Elf")
-		
+
 		tParts = MultiBot.doSplit(tWho, ", ")
 		tSpace = MultiBot.doSplit(tParts[1], " ")
 		tScore = MultiBot.doSplit(tParts[2], " ")[1]
-		
+
 		if(MultiBot.isInside(tSpace[5], "/")) then tIndex = { 5, 6, 7 } else
 		if(MultiBot.isInside(tSpace[6], "/")) then tIndex = { 6, 7, 8 } else
 		if(MultiBot.isInside(tSpace[7], "/")) then tIndex = { 7, 8, 9 }
 		end end end
-		
+
 		tTabs = MultiBot.doSplit(strsub(tSpace[tIndex[1]], 2, strlen(tSpace[tIndex[1]]) - 1), "/")
-		
+
 		if(tGender == nil) then tGender = tSpace[2] end
 		if(tClass == nil) then tClass = MultiBot.toClass(tSpace[tIndex[2]]) end
 		if(tRace == nil) then tRace = tSpace[1] end
@@ -342,12 +342,12 @@ MultiBot.RaidPool = function(pUnit, oWho)
 		tTabs[2] = GetNumTalents(2)
 		tTabs[3] = GetNumTalents(3)
 	end
-	 
+
 	   -- [SAFETY] tTabs doivent être numériques
        tTabs[1] = tonumber(tTabs[1]) or 0
        tTabs[2] = tonumber(tTabs[2]) or 0
        tTabs[3] = tonumber(tTabs[3]) or 0
-       
+
        -- [SAFETY] iLevel : toujours un nombre, même si tScore est vide ou textuel
        local iLevel = nil
        do
@@ -361,13 +361,13 @@ MultiBot.RaidPool = function(pUnit, oWho)
          if not iLevel then iLevel = tonumber(tLevel) end
          if not iLevel then iLevel = (UnitLevel and UnitLevel(pUnit)) or 0 end
        end
-  
+
 	local tTabIndex = MultiBot.IF(tTabs[3] > tTabs[2] and tTabs[3] > tTabs[1], 3, MultiBot.IF(tTabs[2] > tTabs[3] and tTabs[2] > tTabs[1], 2, 1))
 	local tSpecial = MultiBot.CLEAR(MultiBot.info.talent[MultiBot.toClass(tClass) .. tTabIndex], 1)
-	
+
 	if(tLocalClass == nil) then tLocalClass = tClass end
 	if(tLocalRace == nil) then tLocalRace = tRace end
-	
+
 	MultiBotGlobalSave[tName] =  tLocalRace .. "," .. tGender .. "," .. tSpecial .. "," .. tTabs[1] .. "/" .. tTabs[2] .. "/" .. tTabs[3] .. "," .. tLocalClass .. "," .. tLevel .. "," .. tScore
 end
 

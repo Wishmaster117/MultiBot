@@ -10,9 +10,9 @@ local DEFAULTS = {
   sort   = 1,  -- tri/rafraîchissement
 }
 
-local THROTTLE_DEFAULTS = { 
-  rate = 5, 
-  burst = 8 
+local THROTTLE_DEFAULTS = {
+  rate = 5,
+  burst = 8
 }
 
 -- Assure l'existence de la SavedVariables et des clés

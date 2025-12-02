@@ -173,7 +173,7 @@ function MultiBot.RebuildPlayersIndexFromButtons()
       table.insert(MultiBot.index.classes.players[cls], name)
     end
   end
-end 
+end
 
 -- MultiBotSave = {}
 -- MultiBotGlobalSave = {}
@@ -492,17 +492,17 @@ MultiBot.info = {}
 MultiBot.info.shorts = {}
 
 -- ITEMS
-MultiBot.info.itemdestroyalert = 
+MultiBot.info.itemdestroyalert =
 "Do you REALLY want to destroy this item?\n%s";
 
-MultiBot.info.keydestroyalert = 
+MultiBot.info.keydestroyalert =
 "I will not sell Keys.";
 
-MultiBot.info.itemsellalert = 
+MultiBot.info.itemsellalert =
 "I cant sell this Item.";
 
 -- MINIMAP BUTTON
-MultiBot.info.butttitle = 
+MultiBot.info.butttitle =
 "|cffffd100MultiBot|r"
 
 MultiBot.info.buttontoggle =
@@ -642,7 +642,7 @@ MultiBot.info.saving =
 MultiBot.info.action =
 "I need to select a Action.";
 
-MultiBot.info.combination = 
+MultiBot.info.combination =
 "There are no Items for this Combination.";
 
 --MultiBot.info.language =
@@ -679,10 +679,10 @@ MultiBot.info.talent.Level =
 MultiBot.info.talent.OutOfRange =
 "The Bot is out of Range.";
 
-MultiBot.info.talent.Apply = 
+MultiBot.info.talent.Apply =
 "Apply";
 
-MultiBot.info.talent.Copy = 
+MultiBot.info.talent.Copy =
 "Copy";
 
 MultiBot.info.talent.Title =
@@ -793,10 +793,10 @@ MultiBot.tips.move.stats =
 MultiBot.tips.move.itemus =
 "Right-Click to drag and move Itemus";
 
-MultiBot.tips.move.iconos = 
+MultiBot.tips.move.iconos =
 "Right-Click to drag and move Iconos";
 
-MultiBot.tips.move.spellbook = 
+MultiBot.tips.move.spellbook =
 "Right-Click to drag and move the Spellbook";
 
 MultiBot.tips.move.reward =
@@ -811,7 +811,7 @@ MultiBot.tips.move.raidus =
 -- TANKER --
 
 MultiBot.tips.tanker = {}
-MultiBot.tips.tanker.master = 
+MultiBot.tips.tanker.master =
 "Tank-Attack\n|cffffffff"..
 "With this Button the Tanks starting to attack your target.\n"..
 "The Execution-Order shows the Receiver for Commandos.|r\n\n"..
@@ -821,7 +821,7 @@ MultiBot.tips.tanker.master =
 -- ATTACK --
 
 MultiBot.tips.attack = {}
-MultiBot.tips.attack.master = 
+MultiBot.tips.attack.master =
 "Attack-Control\n|cffffffff"..
 "With this Control you can give the Command to attack.\n"..
 "Right-Click the Options to define a new default Action.\n"..
@@ -831,7 +831,7 @@ MultiBot.tips.attack.master =
 "|cffff0000Right-Click to show or hide the Options|r\n"..
 "|cff999999(Execution-Order: System)|r";
 
-MultiBot.tips.attack.attack = 
+MultiBot.tips.attack.attack =
 "Attack\n|cffffffff"..
 "With this Command the hole Raid or Party starting to attack your target.|r\n\n"..
 "|cffff0000Left-Click to execute Attack|r\n"..
@@ -839,7 +839,7 @@ MultiBot.tips.attack.attack =
 "|cffff0000Right-Click to define as default Action|r\n"..
 "|cff999999(Execution-Order: System)|r";
 
-MultiBot.tips.attack.ranged = 
+MultiBot.tips.attack.ranged =
 "Ranged-Attack\n|cffffffff"..
 "With this Command the Ranged-Fighters starting to attack your target.|r\n\n"..
 "|cffff0000Left-Click to execute Ranged-Attack|r\n"..
@@ -847,7 +847,7 @@ MultiBot.tips.attack.ranged =
 "|cffff0000Right-Click to define as default Action|r\n"..
 "|cff999999(Execution-Order: System)|r";
 
-MultiBot.tips.attack.melee = 
+MultiBot.tips.attack.melee =
 "Melee-Attack\n|cffffffff"..
 "With this Command the Melee-Fighters starting to attack your target.|r\n\n"..
 "|cffff0000Left-Click to execute Melee-Attack|r\n"..
@@ -855,7 +855,7 @@ MultiBot.tips.attack.melee =
 "|cffff0000Right-Click to define as default Action|r\n"..
 "|cff999999(Execution-Order: System)|r";
 
-MultiBot.tips.attack.healer = 
+MultiBot.tips.attack.healer =
 "Healer-Attack\n|cffffffff"..
 "With this Command the Healers starting to attack your target.|r\n\n"..
 "|cffff0000Left-Click to execute Healer-Attack|r\n"..
@@ -863,7 +863,7 @@ MultiBot.tips.attack.healer =
 "|cffff0000Right-Click to define as default Action|r\n"..
 "|cff999999(Execution-Order: System)|r";
 
-MultiBot.tips.attack.dps = 
+MultiBot.tips.attack.dps =
 "DPS-Attack\n|cffffffff"..
 "With this Command the DPS starting to attack your target.|r\n\n"..
 "|cffff0000Left-Click to execute DPS-Attack|r\n"..
@@ -871,7 +871,7 @@ MultiBot.tips.attack.dps =
 "|cffff0000Right-Click to define as default Action|r\n"..
 "|cff999999(Execution-Order: System)|r";
 
-MultiBot.tips.attack.tank = 
+MultiBot.tips.attack.tank =
 "Tank-Attack\n|cffffffff"..
 "With this Command the Tanks starting to attack your target.|r\n\n"..
 "|cffff0000Left-Click to execute Tank-Attack|r\n"..
@@ -882,7 +882,7 @@ MultiBot.tips.attack.tank =
 -- MODE --
 
 MultiBot.tips.mode = {}
-MultiBot.tips.mode.master = 
+MultiBot.tips.mode.master =
 "Mode-Control\n|cffffffff"..
 "This Control allows you to switch a Combat-Mode on and off.\n"..
 "Left-Click the Options to select another Combat-Mode.\n"..
@@ -892,7 +892,7 @@ MultiBot.tips.mode.master =
 "|cffff0000Right-Click to show or hide Options|r\n"..
 "|cff999999(Execution-Order: System)|r";
 
-MultiBot.tips.mode.passive = 
+MultiBot.tips.mode.passive =
 "Passive-Mode\n|cffffffff"..
 "In the Passive-Mode, your Bots wont attack any Opponent.\n"..
 "This Mode is useful to keep the Tank from running into the Opponents during a pull.\n"..
@@ -1404,7 +1404,7 @@ MultiBot.tips.units.invite =
 "With this Control you can automaticaly fill up your Group.\n"..
 "The left Button is for 'Party-Invite', the right Buttons are for 'Raid-Invite'.\n"..
 "Additionally a Right-Click on this Button will add or remove all Bots at once.\n"..
-"Means, if you are not in a Group all Bots will be added else they are removed.|r\n\n".. 
+"Means, if you are not in a Group all Bots will be added else they are removed.|r\n\n"..
 "|cffff0000Left-Click to show or hide the Control|r\n"..
 "|cff999999(Execution-Order: System)|r\n\n"..
 "|cffff0000Right-Click to add or remove all Bots|r\n"..
@@ -1755,7 +1755,7 @@ MultiBot.tips.quests.incompheader =
 "** Incomplete Quests **";
 
 MultiBot.tips.quests.botsword =
-"Bots : "; 
+"Bots : ";
 
 -- USE GOBs --
 MultiBot.tips.quests.gobsmaster =
@@ -2261,7 +2261,7 @@ MultiBot.tips.deathknight.dps.frostAoe =
 "FROST-AOE|cffffffff\n"..
 "Enables the Frost AOE strategy.\n"..
 "Frost-AOE, DPS-Assist and Tank-Assist are mutually exclusive.\n"..
-"Only one of these strategies can be active.|r\n\n".. 
+"Only one of these strategies can be active.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Frost-AOE|r\n"..
 "|cf9999999(Execution-Order: Bot)|r";
 
@@ -2269,7 +2269,7 @@ MultiBot.tips.deathknight.dps.unholyAoe =
 "UNHOLY-AOE|cffffffff\n"..
 "Enables the Unholy AOE strategy.\n"..
 "Unholy-AOE, DPS-Assist and Tank-Assist are mutually exclusive.\n"..
-"Only one of these strategies can be active.|r\n\n".. 
+"Only one of these strategies can be active.|r\n\n"..
 "|cffff0000Left-Click to enable or disable Unholy-AOE|r\n"..
 "|cf9999999(Execution-Order: Bot)|r";
 
@@ -2478,14 +2478,14 @@ MultiBot.tips.hunter.pet.abandon =
 
 MultiBot.tips.hunter.ownbutton =
 "Hunter: %s\n"..
-"|cffffffffThis button open Hunter pet's Menu.|r\n\n".. 
+"|cffffffffThis button open Hunter pet's Menu.|r\n\n"..
 "|cffff0000Left-Click to open/close|r\n"..
-"|cffff0000Right-Click to drag|r\n".. 
+"|cffff0000Right-Click to drag|r\n"..
 "|cff999999(Execution Order: System)|r";
 
 MultiBot.tips.hunter.pet.stances =
 "Pets Stances\n"..
-"|cffffffffOpen pets stances menu.|r\n\n".. 
+"|cffffffffOpen pets stances menu.|r\n\n"..
 "|cffff0000Left-Click to open/close|r\n"..
 "|cff999999(Execution Order: System)|r";
 
@@ -3128,7 +3128,7 @@ MultiBot.tips.rogue.dps.boost =
 "Works with DPS/DPS-AOE/DPS-Assist and Tank-Assist; not exclusive.|r\n\n"..
 "|cffff0000Left-Click to enable/disable Boost|r\n"..
 "|cff999999(Execution-Order: Bot)|r";
-	
+
 MultiBot.tips.rogue.tankAssist =
 "Tank-Assist|cffffffff\n"..
 "It enables the Tank-Assist-Strategies.\n"..
@@ -3176,7 +3176,7 @@ MultiBot.tips.shaman.ctotem.searing =
 "Searing\n\n"..
 "|cffff0000Left-Click to select or remove this Totem|r\n";
 
-MultiBot.tips.shaman.ctotem.magma =     
+MultiBot.tips.shaman.ctotem.magma =
 "Magma\n\n"..
 "|cffff0000Left-Click to select or remove this Totem|r\n";
 
@@ -3330,7 +3330,7 @@ MultiBot.tips.shaman.dps.dpsAssist =
 "|cffff0000Left-Click to enable or disable DPS-Assist|r\n"..
 "|cf9999999(Execution-Order: Bot)|r";
 
-MultiBot.tips.shaman.dps.dpsAoe = 
+MultiBot.tips.shaman.dps.dpsAoe =
 "DPS-AOE|cffffffff\n"..
 "It enables the DPS-AOE-Strategies.\n"..
 "DPS-AOE, DPS-Assist and Tank-Assist are mutually exclusive.\n"..
@@ -3763,14 +3763,14 @@ MultiBot.tips.every.wipe =
 "|cff999999(Execution order: Bot)|r";
 
  -- SET TALENTS --
- 
+
 MultiBot.tips.every.settalent =
 "Set Talents|cffffffff\n"..
 "Displays a menu of available specializations (PvE/PvP) for the selected bot.\n"..
 "Secondary specialization unlocks at level 40.|r\n\n"..
 "|cffff0000Left-click to toggle the bot's talent template selector|r\n"..
 "|cff999999(Execution order: Bot)|r"
- 
+
 -- DeathKnight
 MultiBot.tips.spec.dkbloodpve =
   "Blood – PvE|cffffffff\n"..
