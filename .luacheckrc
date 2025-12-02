@@ -39,4 +39,4 @@ allow_defined_top = false
 self = true
 
 -- Limite de longueur de ligne
-max_line_length = 120
+max_line_length = 200
