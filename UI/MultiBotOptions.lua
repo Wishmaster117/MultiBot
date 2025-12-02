@@ -119,11 +119,11 @@ function MultiBot.BuildOptionsPanel()
     _G[chkMinimapHide:GetName().."Text"]:SetText(MultiBot.info.buttonoptionshide)
     chkMinimapHide.tooltipText = MultiBot.info.buttonoptionshidetooltip
 
-    -- État initial
-    chkMinimapHide:SetChecked(MultiBotSave.Minimap.hide and true or false)
-
-    chkMinimapHide:SetScript("OnClick", function(self)
-      local hide = self:GetChecked() and true or false
+      -- État initial
+      chkMinimapHide:SetChecked(MultiBotSave.Minimap.hide and true or false)
+  
+      chkMinimapHide:SetScript("OnClick", function(btn)
+        local hide = btn:GetChecked() and true or false
 	  MultiBotSave.Minimap = MultiBotSave.Minimap or {}
       MultiBotSave.Minimap.hide = hide
       if MultiBot.Minimap_Refresh then
@@ -165,7 +165,7 @@ function MultiBot.BuildOptionsPanel()
         end
     end
 
-    local function Initialize(self, level)
+    local function Initialize(dropdown, level)
         local info
         for k, v in ipairs(strataLevels) do
             info = UIDropDownMenu_CreateInfo()
@@ -254,7 +254,7 @@ function MultiBot.BuildOptionsPanel()
 end
 
 -- Slash pour ouvrir le panneau (double appel nécessaire sur 3.3.5 parfois)
-SLASH_MULTIBOTOPTIONS1 = "/mbopt"
+_G.SLASH_MULTIBOTOPTIONS1 = "/mbopt"
 SlashCmdList["MULTIBOTOPTIONS"] = function()
   if not MultiBot._optionsBuilt then
     if MultiBot.BuildOptionsPanel then MultiBot.BuildOptionsPanel() end

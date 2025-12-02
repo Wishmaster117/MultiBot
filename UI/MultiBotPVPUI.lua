@@ -171,7 +171,8 @@ local function CreateStyledFrame()
 	local tabNames = { "JcJ" }
 
     for i, name in ipairs(tabNames) do
-        local template = (_G["CharacterFrameTabButtonTemplate"] and "CharacterFrameTabButtonTemplate") or "UIPanelButtonTemplate"
+        local template = (_G["CharacterFrameTabButtonTemplate"] and
+            "CharacterFrameTabButtonTemplate") or "UIPanelButtonTemplate"
         local tab = CreateFrame("Button", f:GetName() .. "Tab" .. i, f, template)
         tab:SetSize(90, 22)
         tab:SetText(name)
