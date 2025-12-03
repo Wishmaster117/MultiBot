@@ -8,7 +8,7 @@ MultiBot.addMage = function(pFrame, pCombat, pNormal)
 	--tFrame:Hide()
 
 	--tFrame.addButton("NonCombatMana", 0, 0, "inv_elemental_primal_mana", MultiBot.tips.mage.buff.bmana)
-	
+
     local buffFrame = pFrame.addFrame("Buff", -2, 30)
     buffFrame:Hide()
 
@@ -155,7 +155,7 @@ MultiBot.addMage = function(pFrame, pCombat, pNormal)
 	--tFrame:Hide()
 
 	--tFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.tips.mage.dps.dpsAssist).setDisable()
-	
+
     pFrame.addButton("DpsControl", -60, 0, "ability_warrior_challange", MultiBot.tips.mage.dps.master)
     .doLeft = function(pButton)
         MultiBot.ShowHideSwitch(pButton.getFrame("DpsControl"))
