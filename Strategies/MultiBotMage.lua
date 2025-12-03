@@ -4,22 +4,33 @@ MultiBot.addMage = function(pFrame, pCombat, pNormal)
 		MultiBot.ShowHideSwitch(pButton.parent.frames["Buff"])
 	end
 
-	local tFrame = pFrame.addFrame("Buff", -2, 30)
-	tFrame:Hide()
+	--local tFrame = pFrame.addFrame("Buff", -2, 30)
+	--tFrame:Hide()
 
-	tFrame.addButton("NonCombatMana", 0, 0, "inv_elemental_primal_mana", MultiBot.tips.mage.buff.bmana)
+	--tFrame.addButton("NonCombatMana", 0, 0, "inv_elemental_primal_mana", MultiBot.tips.mage.buff.bmana)
+	
+    local buffFrame = pFrame.addFrame("Buff", -2, 30)
+    buffFrame:Hide()
+
+    buffFrame.addButton("NonCombatMana", 0, 0, "inv_elemental_primal_mana", MultiBot.tips.mage.buff.bmana)
 	.doLeft = function(pButton)
 		MultiBot.SelectToTarget(pButton.get(), "Buff", pButton.texture, "nc +bmana,?", pButton.getName())
-		pButton.getButton("Buff").doRight = function(pButton)
-			MultiBot.OnOffActionToTarget(pButton, "nc +bmana,?", "nc -bmana,?", pButton.getName())
+		--pButton.getButton("Buff").doRight = function(pButton)
+			--MultiBot.OnOffActionToTarget(pButton, "nc +bmana,?", "nc -bmana,?", pButton.getName())
+        pButton.getButton("Buff").doRight = function(btn)
+            MultiBot.OnOffActionToTarget(btn, "nc +bmana,?", "nc -bmana,?", btn.getName())
 		end
 	end
 
-	tFrame.addButton("NonCombatDps", 0, 26, "inv_elemental_primal_nether", MultiBot.tips.mage.buff.bdps)
+	-- tFrame.addButton("NonCombatDps", 0, 26, "inv_elemental_primal_nether", MultiBot.tips.mage.buff.bdps)
+
+    buffFrame.addButton("NonCombatDps", 0, 26, "inv_elemental_primal_nether", MultiBot.tips.mage.buff.bdps)
 	.doLeft = function(pButton)
 		MultiBot.SelectToTarget(pButton.get(), "Buff", pButton.texture, "nc +bdps,?", pButton.getName())
-		pButton.getButton("Buff").doRight = function(pButton)
-			MultiBot.OnOffActionToTarget(pButton, "nc +bdps,?", "nc -bdps,?", pButton.getName())
+		--pButton.getButton("Buff").doRight = function(pButton)
+			--MultiBot.OnOffActionToTarget(pButton, "nc +bdps,?", "nc -bdps,?", pButton.getName())
+        pButton.getButton("Buff").doRight = function(btn)
+            MultiBot.OnOffActionToTarget(btn, "nc +bdps,?", "nc -bdps,?", btn.getName())
 		end
 	end
 
@@ -37,20 +48,31 @@ MultiBot.addMage = function(pFrame, pCombat, pNormal)
 
 	-- PLAYBOOK --
 
-	pFrame.addButton("Playbook", -30, 0, "inv_misc_book_06", MultiBot.tips.mage.playbook.master)
-	.doLeft = function(pButton)
-		MultiBot.ShowHideSwitch(pButton.getFrame("Playbook"))
-	end
+	--pFrame.addButton("Playbook", -30, 0, "inv_misc_book_06", MultiBot.tips.mage.playbook.master)
+	--.doLeft = function(pButton)
+		--MultiBot.ShowHideSwitch(pButton.getFrame("Playbook"))
+	--end
 
-	tFrame = pFrame.addFrame("Playbook", -32, 30)
-	tFrame:Hide()
+	--tFrame = pFrame.addFrame("Playbook", -32, 30)
+	--tFrame:Hide()
 
-	tFrame.addButton("ArcaneAoe", 0, 0, "spell_arcane_starfire", MultiBot.tips.mage.playbook.arcaneAoe).setDisable()
+	--tFrame.addButton("ArcaneAoe", 0, 0, "spell_arcane_starfire", MultiBot.tips.mage.playbook.arcaneAoe).setDisable()
+
+    pFrame.addButton("Playbook", -30, 0, "inv_misc_book_06", MultiBot.tips.mage.playbook.master)
+    .doLeft = function(pButton)
+        MultiBot.ShowHideSwitch(pButton.getFrame("Playbook"))
+    end
+
+    local playbookFrame = pFrame.addFrame("Playbook", -32, 30)
+    playbookFrame:Hide()
+
+    playbookFrame.addButton("ArcaneAoe", 0, 0, "spell_arcane_starfire", MultiBot.tips.mage.playbook.arcaneAoe).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "co +arcane aoe,?", "co -arcane aoe,?", pButton.getName())
 	end
 
-	tFrame.addButton("Arcane", 0, 26, "ability_mage_arcanebarrage", MultiBot.tips.mage.playbook.arcane).setDisable()
+	--tFrame.addButton("Arcane", 0, 26, "ability_mage_arcanebarrage", MultiBot.tips.mage.playbook.arcane).setDisable()
+	playbookFrame.addButton("Arcane", 0, 26, "ability_mage_arcanebarrage", MultiBot.tips.mage.playbook.arcane).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +arcane,?", "co -arcane,?", pButton.getName())) then
 			pButton.getButton("Frost").setDisable()
@@ -58,12 +80,14 @@ MultiBot.addMage = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	tFrame.addButton("FrostAoe", 0, 52, "spell_frost_freezingbreath", MultiBot.tips.mage.playbook.frostAoe).setDisable()
+	--tFrame.addButton("FrostAoe", 0, 52, "spell_frost_freezingbreath", MultiBot.tips.mage.playbook.frostAoe).setDisable()
+	playbookFrame.addButton("FrostAoe", 0, 52, "spell_frost_freezingbreath", MultiBot.tips.mage.playbook.frostAoe).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "co +frost aoe,?", "co -frost aoe,?", pButton.getName())
 	end
 
-	tFrame.addButton("Frost", 0, 78, "spell_frost_frostbolt02", MultiBot.tips.mage.playbook.frost).setDisable()
+	-- tFrame.addButton("Frost", 0, 78, "spell_frost_frostbolt02", MultiBot.tips.mage.playbook.frost).setDisable()
+	playbookFrame.addButton("Frost", 0, 78, "spell_frost_frostbolt02", MultiBot.tips.mage.playbook.frost).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +frost,?", "co -frost,?", pButton.getName())) then
 			pButton.getButton("Arcane").setDisable()
@@ -71,12 +95,14 @@ MultiBot.addMage = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	tFrame.addButton("FireAoe", 0, 104, "spell_shadow_rainoffire", MultiBot.tips.mage.playbook.fireAoe).setDisable()
+	--tFrame.addButton("FireAoe", 0, 104, "spell_shadow_rainoffire", MultiBot.tips.mage.playbook.fireAoe).setDisable()
+	playbookFrame.addButton("FireAoe", 0, 104, "spell_shadow_rainoffire", MultiBot.tips.mage.playbook.fireAoe).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "co +fire aoe,?", "co -fire aoe,?", pButton.getName())
 	end
 
-	tFrame.addButton("Fire", 0, 130, "spell_fire_fireball02", MultiBot.tips.mage.playbook.fire).setDisable()
+	--tFrame.addButton("Fire", 0, 130, "spell_fire_fireball02", MultiBot.tips.mage.playbook.fire).setDisable()
+	playbookFrame.addButton("Fire", 0, 130, "spell_fire_fireball02", MultiBot.tips.mage.playbook.fire).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +fire,?", "co -fire,?", pButton.getName())) then
 			pButton.getButton("Arcane").setDisable()
@@ -84,12 +110,14 @@ MultiBot.addMage = function(pFrame, pCombat, pNormal)
 		end
 	end
 	-- missing Frostfire & Firestarter --
-	tFrame.addButton("FrostFireAoe", 0, 156, "ability_mage_frostfirebolt", MultiBot.tips.mage.playbook.frostfireAoe).setDisable()
+	--tFrame.addButton("FrostFireAoe", 0, 156, "ability_mage_frostfirebolt", MultiBot.tips.mage.playbook.frostfireAoe).setDisable()
+	playbookFrame.addButton("FrostFireAoe", 0, 156, "ability_mage_frostfirebolt", MultiBot.tips.mage.playbook.frostfireAoe).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "co +frostfire aoe,?", "co -frostfire aoe,?", pButton.getName())
 	end
 
-	tFrame.addButton("FrostFire", 0, 182, "ability_mage_frostfirebolt", MultiBot.tips.mage.playbook.frostfire).setDisable()
+	--tFrame.addButton("FrostFire", 0, 182, "ability_mage_frostfirebolt", MultiBot.tips.mage.playbook.frostfire).setDisable()
+	playbookFrame.addButton("FrostFire", 0, 182, "ability_mage_frostfirebolt", MultiBot.tips.mage.playbook.frostfire).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +frostfire,?", "co -frostfire,?", pButton.getName())) then
 			pButton.getButton("Arcane").setDisable()
@@ -98,7 +126,8 @@ MultiBot.addMage = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	tFrame.addButton("Firestarter", 0, 208, "ability_mage_firestarter", MultiBot.tips.mage.playbook.firestarter).setDisable()
+	--tFrame.addButton("Firestarter", 0, 208, "ability_mage_firestarter", MultiBot.tips.mage.playbook.firestarter).setDisable()
+	playbookFrame.addButton("Firestarter", 0, 208, "ability_mage_firestarter", MultiBot.tips.mage.playbook.firestarter).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "co +firestarter,?", "co -firestarter,?", pButton.getName())
 	end
@@ -117,15 +146,25 @@ MultiBot.addMage = function(pFrame, pCombat, pNormal)
 
 	-- DPS --
 
-	pFrame.addButton("DpsControl", -60, 0, "ability_warrior_challange", MultiBot.tips.mage.dps.master)
-	.doLeft = function(pButton)
-		MultiBot.ShowHideSwitch(pButton.getFrame("DpsControl"))
-	end
+	--pFrame.addButton("DpsControl", -60, 0, "ability_warrior_challange", MultiBot.tips.mage.dps.master)
+	--.doLeft = function(pButton)
+		--MultiBot.ShowHideSwitch(pButton.getFrame("DpsControl"))
+	--end
 
-	local tFrame = pFrame.addFrame("DpsControl", -62, 30)
-	tFrame:Hide()
+	--local tFrame = pFrame.addFrame("DpsControl", -62, 30)
+	--tFrame:Hide()
 
-	tFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.tips.mage.dps.dpsAssist).setDisable()
+	--tFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.tips.mage.dps.dpsAssist).setDisable()
+	
+    pFrame.addButton("DpsControl", -60, 0, "ability_warrior_challange", MultiBot.tips.mage.dps.master)
+    .doLeft = function(pButton)
+        MultiBot.ShowHideSwitch(pButton.getFrame("DpsControl"))
+    end
+
+    local dpsControlFrame = pFrame.addFrame("DpsControl", -62, 30)
+    dpsControlFrame:Hide()
+
+    dpsControlFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.tips.mage.dps.dpsAssist).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps assist,?", "co -dps assist,?", pButton.getName())) then
 			pButton.getButton("TankAssist").setDisable()
@@ -133,7 +172,8 @@ MultiBot.addMage = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	tFrame.addButton("DpsAoe", 0, 26, "spell_holy_surgeoflight", MultiBot.tips.mage.dps.dpsAoe).setDisable()
+	--tFrame.addButton("DpsAoe", 0, 26, "spell_holy_surgeoflight", MultiBot.tips.mage.dps.dpsAoe).setDisable()
+	dpsControlFrame.addButton("DpsAoe", 0, 26, "spell_holy_surgeoflight", MultiBot.tips.mage.dps.dpsAoe).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps aoe,?", "co -dps aoe,?", pButton.getName())) then
 			pButton.getButton("TankAssist").setDisable()

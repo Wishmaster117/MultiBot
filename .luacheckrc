@@ -17,7 +17,8 @@ globals = {
 	"GetNumMacroIcons", "gApply", "GetActiveTalentGroup", "GetTalentInfo", "GetUnspentTalentPoints", "GetTalentLink", "GetCursorInfo", "strsplit",
 	"GetSpellTexture", "ClearCursor", "MBHunterPetPreview", "tru", "InterfaceOptionsFrame", "INTERFACEOPTIONS_ADDONCATEGORIES", "InterfaceOptionsFrame_AddCategory",
 	"InterfaceOptions_AddCategory", "UIDropDownMenu_JustifyText", "UIDropDownMenu_SetSelectedValue", "UIDropDownMenu_SetButtonWidth", "UIDropDownMenu_SetWidth",
-	"UIDropDownMenu_Initialize", "UIDropDownMenu_AddButton", "UIDropDownMenu_CreateInfo", "UIDropDownMenu_SetSelectedID"
+	"UIDropDownMenu_Initialize", "UIDropDownMenu_AddButton", "UIDropDownMenu_CreateInfo", "UIDropDownMenu_SetSelectedID", "SetRaidSubgroup", "GetRaidRosterInfo",
+	"MouseIsOver", "UninviteUnit", "UnitInRaid, "UnitInGroup"
 }
 
 -- Interdire les tabulations
