@@ -23,9 +23,9 @@ MultiBot.addPriest = function(pFrame, pCombat, pNormal)
 
 	--local tFrame = pFrame.addFrame("Playbook", -62, 30)
 	--tFrame:Hide()
-	
+
 	--tFrame.addButton("ShadowDebuff", 0, 0, "spell_shadow_demonicempathy", MultiBot.tips.priest.playbook.shadowDebuff).setDisable()
-    
+
 	local playbookFrame = pFrame.addFrame("Playbook", -62, 30)
     playbookFrame:Hide()
 
