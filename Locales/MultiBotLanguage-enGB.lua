@@ -3198,13 +3198,13 @@ MultiBot.tips.main.lang.none =
 
     -- Raidus
     MultiBot.tips.raidus = {}
-    
+
     MultiBot.tips.raidus.score = "|cffffff00Sort Bots by Score|r"
-    
+
     MultiBot.tips.raidus.level = "|cffffff00Sort Bots by Level|r"
-    
+
     MultiBot.tips.raidus.class = "|cffffff00Sort Bots by Class|r"
-    
+
     MultiBot.tips.raidus.autobalance = "|cffffff00Auto-Balance Raid|r\n|cffffffff"
         .. "Automatically arranges bots into raid groups for a more balanced setup.|r\n"
         .. "|cffff0000Left-Click:|r |cffffffffBalance by score (overall raid power).|r\n"

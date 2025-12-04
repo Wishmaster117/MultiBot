@@ -3259,13 +3259,13 @@ MultiBot.tips.main.lang.master =
 
     -- Raidus
     MultiBot.tips.raidus = {}
-    
+
     MultiBot.tips.raidus.score = "|cffffff00Bots nach Punktzahl sortieren|r"
-    
+
     MultiBot.tips.raidus.level = "|cffffff00Bots nach Level sortieren|r"
-    
+
     MultiBot.tips.raidus.class = "|cffffff00Bots nach Klasse sortieren|r"
-    
+
     MultiBot.tips.raidus.autobalance = "|cffffff00Automatisches Raid-Balancing|r\n|cffffffff"
         .. "Ordnet Bots automatisch in Raid-Gruppen für ein ausgewogeneres Setup.|r\n"
         .. "|cffff0000Linksklick:|r |cffffffffBalancing nach Punktzahl (gesamte Raidstärke).|r\n"

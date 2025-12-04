@@ -3297,13 +3297,13 @@ MultiBot.tips.main.lang.master =
 
     -- Raidus
     MultiBot.tips.raidus = {}
-    
+
     MultiBot.tips.raidus.score = "|cffffff00Сортировать ботов по очкам|r"
-    
+
     MultiBot.tips.raidus.level = "|cffffff00Сортировать ботов по уровню|r"
-    
+
     MultiBot.tips.raidus.class = "|cffffff00Сортировать ботов по классу|r"
-    
+
     MultiBot.tips.raidus.autobalance = "|cffffff00Автоматическое балансирование рейда|r\n|cffffffff"
         .. "Автоматически распределяет ботов по рейдовым группам для более сбалансированной конфигурации.|r\n"
         .. "|cffff0000ЛКМ:|r |cffffffffБалансировка по очкам (общая сила рейда).|r\n"

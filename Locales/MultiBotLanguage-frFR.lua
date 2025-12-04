@@ -3269,13 +3269,13 @@ if GetLocale() == "frFR" then
 
     -- Raidus
     MultiBot.tips.raidus = {}
-    
+
     MultiBot.tips.raidus.score = "|cffffff00Trier les Bots par Score|r"
-    
+
     MultiBot.tips.raidus.level = "|cffffff00Trier les Bots par Niveau|r"
-    
+
     MultiBot.tips.raidus.class = "|cffffff00Trier les Bots par Classe|r"
-    
+
     MultiBot.tips.raidus.autobalance = "|cffffff00Équilibrage automatique du Raid|r\n|cffffffff"
         .. "Arrange automatiquement les bots en groupes de raid pour une configuration plus équilibrée.|r\n"
         .. "|cffff0000Clic gauche:|r |cffffffffÉquilibrage par score (puissance totale du raid).|r\n"
