@@ -3294,4 +3294,19 @@ MultiBot.tips.main.lang.master =
 		.. "|cff999999(Порядок выполнения: Рейд, Группа)|r\n\n"
 		.. "|cffff0000Правый клик - отменить выбор|r\n"
 		.. "|cff999999(Порядок выполнения: Рейд, Группа)|r"
+
+    -- Raidus
+    MultiBot.tips.raidus = {}
+    
+    MultiBot.tips.raidus.score = "|cffffff00Сортировать ботов по очкам|r"
+    
+    MultiBot.tips.raidus.level = "|cffffff00Сортировать ботов по уровню|r"
+    
+    MultiBot.tips.raidus.class = "|cffffff00Сортировать ботов по классу|r"
+    
+    MultiBot.tips.raidus.autobalance = "|cffffff00Автоматическое балансирование рейда|r\n|cffffffff"
+        .. "Автоматически распределяет ботов по рейдовым группам для более сбалансированной конфигурации.|r\n"
+        .. "|cffff0000ЛКМ:|r |cffffffffБалансировка по очкам (общая сила рейда).|r\n"
+        .. "|cffff0000ПКМ:|r |cffffffffРасширенная балансировка Танков / Лекарей / DPS по группам.|r\n\n"
+        .. "|cff999999Использует выбранных ботов из списка MultiBot или всех ботов, если никто не выбран.|r"
 end

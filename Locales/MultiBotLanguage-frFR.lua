@@ -3266,4 +3266,19 @@ if GetLocale() == "frFR" then
 		.. "|cff999999(Ordre d'exécution : Raid, Groupe)|r\n\n"
 		.. "|cffff0000Clic droit pour annuler la sélection|r\n"
 		.. "|cff999999(Ordre d'exécution : Raid, Groupe)|r"
+
+    -- Raidus
+    MultiBot.tips.raidus = {}
+    
+    MultiBot.tips.raidus.score = "|cffffff00Trier les Bots par Score|r"
+    
+    MultiBot.tips.raidus.level = "|cffffff00Trier les Bots par Niveau|r"
+    
+    MultiBot.tips.raidus.class = "|cffffff00Trier les Bots par Classe|r"
+    
+    MultiBot.tips.raidus.autobalance = "|cffffff00Équilibrage automatique du Raid|r\n|cffffffff"
+        .. "Arrange automatiquement les bots en groupes de raid pour une configuration plus équilibrée.|r\n"
+        .. "|cffff0000Clic gauche:|r |cffffffffÉquilibrage par score (puissance totale du raid).|r\n"
+        .. "|cffff0000Clic droit:|r |cffffffffÉquilibrage avancé Tank / Soin / DPS par groupe.|r\n\n"
+        .. "|cff999999Utilise les bots sélectionnés dans la liste MultiBot, ou tous les bots si aucun n’est sélectionné.|r"
 end

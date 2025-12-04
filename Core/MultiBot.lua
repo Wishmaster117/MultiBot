@@ -4455,4 +4455,23 @@ MultiBot.tips.rtsc.browse =
 "|cffff0000Right-Click to cancel the Selection|r\n"..
 "|cff999999(Execution-Order: Raid, Party)|r";
 
+-- Raidus
+MultiBot.tips.raidus = {}
+
+MultiBot.tips.raidus.score =
+"|cffffff00Sort Bots by Score|r";
+
+MultiBot.tips.raidus.level =
+"|cffffff00Sort Bots by Level|r";
+
+MultiBot.tips.raidus.class =
+"|cffffff00Sort Bots by Class|r";
+
+MultiBot.tips.raidus.autobalance =
+"|cffffff00Auto-Balance Raid|r\n|cffffffff"..
+"Automatically arranges bots into raid groups for a more balanced setup.|r\n"..
+"|cffff0000Left-Click:|r |cffffffffBalance by score (overall raid power).|r\n"..
+"|cffff0000Right-Click:|r |cffffffffAdvanced Tank / Heal / DPS balance per group.|r\n\n"..
+"|cff999999Uses selected bots from the MultiBot list, or all bots if none are selected.|r";
+
 MultiBot.GM = false

@@ -3248,4 +3248,19 @@ if GetLocale() == "zhCN" then
 		.. "|cff999999(执行命令：队伍，团队)|r\n\n"
 		.. "|cffff0000右键点击取消选择|r\n"
 		.. "|cff999999(执行命令：队伍，团队)|r"
+
+    -- Raidus
+    MultiBot.tips.raidus = {}
+    
+    MultiBot.tips.raidus.score = "|cffffff00按分数排序机器人|r"
+    
+    MultiBot.tips.raidus.level = "|cffffff00按等级排序机器人|r"
+    
+    MultiBot.tips.raidus.class = "|cffffff00按职业排序机器人|r"
+    
+    MultiBot.tips.raidus.autobalance = "|cffffff00自动团队平衡|r\n|cffffffff"
+        .. "自动将机器人分配到团队小队，以获得更均衡的配置。|r\n"
+        .. "|cffff0000左键点击:|r |cffffffff按分数平衡（整体团队战斗力）。|r\n"
+        .. "|cffff0000右键点击:|r |cffffffff每个小队的高级坦克 / 治疗 / DPS 平衡。|r\n\n"
+        .. "|cff999999使用 MultiBot 列表中选定的机器人，如果没有选择则使用所有机器人。|r"
 end

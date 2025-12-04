@@ -3256,4 +3256,20 @@ MultiBot.tips.main.lang.master =
 		.. "|cff999999(Ausführreihenfolge: Raid, Party)|r\n\n"
 		.. "|cffff0000Rechtsklicken um die Auswahl abzubrechen|r\n"
 		.. "|cff999999(Ausführreihenfolge: Raid, Party)|r"
+
+    -- Raidus
+    MultiBot.tips.raidus = {}
+    
+    MultiBot.tips.raidus.score = "|cffffff00Bots nach Punktzahl sortieren|r"
+    
+    MultiBot.tips.raidus.level = "|cffffff00Bots nach Level sortieren|r"
+    
+    MultiBot.tips.raidus.class = "|cffffff00Bots nach Klasse sortieren|r"
+    
+    MultiBot.tips.raidus.autobalance = "|cffffff00Automatisches Raid-Balancing|r\n|cffffffff"
+        .. "Ordnet Bots automatisch in Raid-Gruppen für ein ausgewogeneres Setup.|r\n"
+        .. "|cffff0000Linksklick:|r |cffffffffBalancing nach Punktzahl (gesamte Raidstärke).|r\n"
+        .. "|cffff0000Rechtsklick:|r |cffffffffErweitertes Tank / Heilung / DPS-Balancing pro Gruppe.|r\n\n"
+        .. "|cff999999Verwendet ausgewählte Bots aus der MultiBot-Liste oder alle Bots, wenn keine ausgewählt sind.|r"
+
 end

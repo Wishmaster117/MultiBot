@@ -3230,4 +3230,20 @@ MultiBot.tips.main.lang.master =
 		.. "|cff999999(명령 실행: 공격대, 파티)|r\n\n"
 		.. "|cffff0000선택을 취소하려면 오른쪽 버튼을 클릭하세요|r\n"
 		.. "|cff999999(명령 실행: 공격대, 파티)|r"
+
+    -- Raidus
+    MultiBot.tips.raidus = {}
+    
+    MultiBot.tips.raidus.score = "|cffffff00점수로 봇 정렬|r"
+    
+    MultiBot.tips.raidus.level = "|cffffff00레벨로 봇 정렬|r"
+    
+    MultiBot.tips.raidus.class = "|cffffff00직업으로 봇 정렬|r"
+    
+    MultiBot.tips.raidus.autobalance = "|cffffff00자동 레이드 균형 조정|r\n|cffffffff"
+        .. "더 균형 잡힌 구성을 위해 봇을 자동으로 레이드 그룹에 배치합니다.|r\n"
+        .. "|cffff0000왼쪽 클릭:|r |cffffffff점수 기준으로 균형 조정 (전체 레이드 전투력).|r\n"
+        .. "|cffff0000오른쪽 클릭:|r |cffffffff그룹별 고급 탱커 / 힐러 / DPS 균형 조정.|r\n\n"
+        .. "|cff999999MultiBot 목록에서 선택된 봇을 사용하거나, 선택된 봇이 없으면 모든 봇을 사용합니다.|r"
+
 end
