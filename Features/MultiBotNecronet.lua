@@ -570,15 +570,15 @@ MultiBot.necronet.lastH = 0
 for key, value in pairs(MultiBot.data.necronet) do
 	if(MultiBot.necronet.index[value[1]] == nil) then MultiBot.necronet.index[value[1]] = {} end
 	if(MultiBot.necronet.index[value[1]][value[2]] == nil) then MultiBot.necronet.index[value[1]][value[2]] = {} end
-	
+
 	local tX = WorldMapButton:GetWidth() * value[4] / 100 - WorldMapButton:GetWidth() + 12
 	local tY = WorldMapButton:GetHeight() * -value[5] / 100 + WorldMapButton:GetHeight() - 12
-	
+
 	local tButton = MultiBot.newButton(WorldMapButton, tX, tY, 24, "achievement_bg_xkills_avgraveyard", key)
 	tButton.graveyard = key
 	if tButton.SetHitRectInsets then tButton:SetHitRectInsets(0,0,0,0) end
 	tButton:Hide()
-	
+
 	tButton.doLeft = function(pButton)
 		MultiBot.doDot(".go graveyard", pButton.graveyard)
 	end
@@ -589,12 +589,12 @@ end
 
 -- Recalculate button positions when the world map size changes (supports windowed map addons)
 function MultiBot.Necronet_RecalcButtons()
-	if not WorldMapButton then return end
-	local w = WorldMapButton:GetWidth()
-	local h = WorldMapButton:GetHeight()
+    if not WorldMapButton then return end
+    local w = WorldMapButton:GetWidth()
+    local h = WorldMapButton:GetHeight()
 	if not w or not h or w <= 0 or h <= 0 then return end
 	-- skip if size unchanged
-	if MultiBot.necronet and MultiBot.necronet.lastW == w and MultiBot.necronet.lastH == h then return end
+    if MultiBot.necronet and MultiBot.necronet.lastW == w and MultiBot.necronet.lastH == h then return end
 	MultiBot.necronet.lastW, MultiBot.necronet.lastH = w, h
 
 	for _, btn in pairs(MultiBot.necronet.buttons or {}) do

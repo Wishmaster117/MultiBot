@@ -43893,7 +43893,7 @@ for key, value in pairs(MultiBot.data.itemus) do
 
 	local tRare = "R" .. MultiBot.IF(value[3] < 10, "0", "") .. value[3]
 	local tSlot = "S" .. MultiBot.IF(value[4] < 10, "0", "") .. value[4]
-	
+
 	if(MultiBot.itemus.index[tLevel] == nil) then MultiBot.itemus.index[tLevel] = {} end
 	if(MultiBot.itemus.index[tLevel][tRare] == nil) then MultiBot.itemus.index[tLevel][tRare] = {} end
 	if(MultiBot.itemus.index[tLevel][tRare][tSlot] == nil) then MultiBot.itemus.index[tLevel][tRare][tSlot] = {} end
@@ -43928,42 +43928,42 @@ MultiBot.itemus.addItems = function(pNow)
 	MultiBot.itemus.max = math.ceil(table.getn(tTable) / 112)
 	MultiBot.itemus.now = MultiBot.IF(pNow ~= nil, pNow, MultiBot.itemus.now)
 	MultiBot.itemus.setText("Pages", MultiBot.itemus.now .. "/" .. MultiBot.itemus.max)
-	
+
 	if(MultiBot.itemus.max > MultiBot.itemus.now)
 	then MultiBot.itemus.buttons[">"]:Show()
 	else MultiBot.itemus.buttons[">"]:Hide()
 	end
-	
+
 	if(MultiBot.itemus.now == 1)
 	then MultiBot.itemus.buttons["<"]:Hide()
 	else MultiBot.itemus.buttons["<"]:Show()
 	end
-	
+
 	local tIndex = 0
 	local tFrom = (MultiBot.itemus.now - 1) * 112 + 1
 	local tTo = tFrom + 111
-	
+
 	if(tTo > table.getn(tTable)) then tTo = table.getn(tTable) end
-	
+
 	for i = tFrom, tTo do
 		local tID = tTable[i][1]
 		local tName = tTable[i][2]
 		local tIcon = GetItemIcon(tID)
 		local tLink = "|" .. MultiBot.itemus.color .. "|Hitem:" .. tID .. ":0:0:0:0:0:0:0:0:0:0|h[" .. tName .. "]|h|r"
 		local tPrefix = string.sub(tName, 1, 3)
-		
+
 		local tX = (tIndex%8) * 38
 		local tY = math.floor(tIndex/8) * -37.25
-		
+
 		if(tIcon == nil) then tIcon = "inv_misc_questionmark" end
-		
+
 		local tButton = tItems.addButton(tID, tX, tY, tIcon, tLink)
 		tButton.id = tID
-		
+
 		tButton.doLeft = function(pButton)
 			MultiBot.doDotWithTarget(".additem", pButton.id .. " 1")
 		end
-		
+
 		tIndex = tIndex + 1
 	end
 end
