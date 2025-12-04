@@ -43879,7 +43879,7 @@ MultiBot.data.itemus = {
 }
 
 for key, value in pairs(MultiBot.data.itemus) do
-	local tLevel = nil
+	local tLevel
 
 	if(value[2] < 11) then tLevel = "L10"
 	elseif(value[2] < 21) then tLevel = "L20"
@@ -43915,7 +43915,7 @@ MultiBot.itemus.addItems = function(pNow)
 	if(tTable ~= nil) then tTable = tTable[MultiBot.itemus.type] end
 
 	for key, value in pairs(tItems.buttons) do value:Hide() end
-	table.wipe(tItems.buttons)
+	wipe(tItems.buttons)
 
 	if(tTable == nil) then
 		SendChatMessage(MultiBot.info.combination, "SAY")
@@ -43925,7 +43925,8 @@ MultiBot.itemus.addItems = function(pNow)
 		return
 	end
 
-	MultiBot.itemus.max = math.ceil(table.getn(tTable) / 112)
+	local tTotal = #tTable
+	MultiBot.itemus.max = math.ceil(tTotal / 112)
 	MultiBot.itemus.now = MultiBot.IF(pNow ~= nil, pNow, MultiBot.itemus.now)
 	MultiBot.itemus.setText("Pages", MultiBot.itemus.now .. "/" .. MultiBot.itemus.max)
 
@@ -43943,14 +43944,13 @@ MultiBot.itemus.addItems = function(pNow)
 	local tFrom = (MultiBot.itemus.now - 1) * 112 + 1
 	local tTo = tFrom + 111
 
-	if(tTo > table.getn(tTable)) then tTo = table.getn(tTable) end
+	if(tTo > tTotal) then tTo = tTotal end
 
 	for i = tFrom, tTo do
 		local tID = tTable[i][1]
 		local tName = tTable[i][2]
 		local tIcon = GetItemIcon(tID)
-		local tLink = "|" .. MultiBot.itemus.color .. "|Hitem:" .. tID .. ":0:0:0:0:0:0:0:0:0:0|h[" .. tName .. "]|h|r"
-		local tPrefix = string.sub(tName, 1, 3)
+        local tLink = "|" .. MultiBot.itemus.color .. "|Hitem:" .. tID .. ":0:0:0:0:0:0:0:0:0:0|h[" .. tName .. "]|h|r"
 
 		local tX = (tIndex%8) * 38
 		local tY = math.floor(tIndex/8) * -37.25
