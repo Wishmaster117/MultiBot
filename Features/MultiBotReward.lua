@@ -1,8 +1,8 @@
 MultiBot.setRewards = function()
 	if(MultiBot.reward.state == false) then return end
 	local tChoices = MultiBot.IF(GetNumQuestChoices() > 6, 6, GetNumQuestChoices())
-	table.wipe(MultiBot.reward.rewards)
-	table.wipe(MultiBot.reward.units)
+	--table.wipe(MultiBot.reward.rewards)
+	--table.wipe(MultiBot.reward.units)
 	MultiBot.reward.rewards = {}
 	MultiBot.reward.units = {}
 
@@ -37,9 +37,14 @@ MultiBot.setRewards = function()
 		end
 	end
 
-	if(table.getn(MultiBot.reward.units) > 0 and tChoices > 0) then
+	--if(table.getn(MultiBot.reward.units) > 0 and tChoices > 0) then
+	-- Nombre de bots éligibles à une récompense
+	local unitsCount = #MultiBot.reward.units
+
+	if(unitsCount > 0 and tChoices > 0) then
 		local tOverlay = MultiBot.reward.frames["Overlay"]
-		local tUnits = table.getn(MultiBot.reward.units)
+		--local tUnits = table.getn(MultiBot.reward.units)
+		local tUnits = unitsCount
 
 		MultiBot.reward.max = math.ceil(tUnits / MultiBot.reward.to)
 		tOverlay.setText("Pages", MultiBot.reward.now .. "/" .. MultiBot.reward.max)
@@ -49,7 +54,11 @@ MultiBot.setRewards = function()
 		if(MultiBot.reward.now == 1) then tOverlay.buttons["<"]:Hide() end
 		if(MultiBot.reward.now == MultiBot.reward.max) then tOverlay.buttons[">"]:Hide() end
 
-		if(tUnits > MultiBot.reward.to) then tUnits = MultiBot.reward.to end
+		--if(tUnits > MultiBot.reward.to) then tUnits = MultiBot.reward.to end
+
+		if(tUnits > MultiBot.reward.to) then
+			tUnits = MultiBot.reward.to
+		end
 
 		for i = 1, tUnits do
 			local tBot = MultiBot.reward.units[i]
