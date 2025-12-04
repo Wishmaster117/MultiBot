@@ -553,7 +553,7 @@ MultiBot.raidus.setRaidus = function()
 		--end
 
         local tButton = tFrame.addButton("Icon", -128, 3, "Interface\\AddOns\\MultiBot\\Icons\\class_" .. string.lower(tFrame.class) .. ".blp", "")
-		
+
 		tButton:SetScript("OnEnter", function(pButton)
 			local bot = pButton.parent.bot
 			if not bot then
@@ -650,7 +650,7 @@ MultiBot.raidus.setRaidus = function()
                     SendChatMessage(".playerbot bot add " .. name, "SAY")
                 end
             end
-        end)        
+        end)
 
 		local displayClass   = tBot.class or "Unknown"
 		local displayLevel   = tBot.level or 0

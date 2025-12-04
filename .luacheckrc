@@ -18,7 +18,8 @@ globals = {
 	"GetSpellTexture", "ClearCursor", "MBHunterPetPreview", "tru", "InterfaceOptionsFrame", "INTERFACEOPTIONS_ADDONCATEGORIES", "InterfaceOptionsFrame_AddCategory",
 	"InterfaceOptions_AddCategory", "UIDropDownMenu_JustifyText", "UIDropDownMenu_SetSelectedValue", "UIDropDownMenu_SetButtonWidth", "UIDropDownMenu_SetWidth",
 	"UIDropDownMenu_Initialize", "UIDropDownMenu_AddButton", "UIDropDownMenu_CreateInfo", "UIDropDownMenu_SetSelectedID", "SetRaidSubgroup", "GetRaidRosterInfo",
-	"MouseIsOver", "UninviteUnit", "UnitInRaid", "UnitInGroup", "GetNumQuestChoices", "GetQuestItemLink", "GetQuestItemInfo", "SwapRaidSubgroup", "WorldMapButton"
+	"MouseIsOver", "UninviteUnit", "UnitInRaid", "UnitInGroup", "GetNumQuestChoices", "GetQuestItemLink", "GetQuestItemInfo", "SwapRaidSubgroup", "WorldMapButton",
+	"UnitIsConnected"
 }
 
 -- Interdire les tabulations
