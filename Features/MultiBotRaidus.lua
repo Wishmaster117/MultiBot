@@ -62,9 +62,12 @@ local function MultiBotRaidusDetectRole(bot)
         local total = t1 + t2 + t3
         if total > 0 then
             local maxIndex = 1
-            local maxValue = t1
-            if t2 > maxValue then maxIndex, maxValue = 2, t2 end
-            if t3 > maxValue then maxIndex, maxValue = 3, t3 end
+
+            if t2 > t1 and t2 >= t3 then
+                maxIndex = 2
+            elseif t3 > t1 and t3 > t2 then
+                maxIndex = 3
+            end
 
             local byTree = MultiBotRaidusRoleByTree[class]
             if byTree and byTree[maxIndex] then
@@ -133,7 +136,7 @@ MultiBot.raidus.addText("RaidScore", "RaidScore: 0", "BOTTOMLEFT", 376, 364, 12)
 MultiBot.raidus.save = ""
 MultiBot.raidus.from = 1
 MultiBot.raidus.to = 11
-MultiBot.raidus.sortMode = "Score" -- "Score" | "Niveau" | "Classe"
+MultiBot.raidus.sortMode = "Score" -- "Score" | "Level" | "Class"
 
 MultiBot.raidus.movButton("Move", -780, 790, 90, MultiBot.tips.move.raidus)
 
@@ -229,7 +232,7 @@ MultiBot.raidus.wowButton("3", -680, 360, 22, 20, 12).setDisable()
 	end
 end
 
--- Contrôle du mode Tri, "Score / Niv / Classe"
+-- Contrôle du mode Tri, "Score / Level / Class"
 local sortBaseX   = -300 -- position du bouton "Score", pour déplacer tout le groupe il faut modifier cette valeur
 local sortY       = 360
 local sortSpacing = 6    -- espace entre les boutons
@@ -252,73 +255,73 @@ btnScore.doLeft = function(pButton)
     pButton.parent.sortMode = "Score"
 
     pButton.setEnable()
-    if pButton.parent.buttons["Niv"] then
-        pButton.parent.buttons["Niv"].setDisable()
+    if pButton.parent.buttons["Level"] then
+        pButton.parent.buttons["Level"].setDisable()
     end
-    if pButton.parent.buttons["Classe"] then
-        pButton.parent.buttons["Classe"].setDisable()
+    if pButton.parent.buttons["Class"] then
+        pButton.parent.buttons["Class"].setDisable()
     end
 
     MultiBot.raidus.setRaidus()
 end
 
--- Bouton "Niv"
-local btnNiv = MultiBot.raidus.wowButton(
-    "Niv",
+-- Bouton "Level"
+local btnLevel = MultiBot.raidus.wowButton(
+    "Level",
     sortBaseX + scoreWidth + sortSpacing,
     sortY,
     levelWidth,
     20,
     12
 )
-btnNiv.setDisable()
-btnNiv:SetScript("OnEnter", function(self)
+btnLevel.setDisable()
+btnLevel:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_TOP")
     GameTooltip:SetText(MultiBot.tips.raidus.level, 1, 1, 1, true)
 end)
-btnNiv:SetScript("OnLeave", function()
+btnLevel:SetScript("OnLeave", function()
     GameTooltip:Hide()
 end)
-btnNiv.doLeft = function(pButton)
-    pButton.parent.sortMode = "Niveau"
+btnLevel.doLeft = function(pButton)
+    pButton.parent.sortMode = "Level"
 
     pButton.setEnable()
     if pButton.parent.buttons["Score"] then
         pButton.parent.buttons["Score"].setDisable()
     end
-    if pButton.parent.buttons["Classe"] then
-        pButton.parent.buttons["Classe"].setDisable()
+    if pButton.parent.buttons["Class"] then
+        pButton.parent.buttons["Class"].setDisable()
     end
 
     MultiBot.raidus.setRaidus()
 end
 
--- Bouton "Classe"
-local btnClasse = MultiBot.raidus.wowButton(
-    "Classe",
+-- Bouton "Class"
+local btnClass = MultiBot.raidus.wowButton(
+    "Class",
     sortBaseX + scoreWidth + sortSpacing + levelWidth + sortSpacing,
     sortY,
     classWidth,
     20,
     12
 )
-btnClasse.setDisable()
-btnClasse:SetScript("OnEnter", function(self)
+btnClass.setDisable()
+btnClass:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_TOP")
     GameTooltip:SetText(MultiBot.tips.raidus.class, 1, 1, 1, true)
 end)
-btnClasse:SetScript("OnLeave", function()
+btnClass:SetScript("OnLeave", function()
     GameTooltip:Hide()
 end)
-btnClasse.doLeft = function(pButton)
-    pButton.parent.sortMode = "Classe"
+btnClass.doLeft = function(pButton)
+    pButton.parent.sortMode = "Class"
 
     pButton.setEnable()
     if pButton.parent.buttons["Score"] then
         pButton.parent.buttons["Score"].setDisable()
     end
-    if pButton.parent.buttons["Niv"] then
-        pButton.parent.buttons["Niv"].setDisable()
+    if pButton.parent.buttons["Level"] then
+        pButton.parent.buttons["Level"].setDisable()
     end
 
     MultiBot.raidus.setRaidus()
@@ -472,7 +475,7 @@ MultiBot.raidus.setRaidus = function()
 
 	local tBots = {}
 	local tBotsIndex = 1
-	-- Mode de tri actuel ("Score", "Niveau", "Classe")
+	-- Mode de tri actuel ("Score", "Level", "Class")
 	local sortMode = MultiBot.raidus.sortMode or "Score"
 
     for tName, tValue in pairs(MultiBotGlobalSave) do
@@ -503,14 +506,14 @@ MultiBot.raidus.setRaidus = function()
 			local botLevel   = tBot.level or 0
 			local botScore   = tBot.score or 0
 
-			-- Tri Score / Niveau / Classe
+			-- Tri Score / Level / Class
 			if sortMode == "Score" then
 				-- Score desc, puis niveau desc, puis classe
 				tBot.sort = botScore * 1000000 + botLevel * 1000 + classWeight
-			elseif sortMode == "Niveau" then
+			elseif sortMode == "Level" then
 				-- Niveau desc, puis score desc, puis classe
 				tBot.sort = botLevel * 1000000 + botScore * 1000 + classWeight
-			elseif sortMode == "Classe" then
+			elseif sortMode == "Class" then
 				-- Classe (ordre fixe), puis niveau desc, puis score desc
 				tBot.sort = classWeight * 1000000 + botLevel * 1000 + botScore
 			else
