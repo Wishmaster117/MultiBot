@@ -837,30 +837,43 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 
 	-- SET --
 
-	button.setPoint = function(pX, pY)
+	--[[button.setPoint = function(pX, pY)
 		button:SetPoint("BOTTOMRIGHT", pX, pY)
 		button.x = pX
-		button.y = pY
+		button.y = pY]]--
+    button.setPoint = function(x, y)
+        button:SetPoint("BOTTOMRIGHT", x, y)
+        button.x = x
+        button.y = y
 		return button
 	end
 
-	button.setButton = function(pTexture, pTip)
-		button.icon:SetTexture(MultiBot.IF(string.sub(pTexture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. pTexture)
+	--button.setButton = function(pTexture, pTip)
+		--button.icon:SetTexture(MultiBot.IF(string.sub(pTexture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. pTexture)
+    button.setButton = function(texture, tip)
+        button.icon:SetTexture(MultiBot.IF(string.sub(texture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. texture)
 		button.icon:SetAllPoints(button)
-		button.texture = pTexture
-		button.tip = pTip
+		--button.texture = pTexture
+		--button.tip = pTip
+        button.texture = texture
+        button.tip = tip
 		return button
 	end
 
-	button.setTexture = function(pTexture)
-		button.icon:SetTexture(MultiBot.IF(string.sub(pTexture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. pTexture)
+	--button.setTexture = function(pTexture)
+		--button.icon:SetTexture(MultiBot.IF(string.sub(pTexture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. pTexture)
+    button.setTexture = function(texture)
+        button.icon:SetTexture(MultiBot.IF(string.sub(texture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. texture)
 		button.icon:SetAllPoints(button)
-		button.texture = pTexture
+		--button.texture = pTexture
+		button.texture = texture
 		return button
 	end
 
-	button.setHighlight = function(pTexture)
-		button:SetHighlightTexture(pTexture, "ADD")
+	--button.setHighlight = function(pTexture)
+		--button:SetHighlightTexture(pTexture, "ADD")
+    button.setHighlight = function(texture)
+        button:SetHighlightTexture(texture, "ADD")
 		return button
 	end
 
