@@ -123,7 +123,8 @@ MultiBot.isActive = function(pName)
 	return false
 end
 
---[[MultiBot.isInside = function(pString, p1stPattern, o2ndPattern, o3rdPattern, o4thPattern, o5thPattern, o6thPattern, o7thPattern, o8thPattern, o9thPattern)
+--[[MultiBot.isInside = function(pString, p1stPattern, o2ndPattern, o3rdPattern,
+    o4thPattern, o5thPattern, o6thPattern, o7thPattern, o8thPattern, o9thPattern)
 	if(pString == nil) then return false end
 	if(p1stPattern ~= nil and string.find(pString, p1stPattern)) then return true end
 	if(o2ndPattern ~= nil and string.find(pString, o2ndPattern)) then return true end
@@ -148,7 +149,8 @@ MultiBot.isInside = function(pString, ...)
 	return false
 end
 
---[[MultiBot.beInside = function(pString, p1stPattern, o2ndPattern, o3rdPattern, o4thPattern, o5thPattern, o6thPattern, o7thPattern, o8thPattern, o9thPattern)
+--[[MultiBot.beInside = function(pString, p1stPattern, o2ndPattern, o3rdPattern,
+    o4thPattern, o5thPattern, o6thPattern, o7thPattern, o8thPattern, o9thPattern)
 	if(pString == nil) then return false end
 	if(p1stPattern ~= nil and nil == string.find(pString, p1stPattern)) then return false end
 	if(o2ndPattern ~= nil and nil == string.find(pString, o2ndPattern)) then return false end
@@ -460,7 +462,7 @@ end
 
 MultiBot.ActionToTargetOrGroup = function(pAction)
 	local tName = UnitName("target")
-	
+
 	if(tName ~= nil and tName ~= "Unknown Entity") then
 		SendChatMessage(pAction, "WHISPER", nil, tName)
 		return true
@@ -581,7 +583,7 @@ MultiBot.OnOffSwitch = function(pButton)
 		pButton.setDisable()
 		return false
 	end
-	
+
 	pButton.setEnable()
 	return true
 end
@@ -889,7 +891,7 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 	end
 
 	-- DO --
-	
+
 	button.doHide = function()
 		button:SetPoint("BOTTOMRIGHT", button.x, button.y)
 		button:SetSize(button.size, button.size)
@@ -1291,7 +1293,7 @@ MultiBot.addMember = function(pClass, pLevel, pName)
   tButton.roster = "members"
   tButton.class = tClass
   tButton.name = pName
-  return tButton	
+  return tButton
 end
 
 MultiBot.addFriend = function(pClass, pLevel, pName)
