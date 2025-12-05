@@ -20,7 +20,8 @@ MultiBot:SetScript("OnUpdate", function(pSelf, pElapsed)
 	if(MultiBot.auto.invite and MultiBot.timer.invite.elapsed >= MultiBot.timer.invite.interval) then
 		local tTable = MultiBot.index[MultiBot.timer.invite.roster]
 
-		if(MultiBot.timer.invite.needs == 0 or MultiBot.timer.invite.index > table.getn(tTable)) then
+		--if(MultiBot.timer.invite.needs == 0 or MultiBot.timer.invite.index > table.getn(tTable)) then
+		if(MultiBot.timer.invite.needs == 0 or MultiBot.timer.invite.index > #tTable) then
 			if(MultiBot.timer.invite.roster == "raidus") then
 				MultiBot.timer.sort.elapsed = 0
 				MultiBot.timer.sort.index = 1
@@ -73,25 +74,25 @@ MultiBot:SetScript("OnEvent", function()
 		local tX, tY = MultiBot.toPoint(MultiBot.frames["MultiBar"])
 		MultiBotSave["MultiBarPoint"] = tX .. ", " .. tY
 
-		local tX, tY = MultiBot.toPoint(MultiBot.inventory)
+		tX, tY = MultiBot.toPoint(MultiBot.inventory)
 		MultiBotSave["InventoryPoint"] = tX .. ", " .. tY
 
-		local tX, tY = MultiBot.toPoint(MultiBot.spellbook)
+		tX, tY = MultiBot.toPoint(MultiBot.spellbook)
 		MultiBotSave["SpellbookPoint"] = tX .. ", " .. tY
 
-		local tX, tY = MultiBot.toPoint(MultiBot.itemus)
+		tX, tY = MultiBot.toPoint(MultiBot.itemus)
 		MultiBotSave["ItemusPoint"] = tX .. ", " .. tY
 
-		local tX, tY = MultiBot.toPoint(MultiBot.iconos)
+		tX, tY = MultiBot.toPoint(MultiBot.iconos)
 		MultiBotSave["IconosPoint"] = tX .. ", " .. tY
 
-		local tX, tY = MultiBot.toPoint(MultiBot.stats)
+		tX, tY = MultiBot.toPoint(MultiBot.stats)
 		MultiBotSave["StatsPoint"] = tX .. ", " .. tY
 
-		local tX, tY = MultiBot.toPoint(MultiBot.reward)
+		tX, tY = MultiBot.toPoint(MultiBot.reward)
 		MultiBotSave["RewardPoint"] = tX .. ", " .. tY
 
-		local tX, tY = MultiBot.toPoint(MultiBot.talent)
+		tX, tY = MultiBot.toPoint(MultiBot.talent)
 		MultiBotSave["TalentPoint"] = tX .. ", " .. tY
 
 		local tPortal = MultiBot.frames["MultiBar"].frames["Masters"].frames["Portal"]
@@ -103,7 +104,9 @@ MultiBot:SetScript("OnEvent", function()
 		tValue = string.sub(tValue, 1, string.len(tValue) - 4)
 		MultiBotSave["AttackButton"] = tValue
 
-		local tValue = MultiBot.doSplit(MultiBot.frames["MultiBar"].frames["Left"].buttons["Flee"].texture, "\\")[5]
+		--local tValue = MultiBot.doSplit(MultiBot.frames["MultiBar"].frames["Left"].buttons["Flee"].texture, "\\")[5]
+		--tValue = string.sub(tValue, 1, string.len(tValue) - 4)
+		tValue = MultiBot.doSplit(MultiBot.frames["MultiBar"].frames["Left"].buttons["Flee"].texture, "\\")[5]
 		tValue = string.sub(tValue, 1, string.len(tValue) - 4)
 		MultiBotSave["FleeButton"] = tValue
 
@@ -417,14 +420,16 @@ MultiBot:SetScript("OnEvent", function()
 		if(MultiBot.isInside(arg1, "Possible strategies")) then
 			local tStrategies = MultiBot.doSplit(arg1, ", ")
 			SendChatMessage("=== STRATEGIES ===", "SAY")
-			for i = 1, table.getn(tStrategies) do SendChatMessage(i .. " : " .. tStrategies[i], "SAY") end
+			--for i = 1, table.getn(tStrategies) do SendChatMessage(i .. " : " .. tStrategies[i], "SAY") end
+			for i = 1, #tStrategies do SendChatMessage(i .. " : " .. tStrategies[i], "SAY") end
 			return
 		end
 
 		if(MultiBot.isInside(arg1, "Whisper any of")) then
 			local tCommands = MultiBot.doSplit(arg1, ", ")
 			SendChatMessage("=== WHISPER-COMMANDS ===", "SAY")
-			for i = 1, table.getn(tCommands) do SendChatMessage(i .. " : " .. tCommands[i], "SAY") end
+			--for i = 1, table.getn(tCommands) do SendChatMessage(i .. " : " .. tCommands[i], "SAY") end
+			for i = 1, #tCommands do SendChatMessage(i .. " : " .. tCommands[i], "SAY") end
 			return
 		end
 
@@ -486,7 +491,9 @@ MultiBot:SetScript("OnEvent", function()
                 return
             end
 
-			local tLocClass, tClass, tLocRace, tRace, tSex, tName = GetPlayerInfoByGUID(UnitGUID("player"))
+			--local tLocClass, tClass, tLocRace, tRace, tSex, tName = GetPlayerInfoByGUID(UnitGUID("player"))
+			--tClass = MultiBot.toClass(tClass)
+			local _, tClass, _, _, _, tName = GetPlayerInfoByGUID(UnitGUID("player"))
 			tClass = MultiBot.toClass(tClass)
 
 			local tPlayer = MultiBot.addSelf(tClass, tName).setDisable()
@@ -500,25 +507,32 @@ MultiBot:SetScript("OnEvent", function()
 
 			-- PLAYERBOTS --
 			local tTable = MultiBot.doSplit(string.sub(arg1, 13), ", ")
-						MultiBot.dprint("ROSTER_PARSE_COUNT", table.getn(tTable)) -- DEBUG
+						MultiBot.dprint("ROSTER_PARSE_COUNT", #tTable) -- DEBUG
 
 			for key, value in pairs(tTable) do
 				if(value == "") then break end
 				local tBot = MultiBot.doSplit(value, " ")
-				local tName = string.sub(tBot[1], 2)
-				local tClass = MultiBot.toClass(tBot[2])
+				--local tName = string.sub(tBot[1], 2)
+				--local tClass = MultiBot.toClass(tBot[2])
 				local tOnline = string.sub(tBot[1], 1, 1)
 
-				local tPlayer = MultiBot.addPlayer(tClass, tName).setDisable()
+				--local tPlayer = MultiBot.addPlayer(tClass, tName).setDisable()
 
-				tPlayer.doRight = function(pButton)
+				--tPlayer.doRight = function(pButton)
+				local botName = string.sub(tBot[1], 2)
+				local botClass = MultiBot.toClass(tBot[2])
+
+				local botButton = MultiBot.addPlayer(botClass, botName).setDisable()
+
+				botButton.doRight = function(pButton)
 					if(pButton.state == false) then return end
 					SendChatMessage(".playerbot bot remove " .. pButton.name, "SAY")
 					if(pButton.parent.frames[pButton.name] ~= nil) then pButton.parent.frames[pButton.name]:Hide() end
 					pButton.setDisable()
 				end
 
-				tPlayer.doLeft = function(pButton)
+				--tPlayer.doLeft = function(pButton)
+				botButton.doLeft = function(pButton)
 					if(pButton.state) then
 						if(pButton.parent.frames[pButton.name] ~= nil) then MultiBot.ShowHideSwitch(pButton.parent.frames[pButton.name]) end
 					else
@@ -528,7 +542,7 @@ MultiBot:SetScript("OnEvent", function()
 				end
 			end
 
-			MultiBot.dprint("INDEX_PLAYERS_SIZE", table.getn(MultiBot.index.players or {})) -- DEBUG
+			MultiBot.dprint("INDEX_PLAYERS_SIZE", #(MultiBot.index.players or {})) -- DEBUG
 			do local n=0; for _ in pairs(MultiBot.index.classes.players or {}) do n=n+1 end; MultiBot.dprint("INDEX_CLASSES_PLAYERS_KEYS", n) end -- DEBUG
 
         -- La liste des players est prête : on met l’index Favoris à jour
@@ -563,11 +577,16 @@ MultiBot:SetScript("OnEvent", function()
 
 			-- MEMBERBOTS --
 			for i = 1, 50 do
-				local tName, tRank, tIndex, tLevel, tClass = GetGuildRosterInfo(i)
+				--local tName, tRank, tIndex, tLevel, tClass = GetGuildRosterInfo(i)
 
 				-- Ensure that the Counter is not bigger than the Amount of Members in Guildlist
-				if(tName ~= nil and tLevel ~= nil and tClass ~= nil and tName ~= UnitName("player")) then
-					local tMember = MultiBot.addMember(tClass, tLevel, tName).setDisable()
+				--if(tName ~= nil and tLevel ~= nil and tClass ~= nil and tName ~= UnitName("player")) then
+					--local tMember = MultiBot.addMember(tClass, tLevel, tName).setDisable()
+				local memberName, _, _, memberLevel, memberClass = GetGuildRosterInfo(i)
+
+				-- Ensure that the Counter is not bigger than the Amount of Members in Guildlist
+				if(memberName ~= nil and memberLevel ~= nil and memberClass ~= nil and memberName ~= UnitName("player")) then
+					local tMember = MultiBot.addMember(memberClass, memberLevel, memberName).setDisable()
 
 					tMember.doRight = function(pButton)
 						if(pButton.state == false) then return end
@@ -591,11 +610,17 @@ MultiBot:SetScript("OnEvent", function()
 
 			-- FRIENDBOTS --
 			for i = 1, 50 do
-				local tName, tLevel, tClass = GetFriendInfo(i)
+				--local tName, tLevel, tClass = GetFriendInfo(i)
 
 				-- Ensure that the Counter is not bigger than the Amount of Members in Friendlist
-				if(tName ~= nil and tLevel ~= nil and tClass ~= nil and tName ~= UnitName("player")) then
-					local tFriend = MultiBot.addFriend(tClass, tLevel, tName).setDisable()
+				--if(tName ~= nil and tLevel ~= nil and tClass ~= nil and tName ~= UnitName("player")) then
+					--local tFriend = MultiBot.addFriend(tClass, tLevel, tName).setDisable()
+
+				local friendName, friendLevel, friendClass = GetFriendInfo(i)
+
+				-- Ensure that the Counter is not bigger than the Amount of Members in Friendlist
+				if(friendName ~= nil and friendLevel ~= nil and friendClass ~= nil and friendName ~= UnitName("player")) then
+					local tFriend = MultiBot.addFriend(friendClass, friendLevel, friendName).setDisable()
 
 					tFriend.doRight = function(pButton)
 						if(pButton.state == false) then return end
@@ -621,8 +646,10 @@ MultiBot:SetScript("OnEvent", function()
 
 			if(GetNumRaidMembers() > 4) then
 				for i = 1, GetNumRaidMembers() do
-					local tName = UnitName("raid" .. i)
-					SendChatMessage(".playerbot bot add " .. tName, "SAY")
+					--local tName = UnitName("raid" .. i)
+					--SendChatMessage(".playerbot bot add " .. tName, "SAY")
+					local raidName = UnitName("raid" .. i)
+					SendChatMessage(".playerbot bot add " .. raidName, "SAY")
 				end
 
 				return
@@ -632,8 +659,10 @@ MultiBot:SetScript("OnEvent", function()
 
 			if(GetNumPartyMembers() > 0) then
 				for i = 1, GetNumPartyMembers() do
-					local tName = UnitName("party" .. i)
-					SendChatMessage(".playerbot bot add " .. tName, "SAY")
+					--local tName = UnitName("party" .. i)
+					--SendChatMessage(".playerbot bot add " .. tName, "SAY")
+					local partyName = UnitName("party" .. i)
+					SendChatMessage(".playerbot bot add " .. partyName, "SAY")
 				end
 
 				return
@@ -650,7 +679,7 @@ MultiBot:SetScript("OnEvent", function()
 			--[[if(MultiBot.isMember(tName)) then -- Removed to avoid double wisper of co ?
 				tButton.waitFor = "CO"
 				SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
-				SendChatMessage("co ?", "WHISPER", nil, tName)		
+				SendChatMessage("co ?", "WHISPER", nil, tName)	
 				tButton.setEnable()
 				--MultiBot.doRaid()
 				return
@@ -1111,11 +1140,16 @@ MultiBot:SetScript("OnEvent", function()
 				if(tName == nil) then break end
 			end
 
-			local tClass = MultiBot.toClass(tClass)
+			--local tClass = MultiBot.toClass(tClass)
+			--local tTable = MultiBot.index.classes[tButton.roster][tButton.class]
+			--local tIndex = 0
+
+			--for i = 1, table.getn(tTable) do
+			tClass = MultiBot.toClass(tClass)
 			local tTable = MultiBot.index.classes[tButton.roster][tButton.class]
 			local tIndex = 0
 
-			for i = 1, table.getn(tTable) do
+			for i = 1, #tTable do
 				if(tTable[i] == arg2) then
 					tIndex = i
 					break
@@ -1166,11 +1200,17 @@ MultiBot:SetScript("OnEvent", function()
 			if(MultiBot.spells[arg2] == nil) then MultiBot.spells[arg2] = {} end
 			tButton.waitFor = "DETAIL"
 
-			local tSpells = {}
+			--local tSpells = {}
+			--local tIgnores = MultiBot.doSplit(arg1, ": ")[2]
+
+			--if(tIgnores ~= nil) then
+				--tSpells = MultiBot.doSplit(tIgnores, ", ")
+
+				--for k,v in pairs(tSpells) do
 			local tIgnores = MultiBot.doSplit(arg1, ": ")[2]
 
 			if(tIgnores ~= nil) then
-				tSpells = MultiBot.doSplit(tIgnores, ", ")
+				local tSpells = MultiBot.doSplit(tIgnores, ", ")
 
 				for k,v in pairs(tSpells) do
 					local tSpell = MultiBot.doSplit(v, "|")[3]
@@ -1186,7 +1226,8 @@ MultiBot:SetScript("OnEvent", function()
 			tButton.waitFor = "IGNORE"
 			tButton.normal = string.sub(arg1, 13)
 
-			tFrame = MultiBot.frames["MultiBar"].frames["Units"].addFrame(arg2, tButton.x - tButton.size - 2, tButton.y + 2)
+			--tFrame = MultiBot.frames["MultiBar"].frames["Units"].addFrame(arg2, tButton.x - tButton.size - 2, tButton.y + 2)
+			local tFrame = MultiBot.frames["MultiBar"].frames["Units"].addFrame(arg2, tButton.x - tButton.size - 2, tButton.y + 2)
 			tFrame.class = tButton.class
 			tFrame.name = tButton.name
 
@@ -1224,7 +1265,8 @@ MultiBot:SetScript("OnEvent", function()
 		if(tButton.waitFor == "INVENTORY" and MultiBot.isInside(arg1, "Inventory", "背包")) then
 			local tItems = MultiBot.inventory.frames["Items"]
 			for key, value in pairs(tItems.buttons) do value:Hide() end
-			table.wipe(tItems.buttons)
+			--table.wipe(tItems.buttons)
+			for key in pairs(tItems.buttons) do tItems.buttons[key] = nil end
 			MultiBot.inventory.setText("Title", MultiBot.doReplace(MultiBot.info.inventory, "NAME", arg2))
 			MultiBot.inventory.name = arg2
 			tItems.index = 0
@@ -1251,8 +1293,10 @@ MultiBot:SetScript("OnEvent", function()
 		if(tButton.waitFor == "SPELLBOOK" and MultiBot.isInside(arg1, "Spells")) then
 			local tOverlay = MultiBot.spellbook.frames["Overlay"]
 			local tSpellbook = MultiBot.spellbook
-			table.wipe(tSpellbook.spells)
-			tSpellbook.frames["Overlay"].setText("Title", MultiBot.doReplace(MultiBot.info.spellbook, "NAME", arg2))
+			--table.wipe(tSpellbook.spells)
+			--tSpellbook.frames["Overlay"].setText("Title", MultiBot.doReplace(MultiBot.info.spellbook, "NAME", arg2))
+			for key in pairs(tSpellbook.spells) do tSpellbook.spells[key] = nil end
+			tOverlay.setText("Title", MultiBot.doReplace(MultiBot.info.spellbook, "NAME", arg2))
 			tSpellbook.name = arg2
 			tSpellbook.index = 0
 			tSpellbook.from = 1
