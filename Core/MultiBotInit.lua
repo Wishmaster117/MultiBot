@@ -494,7 +494,7 @@ function MultiBot.BuildFormationUI(tLeft)
   local COLS     = 1     -- One column
   local CELL_W   = 40    -- wide (useless here but we keep the arg.)
   local CELL_H   = 30    -- high/vertival spacing
-  
+
   for idx, data in ipairs(FORMATION_BUTTONS) do
   local col = 1                                    -- toujours 1
   local row = idx                                   -- 1,2,3…
@@ -694,7 +694,7 @@ tButton.filter = "none"
 
 tButton.doRight = function(pButton)
 --[[	-- MEMBERBOTS --
-	
+
 	for i = 1, 50 do
 		local tName, tRank, tIndex, tLevel, tClass = GetGuildRosterInfo(i)
 		-- Ensure that the Counter is not bigger than the Amount of Members in Guildlist
@@ -967,7 +967,7 @@ tButton.doLeft = function(pButton, oRoster, oFilter)
 --	local tButton = nil
 --	local tFrame = nil
 --	local tIndex = 0
---	
+--
 --	if(tTable ~= nil)
 --	then pButton.limit = table.getn(tTable)
 --	else pButton.limit = 0
@@ -1300,30 +1300,30 @@ end
 --	local tMaster = MultiBot.frames["MultiBar"].buttons["Units"]
 --	local tFrom = tMaster.from + 10
 --	local tTo = tMaster.to + 10
---	
+--
 --	if(tMaster.filter ~= "none")
 --	then tTable = MultiBot.index.classes[tMaster.roster][tMaster.filter]
 --	else tTable = MultiBot.index[tMaster.roster]
 --	end
---	
+--
 --	local tUnits = tMaster.parent.frames["Units"]
 --	local tButton = nil
 --	local tFrame = nil
 --	local tIndex = 0
---	
+--
 --	if(tFrom > tMaster.limit) then
 --		tFrom = 1
 --		tTo = 10
 --	end
---	
+--
 --	if(tTo > tMaster.limit) then
 --		tTo = tMaster.limit
 --	end
---	
+--
 --	for i = 1, tMaster.limit do
 --		tFrame = tUnits.frames[tTable[i]]
 --		tButton = tUnits.buttons[tTable[i]]
---		
+--
 --		--[[if(tMaster.from <= i and tMaster.to >= i) then
 --			if(tFrame ~= nil) then tFrame:Hide() end
 --			tButton:Hide()
@@ -1332,7 +1332,7 @@ end
 --            if (tFrame ~= nil) then tFrame:Hide() end
 --            if (tButton ~= nil) then tButton:Hide() end
 --        end
---		
+--
 --		if(tFrom <= i and tTo >= i) then
 --			--if(tFrame ~= nil and tButton.state) then tFrame:Show() end 
 --			--tButton:Show()
@@ -1347,10 +1347,10 @@ end
 --            end
 --		end
 --	end
---	
+--
 --	tMaster.from = tFrom
 --	tMaster.to = tTo
---	
+--
 --	tUnits.frames["Control"].setPoint(-2, (tUnits.size + 2) * tIndex)
 --end
 
