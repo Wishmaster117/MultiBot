@@ -19,7 +19,7 @@ globals = {
 	"InterfaceOptions_AddCategory", "UIDropDownMenu_JustifyText", "UIDropDownMenu_SetSelectedValue", "UIDropDownMenu_SetButtonWidth", "UIDropDownMenu_SetWidth",
 	"UIDropDownMenu_Initialize", "UIDropDownMenu_AddButton", "UIDropDownMenu_CreateInfo", "UIDropDownMenu_SetSelectedID", "SetRaidSubgroup", "GetRaidRosterInfo",
 	"MouseIsOver", "UninviteUnit", "UnitInRaid", "UnitInGroup", "GetNumQuestChoices", "GetQuestItemLink", "GetQuestItemInfo", "SwapRaidSubgroup", "WorldMapButton",
-	"UnitIsConnected", "event", "arg1", "arg2"
+	"UnitIsConnected", "event", "arg1", "arg2", "MultiBotSaved", "GetUnitName"
 }
 
 -- Interdire les tabulations
