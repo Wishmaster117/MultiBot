@@ -697,23 +697,22 @@ tButton.doRight = function(pButton)
 	
 	for i = 1, 50 do
 		local tName, tRank, tIndex, tLevel, tClass = GetGuildRosterInfo(i)
-		
 		-- Ensure that the Counter is not bigger than the Amount of Members in Guildlist
 		if(tName ~= nil and tLevel ~= nil and tClass ~= nil and tName ~= UnitName("player")) then
 			local tMember = MultiBot.addMember(tClass, tLevel, tName)
-			
+
 			if(tMember.state == false)
 			then tMember.setDisable()
 			else tMember.setEnable()
 			end
-			
+
 			tMember.doRight = function(pButton)
 				if(pButton.state == false) then return end
 				SendChatMessage(".playerbot bot remove " .. pButton.name, "SAY")
 				if(pButton.parent.frames[pButton.name] ~= nil) then pButton.parent.frames[pButton.name]:Hide() end
 				pButton.setDisable()
 			end
-			
+
 			tMember.doLeft = function(pButton)
 				if(pButton.state) then
 					if(pButton.parent.frames[pButton.name] ~= nil) then MultiBot.ShowHideSwitch(pButton.parent.frames[pButton.name]) end
@@ -726,28 +725,26 @@ tButton.doRight = function(pButton)
 			break
 		end
 	end
-	
+
 	-- FRIENDBOTS --
-	
+
 	for i = 1, 50 do
 		local tName, tLevel, tClass = GetFriendInfo(i)
-		
 		-- Ensure that the Counter is not bigger than the Amount of Members in Friendlist
 		if(tName ~= nil and tLevel ~= nil and tClass ~= nil and tName ~= UnitName("player")) then
 			local tFriend = MultiBot.addFriend(tClass, tLevel, tName)
-			
+
 			if(tFriend.state == false)
 			then tFriend.setDisable()
 			else tFriend.setEnable()
 			end
-			
+
 			tFriend.doRight = function(pButton)
 				if(pButton.state == false) then return end
 				SendChatMessage(".playerbot bot remove " .. pButton.name, "SAY")
 				if(pButton.parent.frames[pButton.name] ~= nil) then pButton.parent.frames[pButton.name]:Hide() end
 				pButton.setDisable()
 			end
-			
 			tFriend.doLeft = function(pButton)
 				if(pButton.state) then
 					if(pButton.parent.frames[pButton.name] ~= nil) then MultiBot.ShowHideSwitch(pButton.parent.frames[pButton.name]) end
@@ -760,7 +757,7 @@ tButton.doRight = function(pButton)
 			break
 		end
 	end
-	
+
 	pButton.doLeft(pButton, pButton.roster, pButton.filter)]]--
 
   -- Always refresh guild/friend rosters so their indexes stay in sync
@@ -934,7 +931,7 @@ tButton.doLeft = function(pButton, oRoster, oFilter)
         end
       end
     end
- 
+
 	--[[if(pButton.filter ~= "none")
 	then tTable = MultiBot.index.classes[pButton.roster][pButton.filter]
 	else tTable = MultiBot.index[pButton.roster]
@@ -966,7 +963,7 @@ tButton.doLeft = function(pButton, oRoster, oFilter)
     end
     MultiBot.dprint("Units.tTable.size", tTable and table.getn(tTable) or 0) -- DEBUG
 --	-- Fin Construction de la table source selon roster/filtre
---	
+--
 --	local tButton = nil
 --	local tFrame = nil
 --	local tIndex = 0
@@ -975,23 +972,23 @@ tButton.doLeft = function(pButton, oRoster, oFilter)
 --	then pButton.limit = table.getn(tTable)
 --	else pButton.limit = 0
 --	end
---	
+--
 --	pButton.from = 1
 --	pButton.to = 10
---	
+--
 --	for i = 1, pButton.limit do
 --		tIndex = (i - 1)%10 + 1
 --		tFrame = tUnits.frames[tTable[i]]
 --		tButton = tUnits.buttons[tTable[i]]
 --		tButton.setPoint(0, (tUnits.size + 2) * (tIndex - 1))
 --		if(tFrame ~=nil) then tFrame.setPoint(-34, (tUnits.size + 2) * (tIndex - 1) + 2) end
---		
+--
 --		if(pButton.from <= i and pButton.to >= i) then
 --			if(tFrame ~= nil and tButton.state) then tFrame:Show() end
 --			tButton:Show()
 --		end
 --	end
---	
+--
 --	if(pButton.limit < pButton.to)
 --	then tUnits.frames["Control"].setPoint(-2, (tUnits.size + 2) * pButton.limit)
 --	else tUnits.frames["Control"].setPoint(-2, (tUnits.size + 2) * pButton.to)
@@ -1823,11 +1820,11 @@ tButton.doLeft  = function(p) MultiBot.ShowHideSwitch(p.parent.frames["QuestMenu
 tButton.doRight = tButton.doLeft
 -- END MAIN BUTTON --
 
--- BUTTON Accept * -- 
+-- BUTTON Accept * --
 tQuestMenu.addButton("AcceptAll", 0, 30,
                      "inv_misc_note_02", MultiBot.tips.quests.accept)
 .doLeft = function() MultiBot.ActionToGroup("accept *") end
--- END BUTTON Accept * -- 
+-- END BUTTON Accept * --
 
 -- POP-UP Frame for Quests --
 local tQuests = CreateFrame("Frame", "MB_QuestPopup", UIParent)
@@ -2416,7 +2413,7 @@ MultiBot._awaitingQuestsAll = false
         MultiBot.BotQuestsCompleted = {}
         MultiBot.ActionToGroup("quests completed")
         tBotCompPopup:Show()
-        ClearCompContent() 
+        ClearCompContent()
     end
 end
 
@@ -4719,7 +4716,7 @@ tTab.wowButton("Glyphs", -2, 6, 92, 17, 11)
     MultiBot.talent.frames["Tab2"]:Hide()
     MultiBot.talent.frames["Tab3"]:Hide()
     MultiBot.talent.frames["Tab4"]:Show()
-	copyBtn:doHide() 
+	copyBtn:doHide()
     local botName = MultiBot.talent.name
     MultiBot.awaitGlyphs = botName
     SendChatMessage("glyphs", "WHISPER", nil, botName)
@@ -4955,7 +4952,7 @@ MultiBot.talent.doState = function()
 		for j = 1, table.getn(tTab.buttons) do
 			local tTalent = tTab.buttons[j]
 			local tValue = tTab.frames[j]
-			
+
 			if(MultiBot.talent.points == 0) then
 				if(tTalent.value == 0) then
 					tTalent.setDisable(false)
@@ -5097,7 +5094,7 @@ if tabTalentsBtn then
             MultiBot.talent.setTalents()   -- Rebuild the actual spec tree
             if oldTalentsClick then
                 oldTalentsClick(btn)
-            end			
+            end
         else
             if oldTalentsClick then oldTalentsClick(btn) end
         end
@@ -5189,7 +5186,7 @@ local function ClearGlyphSocket(socketFrame)
 	   else
 	      gApply:Hide()
 	    end
-	end	
+	end
 end
 
 -- 5) Shared drag/click handler
@@ -5321,7 +5318,7 @@ function MultiBot.talent.showCustomGlyphs()
 							or  "gliph_mineur_layout.blp"))
 			end
 
-        -- If the slot is not yet available, hide everything  
+        -- If the slot is not yet available, hide everything
         if not unlocked then
             if s.frames.Glow    then s.frames.Glow:Hide()    end
             if s.frames.Overlay then s.frames.Overlay:Hide() end
@@ -5366,10 +5363,10 @@ function MultiBot.talent.showCustomGlyphs()
             btn.icon:SetTexture(nil)
             btn.icon:Show()
             btn.glyphID = nil
-			
+
             btn:RegisterForDrag("LeftButton")
             btn:RegisterForClicks("LeftButtonUp")
-			
+
             btn:SetScript("OnEnter", ShowGlyphTooltip)
             btn:SetScript("OnLeave", HideGlyphTooltip)
             btn:SetScript("OnReceiveDrag", CG_OnReceiveDrag)
@@ -5383,7 +5380,7 @@ function MultiBot.talent.showCustomGlyphs()
             s.item = 0
         end
     end
-end 
+end
     gApply:Hide()
 	if copyBtn then copyBtn:doHide() end
 	if tApply then tApply:Hide() end
@@ -5572,7 +5569,7 @@ local roleButtons = {
     { "@melee", 120, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_melee.blp",  MultiBot.tips.rtsc.melee,  false, true },
     { "@ranged",150, "Interface\\AddOns\\MultiBot\\Icons\\rtsc_ranged.blp", MultiBot.tips.rtsc.ranged, false, true },
     { "@meleedps",  180, "Interface\\AddOns\\MultiBot\\Icons\\attack_melee.blp", MultiBot.tips.rtsc.meleedps,  false, true },
-    { "@rangeddps", 210, "Interface\\AddOns\\MultiBot\\Icons\\attack_range.blp", MultiBot.tips.rtsc.rangeddps, false, true },	
+    { "@rangeddps", 210, "Interface\\AddOns\\MultiBot\\Icons\\attack_range.blp", MultiBot.tips.rtsc.rangeddps, false, true },
 }
 
 -- Création des boutons groupes
