@@ -623,68 +623,89 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
 		return frame.texture
 	end
 
-	frame.addModel = function(pName, pX, pY, pWidth, pHeight, oScale)
+	--frame.addModel = function(pName, pX, pY, pWidth, pHeight, oScale)
+	frame.addModel = function(pName, x, y, pWidth, pHeight, oScale)
 		if(frame.model ~= nil) then frame.model:Hide() end
 		frame.model = CreateFrame("DressUpModel", "MyModel" .. pName, frame)
-		frame.model:SetPoint("CENTER", pX, pY)
+		--frame.model:SetPoint("CENTER", pX, pY)
+		frame.model:SetPoint("CENTER", x, y)
 		frame.model:SetSize(pWidth, pHeight)
 		frame.model:SetUnit(pName)
 		if(oScale ~= nil) then frame.model:SetScale(oScale) end
 		return frame.model
 	end
 
-	frame.addText = function(pIndex, pText, pAlign, pX, pY, pSize)
+	--frame.addText = function(pIndex, pText, pAlign, pX, pY, pSize)
+	frame.addText = function(pIndex, pText, pAlign, x, y, fontSize)
 		if(frame.texts[pIndex] ~= nil) then frame.texts[pIndex]:Hide() end
 		frame.texts[pIndex] = frame:CreateFontString(nil, "ARTWORK")
-		frame.texts[pIndex]:SetFont("Fonts\\ARIALN.ttf", pSize, "PLAIN")
-		frame.texts[pIndex]:SetPoint(pAlign, pX, pY)
+		--frame.texts[pIndex]:SetFont("Fonts\\ARIALN.ttf", pSize, "PLAIN")
+		--frame.texts[pIndex]:SetPoint(pAlign, pX, pY)
+        frame.texts[pIndex]:SetFont("Fonts\\ARIALN.ttf", fontSize, "PLAIN")
+        frame.texts[pIndex]:SetPoint(pAlign, x, y)
 		frame.texts[pIndex]:SetText(pText)
 		frame.texts[pIndex]:Show()
 		return frame.texts[pIndex]
 	end
 
-	frame.wowButton = function(pName, pX, pY, pWidth, pHeight, pSize)
+	--frame.wowButton = function(pName, pX, pY, pWidth, pHeight, pSize)
+	frame.wowButton = function(pName, x, y, pWidth, pHeight, size)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
-		frame.buttons[pName] = MultiBot.wowButton(frame, pName, pX, pY, pWidth, pHeight, pSize)
+		--frame.buttons[pName] = MultiBot.wowButton(frame, pName, pX, pY, pWidth, pHeight, pSize)
+		frame.buttons[pName] = MultiBot.wowButton(frame, pName, x, y, pWidth, pHeight, size)
 		return frame.buttons[pName]
 	end
 
-	frame.addButton = function(pName, pX, pY, pTexture, pTip, oTemplate)
+	--frame.addButton = function(pName, pX, pY, pTexture, pTip, oTemplate)
+	frame.addButton = function(pName, x, y, pTexture, pTip, oTemplate)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
-		frame.buttons[pName] = MultiBot.newButton(frame, pX, pY, frame.size, pTexture, pTip, oTemplate)
+		--frame.buttons[pName] = MultiBot.newButton(frame, pX, pY, frame.size, pTexture, pTip, oTemplate)
+		frame.buttons[pName] = MultiBot.newButton(frame, x, y, frame.size, pTexture, pTip, oTemplate)
 		return frame.buttons[pName]
 	end
 
-	frame.movButton = function(pName, pX, pY, pSize, pTip, oFrame)
+	--frame.movButton = function(pName, pX, pY, pSize, pTip, oFrame)
+	frame.movButton = function(pName, x, y, size, pTip, oFrame)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
-		frame.buttons[pName] = MultiBot.movButton(frame, pX, pY, pSize, pTip, oFrame)
+		--frame.buttons[pName] = MultiBot.movButton(frame, pX, pY, pSize, pTip, oFrame)
+		frame.buttons[pName] = MultiBot.movButton(frame, x, y, size, pTip, oFrame)
 		return frame.buttons[pName]
 	end
 
-	frame.boxButton = function(pName, pX, pY, pSize, pState)
+	--frame.boxButton = function(pName, pX, pY, pSize, pState)
+	frame.boxButton = function(pName, x, y, size, pState)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
-		frame.buttons[pName] = MultiBot.boxButton(frame, pX, pY, pSize, pState)
+		--frame.buttons[pName] = MultiBot.boxButton(frame, pX, pY, pSize, pState)
+		frame.buttons[pName] = MultiBot.boxButton(frame, x, y, size, pState)
 		return frame.buttons[pName]
 	end
 
-	frame.catButton = function(pName, pX, pY, pWidth, pHeight)
+	--frame.catButton = function(pName, pX, pY, pWidth, pHeight)
+	frame.catButton = function(pName, x, y, pWidth, pHeight)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
-		frame.buttons[pName] = MultiBot.catButton(frame, pX, pY, pWidth, pHeight)
+		--frame.buttons[pName] = MultiBot.catButton(frame, pX, pY, pWidth, pHeight)
+		frame.buttons[pName] = MultiBot.catButton(frame, x, y, pWidth, pHeight)
 		return frame.buttons[pName]
 	end
 
-	frame.addFrame = function(pName, pX, pY, oSize, oWidth, oHeight)
+	--frame.addFrame = function(pName, pX, pY, oSize, oWidth, oHeight)
+	frame.addFrame = function(pName, x, y, oSize, oWidth, oHeight)
 		if(frame.frames[pName] ~= nil) then frame.frames[pName]:Hide() end
-		frame.frames[pName] = MultiBot.newFrame(frame, pX, pY, MultiBot.IF(oSize ~= nil, oSize, frame.size - 4), oWidth, oHeight)
+		--frame.frames[pName] = MultiBot.newFrame(frame, pX, pY, MultiBot.IF(oSize ~= nil, oSize, frame.size - 4), oWidth, oHeight)
+		frame.frames[pName] = MultiBot.newFrame(frame, x, y, MultiBot.IF(oSize ~= nil, oSize, frame.size - 4), oWidth, oHeight)
 		return frame.frames[pName]
 	end
 
 	-- SET --
 
-	frame.setPoint = function(pX, pY)
+	--[[frame.setPoint = function(pX, pY)
 		frame:SetPoint("BOTTOMRIGHT", pX, pY)
 		frame.x = pX
-		frame.y = pY
+		frame.y = pY]]--
+    frame.setPoint = function(x, y)
+        frame:SetPoint("BOTTOMRIGHT", x, y)
+        frame.x = x
+        frame.y = y
 		return frame
 	end
 
@@ -1089,7 +1110,7 @@ end
 MultiBot.boxButton = function(pParent, pX, pY, pSize, pState)
 	local button = CreateFrame("CheckButton", nil, pParent, "ChatConfigCheckButtonTemplate");
 	button:SetPoint("BOTTOMRIGHT", pX, pY)
-	button:SetHitRectInsets(0, 0, 0, 0) 
+	button:SetHitRectInsets(0, 0, 0, 0)
 	button:SetSize(pSize, pSize)
 	button:SetChecked(pState)
 	button:Show()
