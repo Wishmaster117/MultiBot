@@ -337,7 +337,7 @@ MultiBot:SetScript("OnEvent", function()
 
 		if(MultiBotSave["Expand"] ~= nil) then
 			local tButton = MultiBot.frames["MultiBar"].frames["Main"].buttons["Expand"]
-			
+
 			if(MultiBotSave["Expand"] == "true") then
 				tButton.setDisable()
 				tButton.doLeft(tButton)
@@ -514,7 +514,7 @@ MultiBot:SetScript("OnEvent", function()
 				local tBot = MultiBot.doSplit(value, " ")
 				--local tName = string.sub(tBot[1], 2)
 				--local tClass = MultiBot.toClass(tBot[2])
-				local tOnline = string.sub(tBot[1], 1, 1)
+				-- local tOnline = string.sub(tBot[1], 1, 1)
 
 				--local tPlayer = MultiBot.addPlayer(tClass, tName).setDisable()
 
@@ -679,7 +679,7 @@ MultiBot:SetScript("OnEvent", function()
 			--[[if(MultiBot.isMember(tName)) then -- Removed to avoid double wisper of co ?
 				tButton.waitFor = "CO"
 				SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
-				SendChatMessage("co ?", "WHISPER", nil, tName)	
+				SendChatMessage("co ?", "WHISPER", nil, tName)
 				tButton.setEnable()
 				--MultiBot.doRaid()
 				return
@@ -1109,7 +1109,7 @@ MultiBot:SetScript("OnEvent", function()
             end
 
             local _, tClass = UnitClass(tUnit)
-            local tLevel    = UnitLevel(tUnit)	
+            local tLevel    = UnitLevel(tUnit)
 
 			tButton = MultiBot.addActive(tClass, tLevel, arg2).setDisable()
 
