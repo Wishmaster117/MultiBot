@@ -94,7 +94,8 @@ MultiBot.doRemove = function(pIndex, pName)
 	if(pIndex == nil) then return end
 	local tFound = 0
 
-	for i = 1, table.getn(pIndex) do
+	--for i = 1, table.getn(pIndex) do
+	for i = 1, #pIndex do
 		if(pIndex[i] == pName) then
 			tFound = i
 			break
@@ -335,7 +336,8 @@ MultiBot.RaidPool = function(pUnit, oWho)
 	local tName = UnitName(pUnit)
 	local tIndex = { 4, 5, 6 }
 	local tTabs = {}
-	local tScore = ""
+	--local tScore = ""
+	local tScore
 
 	if(oWho ~= nil) then
 		local tWho = MultiBot.CLEAR(oWho, 20)
@@ -367,7 +369,7 @@ MultiBot.RaidPool = function(pUnit, oWho)
 		tTabs[3] = GetNumTalents(3)
 	end
 
-	   -- [SAFETY] tTabs doivent être numériques
+	   --[[-- [SAFETY] tTabs doivent être numériques
        tTabs[1] = tonumber(tTabs[1]) or 0
        tTabs[2] = tonumber(tTabs[2]) or 0
        tTabs[3] = tonumber(tTabs[3]) or 0
@@ -384,7 +386,12 @@ MultiBot.RaidPool = function(pUnit, oWho)
          end
          if not iLevel then iLevel = tonumber(tLevel) end
          if not iLevel then iLevel = (UnitLevel and UnitLevel(pUnit)) or 0 end
-       end
+       end]]--
+
+	-- [SAFETY] tTabs doivent être numériques
+	tTabs[1] = tonumber(tTabs[1]) or 0
+	tTabs[2] = tonumber(tTabs[2]) or 0
+	tTabs[3] = tonumber(tTabs[3]) or 0
 
 	local tTabIndex = MultiBot.IF(tTabs[3] > tTabs[2] and tTabs[3] > tTabs[1], 3, MultiBot.IF(tTabs[2] > tTabs[3] and tTabs[2] > tTabs[1], 2, 1))
 	local tSpecial = MultiBot.CLEAR(MultiBot.info.talent[MultiBot.toClass(tClass) .. tTabIndex], 1)
@@ -403,7 +410,8 @@ MultiBot.ItemLevel = function(pUnit)
 	for i = 1, 18, 1 do
 		local tItem = GetInventoryItemLink(pUnit, i)
 		if(tItem ~= nil and i ~= 4) then
-			local iName, iLink, iRare, iLevel, iMinLevel, iType, iSubType, iStack, iEquipLoc = GetItemInfo(tItem)
+			--local iName, iLink, iRare, iLevel, iMinLevel, iType, iSubType, iStack, iEquipLoc = GetItemInfo(tItem)
+			local _, _, _, iLevel, _, _, _, _, iEquipLoc = GetItemInfo(tItem)
 			if((i == 16 and iEquipLoc ~= "INVTYPE_2HWEAPON") or (i == 16 and tTitan) or (i == 17)) then tCount = 17 end
 			tScore = tScore + iLevel
 		end
@@ -436,15 +444,29 @@ MultiBot.LoadPortal = function(pButton, pValue)
 end
 
 MultiBot.SpellToMacro = function(pName, pSpell, pTexture)
-	local tGlobal, tAmount = GetNumMacros()
+	--local tGlobal, tAmount = GetNumMacros()
+	local _, tAmount = GetNumMacros()
 
-	if(pSpell == nil or pSpell == 0) then return SendChatMessage(MultiBot.info.spell, "SAY") end
-	if(tAmount == 18) then return SendChatMessage(MultiBot.info.macro, "SAY") end
+	if(pSpell == nil or pSpell == 0) then
+		return SendChatMessage(MultiBot.info.spell, "SAY")
+	end
+	if(tAmount == 18) then
+		return SendChatMessage(MultiBot.info.macro, "SAY")
+	end
 
 	local tMacro = string.sub(pName, 1, 14) .. tAmount
-	local tSpell, tIcon, tBody = GetMacroInfo(tMacro)
+	--local tSpell, tIcon, tBody = GetMacroInfo(tMacro)
+	local tSpell = GetMacroInfo(tMacro)
 
-	if(tSpell == nil) then CreateMacro(tMacro, MultiBot.spellbook.icons[pTexture], "/t " .. pName .. " cast " .. pSpell, true) end
+	if(tSpell == nil) then
+		-- Sécurité : si l’icône n’est pas définie dans MultiBot.spellbook.icons,
+		-- on utilise une icône par défaut (index 1).
+		local icon = 1
+		if MultiBot.spellbook and MultiBot.spellbook.icons then
+			icon = MultiBot.spellbook.icons[pTexture] or 1
+		end
+		CreateMacro(tMacro, icon, "/t " .. pName .. " cast " .. pSpell, true)
+	end
 	PickupMacro(tMacro)
 end
 
@@ -689,10 +711,10 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
 	end
 
 	--frame.addFrame = function(pName, pX, pY, oSize, oWidth, oHeight)
-	frame.addFrame = function(pName, x, y, oSize, oWidth, oHeight)
+	frame.addFrame = function(pName, x, y, oSize, subWidth, subHeight)
 		if(frame.frames[pName] ~= nil) then frame.frames[pName]:Hide() end
 		--frame.frames[pName] = MultiBot.newFrame(frame, pX, pY, MultiBot.IF(oSize ~= nil, oSize, frame.size - 4), oWidth, oHeight)
-		frame.frames[pName] = MultiBot.newFrame(frame, x, y, MultiBot.IF(oSize ~= nil, oSize, frame.size - 4), oWidth, oHeight)
+		frame.frames[pName] = MultiBot.newFrame(frame, x, y, MultiBot.IF(oSize ~= nil, oSize, frame.size - 4), subWidth, subHeight)
 		return frame.frames[pName]
 	end
 
@@ -1290,9 +1312,16 @@ MultiBot.addPlayer = function(pClass, pName)
   return btn
 end
 
-local function MB_InsertUnique(pTable, pValue)
+--[[local function MB_InsertUnique(pTable, pValue)
   if(pTable == nil) then return end
   for i = 1, table.getn(pTable) do
+    if(pTable[i] == pValue) then return end
+  end
+  table.insert(pTable, pValue)
+end]]--
+local function MB_InsertUnique(pTable, pValue)
+  if(pTable == nil) then return end
+  for i = 1, #pTable do
     if(pTable[i] == pValue) then return end
   end
   table.insert(pTable, pValue)
