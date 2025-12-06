@@ -8,11 +8,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Stylua
-        run: |
-          curl -L https://github.com/JohnnyMorganz/StyLua/releases/latest/download/stylua-linux.zip -o stylua.zip
-          unzip stylua.zip -d stylua-bin
-          sudo mv stylua-bin/stylua /usr/local/bin/stylua
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Stylua via npm
+        run: npm install -g stylua
 
       - name: Run Stylua check
         run: stylua --check .
