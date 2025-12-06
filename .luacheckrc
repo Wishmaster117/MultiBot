@@ -1,6 +1,10 @@
 -- Configuration Luacheck
 std = "lua53"
 
+exclude_files = {
+   "**/MultiBotInit.lua"
+}
+
 globals = {
     "MultiBot", "GetLocale", "GetSpellInfo", "GetSpellLink", "MultiBotSave", "SendChatMessage", "CreateFrame", "UIParent",
     "MultiBotGlobalSave", "DEFAULT_CHAT_FRAME", "C_Timer_After", "IsInRaid", "GetNumRaidMembers", "IsInGroup", "GetNumPartyMembers",
@@ -24,10 +28,6 @@ globals = {
 	"GetCurrentMapContinent", "GetCurrentMapAreaID", "SLASH_MULTIBOT1", "SLASH_MULTIBOT2", "SLASH_MULTIBOT3", "SLASH_MULTIBOTOPTIONS1", "SLASH_MBFAKEGM1",
 	"SLASH_MBCLASS1", "SLASH_MBCLASSTEST1"
 	
-}
-
-exclude_files = {
-   "MultiBotInit.lua"
 }
 
 read_globals = {
