@@ -506,7 +506,7 @@ MultiBot:SetScript("OnEvent", function()
 			end
 
 			-- PLAYERBOTS --
-			local tTable = MultiBot.doSplit(string.sub(arg1, 13), ", ")
+			--[[local tTable = MultiBot.doSplit(string.sub(arg1, 13), ", ") -- Commenté pour teste de version plus robuste au 06/12/2025
 						MultiBot.dprint("ROSTER_PARSE_COUNT", #tTable) -- DEBUG
 
 			for key, value in pairs(tTable) do
@@ -539,6 +539,58 @@ MultiBot:SetScript("OnEvent", function()
 						SendChatMessage(".playerbot bot add " .. pButton.name, "SAY")
 						pButton.setEnable()
 					end
+				end
+			end]]--
+
+			-- On reste sur le format historique : "Bot roster: +Name Class, -Name Class, ..."
+			local tTable = MultiBot.doSplit(string.sub(arg1, 13), ", ")
+			MultiBot.dprint("ROSTER_PARSE_COUNT", #tTable) -- DEBUG
+
+			for key, value in pairs(tTable) do
+				if value == "" then break end
+
+				local tBot = MultiBot.doSplit(value, " ")
+				local rawNameToken  = tBot[1]
+				local rawClassToken = tBot[2]
+
+				if rawNameToken and rawClassToken then
+					local botName  = string.sub(rawNameToken, 2) -- enlève le signe +/-
+					local botClass = MultiBot.toClass(rawClassToken)
+
+					-- Filtre de sécurité :
+					--  - pas de nom vide
+					--  - pas de classe inconnue => on évite les boutons Unknown
+					if botName ~= "" and botClass ~= "Unknown" then
+						local botButton = MultiBot.addPlayer(botClass, botName).setDisable()
+
+						botButton.doRight = function(pButton)
+							if pButton.state == false then return end
+							SendChatMessage(".playerbot bot remove " .. pButton.name, "SAY")
+							if pButton.parent.frames[pButton.name] ~= nil then
+								pButton.parent.frames[pButton.name]:Hide()
+							end
+							pButton.setDisable()
+						end
+
+						botButton.doLeft = function(pButton)
+							if pButton.state then
+								if pButton.parent.frames[pButton.name] ~= nil then
+									MultiBot.ShowHideSwitch(pButton.parent.frames[pButton.name])
+								end
+							else
+								SendChatMessage(".playerbot bot add " .. pButton.name, "SAY")
+								pButton.setEnable()
+							end
+						end
+					else
+						MultiBot.dprint("ROSTER_SKIP_BAD_ENTRY",
+							tostring(value),
+							"name=", botName or "<nil>",
+							"class=", rawClassToken or "<nil>",
+							"canon=", botClass or "<nil>")
+					end
+				else
+					MultiBot.dprint("ROSTER_SKIP_MALFORMED", tostring(value))
 				end
 			end
 
