@@ -20,3 +20,22 @@ jobs:
 
       - name: Run Luacheck
         run: luacheck .
+
+name: Lua Format
+
+on: [push, pull_request]
+
+jobs:
+  stylua:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Stylua
+        run: |
+          curl -L https://github.com/JohnnyMorganz/StyLua/releases/latest/download/stylua-linux.zip -o stylua.zip
+          unzip stylua.zip -d stylua-bin
+          sudo mv stylua-bin/stylua /usr/local/bin/stylua
+
+      - name: Run Stylua check
+        run: stylua --check .
