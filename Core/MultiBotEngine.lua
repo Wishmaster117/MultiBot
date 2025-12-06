@@ -402,7 +402,7 @@ MultiBot.RaidPool = function(pUnit, oWho)
 	MultiBotGlobalSave[tName] =  tLocalRace .. "," .. tGender .. "," .. tSpecial .. "," .. tTabs[1] .. "/" .. tTabs[2] .. "/" .. tTabs[3] .. "," .. tLocalClass .. "," .. tLevel .. "," .. tScore
 end
 
-MultiBot.ItemLevel = function(pUnit)
+--[[MultiBot.ItemLevel = function(pUnit)
 	local tTitan = IsSpellKnown(49152) -- Titan's Grip
 	local tCount = 16
 	local tScore = 0
@@ -418,6 +418,60 @@ MultiBot.ItemLevel = function(pUnit)
 	end
 
 	return floor(tScore / tCount), tCount
+end--]]
+
+-- New Score formula
+MultiBot.ItemLevel = function(pUnit)
+	-- Calcule un “ilvl moyen” dans l’esprit de GetAverageItemLevel :
+	--  - les slots vides comptent comme ilvl 0 (on divise toujours par 16 ou 17)
+	--  - 2M sans Titan's Grip : 16 slots (pas d’off-hand possible)
+	--  - 1M / 2x1M / 2M avec Titan's Grip : 17 slots (main + off-hand)
+	--  - on garde la même plage de slots que le code d’origine (1..18) et on ignore la chemise.
+
+	local hasTitanGrip = IsSpellKnown and IsSpellKnown(49152) or false
+
+	local hasMainHand  = false
+	local mainIs2H     = false
+	local hasOffhand   = false
+
+	local score = 0
+
+	for slot = 1, 18 do
+		-- On ignore la chemise (slot 4)
+		if slot ~= 4 then
+			local link = GetInventoryItemLink(pUnit, slot)
+			if link then
+				local _, _, _, iLevel, _, _, _, _, equipLoc = GetItemInfo(link)
+				iLevel = iLevel or 0
+
+				-- Gestion des slots arme principale / main gauche
+				if slot == 16 then
+					hasMainHand = true
+					if equipLoc == "INVTYPE_2HWEAPON" then
+						mainIs2H = true
+					end
+				elseif slot == 17 then
+					hasOffhand = true
+				end
+
+				score = score + iLevel
+			end
+		end
+	end
+
+	-- Nombre de slots "théoriques" comme le client :
+	--  - 16 si 2M sans Titan's Grip
+	--  - 17 dès qu’un off-hand est possible ou présent
+	local count = 16
+	if (hasMainHand and not mainIs2H) or (hasMainHand and hasTitanGrip) or hasOffhand then
+		count = 17
+	end
+
+	if count <= 0 then
+		return 0, 0
+	end
+
+	return floor(score / count), count
 end
 
 MultiBot.SavePortal = function(pButton)
