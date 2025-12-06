@@ -17,20 +17,11 @@ jobs:
       - name: Install Stylua
         run: cargo install stylua --locked
         
-      - name: Run Stylua check - Core
-        run: stylua --check Core/
-      
-      - name: Run Stylua check - Data
-        run: stylua --check Data/
-      
-      - name: Run Stylua check - Features
-        run: stylua --check Features/
-      
-      - name: Run Stylua check - UI
-        run: stylua --check UI/
-        
-      - name: Run Stylua check - Locales
-        run: stylua --check Locales/
-        
-      - name: Run Stylua check - Strategies
-        run: stylua --check Strategies/
+      - name: Run Stylua check file by file
+        run: |
+          # Trouve tous les fichiers .lua dans tes dossiers
+          find Core Data Features UI Locales Strategies -type f -name "*.lua" -print0 |
+          while IFS= read -r -d '' file; do
+            echo "➡️ Vérification de $file"
+            stylua --check "$file"
+          done
