@@ -16,6 +16,21 @@ jobs:
 
       - name: Install Stylua
         run: cargo install stylua --locked
-
-      - name: Run Stylua check
-        run: stylua --check .
+        
+      - name: Run Stylua check - Core
+        run: stylua --check Core/
+      
+      - name: Run Stylua check - Data
+        run: stylua --check Data/
+      
+      - name: Run Stylua check - Features
+        run: stylua --check Features/
+      
+      - name: Run Stylua check - UI
+        run: stylua --check UI/
+        
+      - name: Run Stylua check - Locales
+        run: stylua --check Locales/
+        
+      - name: Run Stylua check - Strategies
+        run: stylua --check Strategies/
