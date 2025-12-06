@@ -1218,10 +1218,19 @@ end
 --  Function call
 MultiBot.BuildRosterUI(tControl)
 
--- Force le roster par défaut sur "players" dès la construction
+-- Icic on choisit quelle roster sera affiché par défaut: "players, actives etc....)
 TimerAfter(0.05, function()
-  local btn = tControl.buttons and tControl.buttons["Roster"]
-  if btn and btn.doRight then btn.doRight(btn) end
+  --local btn = tControl.buttons and tControl.buttons["Roster"]
+  --if btn and btn.doRight then btn.doRight(btn) end
+  local unitsBtn = MultiBot.frames
+                 and MultiBot.frames.MultiBar
+                 and MultiBot.frames.MultiBar.buttons
+                 and MultiBot.frames.MultiBar.buttons.Units
+
+  if unitsBtn and tControl and tControl.buttons and tControl.buttons.Roster then
+    MultiBot.Select(tControl, "Roster")
+    unitsBtn.doLeft(unitsBtn, "players")
+  end
 end)
 
 -- UNITS:BROWSE --
