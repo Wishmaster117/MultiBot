@@ -17,11 +17,11 @@ jobs:
       - name: Install Stylua
         run: cargo install stylua --locked
         
-      - name: Run Stylua check file by file
+      - name: Run Stylua format file by file
         run: |
-          # Trouve tous les fichiers .lua dans tes dossiers
           find Core Data Features UI Locales Strategies -type f -name "*.lua" -print0 |
           while IFS= read -r -d '' file; do
-            echo "➡️ Vérification de $file"
-            stylua --check "$file"
-          done
+            echo "➡️ Formatage de $file"
+            stylua "$file"
+          doneua --check "$file"
+                done
