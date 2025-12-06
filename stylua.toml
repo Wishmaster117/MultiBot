@@ -7,7 +7,8 @@ collapse_simple_statement = "Never"   # "Always", "Never", ou "FunctionOnly"
 
 # Options supplémentaires
 no_call_parentheses = false           # true/false supprime les parenthèses autour des appels de fonction avec un seul argument littéral
-space_after_function_names = false    # true/false ajoute un espace entre le nom de fonction et la parenthèse
 
 [sort_requires]
 enabled = false
+
+space_after_function_names = "None"  # None/Always ajoute un espace entre le nom de fonction et la parenthèse
