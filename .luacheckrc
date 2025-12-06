@@ -26,6 +26,10 @@ globals = {
 	
 }
 
+exclude_files = {
+   "MultiBotInit.lua"
+}
+
 read_globals = {
    math = {
       fields = {
