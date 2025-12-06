@@ -3,4 +3,10 @@ indent_width = 4
 column_width = 120
 quote_style = "AutoPreferDouble"
 line_endings = "Unix"
-collapse_simple_statement = false
+
+# Options supplémentaires
+collapse_simple_statement = "Never"   # "Always", "Never", ou "FunctionOnly"
+no_call_parentheses = false           # true/false supprime les parenthèses autour des appels de fonction avec un seul argument littéral
+block_newline_gaps = false            # true/false force des lignes vides entre les blocs de code (par exemple entre deux fonctions)
+sort_requires = false                 # true/false trie automatiquement les require(...) par ordre alphabétique.
+space_after_function_names = false    # true/false ajoute un espace entre le nom de fonction et la parenthèse
