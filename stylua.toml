@@ -3,5 +3,4 @@ indent_width = 4
 column_width = 120
 quote_style = "AutoPreferDouble"
 line_endings = "Unix"
-trim_trailing_whitespace = true
-collapse_simple_table = false
+collapse_simple_statement = false
