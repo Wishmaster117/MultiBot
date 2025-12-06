@@ -1,4 +1,4 @@
-﻿MultiBot.data.iconos = {
+MultiBot.data.iconos = {
 [1] = "Interface\\Icons\\Ability_Ambush",
 [2] = "Interface\\Icons\\Ability_BackStab",
 [3] = "Interface\\Icons\\Ability_BullRush",
