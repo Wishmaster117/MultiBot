@@ -26,6 +26,14 @@ globals = {
 	
 }
 
+read_globals = {
+   math = {
+      fields = {
+         atan2 = {}
+      }
+   }
+}
+
 -- Interdire les tabulations
 no_tab_indent = true
 
