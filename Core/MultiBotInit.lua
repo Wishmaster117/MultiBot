@@ -2940,7 +2940,7 @@ end
 
 -- BOUTON PRINCIPAL "Use Game Object"
 -- Boutons "Use Game Object"
-local btnGob = tQuestMenu.addButton("BotUseGOB", 0, 150, 
+local btnGob = tQuestMenu.addButton("BotUseGOB", 0, 150,
     "Interface\\Icons\\inv_misc_spyglass_01", MultiBot.tips.quests.gobsmaster)
 
 local btnGobName = tQuestMenu.addButton("BotUseGOBName", 31, 150,
