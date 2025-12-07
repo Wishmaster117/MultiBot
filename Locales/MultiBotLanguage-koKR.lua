@@ -1119,6 +1119,18 @@ MultiBot.tips.main.lang.master =
 		.. "|cffff0000아이템 판매를 위해 왼쪽 클릭|r\n"
 		.. "|cff999999(명령 실행: 로봇)|r"
 
+    MultiBot.tips.inventory.sellgrey = "회색 아이템 모두 판매|cffffffff\n"
+            .. "봇은 선택된 상인에게 모든 하급 품질(회색) 아이템을 판매합니다.\n"
+            .. "상인을 선택하고 봇이 범위 내에 있는지 확인하세요.|r\n\n"
+            .. "|cffff0000열린 인벤토리를 가진 봇에게만 적용됩니다.|r\n"
+            .. "|cff999999(실행 순서: 봇)|r"
+    
+    MultiBot.tips.inventory.sellvendor = "판매 가능한 모든 아이템 판매|cffffffff\n"
+            .. "봇은 이 상인에게 판매 가능한 모든 아이템을 판매합니다.\n"
+            .. "보호된 아이템(열쇠, 귀환석 등)은 절대 판매되지 않습니다.|r\n\n"
+            .. "|cffff0000열린 인벤토리를 가진 봇에게만 적용됩니다.|r\n"
+            .. "|cff999999(실행 순서: 봇)|r"
+
 	MultiBot.tips.inventory.equip = "장비 아이템 |cffffffff\n"
 		.. "이 기능은 배낭의 장착 모드를 활성화합니다.|r\n\n"
 		.. "|cffff0000장착한 아이템을 왼쪽 클릭|r\n"

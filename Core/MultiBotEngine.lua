@@ -1462,3 +1462,54 @@ end
 MultiBot.getBot = function(pName)
 	return MultiBot.frames["MultiBar"].frames["Units"].buttons[pName]
 end
+
+-- MULTIBOT:INVENTORY REFRESH --
+-- Rafraîchit l’inventaire du bot actuellement affiché dans la frame Inventory
+-- en rejouant le même flux que le bouton "Inventory" (waitFor = "INVENTORY" + "items").
+MultiBot.RefreshInventory = function(delay)
+	-- Si la frame d’inventaire n’est pas visible ou pas encore initialisée, on ne fait rien
+	if not MultiBot.inventory or not MultiBot.inventory:IsVisible() then
+		return false
+	end
+
+	local botName = MultiBot.inventory.name
+	if not botName or botName == "" then
+		return false
+	end
+
+	-- On retrouve le bouton "Units" correspondant à ce bot
+	local frames   = MultiBot.frames
+	if not frames then return false end
+
+	local multiBar = frames["MultiBar"]
+	if not multiBar or not multiBar.frames or not multiBar.frames["Units"] then
+		return false
+	end
+
+	local units = multiBar.frames["Units"]
+	if not units.buttons or not units.buttons[botName] then
+		return false
+	end
+
+	local function doRefresh()
+		-- Entre le moment où on programme le refresh et l’exécution, il est possible
+		-- que la frame ou le bouton n’existent plus : on recheck.
+		if not units.buttons or not units.buttons[botName] then
+			return
+		end
+
+		-- On relance le flux INVENTORY -> ITEM comme lors de l’ouverture de l’inventaire
+		units.buttons[botName].waitFor = "INVENTORY"
+		SendChatMessage("items", "WHISPER", nil, botName)
+	end
+
+	-- Si on a un délai > 0 et TimerAfter dispo, on planifie le refresh un peu plus tard
+	if type(delay) == "number" and delay > 0 and MultiBot.TimerAfter then
+		MultiBot.TimerAfter(delay, doRefresh)
+	else
+		-- Sinon on rafraîchit immédiatement (comportement d’origine)
+		doRefresh()
+	end
+
+	return true
+end

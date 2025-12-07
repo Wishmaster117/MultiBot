@@ -36,7 +36,7 @@ MultiBot.addItem = function(pFrame, pInfo)
 			return
 		end
 
-		if(tAction == "s" and MultiBot.isTarget()) then
+		--[[if(tAction == "s" and MultiBot.isTarget()) then
 			if(pButton.item.id == "6948") then return SendChatMessage(MultiBot.info.itemsellalert, "SAY") end
 			if(MultiBot.isInside(pButton.item.info or "", "%f[%a][Kk]ey%f[%A]")) then
                 return SendChatMessage(MultiBot.info.keydestroyalert, "SAY")
@@ -44,6 +44,30 @@ MultiBot.addItem = function(pFrame, pInfo)
 			--SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, tName)
 			SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, botName)
 			pButton:Hide()
+			return
+		end]]--
+
+        if(tAction == "s" and MultiBot.isTarget()) then
+			if(pButton.item.id == "6948") then
+				return SendChatMessage(MultiBot.info.itemsellalert, "SAY")
+			end
+
+			if(MultiBot.isInside(pButton.item.info or "", "%f[%a][Kk]ey%f[%A]")) then
+                return SendChatMessage(MultiBot.info.keydestroyalert, "SAY")
+			end
+
+			-- Envoi de la commande "s [item]" au bot dont l’inventaire est ouvert
+			--SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, tName)
+			SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, botName)
+
+			-- On masque l’item cliqué pour un feedback immédiat
+			pButton:Hide()
+
+			-- Puis on relit proprement l’inventaire du bot pour se resynchroniser
+			if MultiBot.RefreshInventory then
+				MultiBot.RefreshInventory(0.3)
+			end
+
 			return
 		end
 

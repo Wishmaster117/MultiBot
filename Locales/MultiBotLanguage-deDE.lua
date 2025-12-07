@@ -1113,6 +1113,18 @@ MultiBot.tips.main.lang.master =
 		.. "|cffff0000Linksklicken um Verkauf zu aktiviern|r\n"
 		.. "|cff999999(Ausführreihenfolge: Bot)|r"
 
+    MultiBot.tips.inventory.sellgrey = "Alles Graue verkaufen|cffffffff\n"
+            .. "Der Bot verkauft alle Gegenstände von minderwertiger Qualität (grau) beim ausgewählten Händler.\n"
+            .. "Stelle sicher, dass du einen Händler ausgewählt hast und der Bot in Reichweite ist.|r\n\n"
+            .. "|cffff0000Betrifft nur den Bot, dessen Inventar geöffnet ist.|r\n"
+            .. "|cff999999(Ausführungsreihenfolge: Bot)|r"
+    
+    MultiBot.tips.inventory.sellvendor = "Alles verkaufen, was verkaufbar ist|cffffffff\n"
+            .. "Der Bot verkauft alle verkaufbaren Gegenstände bei diesem Händler.\n"
+            .. "Geschützte Gegenstände (Schlüssel, Ruhestein usw.) werden niemals verkauft.|r\n\n"
+            .. "|cffff0000Betrifft nur den Bot, dessen Inventar geöffnet ist.|r\n"
+            .. "|cff999999(Ausführungsreihenfolge: Bot)|r"
+
 	MultiBot.tips.inventory.equip = "Items ausrüsten|cffffffff\n"
 		.. "Diese Schaltfläche aktiviert den Ausrüst-Modus des Inventars.|r\n\n"
 		.. "|cffff0000Linksklicken um Ausrüsten zu aktivieren|r\n"

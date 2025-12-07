@@ -3063,7 +3063,45 @@ MultiBot.inventory.addButton("Sell", -94, 806, "inv_misc_coin_16", MultiBot.tips
 	end
 end
 
-MultiBot.inventory.addButton("Equip", -94, 768, "inv_helmet_22", MultiBot.tips.inventory.equip).setDisable()
+-- Bouton vendre tous les objets gris (s *)
+MultiBot.inventory.addButton("SellGrey", -94, 768, "inv_misc_coin_03", MultiBot.tips.inventory.sellgrey)
+.doLeft = function(pButton)
+    if not MultiBot.isTarget() then
+        return
+    end
+		CancelTrade()
+		MultiBot.inventory.action = ""
+		pButton.getButton("Destroy").setDisable()
+		pButton.getButton("Equip").setDisable()
+		pButton.getButton("Trade").setDisable()
+		pButton.getButton("Sell").setDisable()
+		pButton.getButton("Use").setDisable()
+		SendChatMessage("s *", "WHISPER", nil, pButton.getName())
+    if MultiBot.RefreshInventory then
+    	MultiBot.RefreshInventory(0.5)
+    end
+end
+
+-- Bouton vendre tous les objets vendables (s vendor)
+MultiBot.inventory.addButton("SellVendor", -94, 731, "inv_misc_coin_04", MultiBot.tips.inventory.sellvendor)
+.doLeft = function(pButton)
+    if not MultiBot.isTarget() then
+        return
+    end
+        CancelTrade()
+		MultiBot.inventory.action = ""
+		pButton.getButton("Destroy").setDisable()
+		pButton.getButton("Equip").setDisable()
+		pButton.getButton("Trade").setDisable()
+		pButton.getButton("Sell").setDisable()
+		pButton.getButton("Use").setDisable()
+		SendChatMessage("s vendor", "WHISPER", nil, pButton.getName())
+		if MultiBot.RefreshInventory then
+			MultiBot.RefreshInventory()
+		end
+end
+
+MultiBot.inventory.addButton("Equip", -94, 694, "inv_helmet_22", MultiBot.tips.inventory.equip).setDisable()
 .doLeft = function(pButton)
 	if(pButton.state) then
 		MultiBot.inventory.action = ""
@@ -3079,7 +3117,7 @@ MultiBot.inventory.addButton("Equip", -94, 768, "inv_helmet_22", MultiBot.tips.i
 	end
 end
 
-MultiBot.inventory.addButton("Use", -94, 731, "inv_gauntlets_25", MultiBot.tips.inventory.use).setDisable()
+MultiBot.inventory.addButton("Use", -94, 657, "inv_gauntlets_25", MultiBot.tips.inventory.use).setDisable()
 .doLeft = function(pButton)
 	if(pButton.state) then
 		MultiBot.inventory.action = ""
@@ -3095,7 +3133,7 @@ MultiBot.inventory.addButton("Use", -94, 731, "inv_gauntlets_25", MultiBot.tips.
 	end
 end
 
-MultiBot.inventory.addButton("Trade", -94, 694, "achievement_reputation_01", MultiBot.tips.inventory.trade).setDisable()
+MultiBot.inventory.addButton("Trade", -94, 620, "achievement_reputation_01", MultiBot.tips.inventory.trade).setDisable()
 .doLeft = function(pButton)
 	if(pButton.state) then
 		MultiBot.inventory.action = ""
@@ -3112,7 +3150,7 @@ MultiBot.inventory.addButton("Trade", -94, 694, "achievement_reputation_01", Mul
 	end
 end
 
-MultiBot.inventory.addButton("Destroy", -94, 657, "inv_hammer_15", MultiBot.tips.inventory.drop).setDisable()
+MultiBot.inventory.addButton("Destroy", -94, 583, "inv_hammer_15", MultiBot.tips.inventory.drop).setDisable()
 .doLeft = function(pButton)
 	if(pButton.state) then
 		MultiBot.inventory.action = ""

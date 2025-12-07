@@ -1103,6 +1103,18 @@ if GetLocale() == "frFR" then
 		.. "|cffff0000Clic gauche pour vendre un objet|r\n"
 		.. "|cff999999(Ordre d'exécution : Bot)|r"
 
+	MultiBot.tips.inventory.sellgrey = "Vendre tout le gris|cffffffff\n"
+		.. "Le Bot vend tous les objets de qualité médiocre (gris) au marchand ciblé.\n"
+		.. "Assurez-vous de cibler un marchand et que le Bot est à portée.|r\n\n"
+		.. "|cffff0000N'affecte que le Bot dont l'inventaire est ouvert.|r\n"
+		.. "|cff999999(Ordre d'exécution : Bot)|r"
+
+	MultiBot.tips.inventory.sellvendor = "Vendre tout ce qui est vendable|cffffffff\n"
+		.. "Le Bot vend tous les objets vendables à ce marchand.\n"
+		.. "Les objets protégés (Clés, Pierre de foyer, etc.) ne seront jamais vendus.|r\n\n"
+		.. "|cffff0000N'affecte que le Bot dont l'inventaire est ouvert.|r\n"
+		.. "|cff999999(Ordre d'exécution : Bot)|r"
+
 	MultiBot.tips.inventory.equip = "Équiper des Objets|cffffffff\n"
 		.. "Active le mode d'équipement de l'inventaire.|r\n\n"
 		.. "|cffff0000Clic gauche pour équiper un objet|r\n"

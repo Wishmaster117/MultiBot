@@ -1860,6 +1860,18 @@ MultiBot.tips.inventory.sell =
 "|cffff0000Left-Click to sell a Item|r\n"..
 "|cff999999(Execution-Order: Bot)|r";
 
+	MultiBot.tips.inventory.sellgrey = "Sell * (grey items)|cffffffff\n"
+		.. "The Bot sells all poor-quality (grey) items to the selected vendor.\n"
+		.. "Make sure you have the vendor selected and that the Bot is in range.|r\n\n"
+		.. "|cffff0000Only affects the Bot whose inventory is open.|r\n"
+		.. "|cff999999(Executed by: Bot)|r"
+
+	MultiBot.tips.inventory.sellvendor = "Sell vendorable items|cffffffff\n"
+		.. "The Bot sells all items that can safely be sold to the selected vendor.\n"
+		.. "Protected items (keys, Hearthstone, etc.) are never sold.|r\n\n"
+		.. "|cffff0000Only affects the Bot whose inventory is open.|r\n"
+		.. "|cff999999(Executed by: Bot)|r"
+
 MultiBot.tips.inventory.equip =
 "Equip-Items|cffffffff\n"..
 "It enables the Equip-Mode of the Inventory.|r\n\n"..

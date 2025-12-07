@@ -1426,9 +1426,15 @@ MultiBot:SetScript("OnEvent", function()
 	end
 
 	if(event == "TRADE_CLOSED") then
-		if(MultiBot.inventory:IsVisible()) then
+		--[[if(MultiBot.inventory:IsVisible()) then
 			MultiBot.frames["MultiBar"].frames["Units"].buttons[MultiBot.inventory.name].waitFor = "INVENTORY"
 			SendChatMessage("items", "WHISPER", nil, MultiBot.inventory.name)
+			return
+		end
+
+		return]]--
+		if MultiBot.inventory and MultiBot.inventory:IsVisible() and MultiBot.RefreshInventory then
+			MultiBot.RefreshInventory()
 			return
 		end
 

@@ -1112,6 +1112,18 @@ MultiBot.tips.main.lang.master =
 		.. "|cffff0000Clic izquierdo para vender un objeto|r\n"
 		.. "|cff999999(Orden de ejecución: Bot)|r"
 
+    MultiBot.tips.inventory.sellgrey = "Vender todo lo gris|cffffffff\n"
+            .. "El Bot vende todos los objetos de calidad mediocre (gris) al comerciante seleccionado.\n"
+            .. "Asegúrate de seleccionar un comerciante y que el Bot esté a rango.|r\n\n"
+            .. "|cffff0000Solo afecta al Bot cuyo inventario está abierto.|r\n"
+            .. "|cff999999(Orden de ejecución: Bot)|r"
+    
+    MultiBot.tips.inventory.sellvendor = "Vender todo lo que sea vendible|cffffffff\n"
+            .. "El Bot vende todos los objetos vendibles a este comerciante.\n"
+            .. "Los objetos protegidos (Llaves, Piedra de hogar, etc.) nunca serán vendidos.|r\n\n"
+            .. "|cffff0000Solo afecta al Bot cuyo inventario está abierto.|r\n"
+            .. "|cff999999(Orden de ejecución: Bot)|r"
+
 	MultiBot.tips.inventory.equip = "Equipar Objetos|cffffffff\n"
 		.. "Activa el modo de equipamiento del inventario.|r\n\n"
 		.. "|cffff0000Clic izquierdo para equipar un objeto|r\n"
