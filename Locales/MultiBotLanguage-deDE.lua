@@ -1118,7 +1118,7 @@ MultiBot.tips.main.lang.master =
             .. "Stelle sicher, dass du einen Händler ausgewählt hast und der Bot in Reichweite ist.|r\n\n"
             .. "|cffff0000Betrifft nur den Bot, dessen Inventar geöffnet ist.|r\n"
             .. "|cff999999(Ausführungsreihenfolge: Bot)|r"
-    
+
     MultiBot.tips.inventory.sellvendor = "Alles verkaufen, was verkaufbar ist|cffffffff\n"
             .. "Der Bot verkauft alle verkaufbaren Gegenstände bei diesem Händler.\n"
             .. "Geschützte Gegenstände (Schlüssel, Ruhestein usw.) werden niemals verkauft.|r\n\n"
