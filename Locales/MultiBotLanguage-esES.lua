@@ -1117,7 +1117,7 @@ MultiBot.tips.main.lang.master =
             .. "Asegúrate de seleccionar un comerciante y que el Bot esté a rango.|r\n\n"
             .. "|cffff0000Solo afecta al Bot cuyo inventario está abierto.|r\n"
             .. "|cff999999(Orden de ejecución: Bot)|r"
-    
+
     MultiBot.tips.inventory.sellvendor = "Vender todo lo que sea vendible|cffffffff\n"
             .. "El Bot vende todos los objetos vendibles a este comerciante.\n"
             .. "Los objetos protegidos (Llaves, Piedra de hogar, etc.) nunca serán vendidos.|r\n\n"

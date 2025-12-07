@@ -1103,7 +1103,7 @@ if GetLocale() == "zhCN" then
             .. "请确保已选定商人并且机器人在范围内。|r\n\n"
             .. "|cffff0000仅影响当前打开背包的机器人。|r\n"
             .. "|cff999999(执行顺序：机器人)|r"
-    
+
     MultiBot.tips.inventory.sellvendor = "出售所有可出售的物品|cffffffff\n"
             .. "机器人会将所有可出售的物品卖给该商人。\n"
             .. "受保护的物品（钥匙、炉石等）永远不会被出售。|r\n\n"

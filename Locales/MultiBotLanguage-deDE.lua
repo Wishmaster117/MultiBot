@@ -1018,12 +1018,12 @@ MultiBot.tips.main.lang.master =
 		.. "|cffff0000Linksklick, um das Untermenü zu öffnen|r\n"
 		.. "|cff999999(Ausführungsreihenfolge: Schlachtzug, Gruppe, Bot)|r"
 
-	MultiBot.tips.quests.incompleted = "Unvollständige Quests\n|cffffffff"
+    MultiBot.tips.quests.incompleted = "Unvollständige Quests\n|cffffffff"
 		.. "Mit diesem Button kannst du einen Bot oder alle Bots nach der Liste der unvollständigen Quests fragen.\n\n"
 		.. "|cffff0000Linksklick, um das Untermenü zu öffnen|r\n"
 		.. "|cff999999(Ausführungsreihenfolge: Schlachtzug, Gruppe, Bot)|r"
 
-	MultiBot.tips.quests.allcompleted = "Alle Quests\n|cffffffff"
+    MultiBot.tips.quests.allcompleted = "Alle Quests\n|cffffffff"
 		.. "Mit diesem Button kannst du einen Bot oder alle Bots nach der Liste aller Quests fragen.\n\n"
 		.. "|cffff0000Linksklick, um das Untermenü zu öffnen|r\n"
 		.. "|cff999999(Ausführungsreihenfolge: Schlachtzug, Gruppe, Bot)|r"

@@ -1124,7 +1124,7 @@ MultiBot.tips.main.lang.master =
             .. "상인을 선택하고 봇이 범위 내에 있는지 확인하세요.|r\n\n"
             .. "|cffff0000열린 인벤토리를 가진 봇에게만 적용됩니다.|r\n"
             .. "|cff999999(실행 순서: 봇)|r"
-    
+
     MultiBot.tips.inventory.sellvendor = "판매 가능한 모든 아이템 판매|cffffffff\n"
             .. "봇은 이 상인에게 판매 가능한 모든 아이템을 판매합니다.\n"
             .. "보호된 아이템(열쇠, 귀환석 등)은 절대 판매되지 않습니다.|r\n\n"
