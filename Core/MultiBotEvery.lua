@@ -87,7 +87,7 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
           function(b)
             local name = b.getName()
             if name then
-              SendChatMessage("pvp", "WHISPER", nil, name)
+              SendChatMessage("pvp stats", "WHISPER", nil, name)
             end
             -- Affiche la frame PvP custom si disponible
             if MultiBotPVPFrame and MultiBotPVPFrame.Show then
