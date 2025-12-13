@@ -315,5 +315,5 @@ Screens:
 
 # Comming soon
 Share your ideas
-
+Make a user-friendly interface for quick exchange of items between a human and a Playersbots.
 # Currently not supported
