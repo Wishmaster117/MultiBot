@@ -1228,7 +1228,10 @@ TimerAfter(0.05, function()
                  and MultiBot.frames.MultiBar.buttons.Units
 
   if unitsBtn and tControl and tControl.buttons and tControl.buttons.Roster then
-    MultiBot.Select(tControl, "Roster")
+    --MultiBot.Select(tControl, "Roster")
+    local rosterBtn = tControl.buttons.Roster
+    local tex = (rosterBtn and rosterBtn.texture) or "Interface\\AddOns\\MultiBot\\Icons\\roster_players.blp"
+    MultiBot.Select(tControl, "Roster", tex)
     unitsBtn.doLeft(unitsBtn, "players")
   end
 end)
