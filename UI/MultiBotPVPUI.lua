@@ -262,21 +262,10 @@ loader:SetScript("OnEvent", function(self, event, ...)
             return a, b
         end
 
-        -- Extrait un rating quel que soit le mot localisé: "(rating 1234)" "(cote 1234)" "(Wertung 1234)" "(评分 1234)" "(평점 1234)" etc.
+        -- Extrait un rating quel que soit le mot localisé:
+        -- "(rating 1234)" "(cote 1234)" "(Wertung 1234)" "(评分 1234)" "(평점 1234)" etc.
         local function ExtractTeamRating(line)
             return line:match("%(%s*[^%d]*(%d+)%s*%)")
-        end
-
-        local function Trim(s)
-            if not s then return s end
-            return (s:gsub("^%s+", ""):gsub("%s+$", ""))
-        end
-
-        -- Rating extractor: supports EN/FR formats like "(rating 1234)" / "(cote 1234)" / "(côte 1234)"
-        local function ExtractTeamRating(line)
-            return line:match("%(%s*[Rr]ating%s*(%d+)%s*%)")
-                or line:match("%(%s*[Cc]ote%s*(%d+)%s*%)")
-                or line:match("%(%s*[Cc]ôte%s*(%d+)%s*%)")
         end
 
         -- Update header with sender name (strip realm if present)
