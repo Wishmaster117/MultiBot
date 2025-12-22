@@ -234,6 +234,51 @@ loader:SetScript("OnEvent", function(self, event, ...)
         local msg, sender = ...
         if not MultiBotPVPFrame then return end
 
+        if type(msg) ~= "string" then
+            return
+        end
+
+        -- Ne traiter que les réponses PvP du module playerbots
+        if not msg:find("%[PVP%]") then
+            return
+        end
+
+        local function PrefixFromTemplate(s)
+            if type(s) ~= "string" then return "" end
+            -- Ex: "Equipe: Pas d'équipe" -> "Equipe: "
+            -- Ex: "Team: No team"       -> "Team: "
+            local p = s:match("^(.-:%s*)")
+            return p or ""
+        end
+
+        local TEAM_PREFIX  = PrefixFromTemplate(MultiBot.tips.every.pvparenanoteam)
+        local RANK_PREFIX  = PrefixFromTemplate(MultiBot.tips.every.pvparenanoteamrank)
+
+        local function ExtractFirstTwoNumbers(line)
+            local a, b
+            for n in line:gmatch("(%d+)") do
+                if not a then a = n else b = n; break end
+            end
+            return a, b
+        end
+
+        -- Extrait un rating quel que soit le mot localisé: "(rating 1234)" "(cote 1234)" "(Wertung 1234)" "(评分 1234)" "(평점 1234)" etc.
+        local function ExtractTeamRating(line)
+            return line:match("%(%s*[^%d]*(%d+)%s*%)")
+        end
+
+        local function Trim(s)
+            if not s then return s end
+            return (s:gsub("^%s+", ""):gsub("%s+$", ""))
+        end
+
+        -- Rating extractor: supports EN/FR formats like "(rating 1234)" / "(cote 1234)" / "(côte 1234)"
+        local function ExtractTeamRating(line)
+            return line:match("%(%s*[Rr]ating%s*(%d+)%s*%)")
+                or line:match("%(%s*[Cc]ote%s*(%d+)%s*%)")
+                or line:match("%(%s*[Cc]ôte%s*(%d+)%s*%)")
+        end
+
         -- Update header with sender name (strip realm if present)
         if sender and MultiBotPVPFrame._customHeader then
             local simpleName = sender:match("([^%-]+)") or sender
@@ -241,76 +286,58 @@ loader:SetScript("OnEvent", function(self, event, ...)
             MultiBotPVPFrame._customHeader:SetText(MultiBot.tips.every.pvparenadata .. simpleName)
         end
 
-        -- Parse Honor Points (both languages)
-        local honor = msg:match("Honor Points:%s*(%d+)") or msg:match("Honor:%s*(%d+)") or msg:match("Honneur:%s*(%d+)")
-        if honor and MultiBotPVPFrame._honorTotal then
-            MultiBotPVPFrame._honorTotal:SetText(honor)
+        -- 1) Ligne currency: toujours un "|" et 2 nombres dans l'ordre (arena_points puis honor_points) pour toutes les locales
+        if msg:find("|", 1, true) then
+            local arenaPoints, honorPoints = ExtractFirstTwoNumbers(msg)
+            if arenaPoints and MultiBotPVPFrame._arena and MultiBotPVPFrame._arena.pointsValue then
+                MultiBotPVPFrame._arena.pointsValue:SetText(arenaPoints)
+            end
+            if honorPoints and MultiBotPVPFrame._honorTotal then
+                MultiBotPVPFrame._honorTotal:SetText(honorPoints)
+            end
+            return
         end
 
-        -- Parse Arena points (English or localized variants)
-        local arenaPoints = msg:match("Arena points:%s*(%d+)") or
-            msg:match("Arena points%s*[:]%s*(%d+)") or
-            msg:match("Points d'Arène:%s*(%d+)")
-        if arenaPoints and MultiBotPVPFrame._arena then
-            MultiBotPVPFrame._arena.pointsValue:SetText(arenaPoints)
-        end
+        -- 2) Message "no arena team" (EN + 8 locales de ta DB)
+        local lower = msg:lower()
+        local noTeamMsg =
+            (lower:find("i have no arena team", 1, true) ~= nil) or
+            (lower:find("no arena team", 1, true) ~= nil) or
+            (msg:find("투기장 팀이 없습니다", 1, true) ~= nil) or
+            (msg:find("Je n'ai aucune équipe d'arène", 1, true) ~= nil) or
+            (msg:find("Ich habe kein Arenateam", 1, true) ~= nil) or
+            (msg:find("我没有竞技场战队", 1, true) ~= nil) or
+            (msg:find("我沒有競技場隊伍", 1, true) ~= nil) or
+            (msg:find("No tengo equipo de arena", 1, true) ~= nil) or
+            (msg:find("У меня нет команды арены", 1, true) ~= nil)
 
-        -- Detect explicit "no team" messages (English/French)
-        local noTeamMsg = msg:lower():find("no[%s_-]*team") or
-            msg:lower():find("i have no arena team") or
-            msg:lower():find("pas d'?équipe") or
-            msg:lower():find("pas d'?équipe d'arène")
         if noTeamMsg then
-            -- Set all modes to No team / rating 0
-            for _, mode in ipairs({"2v2","3v3","5v5"}) do
-                local row = MultiBotPVPFrame._arenaRows[mode]
+            for _, mode in ipairs({ "2v2", "3v3", "5v5" }) do
+                local row = MultiBotPVPFrame._arenaRows and MultiBotPVPFrame._arenaRows[mode]
                 if row then
-                    row.mode:SetText("Mode: " .. mode)
-                    row.team:SetText("Equipe: No team")
-                    row.rating:SetText("Cote équipe: 0")
+                    row.mode:SetText(MultiBot.tips.every.pvparenamode .. mode)
+                    row.team:SetText(MultiBot.tips.every.pvparenanoteam)
+                    row.rating:SetText(MultiBot.tips.every.pvparenanoteamrank)
                 end
             end
             return
         end
 
-        -- Otherwise parse per-mode lines and update matching rows
-        for _, modePattern in ipairs({ "2v2", "3v3", "5v5" }) do
-            -- try strict pattern: mode followed by colon and <Team> and (rating N)
-            local pattern1 = modePattern ..
-                "%s*[:]?%s*<([^>]+)>%s*%(%s*rating%s*(%d+)%s*%)"
-            local team1, rating1 = msg:match(pattern1)
-            if team1 then
-                local row = MultiBotPVPFrame._arenaRows[modePattern]
-                if row then
-                    row.mode:SetText("Mode: " .. modePattern)
-                    row.team:SetText("Equipe: " .. team1)
-                    row.rating:SetText("Cote équipe: " .. rating1)
-                end
-            else
-                -- looser pattern: mode then team (with or without <>), then rating
-                local pattern2 = modePattern .. "[:%s]*<?([^>%(]+)>?%s*%(%s*rating%s*(%d+)%s*%)"
-                local team2, rating2 = msg:match(pattern2)
-                if team2 then
-                    local row = MultiBotPVPFrame._arenaRows[modePattern]
-                    if row then
-                        row.mode:SetText("Mode: " .. modePattern)
-                        row.team:SetText("Equipe: " .. team2)
-                        row.rating:SetText("Cote équipe: " .. rating2)
-                    end
-                else
-                    -- fallback: if message contains modePattern and a <Team> somewhere, use them
-                    if msg:match(modePattern) then
-                        local team3 = msg:match("<([^>]+)>")
-                        local rating3 = msg:match("rating%s*(%d+)")
-                        if team3 and MultiBotPVPFrame._arenaRows[modePattern] then
-                            local row = MultiBotPVPFrame._arenaRows[modePattern]
-                            row.mode:SetText("Mode: " .. modePattern)
-                            row.team:SetText("Equipe: " .. team3)
-                            if rating3 then row.rating:SetText("Cote équipe: " .. rating3) end
-                        end
-                    end
-                end
+        -- 3) Lignes par bracket: "[PVP] 5v5 : <TeamName> (motLocalisé 1047)"
+        local mode = msg:match("([235]v[235])")
+        if mode and MultiBotPVPFrame._arenaRows and MultiBotPVPFrame._arenaRows[mode] then
+            local team = msg:match("<([^>]+)>")
+            local rating = ExtractTeamRating(msg)
+
+            local row = MultiBotPVPFrame._arenaRows[mode]
+            row.mode:SetText(MultiBot.tips.every.pvparenamode .. mode)
+            if team then
+                row.team:SetText(TEAM_PREFIX .. team)
             end
+            if rating then
+                row.rating:SetText(RANK_PREFIX .. rating)
+            end
+            return
         end
     end
 end)
