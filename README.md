@@ -12,7 +12,7 @@ Start World of Warcraft and enter "/multibot" or "/mbot" or "/mb" in the chat, o
 
 ## ⚠️ Notice — About This Fork
 
-This is a **temporary fork** of the original [MultiBot addon by Macx-Lio](https://github.com/Macx-Lio/MultiBot).
+This is a fork of the original [MultiBot addon by Macx-Lio](https://github.com/Macx-Lio/MultiBot).
 
 The reason for this fork is that I submitted several pull requests to the original repository, but since the creator, **Macx-Lio**, is currently unavailable, those changes could not be merged.
 
