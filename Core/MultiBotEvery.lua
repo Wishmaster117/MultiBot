@@ -62,8 +62,8 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
             end--]]
             local tex = b.icon
             if tex then
-              tex:SetTexture(STAR_TEX)
-              local isFav = MultiBot.IsFavorite(name)
+              tex:SetTexture(MultiBot.SafeTexturePath(STAR_TEX))
+			  local isFav = MultiBot.IsFavorite(name)
               -- Griser l’étoile quand favori, sinon couleur normale
               if tex.SetDesaturated then tex:SetDesaturated(isFav) end
               if tex.SetVertexColor then
@@ -101,7 +101,7 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
         end--]]
         local tex = favBtn.icon
         if tex then
-          tex:SetTexture(STAR_TEX)
+          tex:SetTexture(MultiBot.SafeTexturePath(STAR_TEX))
           local isFav = (name and MultiBot.IsFavorite and MultiBot.IsFavorite(name)) and true or false
           -- Appliquer l’état visuel au chargement
           if tex.SetDesaturated then tex:SetDesaturated(isFav) end

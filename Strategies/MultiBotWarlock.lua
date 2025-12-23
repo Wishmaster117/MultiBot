@@ -138,14 +138,14 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 			local icon = nil
 			for _,v in ipairs(stoneList) do if v[1]==active then icon=v[3]; break end end
 			if icon and btnStones.icon and btnStones.icon.SetTexture then
-				btnStones.icon:SetTexture("Interface\\Icons\\"..icon)
+				btnStones.icon:SetTexture(MultiBot.SafeTexturePath(icon))
 			elseif icon and btnStones.setIcon then
 				btnStones.setIcon(icon)
 			end
 			_MB_setDesat(btnStones, false)
 		else
 			if btnStones.icon and btnStones.icon.SetTexture then
-				btnStones.icon:SetTexture("Interface\\Icons\\"..btnStones._defaultIcon)
+				btnStones.icon:SetTexture(MultiBot.SafeTexturePath(btnStones._defaultIcon))
 			elseif btnStones.setIcon then
 				btnStones.setIcon(btnStones._defaultIcon)
 			end
@@ -212,14 +212,14 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 		if active and ssButtons[active] then
 			local icon=nil; for _,v in ipairs(ssList) do if v[1]==active then icon=v[3]; break end end
 			if icon and btnSoulstones.icon and btnSoulstones.icon.SetTexture then
-				btnSoulstones.icon:SetTexture("Interface\\Icons\\"..icon)
+				btnSoulstones.icon:SetTexture(MultiBot.SafeTexturePath(icon))
 			elseif icon and btnSoulstones.setIcon then
 				btnSoulstones.setIcon(icon)
 			end
 			_MB_setDesat(btnSoulstones, false)
 		else
 			if btnSoulstones.icon and btnSoulstones.icon.SetTexture then
-				btnSoulstones.icon:SetTexture("Interface\\Icons\\"..btnSoulstones._defaultIcon)
+				btnSoulstones.icon:SetTexture(MultiBot.SafeTexturePath(btnSoulstones._defaultIcon))
 			elseif btnSoulstones.setIcon then
 				btnSoulstones.setIcon(btnSoulstones._defaultIcon)
 			end
@@ -298,14 +298,14 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
         local icon=nil
         for _,v in ipairs(petList) do if v[1]==active then icon=v[3]; break end end
         if icon and btnPets.icon and btnPets.icon.SetTexture then
-          btnPets.icon:SetTexture("Interface\\Icons\\"..icon)
+          btnPets.icon:SetTexture(MultiBot.SafeTexturePath(icon))
         elseif icon and btnPets.setIcon then
           btnPets.setIcon(icon)
         end
         _MB_setDesat(btnPets, false)
       else
         if btnPets.icon and btnPets.icon.SetTexture then
-          btnPets.icon:SetTexture("Interface\\Icons\\"..btnPets._defaultIcon)
+          btnPets.icon:SetTexture(MultiBot.SafeTexturePath(btnPets._defaultIcon))
         elseif btnPets.setIcon then
           btnPets.setIcon(btnPets._defaultIcon)
         end
@@ -462,14 +462,14 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
        local icon=nil
        for _,v in ipairs(curseList) do if v[1]==active then icon=v[3]; break end end
        if icon and btnCurses.icon and btnCurses.icon.SetTexture then
-         btnCurses.icon:SetTexture("Interface\\Icons\\"..icon)
+         btnCurses.icon:SetTexture(MultiBot.SafeTexturePath(icon))
        elseif icon and btnCurses.setIcon then
          btnCurses.setIcon(icon)
        end
        _MB_setDesat(btnCurses, false)
      else
        if btnCurses.icon and btnCurses.icon.SetTexture then
-         btnCurses.icon:SetTexture("Interface\\Icons\\"..btnCurses._defaultIcon)
+         btnCurses.icon:SetTexture(MultiBot.SafeTexturePath(btnCurses._defaultIcon))
        elseif btnCurses.setIcon then
          btnCurses.setIcon(btnCurses._defaultIcon)
        end

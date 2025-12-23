@@ -4638,7 +4638,7 @@ function MultiBot.FillDefaultGlyphs()
             if rFrame then
                 rFrame:Hide()
                 local runeTex = rFrame.texture or rFrame
-                runeTex:SetTexture("Interface\\Spellbook\\UI-Glyph-Rune"..runeIdx)
+                runeTex:SetTexture(MultiBot.SafeTexturePath("Interface\\Spellbook\\UI-Glyph-Rune"..runeIdx))
             end
 
             -- 3) Icon + Tooltip
@@ -4672,7 +4672,7 @@ function MultiBot.FillDefaultGlyphs()
 
             -- Update icon
             btn.glyphID = id
-            btn.icon:SetTexture(tex)
+            btn.icon:SetTexture(MultiBot.SafeTexturePath(tex))
             btn:Show()
 
             -- Overlay circle
@@ -5365,12 +5365,12 @@ end
     local runeIdx = info and select(2, strsplit(",%s*", info)) or "1"
     local r = socket.frames.Rune
     if r then
-        (r.texture or r):SetTexture("Interface/Spellbook/UI-Glyph-Rune-"..runeIdx)
+        (r.texture or r):SetTexture(MultiBot.SafeTexturePath("Interface\\Spellbook\\UI-Glyph-Rune-"..runeIdx))
         r:Show()
     end
     -- local tex = select(10, GetItemInfo(itemID)) or GetSpellTexture(itemID) or "Interface\\Icons\\INV_Misc_QuestionMark"
 	local tex = select(10, GetItemInfo(itemID)) or GetSpellTexture(itemID) or "Interface\\AddOns\\MultiBot\\Textures\\UI-GlyphFrame-Glow.blp"
-    self.icon:SetTexture(tex)
+    self.icon:SetTexture(MultiBot.SafeTexturePath(tex))
     self.glyphID = itemID
     socket.item = itemID
     ClearCursor()
@@ -5451,7 +5451,7 @@ function MultiBot.talent.showCustomGlyphs()
                 local texSlot = (s.type == "Minor") and
                                  "Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp" or
                                  "Interface\\Spellbook\\UI-Glyph-Slot-Major.blp"
-                btn.bg:SetTexture(texSlot)
+                btn.bg:SetTexture(MultiBot.SafeTexturePath(texSlot))
                 local ic = btn:CreateTexture(nil, "ARTWORK")
                 ic:SetPoint("CENTER", btn, "CENTER", -9, 8)
                 ic:SetSize(s:GetWidth()*0.66, s:GetHeight()*0.66)
@@ -5466,7 +5466,7 @@ function MultiBot.talent.showCustomGlyphs()
 				local texSlot = (s.type == "Minor") and
 								"Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp" or
 								"Interface\\Spellbook\\UI-Glyph-Slot-Major.blp"
-				btn.bg:SetTexture(texSlot)
+				btn.bg:SetTexture(MultiBot.SafeTexturePath(texSlot))
 			end
 
             btn.bg:Show()
@@ -6549,8 +6549,9 @@ if not MultiBot.InitShamanQuick then
       -- 3) Dernier repli : region texture stockée par le wrapper (btn.icon ou btn.texture)
       local tex = btn.icon or btn.texture
       if tex and tex.SetTexture then
-        tex:SetTexture(iconPath)
-        btn._mb_iconPath = iconPath
+        local safePath = MultiBot.SafeTexturePath(iconPath)
+        tex:SetTexture(safePath)
+        btn._mb_iconPath = safePath
         return
       end
     end

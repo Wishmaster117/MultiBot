@@ -222,6 +222,30 @@ MultiBot.isUnit = function(pUnit)
 	return true
 end
 
+-- Safe texture resolver to avoid calling string.sub on nil and to normalize paths
+-- Returns a usable texture path string. Falls back to the question mark icon.
+MultiBot.SafeTexturePath = function(pTexture)
+	-- Guard: nil or non-string => fallback
+	if type(pTexture) ~= "string" or pTexture == "" then
+		return "Interface\\Icons\\INV_Misc_QuestionMark"
+	end
+	-- Si l’appelant fournit déjà un chemin (avec / ou \), on le considère explicite
+	-- et on le renvoie tel quel, après normalisation vers "\"
+    local tex = pTexture:gsub("/", "\\")
+	if tex:find("\\", 1, true) then
+		return tex
+	end
+	-- Normalize: only prefix when not already an Interface path
+	local head = string.sub(tex, 1, 9)
+	local needsPrefix = string.lower(head) ~= "interface"
+	if needsPrefix then
+        return "Interface\\Icons\\" .. tex
+	end
+    return tex
+end
+
+
+
 --[[MultiBot.toClass = function(pClass)
 	local pLower = string.lower(pClass)
 	local pStart = string.sub(pLower, 1, 5)
@@ -693,7 +717,7 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
 	frame.addTexture = function(pTexture)
 		if(frame.texture ~= nil) then frame.texture:Hide() end
 		frame.texture = frame:CreateTexture(nil, "BACKGROUND")
-		frame.texture:SetTexture(MultiBot.IF(string.sub(pTexture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. pTexture)
+		frame.texture:SetTexture(MultiBot.SafeTexturePath(pTexture))
 		frame.texture:SetAllPoints(frame)
 		frame.texture:Show()
 		return frame.texture
@@ -791,7 +815,7 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
 	end
 
 	frame.setTexture = function(pTexture)
-		frame.texture:SetTexture(MultiBot.IF(string.sub(pTexture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. pTexture)
+		frame.texture:SetTexture(MultiBot.SafeTexturePath(pTexture))
 		frame.texture:SetAllPoints(frame)
 		frame.texture:Show()
 		return frame
@@ -880,7 +904,7 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 	button:Show()
 
 	button.icon = button:CreateTexture(nil, "BACKGROUND")
-	button.icon:SetTexture(MultiBot.IF(string.sub(pTexture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. pTexture)
+	button.icon:SetTexture(MultiBot.SafeTexturePath(pTexture))
 	button.icon:SetAllPoints(button)
 	button.icon:Show()
 
@@ -896,7 +920,8 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 	button:SetPushedTexture("Interface/Buttons/UI-Quickslot-Depress")
 	button:SetNormalTexture("")
 
-	button.texture = pTexture
+	--button.texture = pTexture
+    button.texture = MultiBot.SafeTexturePath(pTexture)
 	button.parent = pParent
 	button.size = pSize
 	button.tip = pTip
@@ -913,10 +938,6 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 
 	-- SET --
 
-	--[[button.setPoint = function(pX, pY)
-		button:SetPoint("BOTTOMRIGHT", pX, pY)
-		button.x = pX
-		button.y = pY]]--
     button.setPoint = function(x, y)
         button:SetPoint("BOTTOMRIGHT", x, y)
         button.x = x
@@ -924,30 +945,23 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 		return button
 	end
 
-	--button.setButton = function(pTexture, pTip)
-		--button.icon:SetTexture(MultiBot.IF(string.sub(pTexture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. pTexture)
     button.setButton = function(texture, tip)
-        button.icon:SetTexture(MultiBot.IF(string.sub(texture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. texture)
+        local safe = MultiBot.SafeTexturePath(texture)
+        button.icon:SetTexture(safe)
 		button.icon:SetAllPoints(button)
-		--button.texture = pTexture
-		--button.tip = pTip
-        button.texture = texture
+        button.texture = safe
         button.tip = tip
 		return button
 	end
 
-	--button.setTexture = function(pTexture)
-		--button.icon:SetTexture(MultiBot.IF(string.sub(pTexture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. pTexture)
     button.setTexture = function(texture)
-        button.icon:SetTexture(MultiBot.IF(string.sub(texture, 1, 9) ~= "Interface", "Interface/Icons/", "") .. texture)
+        local safe = MultiBot.SafeTexturePath(texture)
+        button.icon:SetTexture(safe)
 		button.icon:SetAllPoints(button)
-		--button.texture = pTexture
-		button.texture = texture
+        button.texture = safe
 		return button
 	end
 
-	--button.setHighlight = function(pTexture)
-		--button:SetHighlightTexture(pTexture, "ADD")
     button.setHighlight = function(texture)
         button:SetHighlightTexture(texture, "ADD")
 		return button
@@ -1348,7 +1362,7 @@ MultiBot.addPlayer = function(pClass, pName)
   if not btn then
     btn = units.addButton(pName, 0, 0, tTexture, MultiBot.toTip(tClass, nil, pName))
   else
-    if btn.icon and tTexture then btn.icon:SetTexture(tTexture) end
+    if btn.icon and tTexture then btn.icon:SetTexture(MultiBot.SafeTexturePath(tTexture)) end
   end
   -- Assurer la présence dans les index (sans doublons)
   MultiBot.index.classes.players[tClass] = MultiBot.index.classes.players[tClass] or {}
