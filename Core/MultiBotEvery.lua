@@ -63,6 +63,7 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
             local tex = b.icon
             if tex then
               tex:SetTexture(MultiBot.SafeTexturePath(STAR_TEX))
+			  local isFav = MultiBot.IsFavorite(name)
               -- Griser l’étoile quand favori, sinon couleur normale
               if tex.SetDesaturated then tex:SetDesaturated(isFav) end
               if tex.SetVertexColor then
