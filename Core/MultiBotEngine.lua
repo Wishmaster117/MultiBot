@@ -202,11 +202,11 @@ end
 MultiBot.SafeTexturePath = function(pTexture)
 	-- Guard: nil or non-string => fallback
 	if type(pTexture) ~= "string" or pTexture == "" then
-		return "Interface\\Icons\\INV_Misc_QuestionMark"
+		return "Interface/Icons/INV_Misc_QuestionMark"
 	end
 	-- Normalize: only prefix when not already an Interface path
-	local head = string.sub(pTexture, 1, 9)
-	local needsPrefix = not (head == "Interface" or head == "INTERFACE")
+    local head = string.sub(pTexture, 1, 9)
+    local needsPrefix = string.lower(head) ~= "interface"
 	if needsPrefix then
 		return "Interface/Icons/" .. pTexture
 	end
