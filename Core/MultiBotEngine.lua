@@ -603,6 +603,7 @@ MultiBot.SelectToTarget = function(pParent, pIndex, pTexture, pAction, oTarget)
 		local tButton = pParent.buttons[pIndex]
 		tButton.setTexture(pTexture)
 		tFrame:Hide()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(tFrame) end
 		return true
 	end
 
@@ -615,6 +616,7 @@ MultiBot.SelectToTargetButton = function(pParent, pIndex, pTexture, pAction, oTa
 	tButton.doLeft = function(pButton) MultiBot.ActionToTarget(pAction, oTarget) end
 	tButton.setTexture(pTexture)
 	tFrame:Hide()
+	if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(tFrame) end
 	return true
 end
 
@@ -624,6 +626,7 @@ MultiBot.SelectToGroupButtonWithTarget = function(pParent, pIndex, pTexture, pAc
 	tButton.doLeft = function(pButton) if(MultiBot.isTarget()) then MultiBot.ActionToGroup(pAction) end end
 	tButton.setTexture(pTexture)
 	tFrame:Hide()
+	if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(tFrame) end
 	return true
 end
 
@@ -633,6 +636,7 @@ MultiBot.SelectToGroupButton = function(pParent, pIndex, pTexture, pAction)
 	tButton.doLeft = function(pButton) MultiBot.ActionToGroup(pAction) end
 	tButton.setTexture(pTexture)
 	tFrame:Hide()
+	if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(tFrame) end
 	return true
 end
 
@@ -642,6 +646,7 @@ MultiBot.SelectToGroup = function(pParent, pIndex, pTexture, pAction)
 		local tButton = pParent.buttons[pIndex]
 		tButton.setTexture(pTexture)
 		tFrame:Hide()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(tFrame) end
 		return true
 	end
 
@@ -653,16 +658,19 @@ MultiBot.Select = function(pParent, pIndex, pTexture)
 	local tButton = pParent.buttons[pIndex]
 	tButton.setTexture(pTexture)
 	tFrame:Hide()
+	if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(tFrame) end
 	return true
 end
 
 MultiBot.ShowHideSwitch = function(pFrame)
 	if(pFrame:IsVisible()) then
 		pFrame:Hide()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(pFrame) end
 		return false
 	end
 
 	pFrame:Show()
+	if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(pFrame) end
 	return true
 end
 
@@ -686,6 +694,114 @@ MultiBot.OnOffSwitch = function(pButton)
 
 	pButton.setEnable()
 	return true
+end
+
+-- CLICK BLOCKER --
+-- Fond invisible placé sous les barres de boutons (et leurs zones extensibles) afin
+-- d'empêcher les clics de "traverser" l'UI dans les espaces entre boutons.
+
+MultiBot._clickBlockerQueue = MultiBot._clickBlockerQueue or {}
+
+local function _mbQueueClickBlockerUpdate(f)
+	if(not f or not f.clickBlocker) then return end
+	MultiBot._clickBlockerQueue[f] = true
+
+	if(not MultiBot._clickBlockerTicker) then
+		MultiBot._clickBlockerTicker = CreateFrame("Frame", nil, UIParent)
+		MultiBot._clickBlockerTicker.running = false
+	end
+
+	local t = MultiBot._clickBlockerTicker
+	if(t.running) then return end
+
+	t.running = true
+	t:SetScript("OnUpdate", function(self)
+		self:SetScript("OnUpdate", nil)
+		self.running = false
+
+		local queue = MultiBot._clickBlockerQueue
+		MultiBot._clickBlockerQueue = {}
+		for frame in pairs(queue) do
+			if(MultiBot.UpdateClickBlocker) then
+				MultiBot.UpdateClickBlocker(frame)
+			end
+		end
+	end)
+end
+
+-- Demande une mise à jour pour le frame et tous ses parents MultiBot.newFrame (cascade).
+function MultiBot.RequestClickBlockerUpdate(frame)
+	local f = frame
+	while(f) do
+		_mbQueueClickBlockerUpdate(f)
+		f = f.parent
+	end
+end
+
+-- Recalcule la zone à bloquer à partir des coordonnées réelles (écran) de tous les boutons visibles.
+function MultiBot.UpdateClickBlocker(frame)
+	local cb = frame and frame.clickBlocker
+	if(not cb) then return end
+
+	if(not frame:IsShown()) then
+		cb:Hide()
+		return
+	end
+
+	local brx, bry = frame:GetRight(), frame:GetBottom()
+	if(not brx or not bry) then
+		cb:Hide()
+		return
+	end
+
+	local minL, maxR, minB, maxT
+
+	local function consider(l, r, b, t)
+		if(not l or not r or not b or not t) then return end
+		if(not minL or l < minL) then minL = l end
+		if(not maxR or r > maxR) then maxR = r end
+		if(not minB or b < minB) then minB = b end
+		if(not maxT or t > maxT) then maxT = t end
+	end
+
+	local function scan(f)
+		if(not f or not f.IsShown or not f:IsShown()) then return end
+
+		if(f.buttons) then
+			for _, b in pairs(f.buttons) do
+				if(b and b.IsShown and b:IsShown()) then
+					consider(b:GetLeft(), b:GetRight(), b:GetBottom(), b:GetTop())
+				end
+			end
+		end
+
+		if(f.frames) then
+			for _, sf in pairs(f.frames) do
+				scan(sf)
+			end
+		end
+	end
+
+	-- fallback minimal : la zone du frame lui-même
+	consider(frame:GetLeft(), frame:GetRight(), frame:GetBottom(), frame:GetTop())
+	scan(frame)
+
+	if(not minL or not maxR or not minB or not maxT) then
+		cb:Hide()
+		return
+	end
+
+	local pad = 2
+	local minX = (minL - brx) - pad
+	local maxX = (maxR - brx) + pad
+	local minY = (minB - bry) - pad
+	local maxY = (maxT - bry) + pad
+
+	cb:ClearAllPoints()
+	cb:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", maxX, minY)
+	cb:SetPoint("TOPLEFT", frame, "BOTTOMRIGHT", minX, maxY)
+	cb:SetFrameLevel(frame:GetFrameLevel())
+	cb:Show()
 end
 
 -- MULTIBOT:FRAME --
@@ -712,6 +828,18 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
 	frame.x = pX
 	frame.y = pY
 
+	-- click blocker: absorbe les clics dans les espaces entre boutons
+	frame.clickBlocker = CreateFrame("Frame", nil, frame)
+	frame.clickBlocker:SetFrameLevel(frame:GetFrameLevel())
+	frame.clickBlocker:EnableMouse(true)
+	frame.clickBlocker.texture = frame.clickBlocker:CreateTexture(nil, "BACKGROUND")
+	frame.clickBlocker.texture:SetAllPoints(frame.clickBlocker)
+	frame.clickBlocker.texture:SetTexture("Interface\\Buttons\\WHITE8X8")
+	frame.clickBlocker.texture:SetVertexColor(0, 0, 0, 0) -- fond totalement transparent
+	frame.clickBlocker:SetAllPoints(frame)
+
+	frame:HookScript("OnShow", function() if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(frame) end end)
+	frame:HookScript("OnHide", function() if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(frame) end end)
 	-- ADD --
 
 	frame.addTexture = function(pTexture)
@@ -806,6 +934,7 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
         frame:SetPoint("BOTTOMRIGHT", x, y)
         frame.x = x
         frame.y = y
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(frame) end
 		return frame
 	end
 
@@ -892,6 +1021,8 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
 		return frame
 	end
 
+	if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(frame) end
+
 	return frame
 end
 
@@ -927,6 +1058,9 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 	button.tip = pTip
 	button.x = pX
 	button.y = pY
+	if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
+	button:HookScript("OnShow", function() if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end end)
+	button:HookScript("OnHide", function() if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end end)
 
 	-- ADD --
 
@@ -942,6 +1076,7 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
         button:SetPoint("BOTTOMRIGHT", x, y)
         button.x = x
         button.y = y
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
 		return button
 	end
 
@@ -1096,6 +1231,16 @@ MultiBot.wowButton = function(pParent, pName, pX, pY, pWidth, pHeight, pSize)
 	button.y = pY
 	button.x = pX
 
+	if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
+
+	button:HookScript("OnShow", function()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
+	end)
+
+	button:HookScript("OnHide", function()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
+	end)
+
 	-- GET --
 
 	button.getButton = function(pIndex)
@@ -1136,11 +1281,13 @@ MultiBot.wowButton = function(pParent, pName, pX, pY, pWidth, pHeight, pSize)
 
 	button.doHide = function()
 		button:Hide()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
 		return button
 	end
 
 	button.doShow = function()
 		button:Show()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
 		return button
 	end
 
@@ -1180,6 +1327,16 @@ MultiBot.movButton = function(pParent, pX, pY, pSize, pTip, oFrame)
 	button.tip = pTip
 	button.x = pX
 	button.y = pY
+
+	if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
+
+	button:HookScript("OnShow", function()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
+	end)
+
+	button:HookScript("OnHide", function()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
+	end)
 
 	-- EVENT --
 
@@ -1224,6 +1381,16 @@ MultiBot.boxButton = function(pParent, pX, pY, pSize, pState)
 	button.x = pX
 	button.y = pY
 
+	if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
+
+	button:HookScript("OnShow", function()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
+	end)
+
+	button:HookScript("OnHide", function()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
+	end)
+
 	-- GET --
 
 	button.getButton = function(pIndex)
@@ -1250,11 +1417,13 @@ MultiBot.boxButton = function(pParent, pX, pY, pSize, pState)
 
 	button.doHide = function()
 		button:Hide()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
 		return button
 	end
 
 	button.doShow = function()
 		button:Show()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
 		return button
 	end
 
@@ -1274,6 +1443,17 @@ MultiBot.catButton = function(pParent, pX, pY, pWidth, pHeight)
 	button:SetPoint("BOTTOMRIGHT", pX, pY)
 	button:SetSize(pWidth, pHeight)
 	button:Show()
+
+	button.parent = pParent
+	if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
+
+	button:HookScript("OnShow", function()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
+	end)
+
+	button:HookScript("OnHide", function()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
+	end)
 
 	-- EVENT --
 
