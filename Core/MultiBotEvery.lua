@@ -80,21 +80,6 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
             end
           end
         },
-        -- NEW PVP tab
-        { "PvP", "INV_BannerPVP_02", MultiBot.tips and
-            MultiBot.tips.every and
-            MultiBot.tips.every.pvp or "Send PvP command to bot",
-          function(b)
-            local name = b.getName()
-            if name then
-              SendChatMessage("pvp stats", "WHISPER", nil, name)
-            end
-            -- Affiche la frame PvP custom si disponible
-            if MultiBotPVPFrame and MultiBotPVPFrame.Show then
-              MultiBotPVPFrame:Show()
-            end
-          end
-        },
 		{ "Maintenance", "Achievement_Halloween_Smiley_01", MultiBot.tips.every.maintenance, function(b)
             SendChatMessage("maintenance", "WHISPER", nil, b.getName())
         end

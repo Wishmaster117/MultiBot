@@ -1399,6 +1399,22 @@ MultiBot.tips.units.favorites =
 "|cffff0000Left-click to activate|r\n"..
 "|cff999999(Executed by: System)|r";
 
+-- UNITS PVP Stats
+MultiBot.tips.units.pvpstatsmaster =
+"PvP Stats\n|cffffffff"..
+"Send PvP Stats command to...|r\n\n"..
+"|cffff0000Left-click to open menu|r\n"..
+"|cff999999(Executed by: System)|r";
+
+MultiBot.tips.units.pvpstatstobot =
+"Send To Bot";
+
+MultiBot.tips.units.pvpstatstoparty =
+"Send To Party";
+
+MultiBot.tips.units.pvpstatstoraid =
+"Send To Raid";
+
 -- UNITS:BROWSE --
 
 MultiBot.tips.units.browse =
@@ -3664,11 +3680,11 @@ MultiBot.tips.every.misc =
 "|cffff0000Left-click to toggle this menu|r\n"..
 "|cff999999(Execution order: System)|r"
 
-MultiBot.tips.every.pvp =
+--[[MultiBot.tips.every.pvp =
 "Send PvP command to bot|cffffffff\n"..
 "Display pvp bots informations.|r\n\n"..
 "|cffff0000Left-click to send command|r\n"..
-"|cff999999(Execution order: Bot)|r";
+"|cff999999(Execution order: Bot)|r";--]]
 
 MultiBot.tips.every.pvptitle =
 "MultiBot PvP Panel";

@@ -727,6 +727,22 @@ if GetLocale() == "koKR" then
 		.. "|cffff0000좌클릭으로 활성화|r\n"
 		.. "|cff999999(실행 주체: 시스템)|r"
 
+-- UNITS PVP Stats
+MultiBot.tips.units.pvpstatsmaster =
+"PvP 통계\n|cffffffff"..
+"PvP 통계 명령을 보내기...|r\n\n"..
+"|cffff0000메뉴를 열려면 좌클릭|r\n"..
+"|cff999999(실행 주체: 시스템)|r";
+
+MultiBot.tips.units.pvpstatstobot =
+"봇에게 보내기";
+
+MultiBot.tips.units.pvpstatstoparty =
+"파티에 보내기";
+
+MultiBot.tips.units.pvpstatstoraid =
+"공격대에 보내기";
+
 	-- UNITS:BROWSE --
 
 	MultiBot.tips.units.browse = "팀 탐색\n|cffffffff"
@@ -858,19 +874,6 @@ if GetLocale() == "koKR" then
 		.. "'화이트 팽'은 게임 관리자가 게임 세계에 배치해야 합니다.|r\n\n"
 		.. "|cffff0000Beastmaster 제어 기능을 활성화 또는 비활성화하려면 왼쪽 클릭|r\n"
 		.. "|cff999999(명령 실행: 시스템)|r"
-
-	--[[
-MultiBot.tips.main.lang.master =
-"언어 선택기|cffffffff\n"..
-"이 제어 장치를 사용하면 MultiBot의 언어를 선택할 수 있습니다.\n"..
-"이 제어 장치가 활성화되면 MultiBot은 클라이언트와 다른 언어를 사용할 수 있습니다.\n"..
-"명령을 실행하면 명령을 수신한 사람이 표시됩니다.|r\n\n"..
-"|cffff0000옵션을 표시하거나 숨기려면 왼쪽 클릭|r\n"..
-"|cff999999(명령 실행: 시스템)|r\n\n"..
-"|cffff0000언어 선택기를 열거나 닫으려면 마우스 오른쪽 버튼을 클릭하세요|r\n"..
-"|cff999999(명령 실행: 시스템)|r";
-]]
-	--
 
 	MultiBot.tips.main.expand = "확장 스위치\n|cffffffff"
 		.. "이 스위치는 머물기l따르기 제어 버튼을 활성화 또는 비활성화 합니다.\n"
@@ -2368,7 +2371,6 @@ MultiBot.tips.main.lang.master =
 
 	-- WARLOCK --
 
-	-- NEW
 	MultiBot.tips.warlock.curses = {}
 	MultiBot.tips.warlock.stones = {}
 	MultiBot.tips.warlock.pets = {}
@@ -2599,11 +2601,6 @@ MultiBot.tips.main.lang.master =
 		.. "포함: 전멸, 자동 장비 등.|r\n\n"
 		.. "|cffff0000좌클릭으로 이 메뉴를 전환|r\n"
 		.. "|cff999999(실행 순서: 시스템)|r"
-
-	MultiBot.tips.every.pvp = "Send PvP command to bot|cffffffff\n"
-		.. "Display pvp bots informations.|r\n\n"
-		.. "|cffff0000Left-click to send command|r\n"
-		.. "|cff999999(Execution order: Bot)|r"
 
 	MultiBot.tips.every.pvptitle = "MultiBot PvP Panel"
 

@@ -724,6 +724,22 @@ if GetLocale() == "frFR" then
 		.. "|cffff0000Clic gauche pour activer|r\n"
 		.. "|cff999999(Exécuté par : Système)|r"
 
+-- UNITS PVP Stats
+MultiBot.tips.units.pvpstatsmaster =
+"Statistiques JcJ\n|cffffffff"..
+"Envoyer la commande de statistiques JcJ à...|r\n\n"..
+"|cffff0000Clic gauche pour ouvrir le menu|r\n"..
+"|cff999999(Exécuté par : Système)|r";
+
+MultiBot.tips.units.pvpstatstobot =
+"Envoyer au bot";
+
+MultiBot.tips.units.pvpstatstoparty =
+"Envoyer au groupe";
+
+MultiBot.tips.units.pvpstatstoraid =
+"Envoyer au raid";
+
 	-- UNITÉS : PARCOURIR --
 
 	MultiBot.tips.units.browse = "Parcourir\n|cffffffff"
@@ -2362,7 +2378,6 @@ if GetLocale() == "frFR" then
 
 	-- WARLOCK --
 
-	-- NEW
 	MultiBot.tips.warlock.curses = {}
 	MultiBot.tips.warlock.stones = {}
 	MultiBot.tips.warlock.pets = {}
@@ -2590,11 +2605,6 @@ if GetLocale() == "frFR" then
 		.. "Comprend : Wipe, Autogear, etc.|r\n\n"
 		.. "|cffff0000Clic gauche pour afficher/masquer ce menu|r\n"
 		.. "|cff999999(Ordre d'exécution : Système)|r"
-
-	MultiBot.tips.every.pvp = "Envoyer la commande PvP au bot|cffffffff\n"
-		.. "Afficher les statistiques pvp du bots.|r\n\n"
-		.. "|cffff0000Clic gauche pour envoyer|r\n"
-		.. "|cff999999(Exécuté par : Bot)|r"
 
 	MultiBot.tips.every.pvptitle = "MultiBot Panel PvP"
 

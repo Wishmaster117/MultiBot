@@ -1238,7 +1238,65 @@ end)
 
 -- UNITS:BROWSE --
 
-local tButton = tControl.addButton("Invite", 0, 60, "Interface\\AddOns\\MultiBot\\Icons\\invite.blp", MultiBot.tips.units.invite).setEnable()
+-- local tButton = tControl.addButton("Invite", 0, 60, "Interface\\AddOns\\MultiBot\\Icons\\invite.blp", MultiBot.tips.units.invite).setEnable()
+-- PVP STATS --
+
+local btnPvpStats = tControl.addButton("PvPStats", 0, 60, "Ability_Parry", MultiBot.tips.units.pvpstatsmaster).setEnable()
+
+local btnPvpWhisper = tControl.addButton("PvPStatsWhisper", 31, 60, "inv_Mask_04", MultiBot.tips.units.pvpstatstobot)
+local btnPvpParty   = tControl.addButton("PvPStatsParty",   61, 60, "achievement_reputation_08", MultiBot.tips.units.pvpstatstoparty)
+local btnPvpRaid    = tControl.addButton("PvPStatsRaid",    91, 60, "achievement_pvp_o_10",  MultiBot.tips.units.pvpstatstoraid)
+btnPvpWhisper:doHide()
+btnPvpParty:doHide()
+btnPvpRaid:doHide()
+
+local function MB_ShowPvpFrame()
+  if MultiBotPVPFrame and MultiBotPVPFrame.Show then
+    MultiBotPVPFrame:Show()
+  end
+end
+
+btnPvpStats.doLeft = function()
+  if btnPvpWhisper:IsShown() then
+    btnPvpWhisper:doHide()
+    btnPvpParty:doHide()
+    btnPvpRaid:doHide()
+  else
+    btnPvpWhisper:doShow()
+    btnPvpParty:doShow()
+    btnPvpRaid:doShow()
+  end
+end
+
+btnPvpWhisper.doLeft = function()
+  local bot = UnitName("target")
+  if not bot or not UnitIsPlayer("target") then
+    UIErrorsFrame:AddMessage("Sélectionne un bot (cible) d'abord.", 1, 0.2, 0.2, 1)
+    return
+  end
+  SendChatMessage("pvp stats", "WHISPER", nil, bot)
+  MB_ShowPvpFrame()
+end
+
+btnPvpParty.doLeft = function()
+  if GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0 then
+    UIErrorsFrame:AddMessage("Tu n'es pas en groupe.", 1, 0.2, 0.2, 1)
+    return
+  end
+  SendChatMessage("pvp stats", "PARTY")
+  MB_ShowPvpFrame()
+end
+
+btnPvpRaid.doLeft = function()
+  if GetNumRaidMembers() == 0 then
+    UIErrorsFrame:AddMessage("Tu n'es pas en raid.", 1, 0.2, 0.2, 1)
+    return
+  end
+  SendChatMessage("pvp stats", "RAID")
+  MB_ShowPvpFrame()
+end
+
+local tButton = tControl.addButton("Invite", 0, 90, "Interface\\AddOns\\MultiBot\\Icons\\invite.blp", MultiBot.tips.units.invite).setEnable()
 tButton.doRight = function(pButton)
     if (GetNumRaidMembers() > 0 or GetNumPartyMembers() > 0) then return end
     MultiBot.timer.invite.roster = MultiBot.frames["MultiBar"].buttons["Units"].roster
@@ -1252,7 +1310,8 @@ tButton.doLeft = function(pButton)
 	if(pButton.state) then MultiBot.ShowHideSwitch(pButton.parent.frames["Invite"]) end
 end
 
-local tInvite = tControl.addFrame("Invite", -30, 62)
+--local tInvite = tControl.addFrame("Invite", -30, 62)
+local tInvite = tControl.addFrame("Invite", -30, 92)
 tInvite:Hide()
 
 tInvite.addButton("Party+5", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\invite_party_5.blp", MultiBot.tips.units.inviteParty5)
@@ -1367,7 +1426,8 @@ end
 --end
 
 -- Fonction Browse corrigée
-tControl.addButton("Browse", 0, 90, "Interface\\AddOns\\MultiBot\\Icons\\browse.blp", MultiBot.tips.units.browse)
+--tControl.addButton("Browse", 0, 90, "Interface\\AddOns\\MultiBot\\Icons\\browse.blp", MultiBot.tips.units.browse)
+tControl.addButton("Browse", 0, 120, "Interface\\AddOns\\MultiBot\\Icons\\browse.blp", MultiBot.tips.units.browse)
 .doLeft = function(pButton)
   local tMaster = MultiBot.frames.MultiBar.buttons.Units
   local tUnits  = tMaster.parent.frames.Units

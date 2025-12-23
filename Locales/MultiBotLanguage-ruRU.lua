@@ -737,6 +737,22 @@ if GetLocale() == "ruRU" then
 		.. "|cffff0000ЛКМ для активации|r\n"
 		.. "|cff999999(Выполняется: Система)|r"
 
+-- UNITS PVP Stats
+MultiBot.tips.units.pvpstatsmaster =
+"PvP-статистика\n|cffffffff"..
+"Отправить команду PvP-статистики...|r\n\n"..
+"|cffff0000ЛКМ, чтобы открыть меню|r\n"..
+"|cff999999(Выполнено: Система)|r";
+
+MultiBot.tips.units.pvpstatstobot =
+"Отправить боту";
+
+MultiBot.tips.units.pvpstatstoparty =
+"Отправить группе";
+
+MultiBot.tips.units.pvpstatstoraid =
+"Отправить рейду";
+
 	-- UNITS:BROWSE --
 
 	MultiBot.tips.units.browse = "Просмотр\n|cffffffff"
@@ -868,19 +884,6 @@ if GetLocale() == "ruRU" then
 		.. "Белый Клык должен быть размещён в мире ГеймМастером.|r\n\n"
 		.. "|cffff0000Левый клик – включить/отключить управление Повелителем зверей|r\n"
 		.. "|cff999999(Порядок выполнения: Система)|r"
-
-	--[[
-MultiBot.tips.main.lang.master =
-"Language-Selector|cffffffff\n"..
-"This Control allows you to select the Language of MultiBot.\n"..
-"If this control is active, MultiBot can have a different Language than the Client.\n"..
-"The Execution-Order shows the Receiver for Commands.|r\n\n"..
-"|cffff0000Left-Click to show or hide the Options|r\n"..
-"|cff999999(Execution-Order: System)|r\n\n"..
-"|cffff0000Right-Click to enable or disable the Language-Selector|r\n"..
-"|cff999999(Execution-Order: System)|r";
-]]
-	--
 
 	MultiBot.tips.main.expand = "Переключатель расширения\n|cffffffff"
 		.. "Расширяет/сворачивает панель Стоять/Следовать.\n"
@@ -2391,7 +2394,6 @@ MultiBot.tips.main.lang.master =
 
 	-- WARLOCK --
 
-	-- NEW
 	MultiBot.tips.warlock.curses = {}
 	MultiBot.tips.warlock.stones = {}
 	MultiBot.tips.warlock.pets = {}
@@ -2619,11 +2621,6 @@ MultiBot.tips.main.lang.master =
 		.. "Включает: Wipe, Autogear и т.д.|r\n\n"
 		.. "|cffff0000Левый клик для переключения этого меню|r\n"
 		.. "|cff999999(Порядок выполнения: Система)|r"
-
-	MultiBot.tips.every.pvp = "Send PvP command to bot|cffffffff\n"
-		.. "Display pvp bots informations.|r\n\n"
-		.. "|cffff0000Left-click to send command|r\n"
-		.. "|cff999999(Execution order: Bot)|r"
 
 	MultiBot.tips.every.pvptitle = "MultiBot PvP Panel"
 

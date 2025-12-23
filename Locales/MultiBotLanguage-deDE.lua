@@ -721,6 +721,22 @@ if GetLocale() == "deDE" then
 		.. "|cffff0000Linksklick zum Aktivieren|r\n"
 		.. "|cff999999(Ausgeführt von: System)|r"
 
+-- UNITS PVP Stats
+MultiBot.tips.units.pvpstatsmaster =
+"PvP-Statistiken\n|cffffffff"..
+"Sende PvP-Statistik-Befehl an...|r\n\n"..
+"|cffff0000Linksklick, um das Menü zu öffnen|r\n"..
+"|cff999999(Ausgeführt von: System)|r";
+
+MultiBot.tips.units.pvpstatstobot =
+"An Bot senden";
+
+MultiBot.tips.units.pvpstatstoparty =
+"An Gruppe senden";
+
+MultiBot.tips.units.pvpstatstoraid =
+"An Schlachtzug senden";
+
 	-- UNIT:BROWSE --
 
 	MultiBot.tips.units.browse = "Browse\n|cffffffff"
@@ -852,19 +868,6 @@ if GetLocale() == "deDE" then
 		.. "Der GameMaster muss 'White Fang' in der Spielwelt platzieren.\n"
 		.. "|cffff0000Linksklicken um die Beastmaster-Control ein- oder auszuschalten|r\n"
 		.. "|cff999999(Ausführreihenfolge: System)|r"
-
-	--[[
-MultiBot.tips.main.lang.master =
-"Language-Selector|cffffffff\n"..
-"Diese Steuereinheit erlaubt euch die Sprache für MultiBot auszuwählen.\n"..
-"Wenn diese Steuereinheit aktiv ist, kann MultiBot eine andere Sprache als der Client haben.\n"..
-"Die Ausführreihenfolge zeigt die Empfänger des Befehls.|r\n\n"..
-"|cffff0000Linksklicken um die Optionen ein- oder auszublenden|r\n"..
-"|cff999999(Ausführreihenfolge: System)|r\n\n"..
-"|cffff0000Rechtsklicken um die Language-Selector ein- oder auszuschalten|r\n"..
-"|cff999999(Ausführreihenfolge: System)|r";
-]]
-	--
 
 	MultiBot.tips.main.expand = "Expand-Switch\n|cffffffff"
 		.. "Diese Schaltfläche expandiert oder reduziert die Stay-Follow-Control.\n"
@@ -2361,7 +2364,6 @@ MultiBot.tips.main.lang.master =
 
 	-- WARLOCK --
 
-	-- NEW
 	MultiBot.tips.warlock.curses = {}
 	MultiBot.tips.warlock.stones = {}
 	MultiBot.tips.warlock.pets = {}
@@ -2589,11 +2591,6 @@ MultiBot.tips.main.lang.master =
 		.. "Enthält: Wipe, Autogear usw.|r\n\n"
 		.. "|cffff0000Linksklick zum Ein-/Ausblenden dieses Menüs|r\n"
 		.. "|cff999999(Ausführungsreihenfolge: System)|r"
-
-	MultiBot.tips.every.pvp = "Send PvP command to bot|cffffffff\n"
-		.. "Display pvp bots informations.|r\n\n"
-		.. "|cffff0000Left-click to send command|r\n"
-		.. "|cff999999(Execution order: Bot)|r"
 
 	MultiBot.tips.every.pvptitle = "MultiBot PvP Panel"
 

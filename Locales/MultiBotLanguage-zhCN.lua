@@ -720,6 +720,22 @@ if GetLocale() == "zhCN" then
 		.. "|cffff0000左键点击以激活|r\n"
 		.. "|cff999999(执行者: 系统)|r"
 
+-- UNITS PVP Stats
+MultiBot.tips.units.pvpstatsmaster =
+"PvP统计\n|cffffffff"..
+"发送PvP统计指令到…|r\n\n"..
+"|cffff0000左键点击打开菜单|r\n"..
+"|cff999999(执行者：系统)|r";
+
+MultiBot.tips.units.pvpstatstobot =
+"发送给机器人";
+
+MultiBot.tips.units.pvpstatstoparty =
+"发送给队伍";
+
+MultiBot.tips.units.pvpstatstoraid =
+"发送给团队";
+
 	-- 团队：浏览 --
 
 	MultiBot.tips.units.browse = "浏览团队\n|cffffffff"
@@ -2465,11 +2481,6 @@ if GetLocale() == "zhCN" then
 		.. "包括：Wipe、Autogear 等。|r\n\n"
 		.. "|cffff0000左键单击切换此菜单|r\n"
 		.. "|cff999999(执行顺序：系统)|r"
-
-	MultiBot.tips.every.pvp = "Send PvP command to bot|cffffffff\n"
-		.. "Display pvp bots informations.|r\n\n"
-		.. "|cffff0000Left-click to send command|r\n"
-		.. "|cff999999(Execution order: Bot)|r"
 
 	MultiBot.tips.every.pvptitle = "MultiBot PvP Panel"
 

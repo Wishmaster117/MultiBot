@@ -677,6 +677,22 @@ if GetLocale() == "enGB" then
 		.. "|cffff0000Left-click to activate|r\n"
 		.. "|cff999999(Executed by: System)|r"
 
+    -- UNITS PVP Stats
+MultiBot.tips.units.pvpstatsmaster =
+"PvP Stats\n|cffffffff"..
+"Send PvP Stats command to...|r\n\n"..
+"|cffff0000Left-click to open menu|r\n"..
+"|cff999999(Executed by: System)|r";
+
+MultiBot.tips.units.pvpstatstobot =
+"Send To Bot";
+
+MultiBot.tips.units.pvpstatstoparty =
+"Send To Party";
+
+MultiBot.tips.units.pvpstatstoraid =
+"Send To Raid";
+
 	-- UNITS:BROWSE --
 
 	MultiBot.tips.units.browse = "Browse\n|cffffffff"
@@ -800,36 +816,6 @@ if GetLocale() == "enGB" then
 		.. "Characters learn the necessary spells from the White Fang NPC, placed into the World by the GameMaster.|r\n\n"
 		.. "|cffff0000Left-click to toggle|r\n"
 		.. "|cff999999(Executed by: System)|r"
-
-	--[[
-MultiBot.tips.main.lang.master =
-"Language Selection|cffffffff\n"..
-"Choose language for the MultiBot AddOn.\n"..
-"MultiBot's language setting is independent of the client's language setting.\n"..
-"|cffff0000Left-click to show or hide the Options|r\n"..
-"|cff999999(Executed by: System)|r\n\n"..
-"|cffff0000Right-click to toggle|r\n"..
-"|cff999999(Executed by: System)|r";
-
-MultiBot.tips.main.lang.deDE =
-"Deutsch|cffffffff\n"..
-"Wenn du dies lesen kannst ist dies wahrscheinlich die richtige Sprache für dich.|r\n\n"..
-"|cffff0000Linksklicken um Deutsch auszuwählen|r\n"..
-"|cff999999(Executed by: System)|r";
-
-MultiBot.tips.main.lang.enGB =
-"English (Great Britain)|cffffffff\n"..
-"If you can read this, this is probably the right language for you.|r\n\n"..
-"|cffff0000Left-click to select|r\n"..
-"|cff999999(Executed by: System)|r";
-
-MultiBot.tips.main.lang.none =
-"English (United States)|cffffffff\n"..
-"If you can read this, this is probably the right language for you.|r\n\n"..
-"|cffff0000Left-click to select|r\n"..
-"|cff999999(Executed by: System)|r";
-]]
-	--
 
 	MultiBot.tips.main.expand = "Expand Stay/Follow Menu\n\n"
 		.. "|cffff0000Left-click to activate|r\n"
@@ -2304,7 +2290,6 @@ MultiBot.tips.main.lang.none =
 
 	-- WARLOCK --
 
-	-- NEW
 	MultiBot.tips.warlock.curses = {}
 	MultiBot.tips.warlock.stones = {}
 	MultiBot.tips.warlock.pets = {}
@@ -2520,11 +2505,6 @@ MultiBot.tips.main.lang.none =
 		.. "Includes: Wipe, Autogear, etc.|r\n\n"
 		.. "|cffff0000Left-click to toggle this menu|r\n"
 		.. "|cff999999(Execution order: System)|r"
-
-	MultiBot.tips.every.pvp = "Send PvP command to bot|cffffffff\n"
-		.. "Display pvp bots informations.|r\n\n"
-		.. "|cffff0000Left-click to send command|r\n"
-		.. "|cff999999(Execution order: Bot)|r"
 
 	MultiBot.tips.every.pvptitle = "MultiBot PvP Panel"
 
