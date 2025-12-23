@@ -1,10 +1,6 @@
 -- MultiBot PvP UI with cache per bots
 -- local ADDON = "MultiBot"
 
--- TODO:
--- Enlever le bouton par bots de MultibotEvery - Fait, uploder le fichier
--- Ajouter un bouton dans la barre Unités avec 3 sous boutons: Chuchoter au bot/au groupe/au raid => Fait, uploader MultiBotInit.lua
--- et ajouter les traductions dans multibot et les fichier langues: juste fait dans MultiBot.lua, reste les fichiers langue
 local function CreateStyledFrame()
     -- Main frame
     local f = CreateFrame("Frame", "MultiBotPVPFrame", UIParent)
@@ -29,7 +25,7 @@ local function CreateStyledFrame()
 
     -- Header + title
     local titleBg = f:CreateTexture(nil, "ARTWORK")
-    titleBg:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+    titleBg:SetTexture(MultiBot.SafeTexturePath("Interface\\DialogFrame\\UI-DialogBox-Header"))
     titleBg:SetPoint("TOPLEFT", f, "TOPLEFT", 12, -6)
     titleBg:SetPoint("TOPRIGHT", f, "TOPRIGHT", -12, -6)
     titleBg:SetHeight(48)
