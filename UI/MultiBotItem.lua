@@ -7,7 +7,7 @@ MultiBot.addItem = function(pFrame, pInfo)
 	
 	-- Fallback icon if not cached/known yet
 	if tIcon == nil or tIcon == "" then
-		tIcon = "INV_Misc_QuestionMark"
+		tIcon = MultiBot.SafeTexturePath("INV_Misc_QuestionMark")
 	end
 	
 	local tX = (pFrame.index%8) * 38
