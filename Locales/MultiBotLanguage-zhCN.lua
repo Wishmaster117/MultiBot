@@ -1103,6 +1103,26 @@ MultiBot.tips.units.pvpstatstoraid =
 		.. "|cffff0000左键单击执行团队召唤|r\n"
 		.. "|cff999999(执行命令: 团队, 队伍)|r"
 
+-- ALL BOTS COMMANDS --
+
+    MultiBot.tips.allbots.sellallvendor = "出售所有可出售的灰色物品（全部机器人）|cffffffff\n"
+        .. "所有你的机器人（在单位面板中列出的那些）将出售所有\n"
+        .. "可以安全卖给你当前目标商人的物品。\n"
+        .. "受保护的物品（钥匙、炉石等）永远不会被出售。|r\n\n"
+        .. "|cffff0000影响单位面板中列出的所有机器人。|r\n"
+        .. "|cff999999（执行者：每个机器人）|r"
+
+    MultiBot.tips.allbots.commandsallbots = "允许你向所有机器人发送指令|cffffffff\n"
+            .. "所有你的机器人（在单位面板中列出的那些）将执行该指令\n\n"
+            .. "|cffff0000影响单位面板中列出的所有机器人。|r\n"
+            .. "|cff999999（执行者：每个机器人）|r"
+
+    MultiBot.tips.allbots.maintenanceallbots = "维护（全部机器人）|cffffffff\n"
+        .. "所有你的机器人（在单位面板中列出的那些）将执行“maintenance”指令。\n"
+        .. "当你希望所有机器人同时执行完整的维护流程时使用此功能。|r\n\n"
+        .. "|cffff0000影响单位面板中列出的所有机器人。|r\n"
+        .. "|cff999999（执行者：每个机器人）|r"
+
 	-- 物品 --
 
 	MultiBot.tips.inventory.sell = "出售物品 |cffffffff\n"

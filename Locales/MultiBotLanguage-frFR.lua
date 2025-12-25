@@ -1108,6 +1108,26 @@ MultiBot.tips.units.pvpstatstoraid =
 		.. "|cffff0000Clic gauche pour exécuter Invocation de Groupe|r\n"
 		.. "|cff999999(Ordre d'exécution : Raid, Groupe)|r"
 
+-- ALL BOTS COMMANDS --
+
+    MultiBot.tips.allbots.sellallvendor = "Vendre tous les objets gris vendables (TOUS LES BOTS)|cffffffff\n"
+        .. "Tous vos bots (ceux listés dans le panneau des unités) vendront tous les objets\n"
+        .. "qui peuvent être vendus en toute sécurité au vendeur que vous ciblez actuellement.\n"
+        .. "Les objets protégés (clés, Pierre de foyer, etc.) ne sont jamais vendus.|r\n\n"
+        .. "|cffff0000Affecte chaque bot listé dans le panneau des unités.|r\n"
+        .. "|cff999999(Exécuté par : chaque Bot)|r"
+
+    MultiBot.tips.allbots.commandsallbots = "Vous permet d’envoyer des commandes à tous les Bots|cffffffff\n"
+        .. "Tous vos bots (ceux listés dans le panneau des unités) exécuteront la commande\n\n"
+        .. "|cffff0000Affecte chaque bot listé dans le panneau des unités.|r\n"
+        .. "|cff999999(Exécuté par : chaque Bot)|r"
+
+    MultiBot.tips.allbots.maintenanceallbots = "Maintenance (TOUS LES BOTS)|cffffffff\n"
+        .. "Tous vos bots (ceux listés dans le panneau des unités) exécuteront la commande 'maintenance'.\n"
+        .. "Utilisez ceci lorsque vous souhaitez que chaque bot effectue sa routine complète de maintenance en même temps.|r\n\n"
+        .. "|cffff0000Affecte chaque bot listé dans le panneau des unités.|r\n"
+        .. "|cff999999(Exécuté par : chaque Bot)|r"
+
 	-- INVENTAIRE --
 
 	MultiBot.tips.inventory.sell = "Vendre des Objets|cffffffff\n"

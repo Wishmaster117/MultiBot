@@ -3162,6 +3162,50 @@ tRight.addButton("Summon", 136, 0, "ability_hunter_beastcall", MultiBot.tips.sum
 	MultiBot.ActionToGroup("summon")
 end
 
+-- COMMANDS FOR ALL BOTS --
+-- Bouton principal à droite qui ouvre un sous-menu de commandes globales.
+local btnAllBots = tRight.addButton("AllBotsCommands", 170, 0,
+	"Temp",
+	MultiBot.tips.allbots.commandsallbots)
+
+btnAllBots.doLeft = function(pButton)
+	local menu = tRight.frames and tRight.frames["AllBotsCommandsMenu"]
+	if not menu then
+		return
+	end
+
+	if menu:IsShown() then
+		menu:Hide()
+	else
+		menu:Show()
+	end
+end
+
+-- Sous-menu vertical qui s'ouvre au-dessus du bouton principal
+local tAllBotsMenu = tRight.addFrame("AllBotsCommandsMenu", 170, 34, 32, 64)
+tAllBotsMenu:Hide()
+
+-- Bouton : Maintenance pour tous les bots
+tAllBotsMenu.addButton("MaintenanceAllBots", 0, 34,
+	"achievement_halloween_smiley_01",
+	MultiBot.tips.allbots.maintenanceallbots)
+.doLeft = function(pButton)
+	if MultiBot.MaintenanceAllBots then
+		MultiBot.MaintenanceAllBots()
+	end
+end
+
+-- Bouton : vendre tous les objets gris pour tous les bots (s *)
+tAllBotsMenu.addButton("SellAllBotsGrey", 0, 0,
+	"inv_misc_coin_18",
+	MultiBot.tips.allbots.sellallvendor)
+.doLeft = function(pButton)
+	if MultiBot.SellAllBots then
+		MultiBot.SellAllBots("s *")
+	end
+end
+
+
 -- INVENTORY --
 
 MultiBot.inventory = MultiBot.newFrame(MultiBot, -700, -144, 32, 442, 884)

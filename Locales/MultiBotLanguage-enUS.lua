@@ -1040,6 +1040,26 @@ MultiBot.tips.units.pvpstatstoraid =
 		.. "|cffff0000Left-click to activate|r\n"
 		.. "|cff999999(Executed by: Raid, Party)|r"
 
+-- ALL BOTS COMMANDS --
+
+	MultiBot.tips.allbots.sellallvendor = "Sell all vendorable Grey items (ALL BOTS)|cffffffff\n"
+		.. "All your bots (those listed in the Units panel) will sell all items\n"
+		.. "that can safely be sold to your current vendor target.\n"
+		.. "Protected items (keys, Hearthstone, etc.) are never sold.|r\n\n"
+		.. "|cffff0000Affects every bot listed in the Units panel.|r\n"
+		.. "|cff999999(Executed by: each Bot)|r"
+
+    MultiBot.tips.allbots.commandsallbots = "Allows you to send commands to all Bots|cffffffff\n"
+            .. "All your bots (those listed in the Units panel) will execute the command\n\n"
+            .. "|cffff0000Affects every bot listed in the Units panel.|r\n"
+            .. "|cff999999(Executed by: each Bot)|r"
+
+	MultiBot.tips.allbots.maintenanceallbots = "Maintenance (ALL BOTS)|cffffffff\n"
+		.. "All your bots (those listed in the Units panel) will run the 'maintenance' command.\n"
+		.. "Use this when you want every bot to perform its full maintenance routine at once.|r\n\n"
+		.. "|cffff0000Affects every bot listed in the Units panel.|r\n"
+		.. "|cff999999(Executed by: each Bot)|r"
+
 	-- INVENTORY --
 
 	MultiBot.tips.inventory.sell = "Sell Items|cffffffff\n"

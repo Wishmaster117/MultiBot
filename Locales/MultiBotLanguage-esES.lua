@@ -1106,6 +1106,26 @@ MultiBot.tips.units.pvpstatstoraid =
 		.. "|cff999999(Orden de ejecución: Banda, Grupo)|r"
 	-- INVENTAIRE --
 
+-- ALL BOTS COMMANDS --
+
+    MultiBot.tips.allbots.sellallvendor = "Vender todos los objetos grises vendibles (TODOS LOS BOTS)|cffffffff\n"
+        .. "Todos tus bots (los que aparecen en el panel de Unidades) venderán todos los objetos\n"
+        .. "que puedan venderse de forma segura al vendedor que tienes seleccionado.\n"
+        .. "Los objetos protegidos (llaves, Piedra de hogar, etc.) nunca se venden.|r\n\n"
+        .. "|cffff0000Afecta a todos los bots listados en el panel de Unidades.|r\n"
+        .. "|cff999999(Ejecutado por: cada Bot)|r"
+
+    MultiBot.tips.allbots.commandsallbots = "Te permite enviar comandos a todos los Bots|cffffffff\n"
+            .. "Todos tus bots (los que aparecen en el panel de Unidades) ejecutarán el comando\n\n"
+            .. "|cffff0000Afecta a todos los bots listados en el panel de Unidades.|r\n"
+            .. "|cff999999(Ejecutado por: cada Bot)|r"
+
+    MultiBot.tips.allbots.maintenanceallbots = "Mantenimiento (TODOS LOS BOTS)|cffffffff\n"
+        .. "Todos tus bots (los que aparecen en el panel de Unidades) ejecutarán el comando 'maintenance'.\n"
+        .. "Úsalo cuando quieras que cada bot realice su rutina completa de mantenimiento al mismo tiempo.|r\n\n"
+        .. "|cffff0000Afecta a todos los bots listados en el panel de Unidades.|r\n"
+        .. "|cff999999(Ejecutado por: cada Bot)|r"
+
 	MultiBot.tips.inventory.sell = "Vender Objetos|cffffffff\n"
 		.. "Activa el modo de venta del inventario.\n"
 		.. "Debes seleccionar un comerciante.\n"

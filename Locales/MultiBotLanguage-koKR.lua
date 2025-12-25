@@ -1111,6 +1111,26 @@ MultiBot.tips.units.pvpstatstoraid =
 		.. "|cffff0000팀 소환을 수행하려면 왼쪽 클릭|r\n"
 		.. "|cff999999(명령어 실행: team, team)|r"
 
+-- ALL BOTS COMMANDS --
+
+    MultiBot.tips.allbots.sellallvendor = "판매 가능한 모든 회색 아이템 판매 (전체 봇)|cffffffff\n"
+        .. "모든 봇(유닛 패널에 표시된 봇)이 현재 선택한 상인에게\n"
+        .. "안전하게 판매할 수 있는 모든 아이템을 판매합니다.\n"
+        .. "보호된 아이템(열쇠, 귀환석 등)은 절대 판매되지 않습니다.|r\n\n"
+        .. "|cffff0000유닛 패널에 표시된 모든 봇에게 적용됩니다.|r\n"
+        .. "|cff999999(실행 주체: 각 Bot)|r"
+
+    MultiBot.tips.allbots.commandsallbots = "모든 봇에게 명령을 보낼 수 있습니다|cffffffff\n"
+            .. "모든 봇(유닛 패널에 표시된 봇)이 해당 명령을 실행합니다\n\n"
+            .. "|cffff0000유닛 패널에 표시된 모든 봇에게 적용됩니다.|r\n"
+            .. "|cff999999(실행 주체: 각 Bot)|r"
+
+    MultiBot.tips.allbots.maintenanceallbots = "정비 (전체 봇)|cffffffff\n"
+        .. "모든 봇(유닛 패널에 표시된 봇)이 'maintenance' 명령을 실행합니다.\n"
+        .. "모든 봇이 동시에 전체 정비 루틴을 수행하도록 하고 싶을 때 사용하세요.|r\n\n"
+        .. "|cffff0000유닛 패널에 표시된 모든 봇에게 적용됩니다.|r\n"
+        .. "|cff999999(실행 주체: 각 Bot)|r"
+
 	-- INVENTORY --
 
 	MultiBot.tips.inventory.sell = "판매중인 상품 |cffffffff\n"
