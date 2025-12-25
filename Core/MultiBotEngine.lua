@@ -1472,6 +1472,90 @@ MultiBot.addFrame = function(pName, pX, pY, pSize)
 	return tFrame
 end
 
+-- MULTIBOT: SELL ALL BOTS --
+-- Envoie une commande de vente à tous les bots listés dans l’onglet "Units".
+-- pCommand : "s *" (tout le gris) ou "s vendor" (tout ce qui est vendable).
+MultiBot.SellAllBots = function(pCommand)
+	-- Par défaut : vendre tous les objets gris (safe)
+	pCommand = pCommand or "s *"
+
+	if not MultiBot.isTarget or not MultiBot.isTarget() then
+		return 0
+	end
+
+	local frames = MultiBot.frames
+	if not frames then return 0 end
+
+	local multiBar = frames["MultiBar"]
+	if not multiBar or not multiBar.frames or not multiBar.frames["Units"] then
+		return 0
+	end
+
+	local units = multiBar.frames["Units"]
+	if not units.buttons then
+		return 0
+	end
+
+	CancelTrade()
+
+	local count = 0
+
+	for key, btn in pairs(units.buttons) do
+		if type(btn) == "table" then
+			local botName = btn.name or (btn.getName and btn.getName()) or key
+			if botName and botName ~= "" then
+				SendChatMessage(pCommand, "WHISPER", nil, botName)
+				count = count + 1
+			end
+		end
+	end
+
+	-- Si une fenêtre d’inventaire est ouverte, on la rafraîchit pour le bot affiché
+	if MultiBot.inventory and MultiBot.inventory:IsVisible() and MultiBot.RefreshInventory then
+		MultiBot.RefreshInventory(0.5)
+	end
+
+	return count
+end
+
+-- MULTIBOT: MAINTENANCE ALL BOTS --
+-- Envoie la commande "maintenance" à tous les bots listés dans l’onglet "Units".
+MultiBot.MaintenanceAllBots = function()
+	local frames = MultiBot.frames
+	if not frames then return 0 end
+
+	local multiBar = frames["MultiBar"]
+	if not multiBar or not multiBar.frames or not multiBar.frames["Units"] then
+		return 0
+	end
+
+	local units = multiBar.frames["Units"]
+	if not units.buttons then
+		return 0
+	end
+
+	CancelTrade()
+
+	local count = 0
+
+	for key, btn in pairs(units.buttons) do
+		if type(btn) == "table" then
+			local botName = btn.name or (btn.getName and btn.getName()) or key
+			if botName and botName ~= "" then
+				SendChatMessage("maintenance", "WHISPER", nil, botName)
+				count = count + 1
+			end
+		end
+	end
+
+	-- Si une fenêtre d’inventaire est ouverte, on peut la rafraîchir pour refléter d’éventuels changements
+	if MultiBot.inventory and MultiBot.inventory:IsVisible() and MultiBot.RefreshInventory then
+		MultiBot.RefreshInventory(0.5)
+	end
+
+	return count
+end
+
 --[[MultiBot.addSelf = function(pClass, pName)
 MultiBot.dprint("addSelf", pName, pClass) -- DEBUG
 	if(MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] ~= nil) then return MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] end
