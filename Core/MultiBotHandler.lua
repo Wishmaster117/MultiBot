@@ -472,22 +472,31 @@ MultiBot:SetScript("OnEvent", function()
                     and MultiBot.frames["MultiBar"].frames["Units"]) then
                 -- UI pas encore prête : on re-propulse le même event vers NOTRE OnEvent
                 local saved_msg = arg1
-                local df = CreateFrame("Frame")
-                df.t = 0
-                df:SetScript("OnUpdate", function(self, elapsed)
-                    self.t = self.t + elapsed
-                    if self.t > 0.2 then
-                        self:SetScript("OnUpdate", nil)
-                        local onEvent = MultiBot:GetScript("OnEvent")
-                        if onEvent then
-                            -- Sauvegarde/restaure les globals d’événement
-                            local _event, _arg1 = event, arg1
-                            event, arg1 = "CHAT_MSG_SYSTEM", saved_msg
-                            onEvent()
-                            event, arg1 = _event, _arg1
-                        end
+
+                local function ReDispatchRoster()
+                    local onEvent = MultiBot:GetScript("OnEvent")
+                    if onEvent then
+                        -- Sauvegarde/restaure les globals d’événement
+                        local _event, _arg1 = event, arg1
+                        event, arg1 = "CHAT_MSG_SYSTEM", saved_msg
+                        onEvent()
+                        event, arg1 = _event, _arg1
                     end
-                end)
+                end
+
+                if type(TimerAfter) == "function" then
+                    TimerAfter(0.2, ReDispatchRoster)
+                else
+                    local df = CreateFrame("Frame")
+                    df.t = 0
+                    df:SetScript("OnUpdate", function(self, elapsed)
+                        self.t = self.t + elapsed
+                        if self.t > 0.2 then
+                            self:SetScript("OnUpdate", nil)
+                            ReDispatchRoster()
+                        end
+                    end)
+                end
                 return
             end
 
@@ -560,7 +569,7 @@ MultiBot:SetScript("OnEvent", function()
 					-- Filtre de sécurité :
 					--  - pas de nom vide
 					--  - pas de classe inconnue => on évite les boutons Unknown
-					if botName ~= "" and botClass ~= "Unknown" then
+					if botName ~= "" and botClass and botClass ~= "Unknown" then
 						local botButton = MultiBot.addPlayer(botClass, botName).setDisable()
 
 						botButton.doRight = function(pButton)
@@ -628,12 +637,14 @@ MultiBot:SetScript("OnEvent", function()
         end
 
 			-- MEMBERBOTS --
-			for i = 1, 50 do
-				--local tName, tRank, tIndex, tLevel, tClass = GetGuildRosterInfo(i)
+			--for i = 1, 50 do
+			local tGuildCount = 0
+			if type(GetNumGuildMembers) == "function" then
+				tGuildCount = select(1, GetNumGuildMembers()) or 0
+			end
+			local memberLoopMax = (tGuildCount > 0) and tGuildCount or 50
 
-				-- Ensure that the Counter is not bigger than the Amount of Members in Guildlist
-				--if(tName ~= nil and tLevel ~= nil and tClass ~= nil and tName ~= UnitName("player")) then
-					--local tMember = MultiBot.addMember(tClass, tLevel, tName).setDisable()
+			for i = 1, memberLoopMax do
 				local memberName, _, _, memberLevel, memberClass = GetGuildRosterInfo(i)
 
 				-- Ensure that the Counter is not bigger than the Amount of Members in Guildlist
@@ -661,13 +672,14 @@ MultiBot:SetScript("OnEvent", function()
 			end
 
 			-- FRIENDBOTS --
-			for i = 1, 50 do
-				--local tName, tLevel, tClass = GetFriendInfo(i)
+			--for i = 1, 50 do
+			local tFriendCount = 0
+			if type(GetNumFriends) == "function" then
+				tFriendCount = GetNumFriends() or 0
+			end
+			local friendLoopMax = (tFriendCount > 0) and tFriendCount or 50
 
-				-- Ensure that the Counter is not bigger than the Amount of Members in Friendlist
-				--if(tName ~= nil and tLevel ~= nil and tClass ~= nil and tName ~= UnitName("player")) then
-					--local tFriend = MultiBot.addFriend(tClass, tLevel, tName).setDisable()
-
+			for i = 1, friendLoopMax do
 				local friendName, friendLevel, friendClass = GetFriendInfo(i)
 
 				-- Ensure that the Counter is not bigger than the Amount of Members in Friendlist
@@ -1186,7 +1198,14 @@ MultiBot:SetScript("OnEvent", function()
 			local tLevel = ""
 			local tClass = ""
 
-			for i = 1, 50 do
+			--for i = 1, 50 do
+			local tFriendScanCount = 0
+			if type(GetNumFriends) == "function" then
+				tFriendScanCount = GetNumFriends() or 0
+			end
+			local friendScanMax = (tFriendScanCount > 0) and tFriendScanCount or 50
+
+			for i = 1, friendScanMax do
 				tName, tLevel, tClass = GetFriendInfo(i)
 				if(tName == arg2) then break end
 				if(tName == nil) then break end
