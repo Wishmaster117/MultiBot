@@ -1119,12 +1119,12 @@ MultiBot.tips.units.pvpstatstoraid =
         .. "보호된 아이템(열쇠, 귀환석 등)은 절대 판매되지 않습니다.|r\n\n"
         .. "|cffff0000유닛 패널에 표시된 모든 봇에게 적용됩니다.|r\n"
         .. "|cff999999(실행 주체: 각 Bot)|r"
-        
+
     MultiBot.tips.allbots.commandsallbots = "모든 봇에게 명령을 보낼 수 있습니다|cffffffff\n"
             .. "모든 봇(유닛 패널에 표시된 봇)이 해당 명령을 실행합니다\n\n"
             .. "|cffff0000유닛 패널에 표시된 모든 봇에게 적용됩니다.|r\n"
             .. "|cff999999(실행 주체: 각 Bot)|r"
-            
+
     MultiBot.tips.allbots.maintenanceallbots = "정비 (전체 봇)|cffffffff\n"
         .. "모든 봇(유닛 패널에 표시된 봇)이 'maintenance' 명령을 실행합니다.\n"
         .. "모든 봇이 동시에 전체 정비 루틴을 수행하도록 하고 싶을 때 사용하세요.|r\n\n"

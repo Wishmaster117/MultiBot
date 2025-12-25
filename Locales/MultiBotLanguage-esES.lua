@@ -1114,12 +1114,12 @@ MultiBot.tips.units.pvpstatstoraid =
         .. "Los objetos protegidos (llaves, Piedra de hogar, etc.) nunca se venden.|r\n\n"
         .. "|cffff0000Afecta a todos los bots listados en el panel de Unidades.|r\n"
         .. "|cff999999(Ejecutado por: cada Bot)|r"
-        
+
     MultiBot.tips.allbots.commandsallbots = "Te permite enviar comandos a todos los Bots|cffffffff\n"
             .. "Todos tus bots (los que aparecen en el panel de Unidades) ejecutarán el comando\n\n"
             .. "|cffff0000Afecta a todos los bots listados en el panel de Unidades.|r\n"
             .. "|cff999999(Ejecutado por: cada Bot)|r"
-            
+
     MultiBot.tips.allbots.maintenanceallbots = "Mantenimiento (TODOS LOS BOTS)|cffffffff\n"
         .. "Todos tus bots (los que aparecen en el panel de Unidades) ejecutarán el comando 'maintenance'.\n"
         .. "Úsalo cuando quieras que cada bot realice su rutina completa de mantenimiento al mismo tiempo.|r\n\n"

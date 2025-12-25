@@ -1113,12 +1113,12 @@ MultiBot.tips.units.pvpstatstoraid =
         .. "Geschützte Gegenstände (Schlüssel, Ruhestein usw.) werden niemals verkauft.|r\n\n"
         .. "|cffff0000Betroffen sind alle Bots, die im Einheitenfenster aufgeführt sind.|r\n"
         .. "|cff999999(Ausgeführt von: jedem Bot)|r"
-        
+
     MultiBot.tips.allbots.commandsallbots = "Ermöglicht dir, Befehle an alle Bots zu senden|cffffffff\n"
             .. "Alle deine Bots (die im Einheitenfenster aufgeführt sind) werden den Befehl ausführen\n\n"
             .. "|cffff0000Betroffen sind alle Bots, die im Einheitenfenster aufgeführt sind.|r\n"
             .. "|cff999999(Ausgeführt von: jedem Bot)|r"
-            
+
     MultiBot.tips.allbots.maintenanceallbots = "Wartung (ALLE BOTS)|cffffffff\n"
         .. "Alle deine Bots (die im Einheitenfenster aufgeführt sind) werden den 'maintenance'-Befehl ausführen.\n"
         .. "Nutze dies, wenn du möchtest, dass jeder Bot seine vollständige Wartungsroutine gleichzeitig durchführt.|r\n\n"
