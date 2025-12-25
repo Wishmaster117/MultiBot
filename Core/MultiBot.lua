@@ -1872,18 +1872,18 @@ MultiBot.tips.allbots = {}
 		.. "Protected items (keys, Hearthstone, etc.) are never sold.|r\n\n"
 		.. "|cffff0000Affects every bot listed in the Units panel.|r\n"
 		.. "|cff999999(Executed by: each Bot)|r"
-		
+
     MultiBot.tips.allbots.commandsallbots = "Allows you to send commands to all Bots|cffffffff\n"
             .. "All your bots (those listed in the Units panel) will execute the command\n\n"
             .. "|cffff0000Affects every bot listed in the Units panel.|r\n"
             .. "|cff999999(Executed by: each Bot)|r"
-			
+
 	MultiBot.tips.allbots.maintenanceallbots = "Maintenance (ALL BOTS)|cffffffff\n"
 		.. "All your bots (those listed in the Units panel) will run the 'maintenance' command.\n"
 		.. "Use this when you want every bot to perform its full maintenance routine at once.|r\n\n"
 		.. "|cffff0000Affects every bot listed in the Units panel.|r\n"
 		.. "|cff999999(Executed by: each Bot)|r"
-			
+
 -- INVENTORY --
 
 MultiBot.tips.inventory = {}
