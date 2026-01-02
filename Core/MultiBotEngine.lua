@@ -779,7 +779,7 @@ function MultiBot.UpdateClickBlocker(frame)
 	end
 
 	scan(frame)
-	
+
 	if(not foundButton) then
 		cb:Hide()
 		return
