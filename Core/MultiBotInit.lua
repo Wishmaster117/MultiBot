@@ -1366,7 +1366,50 @@ btnPvpRaid.doLeft = function()
   MB_ShowPvpFrame()
 end
 
-local tButton = tControl.addButton("Invite", 0, 90, "Interface\\AddOns\\MultiBot\\Icons\\invite.blp", MultiBot.tips.units.invite).setEnable()
+-- COMMANDS FOR ALL BOTS --
+-- Bouton principal sous PvP Stats qui ouvre un sous-menu de commandes globales.
+local btnAllBots = tControl.addButton("AllBotsCommands", 0, 90,
+	"Temp",
+	MultiBot.tips.allbots.commandsallbots)
+
+btnAllBots.doLeft = function(pButton)
+	local menu = tControl.frames and tControl.frames["AllBotsCommandsMenu"]
+	if not menu then
+		return
+	end
+
+	if menu:IsShown() then
+		menu:Hide()
+	else
+		menu:Show()
+	end
+end
+
+-- Sous-menu vertical qui s'ouvre au-dessus du bouton principal
+local tAllBotsMenu = tControl.addFrame("AllBotsCommandsMenu", -30, 92, 32, 64)
+tAllBotsMenu:Hide()
+
+-- Bouton : Maintenance pour tous les bots
+tAllBotsMenu.addButton("MaintenanceAllBots", 0, 34,
+	"achievement_halloween_smiley_01",
+	MultiBot.tips.allbots.maintenanceallbots)
+.doLeft = function(pButton)
+	if MultiBot.MaintenanceAllBots then
+		MultiBot.MaintenanceAllBots()
+	end
+end
+
+-- Bouton : vendre tous les objets gris pour tous les bots (s *)
+tAllBotsMenu.addButton("SellAllBotsGrey", 0, 0,
+	"inv_misc_coin_18",
+	MultiBot.tips.allbots.sellallvendor)
+.doLeft = function(pButton)
+	if MultiBot.SellAllBots then
+		MultiBot.SellAllBots("s *")
+	end
+end
+
+local tButton = tControl.addButton("Invite", 0, 120, "Interface\\AddOns\\MultiBot\\Icons\\invite.blp", MultiBot.tips.units.invite).setEnable()
 tButton.doRight = function(pButton)
     if (GetNumRaidMembers() > 0 or GetNumPartyMembers() > 0) then return end
     MultiBot.timer.invite.roster = MultiBot.frames["MultiBar"].buttons["Units"].roster
@@ -1380,8 +1423,7 @@ tButton.doLeft = function(pButton)
 	if(pButton.state) then MultiBot.ShowHideSwitch(pButton.parent.frames["Invite"]) end
 end
 
---local tInvite = tControl.addFrame("Invite", -30, 62)
-local tInvite = tControl.addFrame("Invite", -30, 92)
+local tInvite = tControl.addFrame("Invite", -30, 122)
 tInvite:Hide()
 
 tInvite.addButton("Party+5", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\invite_party_5.blp", MultiBot.tips.units.inviteParty5)
@@ -1497,7 +1539,7 @@ end
 
 -- Fonction Browse corrigée
 --tControl.addButton("Browse", 0, 90, "Interface\\AddOns\\MultiBot\\Icons\\browse.blp", MultiBot.tips.units.browse)
-tControl.addButton("Browse", 0, 120, "Interface\\AddOns\\MultiBot\\Icons\\browse.blp", MultiBot.tips.units.browse)
+tControl.addButton("Browse", 0, 150, "Interface\\AddOns\\MultiBot\\Icons\\browse.blp", MultiBot.tips.units.browse)
 .doLeft = function(pButton)
   local tMaster = MultiBot.frames.MultiBar.buttons.Units
   local tUnits  = tMaster.parent.frames.Units
@@ -3161,50 +3203,6 @@ tRight.addButton("Summon", 136, 0, "ability_hunter_beastcall", MultiBot.tips.sum
 .doLeft = function(pButton)
 	MultiBot.ActionToGroup("summon")
 end
-
--- COMMANDS FOR ALL BOTS --
--- Bouton principal à droite qui ouvre un sous-menu de commandes globales.
-local btnAllBots = tRight.addButton("AllBotsCommands", 170, 0,
-	"Temp",
-	MultiBot.tips.allbots.commandsallbots)
-
-btnAllBots.doLeft = function(pButton)
-	local menu = tRight.frames and tRight.frames["AllBotsCommandsMenu"]
-	if not menu then
-		return
-	end
-
-	if menu:IsShown() then
-		menu:Hide()
-	else
-		menu:Show()
-	end
-end
-
--- Sous-menu vertical qui s'ouvre au-dessus du bouton principal
-local tAllBotsMenu = tRight.addFrame("AllBotsCommandsMenu", 170, 34, 32, 64)
-tAllBotsMenu:Hide()
-
--- Bouton : Maintenance pour tous les bots
-tAllBotsMenu.addButton("MaintenanceAllBots", 0, 34,
-	"achievement_halloween_smiley_01",
-	MultiBot.tips.allbots.maintenanceallbots)
-.doLeft = function(pButton)
-	if MultiBot.MaintenanceAllBots then
-		MultiBot.MaintenanceAllBots()
-	end
-end
-
--- Bouton : vendre tous les objets gris pour tous les bots (s *)
-tAllBotsMenu.addButton("SellAllBotsGrey", 0, 0,
-	"inv_misc_coin_18",
-	MultiBot.tips.allbots.sellallvendor)
-.doLeft = function(pButton)
-	if MultiBot.SellAllBots then
-		MultiBot.SellAllBots("s *")
-	end
-end
-
 
 -- INVENTORY --
 
