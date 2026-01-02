@@ -2688,15 +2688,15 @@ MultiBot.tips.group.group =
 	MultiBot.tips.every.repemblemsemtab = "Emblems"
 
     MultiBot.tips.every.BadgeofJustice = "Badge of Justice"
-	
+
     MultiBot.tips.every.EmblemofHeroism = "Emblem of Heroism"
-    
+
     MultiBot.tips.every.EmblemofValor = "Emblem of Valor"
-    
+
     MultiBot.tips.every.EmblemofConquest = "Emblem of Conquest"
-    
+
     MultiBot.tips.every.EmblemofTriumph = "Emblem of Triumph"
-    
+
     MultiBot.tips.every.EmblemofFrost = "Emblem of Frost"
 
 	MultiBot.tips.every.favorite = "Избранное|cffffffff\n"

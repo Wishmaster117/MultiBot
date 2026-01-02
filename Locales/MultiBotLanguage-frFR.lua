@@ -2672,16 +2672,16 @@ MultiBot.tips.group.group =
 	MultiBot.tips.every.repemblemsemtab = "Emblèmes"
 
     MultiBot.tips.every.BadgeofJustice = "Insigne de justice"
-	
+
     MultiBot.tips.every.EmblemofHeroism = "Emblème d'héroïsme"
-    
+
     MultiBot.tips.every.EmblemofValor = "Emblème de vaillance"
-    
+
     MultiBot.tips.every.EmblemofConquest = "Emblème de conquête"
-    
+
     MultiBot.tips.every.EmblemofTriumph = "Emblème de triomphe"
-    
-    MultiBot.tips.every.EmblemofFrost = "Emblème de givre"		
+
+    MultiBot.tips.every.EmblemofFrost = "Emblème de givre"
 
 	MultiBot.tips.every.favorite = "Favori|cffffffff\n"
 		.. "Ajouter ou retirer ce Bot de vos Favoris (sauvegardé par personnage).|r\n\n"
