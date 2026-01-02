@@ -1823,6 +1823,14 @@ MultiBot.tips.quests.gobsfound =
 MultiBot.tips.quests.gobpromptname =
 "Game Object Name";
 
+-- GROUP ACTIONS MENU --
+MultiBot.tips.group = {}
+MultiBot.tips.group.group =
+"Group Actions Selector\n|cffffffff"..
+"This opens a submenu with the following group actions:\n"..
+"Drink, Release, Revive.|r\n\n"..
+"|cffff0000Left-click to expand.|r";
+
 -- DRINK --
 
 MultiBot.tips.drink = {}

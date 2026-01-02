@@ -1079,6 +1079,12 @@ MultiBot.tips.units.pvpstatstoraid =
 
 	MultiBot.tips.quests.gobpromptname = "게임 오브젝트 이름"
 
+MultiBot.tips.group.group =
+"그룹 행동 선택기\n|cffffffff"..
+"다음 그룹 행동이 포함된 하위 메뉴를 엽니다:\n"..
+"음료 마시기, 영혼 풀기, 부활.|r\n\n"..
+"|cffff0000왼쪽 클릭: 펼치기.|r";
+
 	-- DRINK --
 
 	MultiBot.tips.drink.group = "팀 식수\n|cffffffff"

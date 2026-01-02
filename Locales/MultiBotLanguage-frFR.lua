@@ -1076,6 +1076,12 @@ MultiBot.tips.units.pvpstatstoraid =
 
 	MultiBot.tips.quests.gobpromptname = "Nom de l'objet du jeu"
 
+MultiBot.tips.group.group =
+"Sélecteur d’actions de groupe\n|cffffffff"..
+"Ouvre un sous-menu avec les actions de groupe suivantes :\n"..
+"Boire, Libérer, Ranimer.|r\n\n"..
+"|cffff0000Clic gauche pour développer.|r";
+
 	-- BOIRE --
 
 	MultiBot.tips.drink.group = "Boire en Groupe\n|cffffffff"
