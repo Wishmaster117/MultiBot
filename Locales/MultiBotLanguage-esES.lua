@@ -1073,6 +1073,12 @@ MultiBot.tips.units.pvpstatstoraid =
 
 	MultiBot.tips.quests.gobpromptname = "Nombre del objeto del juego"
 
+MultiBot.tips.group.group =
+"Selector de acciones de grupo\n|cffffffff"..
+"Abre un submenú con las siguientes acciones de grupo:\n"..
+"Beber, Liberar, Revivir.|r\n\n"..
+"|cffff0000Clic izquierdo para expandir.|r";
+
 	-- DRINK --
 
 	MultiBot.tips.drink.group = "Group-Drink\n|cffffffff" -- Línea que se mantiene en inglés

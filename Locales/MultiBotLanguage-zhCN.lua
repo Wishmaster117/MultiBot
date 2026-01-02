@@ -1071,6 +1071,12 @@ MultiBot.tips.units.pvpstatstoraid =
 
 	MultiBot.tips.quests.gobpromptname = "游戏对象名称"
 
+MultiBot.tips.group.group =
+"队伍动作选择器\n|cffffffff"..
+"打开包含以下队伍动作的子菜单：\n"..
+"喝水、释放灵魂、复活。|r\n\n"..
+"|cffff0000左键点击以展开。|r";
+
 	-- 饮用 --
 
 	MultiBot.tips.drink.group = "团队饮水\n|cffffffff"

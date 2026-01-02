@@ -3176,30 +3176,53 @@ tRight.buttons["BotUseGOBName"]  = btnGobName
 tRight.buttons["BotUseGOBSearch"]= btnGobSearch
 -- END NEW QUESTS --
 
+-- GROUP ACTIONS --
+-- Main button that opens a submenu for group commands.
+local btnGroupActions = tRight.addButton("GroupActions", 34, 0,
+	"Spell_unused2",
+	MultiBot.tips.group.group)
+
+btnGroupActions.doLeft = function(pButton)
+	local menu = tRight.frames and tRight.frames["GroupActionsMenu"]
+	if not menu then
+		return
+	end
+
+	if menu:IsShown() then
+		menu:Hide()
+	else
+		menu:Show()
+	end
+end
+
+-- Submenu: drink/release/revive
+local tGroupActionsMenu = tRight.addFrame("GroupActionsMenu", 34, 34, 32, 96)
+tGroupActionsMenu:Hide()
+
 -- DRINK --
 
-tRight.addButton("Drink", 34, 0, "inv_drink_24_sealwhey", MultiBot.tips.drink.group)
+tGroupActionsMenu.addButton("Drink", 0, 0, "inv_drink_24_sealwhey", MultiBot.tips.drink.group)
 .doLeft = function(pButton)
 	MultiBot.ActionToGroup("drink")
 end
 
 -- RELEASE --
 
-tRight.addButton("Release", 68, 0, "achievement_bg_xkills_avgraveyard", MultiBot.tips.release.group)
+tGroupActionsMenu.addButton("Release", 0, 34, "achievement_bg_xkills_avgraveyard", MultiBot.tips.release.group)
 .doLeft = function(pButton)
 	MultiBot.ActionToGroup("release")
 end
 
 -- REVIVE --
 
-tRight.addButton("Revive", 102, 0, "spell_holy_guardianspirit", MultiBot.tips.revive.group)
+tGroupActionsMenu.addButton("Revive", 0, 68, "spell_holy_guardianspirit", MultiBot.tips.revive.group)
 .doLeft = function(pButton)
 	MultiBot.ActionToGroup("revive")
 end
 
 -- SUMALL --
 
-tRight.addButton("Summon", 136, 0, "ability_hunter_beastcall", MultiBot.tips.summon.group)
+tRight.addButton("Summon", 68, 0, "ability_hunter_beastcall", MultiBot.tips.summon.group)
 .doLeft = function(pButton)
 	MultiBot.ActionToGroup("summon")
 end
