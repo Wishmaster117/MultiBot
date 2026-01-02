@@ -142,7 +142,6 @@ local function NormalizeFactionName(name)
 end
 
 local function BuildReputationView(entries)
-	local grouped = {}
 	local remaining = {}
 
 	for _, entry in ipairs(entries) do
@@ -293,7 +292,7 @@ local function ParseEmblemLine(clean)
 	local count = tonumber(clean:match("x(%d+)"))
 	local itemId = tonumber(clean:match("Hitem:(%d+)"))
 
-	local name = ""
+	local name
 	if itemId then
 		local itemName = GetItemInfo(itemId)
 		if itemName then
