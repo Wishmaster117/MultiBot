@@ -26,7 +26,8 @@ globals = {
 	"UnitIsConnected", "event", "arg1", "arg2", "MultiBotSaved", "GetUnitName", "GetTime", "GetNumMacros", "ReloadUI", "GetQuestLogLeaderBoard", "AbandonQuest",
 	"GetMacroIconInfo", "GetPlayerInfoByGUID", "UnitGUID", "ConvertToRaid", "HandleQuestsAllResponse", "UnitXPMax", "UnitXP", "UnitManaMax", "UnitMana",
 	"GetCurrentMapContinent", "GetCurrentMapAreaID", "SLASH_MULTIBOT1", "SLASH_MULTIBOT2", "SLASH_MULTIBOT3", "SLASH_MULTIBOTOPTIONS1", "SLASH_MBFAKEGM1",
-	"SLASH_MBCLASS1", "SLASH_MBCLASSTEST1", "icon", "FauxScrollFrame_OnVerticalScroll", "FauxScrollFrame_GetOffset", "FauxScrollFrame_Update"
+	"SLASH_MBCLASS1", "SLASH_MBCLASSTEST1", "icon", "FauxScrollFrame_OnVerticalScroll", "FauxScrollFrame_GetOffset", "FauxScrollFrame_Update", "UIDropDownMenu_SetText",
+	"time"
 	
 }
 
