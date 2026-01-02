@@ -50,6 +50,7 @@ UI\MultiBotSpecUI.lua
 Data\MultiBotItemus.lua
 UI\MultiBotTalent.lua
 UI\MultiBotPVPUI.lua
+UI\MultiBotRepEmblemUI.lua
 Features\MultiBotReward.lua
 Features\MultiBotNecronet.lua
 Features\MultiBotRaidus.lua
