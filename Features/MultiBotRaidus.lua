@@ -356,13 +356,13 @@ MultiBot.raidus.wowButton("Apply", -514, 360, 80, 20, 12)
 
 	local tSelf = UnitName("player")
 	MultiBot.index.raidus = {}
+    local tSelected = 0
+    local selectedNames = {}
 
 	for tName, tValue in pairs(MultiBot.frames["MultiBar"].frames["Units"].buttons) do
 		if(tValue.state) then
-			if(tName ~= tSelf and tRaidByName[tName] == nil) then
-				if(UnitInGroup(tName) or UnitInRaid(tName)) then UninviteUnit(tName) end
-				SendChatMessage(".playerbot bot remove " .. tName, "SAY")
-			end
+            tSelected = tSelected + 1
+            selectedNames[tName] = true
 		else
 			if(tName ~= tSelf and tRaidByName[tName] ~= nil) then
 				table.insert(MultiBot.index.raidus, tName)
@@ -372,7 +372,53 @@ MultiBot.raidus.wowButton("Apply", -514, 360, 80, 20, 12)
 
 	local tNeeds = #MultiBot.index.raidus
 
-	if(tNeeds > 0) then
+    local usedLayoutFallback = false
+
+    local tFallback = {}
+    local hasLayoutOnly = false
+    for tName, _ in pairs(tRaidByName) do
+        if tName ~= tSelf then
+            if not selectedNames[tName] then
+                hasLayoutOnly = true
+            end
+            if not MultiBot.isMember(tName) then
+                table.insert(tFallback, tName)
+            end
+        end
+    end
+
+    if tSelected == 0 or hasLayoutOnly then
+        if #tFallback > 0 then
+            MultiBot.index.raidus = tFallback
+            tNeeds = #tFallback
+            usedLayoutFallback = true
+        end
+    end
+
+    local tRaidByMembers = MultiBot.raidus.getRaidState()
+    for tName, _ in pairs(tRaidByMembers) do
+        if tName ~= tSelf and tRaidByName[tName] == nil then
+            if MultiBot.isMember(tName) then
+                UninviteUnit(tName)
+            end
+            SendChatMessage(".playerbot bot remove " .. tName, "SAY")
+        end
+    end
+
+    local tList = ""
+    if tNeeds > 0 then
+        tList = table.concat(MultiBot.index.raidus, ", ")
+    end
+    if usedLayoutFallback then
+        SendChatMessage("Raidus Apply: using layout list, selected=" .. tSelected .. " toInvite=" .. tNeeds, "SAY")
+    else
+        SendChatMessage("Raidus Apply: selected=" .. tSelected .. " toInvite=" .. tNeeds, "SAY")
+    end
+    if tList ~= "" then
+        SendChatMessage("Raidus Apply list: " .. tList, "SAY")
+    end
+
+    if(tNeeds > 0) then
 		SendChatMessage(MultiBot.info.starting, "SAY")
 		MultiBot.timer.invite.roster = "raidus"
 		MultiBot.timer.invite.needs = tNeeds
