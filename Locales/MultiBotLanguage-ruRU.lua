@@ -3375,7 +3375,7 @@ MultiBot.tips.group.group =
     MultiBot.tips.raidus.class = "|cffffff00Сортировать ботов по классу|r"
 
     MultiBot.tips.raidus.slot = "|cffffff00Sélectionner l'emplacement de sauvegarde Raidus|r"
-	
+
     MultiBot.tips.raidus.autobalance = "|cffffff00Автоматическое балансирование рейда|r\n|cffffffff"
         .. "Автоматически распределяет ботов по рейдовым группам для более сбалансированной конфигурации.|r\n"
         .. "|cffff0000ЛКМ:|r |cffffffffБалансировка по очкам (общая сила рейда).|r\n"

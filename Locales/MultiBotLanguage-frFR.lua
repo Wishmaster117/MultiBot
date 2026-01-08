@@ -3361,7 +3361,7 @@ MultiBot.tips.group.group =
     MultiBot.tips.raidus.slot = "|cffffff00Selectionnez un slot de Sauvegarde Raidus|r";
 
     MultiBot.tips.raidus.slot = "|cffffff00Sélectionner l'emplacement de sauvegarde Raidus|r"
-	
+
     MultiBot.tips.raidus.autobalance = "|cffffff00Équilibrage automatique du Raid|r\n|cffffffff"
         .. "Arrange automatiquement les bots en groupes de raid pour une configuration plus équilibrée.|r\n"
         .. "|cffff0000Clic gauche:|r |cffffffffÉquilibrage par score (puissance totale du raid).|r\n"

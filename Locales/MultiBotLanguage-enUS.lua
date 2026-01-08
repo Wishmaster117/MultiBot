@@ -3257,7 +3257,7 @@ MultiBot.tips.group.group =
     MultiBot.tips.raidus.level = "|cffffff00Sort Bots by Level|r"
 
     MultiBot.tips.raidus.class = "|cffffff00Sort Bots by Class|r"
-	
+
     MultiBot.tips.raidus.slot = "|cffffff00Select Raidus save slot|r"
 
     MultiBot.tips.raidus.autobalance = "|cffffff00Auto-Balance Raid|r\n|cffffffff"

@@ -3311,7 +3311,7 @@ MultiBot.tips.group.group =
     MultiBot.tips.raidus.class = "|cffffff00직업으로 봇 정렬|r"
 
     MultiBot.tips.raidus.slot = "|cffffff00Sélectionner l'emplacement de sauvegarde Raidus|r"
-	
+
     MultiBot.tips.raidus.autobalance = "|cffffff00자동 레이드 균형 조정|r\n|cffffffff"
         .. "더 균형 잡힌 구성을 위해 봇을 자동으로 레이드 그룹에 배치합니다.|r\n"
         .. "|cffff0000왼쪽 클릭:|r |cffffffff점수 기준으로 균형 조정 (전체 레이드 전투력).|r\n"
