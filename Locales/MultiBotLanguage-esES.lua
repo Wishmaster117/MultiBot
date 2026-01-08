@@ -3344,6 +3344,8 @@ MultiBot.tips.group.group =
 
     MultiBot.tips.raidus.class = "|cffffff00Ordenar Bots por Clase|r"
 
+    MultiBot.tips.raidus.slot = "|cffffff00Seleccionar ranura de guardado de Raidus|r"
+
     MultiBot.tips.raidus.autobalance = "|cffffff00Balanceo automático de la Raid|r\n|cffffffff"
         .. "Organiza automáticamente los bots en grupos de raid para una configuración más equilibrada.|r\n"
         .. "|cffff0000Clic izquierdo:|r |cffffffffBalancear por puntuación (poder total de la raid).|r\n"

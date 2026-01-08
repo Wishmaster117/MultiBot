@@ -187,50 +187,47 @@ MultiBot.raidus.wowButton("Load", -762, 360, 80, 20, 12)
 	end
 end
 
-MultiBot.raidus.wowButton("1", -734, 360, 22, 20, 12).setDisable()
-.doLeft = function(pButton)
-	if(pButton.state) then
-		pButton.parent.save = ""
-		pButton.setDisable()
-		MultiBot.raidus.setRaidus()
-	else
-		pButton.parent.save = "1"
-		pButton.parent.buttons["2"].setDisable()
-		pButton.parent.buttons["3"].setDisable()
-		pButton.setEnable()
-		MultiBot.raidus.setRaidus()
+local function UpdateRaidusSlotButtonText(button)
+	local label = "Slot"
+	if MultiBot.raidus.save ~= "" then
+		label = "Slot " .. MultiBot.raidus.save
 	end
+	button.text:SetText("|cffffcc00" .. label .. "|r")
 end
 
-MultiBot.raidus.wowButton("2", -707, 360, 22, 20, 12).setDisable()
-.doLeft = function(pButton)
-	if(pButton.state) then
-		pButton.parent.save = ""
-		pButton.setDisable()
-		MultiBot.raidus.setRaidus()
-	else
-		pButton.parent.save = "2"
-		pButton.parent.buttons["1"].setDisable()
-		pButton.parent.buttons["3"].setDisable()
-		pButton.setEnable()
-		MultiBot.raidus.setRaidus()
+local slotDropDown = CreateFrame("Frame", "MultiBotRaidusSlotDropDown", MultiBot.raidus, "UIDropDownMenuTemplate")
+UIDropDownMenu_SetWidth(slotDropDown, 80)
+UIDropDownMenu_Initialize(slotDropDown, function(self, level)
+	for i = 1, 10 do
+		local info = UIDropDownMenu_CreateInfo()
+		info.text = tostring(i)
+		info.value = tostring(i)
+		info.func = function()
+			MultiBot.raidus.save = tostring(i)
+			UIDropDownMenu_SetSelectedValue(slotDropDown, tostring(i))
+			UpdateRaidusSlotButtonText(MultiBot.raidus.buttons["Slot"])
+			MultiBot.raidus.setRaidus()
+		end
+		UIDropDownMenu_AddButton(info, level)
 	end
-end
+end)
 
-MultiBot.raidus.wowButton("3", -680, 360, 22, 20, 12).setDisable()
-.doLeft = function(pButton)
-	if(pButton.state) then
-		pButton.parent.save = ""
-		pButton.setDisable()
-		MultiBot.raidus.setRaidus()
-	else
-		pButton.parent.save = "3"
-		pButton.parent.buttons["1"].setDisable()
-		pButton.parent.buttons["2"].setDisable()
-		pButton.setEnable()
-		MultiBot.raidus.setRaidus()
+local slotButton = MultiBot.raidus.wowButton("Slot", -682, 360, 80, 20, 12)
+slotButton.tip = MultiBot.tips.raidus.slot
+slotButton:SetScript("OnEnter", function(self)
+	GameTooltip:SetOwner(self, "ANCHOR_TOP")
+	GameTooltip:SetText(self.tip or "", 1, 1, 1, true)
+end)
+slotButton:SetScript("OnLeave", function()
+	GameTooltip:Hide()
+end)
+slotButton.doLeft = function()
+	if MultiBot.raidus.save ~= "" then
+		UIDropDownMenu_SetSelectedValue(slotDropDown, MultiBot.raidus.save)
 	end
+	ToggleDropDownMenu(1, nil, slotDropDown, slotButton, 0, 0)
 end
+UpdateRaidusSlotButtonText(slotButton)
 
 -- Contrôle du mode Tri, "Score / Level / Class"
 local sortBaseX   = -300 -- position du bouton "Score", pour déplacer tout le groupe il faut modifier cette valeur
@@ -356,13 +353,13 @@ MultiBot.raidus.wowButton("Apply", -514, 360, 80, 20, 12)
 
 	local tSelf = UnitName("player")
 	MultiBot.index.raidus = {}
+    local tSelected = 0
+    local selectedNames = {}
 
 	for tName, tValue in pairs(MultiBot.frames["MultiBar"].frames["Units"].buttons) do
 		if(tValue.state) then
-			if(tName ~= tSelf and tRaidByName[tName] == nil) then
-				if(UnitInGroup(tName) or UnitInRaid(tName)) then UninviteUnit(tName) end
-				SendChatMessage(".playerbot bot remove " .. tName, "SAY")
-			end
+            tSelected = tSelected + 1
+            selectedNames[tName] = true
 		else
 			if(tName ~= tSelf and tRaidByName[tName] ~= nil) then
 				table.insert(MultiBot.index.raidus, tName)
@@ -372,7 +369,53 @@ MultiBot.raidus.wowButton("Apply", -514, 360, 80, 20, 12)
 
 	local tNeeds = #MultiBot.index.raidus
 
-	if(tNeeds > 0) then
+    local usedLayoutFallback = false
+
+    local tFallback = {}
+    local hasLayoutOnly = false
+    for tName, _ in pairs(tRaidByName) do
+        if tName ~= tSelf then
+            if not selectedNames[tName] then
+                hasLayoutOnly = true
+            end
+            if not MultiBot.isMember(tName) then
+                table.insert(tFallback, tName)
+            end
+        end
+    end
+
+    if tSelected == 0 or hasLayoutOnly then
+        if #tFallback > 0 then
+            MultiBot.index.raidus = tFallback
+            tNeeds = #tFallback
+            usedLayoutFallback = true
+        end
+    end
+
+    local tRaidByMembers = MultiBot.raidus.getRaidState()
+    for tName, _ in pairs(tRaidByMembers) do
+        if tName ~= tSelf and tRaidByName[tName] == nil then
+            if MultiBot.isMember(tName) then
+                UninviteUnit(tName)
+            end
+            SendChatMessage(".playerbot bot remove " .. tName, "SAY")
+        end
+    end
+
+    local tList = ""
+    if tNeeds > 0 then
+        tList = table.concat(MultiBot.index.raidus, ", ")
+    end
+    if usedLayoutFallback then
+        SendChatMessage("Raidus Apply: using layout list, selected=" .. tSelected .. " toInvite=" .. tNeeds, "SAY")
+    else
+        SendChatMessage("Raidus Apply: selected=" .. tSelected .. " toInvite=" .. tNeeds, "SAY")
+    end
+    if tList ~= "" then
+        SendChatMessage("Raidus Apply list: " .. tList, "SAY")
+    end
+
+    if(tNeeds > 0) then
 		SendChatMessage(MultiBot.info.starting, "SAY")
 		MultiBot.timer.invite.roster = "raidus"
 		MultiBot.timer.invite.needs = tNeeds

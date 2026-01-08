@@ -3342,6 +3342,8 @@ MultiBot.tips.group.group =
 
     MultiBot.tips.raidus.class = "|cffffff00按职业排序机器人|r"
 
+    MultiBot.tips.raidus.slot = "|cffffff00选择 Raidus 保存槽|r"
+
     MultiBot.tips.raidus.autobalance = "|cffffff00自动团队平衡|r\n|cffffffff"
         .. "自动将机器人分配到团队小队，以获得更均衡的配置。|r\n"
         .. "|cffff0000左键点击:|r |cffffffff按分数平衡（整体团队战斗力）。|r\n"

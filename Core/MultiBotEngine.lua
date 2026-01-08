@@ -755,6 +755,7 @@ function MultiBot.UpdateClickBlocker(frame)
 	end
 
 	local minL, maxR, minB, maxT
+	local foundButton = false
 
 	local function consider(l, r, b, t)
 		if(not l or not r or not b or not t) then return end
@@ -769,22 +770,20 @@ function MultiBot.UpdateClickBlocker(frame)
 
 		if(f.buttons) then
 			for _, b in pairs(f.buttons) do
-				if(b and b.IsShown and b:IsShown()) then
+				if(b and b.IsVisible and b:IsVisible()) then
 					consider(b:GetLeft(), b:GetRight(), b:GetBottom(), b:GetTop())
+					foundButton = true
 				end
-			end
-		end
-
-		if(f.frames) then
-			for _, sf in pairs(f.frames) do
-				scan(sf)
 			end
 		end
 	end
 
-	-- fallback minimal : la zone du frame lui-même
-	consider(frame:GetLeft(), frame:GetRight(), frame:GetBottom(), frame:GetTop())
 	scan(frame)
+
+	if(not foundButton) then
+		cb:Hide()
+		return
+	end
 
 	if(not minL or not maxR or not minB or not maxT) then
 		cb:Hide()

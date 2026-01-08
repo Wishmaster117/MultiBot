@@ -4553,6 +4553,9 @@ MultiBot.tips.raidus.level =
 MultiBot.tips.raidus.class =
 "|cffffff00Sort Bots by Class|r";
 
+MultiBot.tips.raidus.slot =
+"|cffffff00Select Raidus save slot|r";
+
 MultiBot.tips.raidus.autobalance =
 "|cffffff00Auto-Balance Raid|r\n|cffffffff"..
 "Automatically arranges bots into raid groups for a more balanced setup.|r\n"..

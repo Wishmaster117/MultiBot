@@ -3351,13 +3351,16 @@ MultiBot.tips.group.group =
 		.. "|cff999999(Ordre d'exécution : Raid, Groupe)|r"
 
     -- Raidus
-    MultiBot.tips.raidus = {}
 
     MultiBot.tips.raidus.score = "|cffffff00Trier les Bots par Score|r"
 
     MultiBot.tips.raidus.level = "|cffffff00Trier les Bots par Niveau|r"
 
     MultiBot.tips.raidus.class = "|cffffff00Trier les Bots par Classe|r"
+
+    MultiBot.tips.raidus.slot = "|cffffff00Selectionnez un slot de Sauvegarde Raidus|r";
+
+    MultiBot.tips.raidus.slot = "|cffffff00Sélectionner l'emplacement de sauvegarde Raidus|r"
 
     MultiBot.tips.raidus.autobalance = "|cffffff00Équilibrage automatique du Raid|r\n|cffffffff"
         .. "Arrange automatiquement les bots en groupes de raid pour une configuration plus équilibrée.|r\n"
