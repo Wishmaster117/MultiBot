@@ -2648,6 +2648,41 @@ MultiBot.tips.group.group =
 
 	MultiBot.tips.every.pvparenadata = "Données PvP "
 
+	MultiBot.tips.every.repemblems = "Réputations & Emblèmes|cffffffff\n"
+		.. "Demande toutes les réputations et emblèmes de ce Bot et les affiche dans un panneau.|r\n\n"
+		.. "|cffff0000Clic gauche pour demander réputations et emblèmes|r\n"
+		.. "|cff999999(Ordre d'exécution : Bot)|r"
+
+	MultiBot.tips.every.repemblemstitle = "Réputations & Emblèmes"
+
+	MultiBot.tips.every.repemblemsbot = "Bot:"
+
+	MultiBot.tips.every.repemblemsselectbot = "Bot"
+
+	MultiBot.tips.every.repemblemsfaction = "Faction"
+
+	MultiBot.tips.every.repemblemsstanding = "État"
+
+	MultiBot.tips.every.repemblemsemblem = "Emblème"
+
+	MultiBot.tips.every.repemblemscount = "Totale"
+
+	MultiBot.tips.every.repemblemsreptab = "Réputations"
+
+	MultiBot.tips.every.repemblemsemtab = "Emblèmes"
+
+    MultiBot.tips.every.BadgeofJustice = "Insigne de justice"
+
+    MultiBot.tips.every.EmblemofHeroism = "Emblème d'héroïsme"
+
+    MultiBot.tips.every.EmblemofValor = "Emblème de vaillance"
+
+    MultiBot.tips.every.EmblemofConquest = "Emblème de conquête"
+
+    MultiBot.tips.every.EmblemofTriumph = "Emblème de triomphe"
+
+    MultiBot.tips.every.EmblemofFrost = "Emblème de givre"
+
 	MultiBot.tips.every.favorite = "Favori|cffffffff\n"
 		.. "Ajouter ou retirer ce Bot de vos Favoris (sauvegardé par personnage).|r\n\n"
 		.. "|cffff0000Clic gauche pour basculer|r\n"
@@ -3316,7 +3351,6 @@ MultiBot.tips.group.group =
 		.. "|cff999999(Ordre d'exécution : Raid, Groupe)|r"
 
     -- Raidus
-    MultiBot.tips.raidus = {}
 
     MultiBot.tips.raidus.score = "|cffffff00Trier les Bots par Score|r"
 
@@ -3324,6 +3358,10 @@ MultiBot.tips.group.group =
 
     MultiBot.tips.raidus.class = "|cffffff00Trier les Bots par Classe|r"
 
+    MultiBot.tips.raidus.slot = "|cffffff00Selectionnez un slot de Sauvegarde Raidus|r";
+
+    MultiBot.tips.raidus.slot = "|cffffff00Sélectionner l'emplacement de sauvegarde Raidus|r"
+	
     MultiBot.tips.raidus.autobalance = "|cffffff00Équilibrage automatique du Raid|r\n|cffffffff"
         .. "Arrange automatiquement les bots en groupes de raid pour une configuration plus équilibrée.|r\n"
         .. "|cffff0000Clic gauche:|r |cffffffffÉquilibrage par score (puissance totale du raid).|r\n"

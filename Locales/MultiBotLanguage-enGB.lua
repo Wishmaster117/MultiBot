@@ -2548,6 +2548,41 @@ MultiBot.tips.group.group =
 
 	MultiBot.tips.every.pvparenadata = "PvP Datas "
 
+	MultiBot.tips.every.repemblems = "Reputations & Emblems|cffffffff\n"
+		.. "Requests all reputations and emblems from this Bot and shows them in a panel.|r\n\n"
+		.. "|cffff0000Left-click to request reputations and emblems|r\n"
+		.. "|cff999999(Execution order: Bot)|r"
+
+	MultiBot.tips.every.repemblemstitle = "Reputations & Emblems"
+
+	MultiBot.tips.every.repemblemsbot = "Bot:"
+
+	MultiBot.tips.every.repemblemsselectbot = "Bot"
+
+	MultiBot.tips.every.repemblemsfaction = "Faction"
+
+	MultiBot.tips.every.repemblemsstanding = "Standing"
+
+	MultiBot.tips.every.repemblemsemblem = "Emblem"
+
+	MultiBot.tips.every.repemblemscount = "Count"
+
+	MultiBot.tips.every.repemblemsreptab = "Reputations"
+
+	MultiBot.tips.every.repemblemsemtab = "Emblems"
+
+    MultiBot.tips.every.BadgeofJustice = "Badge of Justice"
+
+    MultiBot.tips.every.EmblemofHeroism = "Emblem of Heroism"
+
+    MultiBot.tips.every.EmblemofValor = "Emblem of Valor"
+
+    MultiBot.tips.every.EmblemofConquest = "Emblem of Conquest"
+
+    MultiBot.tips.every.EmblemofTriumph = "Emblem of Triumph"
+
+    MultiBot.tips.every.EmblemofFrost = "Emblem of Frost"
+
 	MultiBot.tips.every.favorite = "Favorite|cffffffff\n"
 		.. "Add or remove this Bot from your Favorites (saved per character).|r\n\n"
 		.. "|cffff0000Left-click to toggle|r\n"
@@ -3222,6 +3257,8 @@ MultiBot.tips.group.group =
     MultiBot.tips.raidus.level = "|cffffff00Sort Bots by Level|r"
 
     MultiBot.tips.raidus.class = "|cffffff00Sort Bots by Class|r"
+	
+    MultiBot.tips.raidus.slot = "|cffffff00Select Raidus save slot|r"
 
     MultiBot.tips.raidus.autobalance = "|cffffff00Auto-Balance Raid|r\n|cffffffff"
         .. "Automatically arranges bots into raid groups for a more balanced setup.|r\n"

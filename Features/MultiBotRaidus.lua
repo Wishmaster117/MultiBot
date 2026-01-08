@@ -187,50 +187,47 @@ MultiBot.raidus.wowButton("Load", -762, 360, 80, 20, 12)
 	end
 end
 
-MultiBot.raidus.wowButton("1", -734, 360, 22, 20, 12).setDisable()
-.doLeft = function(pButton)
-	if(pButton.state) then
-		pButton.parent.save = ""
-		pButton.setDisable()
-		MultiBot.raidus.setRaidus()
-	else
-		pButton.parent.save = "1"
-		pButton.parent.buttons["2"].setDisable()
-		pButton.parent.buttons["3"].setDisable()
-		pButton.setEnable()
-		MultiBot.raidus.setRaidus()
+local function UpdateRaidusSlotButtonText(button)
+	local label = "Slot"
+	if MultiBot.raidus.save ~= "" then
+		label = "Slot " .. MultiBot.raidus.save
 	end
+	button.text:SetText("|cffffcc00" .. label .. "|r")
 end
 
-MultiBot.raidus.wowButton("2", -707, 360, 22, 20, 12).setDisable()
-.doLeft = function(pButton)
-	if(pButton.state) then
-		pButton.parent.save = ""
-		pButton.setDisable()
-		MultiBot.raidus.setRaidus()
-	else
-		pButton.parent.save = "2"
-		pButton.parent.buttons["1"].setDisable()
-		pButton.parent.buttons["3"].setDisable()
-		pButton.setEnable()
-		MultiBot.raidus.setRaidus()
+local slotDropDown = CreateFrame("Frame", "MultiBotRaidusSlotDropDown", MultiBot.raidus, "UIDropDownMenuTemplate")
+UIDropDownMenu_SetWidth(slotDropDown, 80)
+UIDropDownMenu_Initialize(slotDropDown, function(self, level)
+	for i = 1, 10 do
+		local info = UIDropDownMenu_CreateInfo()
+		info.text = tostring(i)
+		info.value = tostring(i)
+		info.func = function()
+			MultiBot.raidus.save = tostring(i)
+			UIDropDownMenu_SetSelectedValue(slotDropDown, tostring(i))
+			UpdateRaidusSlotButtonText(MultiBot.raidus.buttons["Slot"])
+			MultiBot.raidus.setRaidus()
+		end
+		UIDropDownMenu_AddButton(info, level)
 	end
-end
+end)
 
-MultiBot.raidus.wowButton("3", -680, 360, 22, 20, 12).setDisable()
-.doLeft = function(pButton)
-	if(pButton.state) then
-		pButton.parent.save = ""
-		pButton.setDisable()
-		MultiBot.raidus.setRaidus()
-	else
-		pButton.parent.save = "3"
-		pButton.parent.buttons["1"].setDisable()
-		pButton.parent.buttons["2"].setDisable()
-		pButton.setEnable()
-		MultiBot.raidus.setRaidus()
+local slotButton = MultiBot.raidus.wowButton("Slot", -682, 360, 80, 20, 12)
+slotButton.tip = MultiBot.tips.raidus.slot
+slotButton:SetScript("OnEnter", function(self)
+	GameTooltip:SetOwner(self, "ANCHOR_TOP")
+	GameTooltip:SetText(self.tip or "", 1, 1, 1, true)
+end)
+slotButton:SetScript("OnLeave", function()
+	GameTooltip:Hide()
+end)
+slotButton.doLeft = function()
+	if MultiBot.raidus.save ~= "" then
+		UIDropDownMenu_SetSelectedValue(slotDropDown, MultiBot.raidus.save)
 	end
+	ToggleDropDownMenu(1, nil, slotDropDown, slotButton, 0, 0)
 end
+UpdateRaidusSlotButtonText(slotButton)
 
 -- Contrôle du mode Tri, "Score / Level / Class"
 local sortBaseX   = -300 -- position du bouton "Score", pour déplacer tout le groupe il faut modifier cette valeur

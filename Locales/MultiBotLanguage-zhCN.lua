@@ -2524,6 +2524,41 @@ MultiBot.tips.group.group =
 
 	MultiBot.tips.every.pvparenadata = "PvP Datas "
 
+	MultiBot.tips.every.repemblems = "Reputations & Emblems|cffffffff\n"
+		.. "Requests all reputations and emblems from this Bot and shows them in a panel.|r\n\n"
+		.. "|cffff0000Left-click to request reputations and emblems|r\n"
+		.. "|cff999999(Execution order: Bot)|r"
+
+	MultiBot.tips.every.repemblemstitle = "Reputations & Emblems"
+
+	MultiBot.tips.every.repemblemsbot = "Bot:"
+
+	MultiBot.tips.every.repemblemsselectbot = "Bot"
+
+	MultiBot.tips.every.repemblemsfaction = "Faction"
+
+	MultiBot.tips.every.repemblemsstanding = "Standing"
+
+	MultiBot.tips.every.repemblemsemblem = "Emblem"
+
+	MultiBot.tips.every.repemblemscount = "Count"
+
+	MultiBot.tips.every.repemblemsreptab = "Reputations"
+
+	MultiBot.tips.every.repemblemsemtab = "Emblems"
+
+    MultiBot.tips.every.BadgeofJustice = "Badge of Justice"
+
+    MultiBot.tips.every.EmblemofHeroism = "Emblem of Heroism"
+
+    MultiBot.tips.every.EmblemofValor = "Emblem of Valor"
+
+    MultiBot.tips.every.EmblemofConquest = "Emblem of Conquest"
+
+    MultiBot.tips.every.EmblemofTriumph = "Emblem of Triumph"
+
+    MultiBot.tips.every.EmblemofFrost = "Emblem of Frost"
+
 	MultiBot.tips.every.favorite = "收藏|cffffffff\n"
 		.. "将此机器人添加到收藏或从收藏中移除（按角色保存）。|r\n\n"
 		.. "|cffff0000左键点击以切换|r\n"
@@ -3307,6 +3342,8 @@ MultiBot.tips.group.group =
 
     MultiBot.tips.raidus.class = "|cffffff00按职业排序机器人|r"
 
+    MultiBot.tips.raidus.slot = "|cffffff00选择 Raidus 保存槽|r"
+	
     MultiBot.tips.raidus.autobalance = "|cffffff00自动团队平衡|r\n|cffffffff"
         .. "自动将机器人分配到团队小队，以获得更均衡的配置。|r\n"
         .. "|cffff0000左键点击:|r |cffffffff按分数平衡（整体团队战斗力）。|r\n"

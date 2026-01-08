@@ -2644,6 +2644,41 @@ MultiBot.tips.group.group =
 
 	MultiBot.tips.every.pvparenadata = "PvP Datas "
 
+	MultiBot.tips.every.repemblems = "Reputations & Emblems|cffffffff\n"
+		.. "Requests all reputations and emblems from this Bot and shows them in a panel.|r\n\n"
+		.. "|cffff0000Left-click to request reputations and emblems|r\n"
+		.. "|cff999999(Execution order: Bot)|r"
+
+	MultiBot.tips.every.repemblemstitle = "Reputations & Emblems"
+
+	MultiBot.tips.every.repemblemsbot = "Bot:"
+
+	MultiBot.tips.every.repemblemsselectbot = "Bot"
+
+	MultiBot.tips.every.repemblemsfaction = "Faction"
+
+	MultiBot.tips.every.repemblemsstanding = "Standing"
+
+	MultiBot.tips.every.repemblemsemblem = "Emblem"
+
+	MultiBot.tips.every.repemblemscount = "Count"
+
+	MultiBot.tips.every.repemblemsreptab = "Reputations"
+
+	MultiBot.tips.every.repemblemsemtab = "Emblems"
+
+    MultiBot.tips.every.BadgeofJustice = "Badge of Justice"
+
+    MultiBot.tips.every.EmblemofHeroism = "Emblem of Heroism"
+
+    MultiBot.tips.every.EmblemofValor = "Emblem of Valor"
+
+    MultiBot.tips.every.EmblemofConquest = "Emblem of Conquest"
+
+    MultiBot.tips.every.EmblemofTriumph = "Emblem of Triumph"
+
+    MultiBot.tips.every.EmblemofFrost = "Emblem of Frost"
+
 	MultiBot.tips.every.favorite = "즐겨찾기|cffffffff\n"
 		.. "이 봇을 즐겨찾기에 추가하거나 제거합니다 (캐릭터별 저장).|r\n\n"
 		.. "|cffff0000좌클릭으로 전환|r\n"
@@ -3275,6 +3310,8 @@ MultiBot.tips.group.group =
 
     MultiBot.tips.raidus.class = "|cffffff00직업으로 봇 정렬|r"
 
+    MultiBot.tips.raidus.slot = "|cffffff00Sélectionner l'emplacement de sauvegarde Raidus|r"
+	
     MultiBot.tips.raidus.autobalance = "|cffffff00자동 레이드 균형 조정|r\n|cffffffff"
         .. "더 균형 잡힌 구성을 위해 봇을 자동으로 레이드 그룹에 배치합니다.|r\n"
         .. "|cffff0000왼쪽 클릭:|r |cffffffff점수 기준으로 균형 조정 (전체 레이드 전투력).|r\n"
