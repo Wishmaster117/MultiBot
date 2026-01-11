@@ -137,6 +137,9 @@ MultiBot:SetScript("OnEvent", function()
         if MultiBot.EnsureFavorites then MultiBot.EnsureFavorites() end
         if MultiBot.UpdateFavoritesIndex then MultiBot.UpdateFavoritesIndex() end
 
+        -- Initialize Masque support
+        if MultiBot.InitializeMasque then MultiBot.InitializeMasque() end
+
         -- [AJOUT] init config + applique timers + enregistre le panneau d'options
         if MultiBot.Config_Ensure then MultiBot.Config_Ensure() end
         if MultiBot.ApplyTimersToRuntime then MultiBot.ApplyTimersToRuntime() end

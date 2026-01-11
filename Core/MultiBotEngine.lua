@@ -1061,6 +1061,11 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 	button:HookScript("OnShow", function() if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end end)
 	button:HookScript("OnHide", function() if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end end)
 
+	-- Register with Masque if available
+	if MultiBot.RegisterButtonWithMasque then
+		MultiBot.RegisterButtonWithMasque(button)
+	end
+
 	-- ADD --
 
 	button.addMacro = function(pType, pMacro)
@@ -1204,6 +1209,15 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 		if(pEvent == "RightButton" and button.doRight ~= nil) then button.doRight(button) end
 		if(pEvent == "LeftButton" and button.doLeft ~= nil) then button.doLeft(button) end
 	end)
+
+	-- CLEANUP --
+	
+	button.cleanup = function()
+		if MultiBot.UnregisterButtonFromMasque then
+			MultiBot.UnregisterButtonFromMasque(button)
+		end
+		return button
+	end
 
 	return button
 end
