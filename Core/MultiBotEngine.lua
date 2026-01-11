@@ -1087,7 +1087,10 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
     button.setButton = function(texture, tip)
         local safe = MultiBot.SafeTexturePath(texture)
         button.icon:SetTexture(safe)
-		button.icon:SetAllPoints(button)
+		-- Only reset icon positioning if not managed by Masque
+		if not (MultiBot.Masque and MultiBot.Masque.IsLoaded and MultiBot.Masque.Buttons[button]) then
+			button.icon:SetAllPoints(button)
+		end
         button.texture = safe
         button.tip = tip
 		return button
@@ -1096,7 +1099,10 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
     button.setTexture = function(texture)
         local safe = MultiBot.SafeTexturePath(texture)
         button.icon:SetTexture(safe)
-		button.icon:SetAllPoints(button)
+		-- Only reset icon positioning if not managed by Masque
+		if not (MultiBot.Masque and MultiBot.Masque.IsLoaded and MultiBot.Masque.Buttons[button]) then
+			button.icon:SetAllPoints(button)
+		end
         button.texture = safe
 		return button
 	end
@@ -1186,11 +1192,14 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 	end)
 
 	button:SetScript("OnLeave", function()
-		button:SetPoint("BOTTOMRIGHT", button.x, button.y)
-		button:SetSize(button.size, button.size)
-
-		button.border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2)
-		button.border:SetSize(button.size + 4, button.size + 4)
+		-- Don't reset positioning if button is managed by Masque
+		if not (MultiBot.Masque and MultiBot.Masque.IsLoaded and MultiBot.Masque.Buttons[button]) then
+			button:SetPoint("BOTTOMRIGHT", button.x, button.y)
+			button:SetSize(button.size, button.size)
+			
+			button.border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2)
+			button.border:SetSize(button.size + 4, button.size + 4)
+		end
 
 		if(type(button.tip) == "string") then GameTooltip:Hide() end
 		if(type(button.tip) == "table") then button.tip:Hide() end
