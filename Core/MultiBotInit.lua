@@ -182,6 +182,22 @@ tMultiBar:SetMovable(true)
 -- Évite les micro-dépassements avec certains UI scale qui finissent par décaler Y
 tMultiBar:SetClampedToScreen(true)
 
+-- Restore saved position after login/reload
+do
+    local restoreFrame = CreateFrame("Frame")
+    restoreFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+    restoreFrame:SetScript("OnEvent", function(self, event)
+        if MultiBotSave and MultiBotSave.MultiBarPosition then
+            local pos = MultiBotSave.MultiBarPosition
+            if pos.x and pos.y then
+                tMultiBar:ClearAllPoints()
+                tMultiBar.setPoint(pos.x, pos.y)
+            end
+        end
+        self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+    end)
+end
+
 -- LEFT --
 
 local tLeft = tMultiBar.addFrame("Left", -76, 2, 32)
@@ -1617,7 +1633,29 @@ tButton:SetScript("OnDragStart", function()
 	MultiBot.frames["MultiBar"]:StartMoving()
 end)
 tButton:SetScript("OnDragStop", function()
-	MultiBot.frames["MultiBar"]:StopMovingOrSizing()
+	local frame = MultiBot.frames["MultiBar"]
+	frame:StopMovingOrSizing()
+
+	-- Get frame position before re-anchoring
+	local frameRight = frame:GetRight()
+	local frameBottom = frame:GetBottom()
+	local parentRight = UIParent:GetRight()
+
+	-- Calculate BOTTOMRIGHT coordinates (setPoint uses BOTTOMRIGHT anchor)
+	local x = frameRight - parentRight  -- negative = left of right edge
+	local y = frameBottom               -- positive = above bottom edge
+
+	-- Re-anchor to BOTTOMRIGHT for consistency
+	frame:ClearAllPoints()
+	frame:SetPoint("BOTTOMRIGHT", x, y)
+
+	-- Update frame's internal position tracking
+	frame.x = x
+	frame.y = y
+
+	-- Save position to SavedVariables
+	MultiBotSave = MultiBotSave or {}
+	MultiBotSave.MultiBarPosition = { x = x, y = y }
 end)
 tButton.doLeft = function(pButton)
 	MultiBot.ShowHideSwitch(pButton.parent.frames["Main"])
