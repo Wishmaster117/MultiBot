@@ -627,6 +627,14 @@ local function CreateCreatorWindow()
   frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", frame.StartMoving)
   frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
+  frame:SetScript("OnHide", function()
+    local tFrames = MultiBot.frames
+    local tMain = tFrames and tFrames["MultiBar"] and tFrames["MultiBar"].frames and tFrames["MultiBar"].frames["Main"]
+    local tButton = tMain and tMain.buttons and tMain.buttons["Creator"]
+    if tButton and tButton.state then
+      tButton.setDisable()
+    end
+  end)
   frame:Hide()
 
   local closeButton = CreateFrame("Button", nil, frame, "UIPanelCloseButton")

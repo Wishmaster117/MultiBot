@@ -322,6 +322,7 @@ MultiBot:SetScript("OnEvent", function()
 
 			if(MultiBotSave["Creator"] == "true") then
 				tButton.setDisable()
+                tButton.doLeft(tButton)
 				if MultiBot.creatorWindow and MultiBot.creatorWindow:IsShown() then
 					MultiBot.creatorWindow:Hide()
                 end
