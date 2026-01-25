@@ -107,6 +107,20 @@ if GetLocale() == "frFR" then
 
 	MultiBot.info.wait = "Je suis déjà en train d'inviter des membres, veuillez patienter."
 
+	MultiBot.info.creator.title = "Créateur de bots AddClass"
+	MultiBot.info.creator.classlabel = "Classe :"
+	MultiBot.info.creator.genderlabel = "Genre"
+	MultiBot.info.creator.speclabel = "Spécialisation"
+	MultiBot.info.creator.selectclass = "Sélectionner une classe"
+	MultiBot.info.creator.selectgender = "Sélectionner un genre"
+	MultiBot.info.creator.selectspec = "Sélectionner une spécialisation"
+	MultiBot.info.creator.create = "Créer"
+	MultiBot.info.creator.inspect = "Inspecter"
+	MultiBot.info.creator.init = "Init auto"
+	MultiBot.info.creator.genderMale = "Homme"
+	MultiBot.info.creator.genderFemale = "Femme"
+	MultiBot.info.creator.genderRandom = "Aléatoire"
+
 	MultiBot.info.starting = "Commence à inviter des membres."
 
 	MultiBot.info.stats = "Les stats automatiques sont pour les groupes, pas pour les raids."
@@ -516,70 +530,35 @@ if GetLocale() == "frFR" then
 
 	MultiBot.tips.creator.warrior = "Créer-Guerrier\n|cffffffff"
 		.. "Ce bouton créera un bot Guerrier.|r\n\n"
-		.. "|cffff0000Clic-Gauche pour choisir le sexe de votre Guerrier.|r\n"
-		.. "|cff999999(Ordre d'exécution : Système)|r"
 
 	MultiBot.tips.creator.warlock = "Créer-Démoniste\n|cffffffff"
 		.. "Ce bouton créera un bot Démoniste.|r\n\n"
-		.. "|cffff0000Clic-Gauche pour choisir le sexe de votre Démoniste.|r\n"
-		.. "|cff999999(Ordre d'exécution : Système)|r"
 
 	MultiBot.tips.creator.shaman = "Créer-Chaman\n|cffffffff"
 		.. "Ce bouton créera un bot Chaman.|r\n\n"
-		.. "|cffff0000Clic-Gauche pour choisir le sexe de votre Chaman.|r\n"
-		.. "|cff999999(Ordre d'exécution : Système)|r"
 
 	MultiBot.tips.creator.rogue = "Créer-Voleur\n|cffffffff"
 		.. "Ce bouton créera un bot Voleur.|r\n\n"
-		.. "|cffff0000Clic-Gauche pour choisir le sexe de votre Voleur.|r\n"
-		.. "|cff999999(Ordre d'exécution : Système)|r"
 
 	MultiBot.tips.creator.priest = "Créer-Prêtre\n|cffffffff"
 		.. "Ce bouton créera un bot Prêtre.|r\n\n"
-		.. "|cffff0000Clic-Gauche pour choisir le sexe de votre Prêtre.|r\n"
-		.. "|cff999999(Ordre d'exécution : Système)|r"
 
 	MultiBot.tips.creator.paladin = "Créer-Paladin\n|cffffffff"
 		.. "Ce bouton créera un bot Paladin.|r\n\n"
-		.. "|cffff0000Clic-Gauche pour choisir le sexe de votre Paladin|r\n"
-		.. "|cff999999(Ordre d'exécution : Système)|r"
 
 	MultiBot.tips.creator.mage = "Créer-Mage\n|cffffffff"
 		.. "Ce bouton créera un bot Mage.|r\n\n"
-		.. "|cffff0000Clic-Gauche pour choisir le sexe de votre Mage.|r\n"
-		.. "|cff999999(Ordre d'exécution : Système)|r"
 
 	MultiBot.tips.creator.hunter = "Créer-Chasseur\n|cffffffff"
 		.. "Ce bouton créera un bot Chasseur.|r\n\n"
-		.. "|cffff0000Clic-Gauche pour choisir le sexe de votre Chasseur.|r\n"
-		.. "|cff999999(Ordre d'exécution : Système)|r"
 
 	MultiBot.tips.creator.druid = "Créer-Druide\n|cffffffff"
 		.. "Ce bouton créera un bot Druide.|r\n\n"
-		.. "|cffff0000Clic-Gauche pour choisir le sexe de votre Druide.|r\n"
-		.. "|cff999999(Ordre d'exécution : Système)|r"
 
 	MultiBot.tips.creator.deathknight = "Créer-Chevalier de la mort\n|cffffffff"
 		.. "Ce bouton créera un bot Chevalier de la mort.|r\n\n"
-		.. "|cffff0000Clic-Gauche pour choisir le sexe de votre Chevalier de la mort.|r\n"
-		.. "|cff999999(Ordre d'exécution : Système)|r"
 
 	MultiBot.tips.creator.notarget = "Je n'ai pas de cible."
-
-	MultiBot.tips.creator.gendermale = "Crée un compagnon masculin.\n|cffffffff"
-		.. "Fort, courageux, toujours prêt pour la bataille... ou une chope.|r\n\n"
-		.. "|cffff0000Clic-Gauche pour créer|r\n"
-		.. "|cff999999(Ordre d'exécution : Système)|r"
-
-	MultiBot.tips.creator.genderfemale = "Crée un compagnon féminin.\n|cffffffff"
-		.. "Gracieuse, redoutable, et à ne jamais sous-estimer.|r\n\n"
-		.. "|cffff0000Clic-Gauche pour créer|r\n"
-		.. "|cff999999(Ordre d'exécution : Système)|r"
-
-	MultiBot.tips.creator.genderrandom = "Crée un bot avec un sexe aléatoire.\n|cffffffff"
-		.. "Les vents du destin en décideront !|r\n\n"
-		.. "|cffff0000Clic-Gauche pour créer|r\n"
-		.. "|cff999999(Ordre d'exécution : Système)|r"
 
 	MultiBot.tips.creator.inspect = "Inspecter la cible\n|cffffffff"
 		.. "Ce bouton ouvrira la fenêtre d'inspection de votre cible.|r\n\n"

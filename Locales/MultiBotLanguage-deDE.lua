@@ -104,6 +104,32 @@ if GetLocale() == "deDE" then
 
 	MultiBot.info.wait = "Ich lade bereits Mitglieder ein, bitte warte bis ich fertig bin."
 
+	MultiBot.info.creator.title = "AddClass-Bot-Ersteller"
+
+	MultiBot.info.creator.classlabel = "Klasse:"
+
+	MultiBot.info.creator.genderlabel = "Geschlecht"
+
+	MultiBot.info.creator.speclabel = "Spezialisierung"
+
+	MultiBot.info.creator.selectclass = "Klasse auswählen"
+
+	MultiBot.info.creator.selectgender = "Geschlecht auswählen"
+
+	MultiBot.info.creator.selectspec = "Spezialisierung auswählen"
+
+	MultiBot.info.creator.create = "Erstellen"
+
+	MultiBot.info.creator.inspect = "Untersuchen"
+
+	MultiBot.info.creator.init = "Auto-Init"
+
+	MultiBot.info.creator.genderMale = "Männlich"
+
+	MultiBot.info.creator.genderFemale = "Weiblich"
+
+	MultiBot.info.creator.genderRandom = "Zufällig"
+
 	MultiBot.info.starting = "Ich beginne jetzt Mitglieder einzuladen."
 
 	MultiBot.info.stats = "Auto-Stats ist für Party's nicht für Raid's."
@@ -513,70 +539,35 @@ if GetLocale() == "deDE" then
 
 	MultiBot.tips.creator.warrior = "Krieger-Erstellen\n|cffffffff"
 		.. "Dieser Button erstellt einen Krieger-Bot.|r\n\n"
-		.. "|cffff0000Linksklick, um das Geschlecht deines Kriegers zu wählen.|r\n"
-		.. "|cff999999(Ausführungsreihenfolge: System)|r"
 
 	MultiBot.tips.creator.warlock = "Hexenmeister-Erstellen\n|cffffffff"
 		.. "Dieser Button erstellt einen Hexenmeister-Bot.|r\n\n"
-		.. "|cffff0000Linksklick, um das Geschlecht deines Hexenmeisters zu wählen.|r\n"
-		.. "|cff999999(Ausführungsreihenfolge: System)|r"
 
 	MultiBot.tips.creator.shaman = "Schamane-Erstellen\n|cffffffff"
 		.. "Dieser Button erstellt einen Schamanen-Bot.|r\n\n"
-		.. "|cffff0000Linksklick, um das Geschlecht deines Schamanen zu wählen.|r\n"
-		.. "|cff999999(Ausführungsreihenfolge: System)|r"
 
 	MultiBot.tips.creator.rogue = "Schurke-Erstellen\n|cffffffff"
 		.. "Dieser Button erstellt einen Schurken-Bot.|r\n\n"
-		.. "|cffff0000Linksklick, um das Geschlecht deines Schurken zu wählen.|r\n"
-		.. "|cff999999(Ausführungsreihenfolge: System)|r"
 
 	MultiBot.tips.creator.priest = "Priester-Erstellen\n|cffffffff"
 		.. "Dieser Button erstellt einen Priester-Bot.|r\n\n"
-		.. "|cffff0000Linksklick, um das Geschlecht deines Priesters zu wählen.|r\n"
-		.. "|cff999999(Ausführungsreihenfolge: System)|r"
 
 	MultiBot.tips.creator.paladin = "Paladin-Erstellen\n|cffffffff"
 		.. "Dieser Button erstellt einen Paladin-Bot.|r\n\n"
-		.. "|cffff0000Linksklick, um das Geschlecht deines Paladins zu wählen|r\n"
-		.. "|cff999999(Ausführungsreihenfolge: System)|r"
 
 	MultiBot.tips.creator.mage = "Magier-Erstellen\n|cffffffff"
 		.. "Dieser Button erstellt einen Magier-Bot.|r\n\n"
-		.. "|cffff0000Linksklick, um das Geschlecht deines Magiers zu wählen.|r\n"
-		.. "|cff999999(Ausführungsreihenfolge: System)|r"
 
 	MultiBot.tips.creator.hunter = "Jäger-Erstellen\n|cffffffff"
 		.. "Dieser Button erstellt einen Jäger-Bot.|r\n\n"
-		.. "|cffff0000Linksklick, um das Geschlecht deines Jägers zu wählen.|r\n"
-		.. "|cff999999(Ausführungsreihenfolge: System)|r"
 
 	MultiBot.tips.creator.druid = "Druide-Erstellen\n|cffffffff"
 		.. "Dieser Button erstellt einen Druiden-Bot.|r\n\n"
-		.. "|cffff0000Linksklick, um das Geschlecht deines Druiden zu wählen.|r\n"
-		.. "|cff999999(Ausführungsreihenfolge: System)|r"
 
 	MultiBot.tips.creator.deathknight = "Todesritter-Erstellen\n|cffffffff"
 		.. "Dieser Button erstellt einen Todesritter-Bot.|r\n\n"
-		.. "|cffff0000Linksklick, um das Geschlecht deines Todesritters zu wählen.|r\n"
-		.. "|cff999999(Ausführungsreihenfolge: System)|r"
 
 	MultiBot.tips.creator.notarget = "Ich habe kein Ziel."
-
-	MultiBot.tips.creator.gendermale = "Erstellt einen männlichen Begleiter.\n|cffffffff"
-		.. "Stark, mutig und immer bereit für den Kampf... oder ein Bier.|r\n\n"
-		.. "|cffff0000Linksklick zum Erstellen|r\n"
-		.. "|cff999999(Ausführungsreihenfolge: System)|r"
-
-	MultiBot.tips.creator.genderfemale = "Erstellt eine weibliche Begleiterin.\n|cffffffff"
-		.. "Anmutig, tödlich und niemals zu unterschätzen.|r\n\n"
-		.. "|cffff0000Linksklick zum Erstellen|r\n"
-		.. "|cff999999(Ausführungsreihenfolge: System)|r"
-
-	MultiBot.tips.creator.genderrandom = "Erstellt einen Bot mit zufälligem Geschlecht.\n|cffffffff"
-		.. "Das Schicksal wird entscheiden!|r\n\n"
-		.. "|cffff0000Linksklick zum Erstellen|r\n"
-		.. "|cff999999(Ausführungsreihenfolge: System)|r"
 
 	MultiBot.tips.creator.inspect = "Ziel betrachten\n|cffffffff"
 		.. "Diese Schaltfläche öffnet ein Dialog-Fenster in dem man sein Ziel betrachten kann.|r\n\n"

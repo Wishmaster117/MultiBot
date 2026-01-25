@@ -112,6 +112,20 @@ if GetLocale() == "ruRU" then
 	MultiBot.info.wait =
 		"Я уже приглашаю участников, пожалуйста, подождите, пока я закончу."
 
+	MultiBot.info.creator.title = "Создатель ботов AddClass"
+	MultiBot.info.creator.classlabel = "Класс:"
+	MultiBot.info.creator.genderlabel = "Пол"
+	MultiBot.info.creator.speclabel = "Специализация"
+	MultiBot.info.creator.selectclass = "Выберите класс"
+	MultiBot.info.creator.selectgender = "Выберите пол"
+	MultiBot.info.creator.selectspec = "Выберите специализацию"
+	MultiBot.info.creator.create = "Создать"
+	MultiBot.info.creator.inspect = "Осмотреть"
+	MultiBot.info.creator.init = "Авто-иниц."
+	MultiBot.info.creator.genderMale = "Мужской"
+	MultiBot.info.creator.genderFemale = "Женский"
+	MultiBot.info.creator.genderRandom = "Случайный"
+
 	MultiBot.info.starting = "Начинаю приглашение участников."
 
 	MultiBot.info.stats =
@@ -529,70 +543,35 @@ if GetLocale() == "ruRU" then
 
 	MultiBot.tips.creator.warrior = "Создать Воина\n|cffffffff"
 		.. "Эта кнопка создаёт бота класса Воин.|r\n\n"
-		.. "|cffff0000Левый клик для выбора пола Воина.|r\n"
-		.. "|cff999999(Порядок выполнения: Система)|r"
 
 	MultiBot.tips.creator.warlock = "Создать Чернокнижника\n|cffffffff"
 		.. "Эта кнопка создаёт бота класса Чернокнижник.|r\n\n"
-		.. "|cffff0000Левый клик для выбора пола Чернокнижника.|r\n"
-		.. "|cff999999(Порядок выполнения: Система)|r"
 
 	MultiBot.tips.creator.shaman = "Создать Шамана\n|cffffffff"
 		.. "Эта кнопка создаёт бота класса Шаман.|r\n\n"
-		.. "|cffff0000Левый клик для выбора пола Шамана.|r\n"
-		.. "|cff999999(Порядок выполнения: Система)|r"
 
 	MultiBot.tips.creator.rogue = "Создать Разбойника\n|cffffffff"
 		.. "Эта кнопка создаёт бота класса Разбойник.|r\n\n"
-		.. "|cffff0000Левый клик для выбора пола Разбойника.|r\n"
-		.. "|cff999999(Порядок выполнения: Система)|r"
 
 	MultiBot.tips.creator.priest = "Создать Жреца\n|cffffffff"
 		.. "Эта кнопка создаёт бота класса Жрец.|r\n\n"
-		.. "|cffff0000Левый клик для выбора пола Жреца.|r\n"
-		.. "|cff999999(Порядок выполнения: Система)|r"
 
 	MultiBot.tips.creator.paladin = "Создать Паладина\n|cffffffff"
 		.. "Эта кнопка создаёт бота класса Паладин.|r\n\n"
-		.. "|cffff0000Левый клик для выбора пола Паладина|r\n"
-		.. "|cff999999(Порядок выполнения: Система)|r"
 
 	MultiBot.tips.creator.mage = "Создать Мага\n|cffffffff"
 		.. "Эта кнопка создаёт бота класса Маг.|r\n\n"
-		.. "|cffff0000Левый клик для выбора пола Мага.|r\n"
-		.. "|cff999999(Порядок выполнения: Система)|r"
 
 	MultiBot.tips.creator.hunter = "Создать Охотника\n|cffffffff"
 		.. "Эта кнопка создаёт бота класса Охотник.|r\n\n"
-		.. "|cffff0000Левый клик для выбора пола Охотника.|r\n"
-		.. "|cff999999(Порядок выполнения: Система)|r"
 
 	MultiBot.tips.creator.druid = "Создать Друида\n|cffffffff"
 		.. "Эта кнопка создаёт бота класса Друид.|r\n\n"
-		.. "|cffff0000Левый клик для выбора пола Друида.|r\n"
-		.. "|cff999999(Порядок выполнения: Система)|r"
 
 	MultiBot.tips.creator.deathknight = "Создать Рыцаря Смерти\n|cffffffff"
 		.. "Эта кнопка создаёт бота класса Рыцарь Смерти.|r\n\n"
-		.. "|cffff0000Левый клик для выбора пола Рыцаря Смерти.|r\n"
-		.. "|cff999999(Порядок выполнения: Система)|r"
 
 	MultiBot.tips.creator.notarget = "У меня нет цели."
-
-	MultiBot.tips.creator.gendermale = "Создать мужского спутника.\n|cffffffff"
-		.. "Сильный, смелый и всегда готов к бою... или к кружке пива.|r\n\n"
-		.. "|cffff0000Левый клик для создания|r\n"
-		.. "|cff999999(Порядок выполнения: Система)|r"
-
-	MultiBot.tips.creator.genderfemale = "Создать женского спутника.\n|cffffffff"
-		.. "Элегантна, смертоносна и её никогда нельзя недооценивать.|r\n\n"
-		.. "|cffff0000Левый клик для создания|r\n"
-		.. "|cff999999(Порядок выполнения: Система)|r"
-
-	MultiBot.tips.creator.genderrandom = "Создать бота со случайным полом.\n|cffffffff"
-		.. "Судьба решит за тебя!|r\n\n"
-		.. "|cffff0000Левый клик для создания|r\n"
-		.. "|cff999999(Порядок выполнения: Система)|r"
 
 	MultiBot.tips.creator.inspect = "Осмотреть цель\n|cffffffff"
 		.. "Эта кнопка откроет окно осмотра вашей цели.|r\n\n"

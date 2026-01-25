@@ -105,6 +105,20 @@ if GetLocale() == "koKR" then
 	MultiBot.info.wait =
 		"회원 여러분을 초대합니다. 제가 끝날 때까지 기다려 주시기 바랍니다."
 
+	MultiBot.info.creator.title = "AddClass 봇 생성기"
+	MultiBot.info.creator.classlabel = "직업:"
+	MultiBot.info.creator.genderlabel = "성별"
+	MultiBot.info.creator.speclabel = "특성"
+	MultiBot.info.creator.selectclass = "직업 선택"
+	MultiBot.info.creator.selectgender = "성별 선택"
+	MultiBot.info.creator.selectspec = "특성 선택"
+	MultiBot.info.creator.create = "생성"
+	MultiBot.info.creator.inspect = "검사"
+	MultiBot.info.creator.init = "자동 초기화"
+	MultiBot.info.creator.genderMale = "남성"
+	MultiBot.info.creator.genderFemale = "여성"
+	MultiBot.info.creator.genderRandom = "무작위"
+
 	MultiBot.info.starting = "이제 멤버 초대를 시작하겠습니다."
 
 	MultiBot.info.stats = "자동 상태 통계는 팀이 아닌 분대에 적용됩니다."
@@ -519,70 +533,35 @@ if GetLocale() == "koKR" then
 
 	MultiBot.tips.creator.warrior = "전사 생성\n|cffffffff"
 		.. "이 버튼은 전사 봇을 생성합니다.|r\n\n"
-		.. "|cffff0000좌클릭으로 전사의 성별을 선택하세요.|r\n"
-		.. "|cff999999(실행 순서: 시스템)|r"
 
 	MultiBot.tips.creator.warlock = "흑마법사 생성\n|cffffffff"
 		.. "이 버튼은 흑마법사 봇을 생성합니다.|r\n\n"
-		.. "|cffff0000좌클릭으로 흑마법사의 성별을 선택하세요.|r\n"
-		.. "|cff999999(실행 순서: 시스템)|r"
 
 	MultiBot.tips.creator.shaman = "주술사 생성\n|cffffffff"
 		.. "이 버튼은 주술사 봇을 생성합니다.|r\n\n"
-		.. "|cffff0000좌클릭으로 주술사의 성별을 선택하세요.|r\n"
-		.. "|cff999999(실행 순서: 시스템)|r"
 
 	MultiBot.tips.creator.rogue = "도적 생성\n|cffffffff"
 		.. "이 버튼은 도적 봇을 생성합니다.|r\n\n"
-		.. "|cffff0000좌클릭으로 도적의 성별을 선택하세요.|r\n"
-		.. "|cff999999(실행 순서: 시스템)|r"
 
 	MultiBot.tips.creator.priest = "사제 생성\n|cffffffff"
 		.. "이 버튼은 사제 봇을 생성합니다.|r\n\n"
-		.. "|cffff0000좌클릭으로 사제의 성별을 선택하세요.|r\n"
-		.. "|cff999999(실행 순서: 시스템)|r"
 
 	MultiBot.tips.creator.paladin = "성기사 생성\n|cffffffff"
 		.. "이 버튼은 성기사 봇을 생성합니다.|r\n\n"
-		.. "|cffff0000좌클릭으로 성기사의 성별을 선택하세요|r\n"
-		.. "|cff999999(실행 순서: 시스템)|r"
 
 	MultiBot.tips.creator.mage = "마법사 생성\n|cffffffff"
 		.. "이 버튼은 마법사 봇을 생성합니다.|r\n\n"
-		.. "|cffff0000좌클릭으로 마법사의 성별을 선택하세요.|r\n"
-		.. "|cff999999(실행 순서: 시스템)|r"
 
 	MultiBot.tips.creator.hunter = "사냥꾼 생성\n|cffffffff"
 		.. "이 버튼은 사냥꾼 봇을 생성합니다.|r\n\n"
-		.. "|cffff0000좌클릭으로 사냥꾼의 성별을 선택하세요.|r\n"
-		.. "|cff999999(실행 순서: 시스템)|r"
 
 	MultiBot.tips.creator.druid = "드루이드 생성\n|cffffffff"
 		.. "이 버튼은 드루이드 봇을 생성합니다.|r\n\n"
-		.. "|cffff0000좌클릭으로 드루이드의 성별을 선택하세요.|r\n"
-		.. "|cff999999(실행 순서: 시스템)|r"
 
 	MultiBot.tips.creator.deathknight = "죽음의 기사 생성\n|cffffffff"
 		.. "이 버튼은 죽음의 기사 봇을 생성합니다.|r\n\n"
-		.. "|cffff0000좌클릭으로 죽음의 기사의 성별을 선택하세요.|r\n"
-		.. "|cff999999(실행 순서: 시스템)|r"
 
 	MultiBot.tips.creator.notarget = "대상이 없습니다."
-
-	MultiBot.tips.creator.gendermale = "남성 동료를 생성합니다.\n|cffffffff"
-		.. "강하고 용감하며 전투나 맥주에 늘 준비된 자.|r\n\n"
-		.. "|cffff0000좌클릭으로 생성|r\n"
-		.. "|cff999999(실행 순서: 시스템)|r"
-
-	MultiBot.tips.creator.genderfemale = "여성 동료를 생성합니다.\n|cffffffff"
-		.. "우아하고 강력하며 결코 과소평가할 수 없는 존재.|r\n\n"
-		.. "|cffff0000좌클릭으로 생성|r\n"
-		.. "|cff999999(실행 순서: 시스템)|r"
-
-	MultiBot.tips.creator.genderrandom = "무작위 성별의 봇을 생성합니다.\n|cffffffff"
-		.. "운명이 선택할 것입니다!|r\n\n"
-		.. "|cffff0000좌클릭으로 생성|r\n"
-		.. "|cff999999(실행 순서: 시스템)|r"
 
 	MultiBot.tips.creator.inspect = "타겟 확인\n|cffffffff"
 		.. "이 버튼을 클릭하면 대상에 대한 검사 창이 열립니다.|r\n\n"
