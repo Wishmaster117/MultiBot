@@ -114,6 +114,7 @@ if GetLocale() == "esES" then
 	MultiBot.info.creator.selectclass = "Selecciona una clase"
 	MultiBot.info.creator.selectgender = "Selecciona un género"
 	MultiBot.info.creator.selectspec = "Selecciona una especialización"
+	MultiBot.info.creator.specRandom = "Aleatorio"
 	MultiBot.info.creator.create = "Crear"
 	MultiBot.info.creator.inspect = "Inspeccionar"
 	MultiBot.info.creator.init = "Auto-Init"

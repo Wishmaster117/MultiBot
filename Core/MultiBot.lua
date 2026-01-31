@@ -658,6 +658,9 @@ MultiBot.info.creator.selectgender =
 MultiBot.info.creator.selectspec =
 "Select a specialization";
 
+MultiBot.info.creator.specRandom =
+"Random";
+
 MultiBot.info.creator.create =
 "Create";
 

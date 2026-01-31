@@ -112,6 +112,7 @@ if GetLocale() == "koKR" then
 	MultiBot.info.creator.selectclass = "직업 선택"
 	MultiBot.info.creator.selectgender = "성별 선택"
 	MultiBot.info.creator.selectspec = "특성 선택"
+	MultiBot.info.creator.specRandom = "무작위"
 	MultiBot.info.creator.create = "생성"
 	MultiBot.info.creator.inspect = "검사"
 	MultiBot.info.creator.init = "자동 초기화"

@@ -119,6 +119,7 @@ if GetLocale() == "ruRU" then
 	MultiBot.info.creator.selectclass = "Выберите класс"
 	MultiBot.info.creator.selectgender = "Выберите пол"
 	MultiBot.info.creator.selectspec = "Выберите специализацию"
+	MultiBot.info.creator.specRandom = "Случайно"
 	MultiBot.info.creator.create = "Создать"
 	MultiBot.info.creator.inspect = "Осмотреть"
 	MultiBot.info.creator.init = "Авто-иниц."

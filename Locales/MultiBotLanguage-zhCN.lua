@@ -112,6 +112,7 @@ if GetLocale() == "zhCN" then
 	MultiBot.info.creator.selectclass = "选择职业"
 	MultiBot.info.creator.selectgender = "选择性别"
 	MultiBot.info.creator.selectspec = "选择专精"
+	MultiBot.info.creator.specRandom = "随机"
 	MultiBot.info.creator.create = "创建"
 	MultiBot.info.creator.inspect = "检查"
 	MultiBot.info.creator.init = "自动初始化"

@@ -105,29 +105,18 @@ if GetLocale() == "deDE" then
 	MultiBot.info.wait = "Ich lade bereits Mitglieder ein, bitte warte bis ich fertig bin."
 
 	MultiBot.info.creator.title = "AddClass-Bot-Ersteller"
-
 	MultiBot.info.creator.classlabel = "Klasse:"
-
 	MultiBot.info.creator.genderlabel = "Geschlecht"
-
 	MultiBot.info.creator.speclabel = "Spezialisierung"
-
 	MultiBot.info.creator.selectclass = "Klasse auswählen"
-
 	MultiBot.info.creator.selectgender = "Geschlecht auswählen"
-
 	MultiBot.info.creator.selectspec = "Spezialisierung auswählen"
-
+	MultiBot.info.creator.specRandom = "Zufällig"
 	MultiBot.info.creator.create = "Erstellen"
-
 	MultiBot.info.creator.inspect = "Untersuchen"
-
 	MultiBot.info.creator.init = "Auto-Init"
-
 	MultiBot.info.creator.genderMale = "Männlich"
-
 	MultiBot.info.creator.genderFemale = "Weiblich"
-
 	MultiBot.info.creator.genderRandom = "Zufällig"
 
 	MultiBot.info.starting = "Ich beginne jetzt Mitglieder einzuladen."

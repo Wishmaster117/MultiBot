@@ -679,11 +679,13 @@ specDropdown:Hide()
     classCmd = nil,
     gender = nil,
     spec = nil,
+    specRandom = false,
   }
 
   local function ResetSelections()
     selected.gender = nil
     selected.spec = nil
+    selected.specRandom = false
     UIDropDownMenu_SetText(genderDropdown, MultiBot.info.creator.selectgender)
     UIDropDownMenu_SetText(specDropdown, MultiBot.info.creator.selectspec)
     specLabel:Hide()
@@ -693,11 +695,20 @@ specDropdown:Hide()
   local function UpdateSpecDropdown()
     local specs = CREATOR_SPECS[selected.classCmd] or {}
     UIDropDownMenu_Initialize(specDropdown, function(self, level)
+      local randomInfo = UIDropDownMenu_CreateInfo()
+      randomInfo.text = MultiBot.info.creator.specRandom
+      randomInfo.func = function()
+        selected.spec = nil
+        selected.specRandom = true
+        UIDropDownMenu_SetText(specDropdown, MultiBot.info.creator.specRandom)
+      end
+      UIDropDownMenu_AddButton(randomInfo, level)
       for _, spec in ipairs(specs) do
         local info = UIDropDownMenu_CreateInfo()
         info.text = spec.label
         info.func = function()
           selected.spec = spec.value
+          selected.specRandom = false
           UIDropDownMenu_SetText(specDropdown, spec.label)
         end
         UIDropDownMenu_AddButton(info, level)
@@ -719,6 +730,7 @@ specDropdown:Hide()
       info.func = function()
         selected.gender = option.value
         selected.spec = nil
+        selected.specRandom = false
         UIDropDownMenu_SetText(genderDropdown, option.label)
         UpdateSpecDropdown()
         specLabel:Show()
@@ -733,7 +745,7 @@ specDropdown:Hide()
   createButton:SetSize(140, 24)
   createButton:SetText(MultiBot.info.creator.create)
   createButton:SetScript("OnClick", function()
-    if not selected.classCmd or not selected.spec then
+    if not selected.classCmd or (not selected.spec and not selected.specRandom) then
       return
     end
     MultiBot.AddClassToTarget(selected.classCmd, selected.gender, selected.spec)
