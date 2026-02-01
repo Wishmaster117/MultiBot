@@ -1195,7 +1195,8 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 		-- Don't reset positioning if button is managed by Masque
 		if not (MultiBot.Masque and MultiBot.Masque.IsLoaded and MultiBot.Masque.Buttons[button]) then
 			button:SetPoint("BOTTOMRIGHT", button.x, button.y)
-			button:SetSize(button.size, button.size)	
+			button:SetSize(button.size, button.size)
+
 			button.border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2)
 			button.border:SetSize(button.size + 4, button.size + 4)
 		end
@@ -1209,6 +1210,7 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 		if not (MultiBot.Masque and MultiBot.Masque.IsLoaded and MultiBot.Masque.Buttons[button]) then
 			button:SetPoint("BOTTOMRIGHT", button.x - 1, button.y + 1)
 			button:SetSize(button.size - 2, button.size - 2)
+
 			button.border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2)
 			button.border:SetSize(button.size + 2, button.size + 2)
 		end
@@ -1221,6 +1223,7 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 	end)
 
 	-- CLEANUP --
+	
 	button.cleanup = function()
 		if MultiBot.UnregisterButtonFromMasque then
 			MultiBot.UnregisterButtonFromMasque(button)

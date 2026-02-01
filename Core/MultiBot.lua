@@ -315,16 +315,18 @@ end
 -- Initialize Masque support
 function MultiBot.InitializeMasque()
 	if MultiBot.Masque.IsLoaded then return end
-	
+
+	-- LibStub is embedded in addon, not a global - suppress linter warning
+	---@diagnostic disable-next-line: undefined-global
 	local Masque = LibStub and LibStub("Masque", true)
-	if not Masque then 
-		return 
+	if not Masque then
+		return
 	end
-	
+
 	-- Create MultiBot button group
 	MultiBot.Masque.Group = Masque:Group("MultiBot", "MultiBot Buttons")
 	MultiBot.Masque.IsLoaded = true
-	
+
 	-- Apply current skin to existing buttons
 	if MultiBot.Masque.Group then
 		for button, _ in pairs(MultiBot.Masque.Buttons) do
@@ -346,12 +348,12 @@ function MultiBot.RegisterButtonWithMasque(button)
 	if not MultiBot.Masque.IsLoaded then
 		MultiBot.InitializeMasque()
 	end
-	
+
 	if not MultiBot.Masque.IsLoaded or not button then return end
-	
+
 	-- Store button reference
 	MultiBot.Masque.Buttons[button] = true
-	
+
 	-- Add to Masque group if available
 	if MultiBot.Masque.Group and button.icon then
 		MultiBot.Masque.Group:AddButton(button, {
@@ -367,10 +369,10 @@ end
 -- Unregister a button from Masque
 function MultiBot.UnregisterButtonFromMasque(button)
 	if not MultiBot.Masque.IsLoaded or not button then return end
-	
+
 	-- Remove from tracking
 	MultiBot.Masque.Buttons[button] = nil
-	
+
 	-- Remove from Masque group
 	if MultiBot.Masque.Group then
 		MultiBot.Masque.Group:RemoveButton(button)
