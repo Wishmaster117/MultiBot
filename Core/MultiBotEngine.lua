@@ -1223,7 +1223,7 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 	end)
 
 	-- CLEANUP --
-	
+
 	button.cleanup = function()
 		if MultiBot.UnregisterButtonFromMasque then
 			MultiBot.UnregisterButtonFromMasque(button)
