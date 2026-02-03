@@ -316,8 +316,6 @@ end
 function MultiBot.InitializeMasque()
 	if MultiBot.Masque.IsLoaded then return end
 
-	-- LibStub is embedded in addon, not a global - suppress linter warning
-	---@diagnostic disable-next-line: undefined-global
 	local Masque = LibStub and LibStub("Masque", true)
 	if not Masque then
 		return
@@ -345,14 +343,16 @@ end
 
 -- Register a button with Masque
 function MultiBot.RegisterButtonWithMasque(button)
+	if not button then return end
+
+	-- Store button reference (even if Masque is not loaded yet)
+	MultiBot.Masque.Buttons[button] = true
+
 	if not MultiBot.Masque.IsLoaded then
 		MultiBot.InitializeMasque()
 	end
 
-	if not MultiBot.Masque.IsLoaded or not button then return end
-
-	-- Store button reference
-	MultiBot.Masque.Buttons[button] = true
+	if not MultiBot.Masque.IsLoaded then return end
 
 	-- Add to Masque group if available
 	if MultiBot.Masque.Group and button.icon then

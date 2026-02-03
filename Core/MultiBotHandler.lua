@@ -129,6 +129,9 @@ MultiBot:SetScript("OnEvent", function()
 			local tPoint = MultiBot.doSplit(MultiBotSave["MultiBarPoint"], ", ")
 			MultiBot.frames["MultiBar"].setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
 		end]]--
+	if(event == "ADDON_LOADED" and arg1 == "Masque") then
+		if MultiBot.InitializeMasque then MultiBot.InitializeMasque() end
+	end
     if(event == "ADDON_LOADED" and arg1 == "MultiBot") then
 	-- print("MultiBot: ADDON_LOADED fired")
 	-- print("BuildOptionsPanel type:", type(MultiBot.BuildOptionsPanel))
