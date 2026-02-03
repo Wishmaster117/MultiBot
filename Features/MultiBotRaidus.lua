@@ -689,7 +689,7 @@ MultiBot.raidus.setRaidus = function()
                 if MultiBotRaidusIsBotGrouped(name) then
                     -- Bot déjà dans le groupe/raid :
                     -- on laisse le core playerbots gérer leave + logout
-                    SendChatMessage("logout", "WHISPER", nil, name)
+                    SendChatMessage(".playerbot bot remove " .. name, "SAY")
                 else
                     -- Bot pas dans le groupe/raid :
                     -- login + invite via playerbots
