@@ -104,6 +104,22 @@ if GetLocale() == "zhCN" then
 
 	MultiBot.info.wait = "我正在邀请成员，请等待我完成。"
 
+	MultiBot.info.creator = {}
+	MultiBot.info.creator.title = "AddClass 机器人创建器"
+	MultiBot.info.creator.classlabel = "职业："
+	MultiBot.info.creator.genderlabel = "性别"
+	MultiBot.info.creator.speclabel = "专精"
+	MultiBot.info.creator.selectclass = "选择职业"
+	MultiBot.info.creator.selectgender = "选择性别"
+	MultiBot.info.creator.selectspec = "选择专精"
+	MultiBot.info.creator.specRandom = "随机"
+	MultiBot.info.creator.create = "创建"
+	MultiBot.info.creator.inspect = "检查"
+	MultiBot.info.creator.init = "自动初始化"
+	MultiBot.info.creator.genderMale = "男性"
+	MultiBot.info.creator.genderFemale = "女性"
+	MultiBot.info.creator.genderRandom = "随机"
+
 	MultiBot.info.starting = "我现在开始邀请成员。"
 
 	MultiBot.info.stats = "自动状态统计适用于小队，不适用于团队。"
@@ -512,70 +528,35 @@ if GetLocale() == "zhCN" then
 
 	MultiBot.tips.creator.warrior = "创建-战士\n|cffffffff"
 		.. "这个按钮会创建一个战士机器人。|r\n\n"
-		.. "|cffff0000左键点击选择战士的性别。|r\n"
-		.. "|cff999999（执行顺序：系统）|r"
 
 	MultiBot.tips.creator.warlock = "创建-术士\n|cffffffff"
 		.. "这个按钮会创建一个术士机器人。|r\n\n"
-		.. "|cffff0000左键点击选择术士的性别。|r\n"
-		.. "|cff999999（执行顺序：系统）|r"
 
 	MultiBot.tips.creator.shaman = "创建-萨满\n|cffffffff"
 		.. "这个按钮会创建一个萨满机器人。|r\n\n"
-		.. "|cffff0000左键点击选择萨满的性别。|r\n"
-		.. "|cff999999（执行顺序：系统）|r"
 
 	MultiBot.tips.creator.rogue = "创建-潜行者\n|cffffffff"
 		.. "这个按钮会创建一个潜行者机器人。|r\n\n"
-		.. "|cffff0000左键点击选择潜行者的性别。|r\n"
-		.. "|cff999999（执行顺序：系统）|r"
 
 	MultiBot.tips.creator.priest = "创建-牧师\n|cffffffff"
 		.. "这个按钮会创建一个牧师机器人。|r\n\n"
-		.. "|cffff0000左键点击选择牧师的性别。|r\n"
-		.. "|cff999999（执行顺序：系统）|r"
 
 	MultiBot.tips.creator.paladin = "创建-圣骑士\n|cffffffff"
 		.. "这个按钮会创建一个圣骑士机器人。|r\n\n"
-		.. "|cffff0000左键点击选择圣骑士的性别|r\n"
-		.. "|cff999999（执行顺序：系统）|r"
 
 	MultiBot.tips.creator.mage = "创建-法师\n|cffffffff"
 		.. "这个按钮会创建一个法师机器人。|r\n\n"
-		.. "|cffff0000左键点击选择法师的性别。|r\n"
-		.. "|cff999999（执行顺序：系统）|r"
 
 	MultiBot.tips.creator.hunter = "创建-猎人\n|cffffffff"
 		.. "这个按钮会创建一个猎人机器人。|r\n\n"
-		.. "|cffff0000左键点击选择猎人的性别。|r\n"
-		.. "|cff999999（执行顺序：系统）|r"
 
 	MultiBot.tips.creator.druid = "创建-德鲁伊\n|cffffffff"
 		.. "这个按钮会创建一个德鲁伊机器人。|r\n\n"
-		.. "|cffff0000左键点击选择德鲁伊的性别。|r\n"
-		.. "|cff999999（执行顺序：系统）|r"
 
 	MultiBot.tips.creator.deathknight = "创建-死亡骑士\n|cffffffff"
 		.. "这个按钮会创建一个死亡骑士机器人。|r\n\n"
-		.. "|cffff0000左键点击选择死亡骑士的性别。|r\n"
-		.. "|cff999999（执行顺序：系统）|r"
 
 	MultiBot.tips.creator.notarget = "你没有目标。"
-
-	MultiBot.tips.creator.gendermale = "创建一位男性伙伴。\n|cffffffff"
-		.. "强壮、果断，总是准备战斗……或者喝酒。|r\n\n"
-		.. "|cffff0000左键点击以创建|r\n"
-		.. "|cff999999（执行顺序：系统）|r"
-
-	MultiBot.tips.creator.genderfemale = "创建一位女性伙伴。\n|cffffffff"
-		.. "优雅、致命，绝不可低估。|r\n\n"
-		.. "|cffff0000左键点击以创建|r\n"
-		.. "|cff999999（执行顺序：系统）|r"
-
-	MultiBot.tips.creator.genderrandom = "创建一个随机性别的机器人。\n|cffffffff"
-		.. "命运将做出选择！|r\n\n"
-		.. "|cffff0000左键点击以创建|r\n"
-		.. "|cff999999（执行顺序：系统）|r"
 
 	MultiBot.tips.creator.inspect = "检查目标\n|cffffffff"
 		.. "此按钮将打开目标的检查窗口。|r\n\n"

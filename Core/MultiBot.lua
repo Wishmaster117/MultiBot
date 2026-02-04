@@ -476,16 +476,18 @@ if not GetNumSubgroupMembers then
   end
 end
 
---  AddClassToTarget Wrapper
--- Usage : MultiBot.AddClassToTarget("warlock"        ) -- Random
---         MultiBot.AddClassToTarget("warlock","male" ) -- Male
---         MultiBot.AddClassToTarget("warlock","female") -- Female
-MultiBot.AddClassToTarget = function(classCmd, gender)
+-- Usage : MultiBot.AddClassToTarget("warlock"                 ) -- Random
+--         MultiBot.AddClassToTarget("warlock","male"           ) -- Male
+--         MultiBot.AddClassToTarget("warlock","female"         ) -- Female
+--         MultiBot.AddClassToTarget("warlock","female","frost" ) -- Female + Spec
+MultiBot.AddClassToTarget = function(classCmd, gender, spec)
   if not classCmd then return end             -- secure that
   local msg = ".playerbot bot addclass " .. classCmd
-  if gender then                                 -- male / female / 0 / 1
-	msg = msg .. " " .. gender
-	print("[DBG] Message de sortie :" ,msg)
+  if gender and gender ~= "" then
+    msg = msg .. " " .. gender
+  end
+  if spec and spec ~= "" then
+    msg = msg .. " " .. spec
   end
   SendChatMessage(msg, "SAY")
 end
@@ -632,6 +634,50 @@ MultiBot.info.members =
 
 MultiBot.info.wait =
 "I already invite Members, please wait until I am done.";
+
+-- CREATOR INFOS
+MultiBot.info.creator = {}
+MultiBot.info.creator.title =
+"AddClass Bots Creator";
+
+MultiBot.info.creator.classlabel =
+"Class:";
+
+MultiBot.info.creator.genderlabel =
+"Gender";
+
+MultiBot.info.creator.speclabel =
+"Specialization";
+
+MultiBot.info.creator.selectclass =
+"Select a class";
+
+MultiBot.info.creator.selectgender =
+"Select a gender";
+
+MultiBot.info.creator.selectspec =
+"Select a specialization";
+
+MultiBot.info.creator.specRandom =
+"Random";
+
+MultiBot.info.creator.create =
+"Create";
+
+MultiBot.info.creator.inspect =
+"Inspect";
+
+MultiBot.info.creator.init =
+"Auto-Init";
+
+MultiBot.info.creator.genderMale =
+"Male";
+
+MultiBot.info.creator.genderFemale =
+"Female";
+
+MultiBot.info.creator.genderRandom =
+"Random";
 
 MultiBot.info.starting =
 "Starting to invite Members.";
@@ -1153,84 +1199,46 @@ MultiBot.tips.creator.master =
 
 MultiBot.tips.creator.warrior =
 "Create-Warrior\n|cffffffff"..
-"This Button will create a Bot as Warrior.|r\n\n"..
-"|cffff0000Left-Click to choose your Warrior gender.|r\n"..
-"|cff999999(Execution-Order: System)|r";
+"This Button will create a Bot as Warrior.|r\n\n";
 
 MultiBot.tips.creator.warlock =
 "Create-Warlock\n|cffffffff"..
-"This Button will create a Bot as Warlock.|r\n\n"..
-"|cffff0000Left-Click to choose your Warlock gender.|r\n"..
-"|cff999999(Execution-Order: System)|r";
+"This Button will create a Bot as Warlock.|r\n\n";
 
 MultiBot.tips.creator.shaman =
 "Create-Shaman\n|cffffffff"..
-"This Button will create a Bot as Shaman.|r\n\n"..
-"|cffff0000Left-Click to choose your Shaman gender.|r\n"..
-"|cff999999(Execution-Order: System)|r";
+"This Button will create a Bot as Shaman.|r\n\n";
 
 MultiBot.tips.creator.rogue =
 "Create-Rogue\n|cffffffff"..
-"This Button will create a Bot as Rogue.|r\n\n"..
-"|cffff0000Left-Click to choose your Rogue gender.|r\n"..
-"|cff999999(Execution-Order: System)|r";
+"This Button will create a Bot as Rogue.|r\n\n";
 
 MultiBot.tips.creator.priest =
 "Create-Priest\n|cffffffff"..
-"This Button will create a Bot as Priest.|r\n\n"..
-"|cffff0000Left-Click to choose your Priest gender.|r\n"..
-"|cff999999(Execution-Order: System)|r";
+"This Button will create a Bot as Priest.|r\n\n";
 
 MultiBot.tips.creator.paladin =
 "Create-Paladin\n|cffffffff"..
-"This Button will create a Bot as Paladin.|r\n\n"..
-"|cffff0000Left-Click to choose your Paladin gender|r\n"..
-"|cff999999(Execution-Order: System)|r";
+"This Button will create a Bot as Paladin.|r\n\n";
 
 MultiBot.tips.creator.mage =
 "Create-Mage\n|cffffffff"..
-"This Button will create a Bot as Mage.|r\n\n"..
-"|cffff0000Left-Click to choose your Mage gender.|r\n"..
-"|cff999999(Execution-Order: System)|r";
+"This Button will create a Bot as Mage.|r\n\n";
 
 MultiBot.tips.creator.hunter =
 "Create-Hunter\n|cffffffff"..
-"This Button will create a Bot as Hunter.|r\n\n"..
-"|cffff0000Left-Click to choose your Hunter gender.|r\n"..
-"|cff999999(Execution-Order: System)|r";
+"This Button will create a Bot as Hunter.|r\n\n";
 
 MultiBot.tips.creator.druid =
 "Create-Druid\n|cffffffff"..
-"This Button will create a Bot as Druid.|r\n\n"..
-"|cffff0000Left-Click to choose your Druid gender.|r\n"..
-"|cff999999(Execution-Order: System)|r";
+"This Button will create a Bot as Druid.|r\n\n";
 
 MultiBot.tips.creator.deathknight =
 "Create-DeathKnight\n|cffffffff"..
-"This Button will create a Bot as DeathKnight.|r\n\n"..
-"|cffff0000Left-Click to choose your DeathKnight gender.|r\n"..
-"|cff999999(Execution-Order: System)|r";
+"This Button will create a Bot as DeathKnight.|r\n\n";
 
 MultiBot.tips.creator.notarget =
 "I dont have a Target.";
-
-MultiBot.tips.creator.gendermale =
-"Creates a male companion.\n|cffffffff"..
-"Strong, bold, and always ready for battle... or ale.|r\n\n"..
-"|cffff0000Left-Click to Create|r\n"..
-"|cff999999(Execution-Order: System)|r";
-
-MultiBot.tips.creator.genderfemale =
-"Creates a female companion.\n|cffffffff"..
-"Graceful, fierce, and not to be underestimated.|r\n\n"..
-"|cffff0000Left-Click to Create|r\n"..
-"|cff999999(Execution-Order: System)|r";
-
-MultiBot.tips.creator.genderrandom =
-"Creates a bot with a random gender.\n|cffffffff"..
-"The winds of fate shall decide!|r\n\n"..
-"|cffff0000Left-Click to Create|r\n"..
-"|cff999999(Execution-Order: System)|r";
 
 MultiBot.tips.creator.inspect =
 "Inspect-Target\n|cffffffff"..
