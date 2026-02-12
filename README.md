@@ -24,6 +24,9 @@ To allow the community to benefit from the additional features and improvements 
 
 Thank you for understanding.
 
+# Comming soon
+Port Multibot to ACE 3
+
 ---
 
 Screens:
@@ -312,8 +315,5 @@ Screens:
     </td>
   </tr>
 </table>
-
-# Comming soon
-Share your ideas
 
 # Currently not supported
