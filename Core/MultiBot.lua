@@ -1,5 +1,12 @@
 MultiBot = CreateFrame("Frame", nil, UIParent)
 
+-- MASQUE INTEGRATION --
+MultiBot.Masque = {
+	IsLoaded = false,
+	Group = nil,
+	Buttons = {}
+}
+
 -- GM core --
 MultiBot.GM = MultiBot.GM or false
 
@@ -299,6 +306,77 @@ end
 
 function MultiBot.ToggleFavorite(name)
   MultiBot.SetFavorite(name, not MultiBot.IsFavorite(name))
+end
+
+-- ============================================================================
+-- MASQUE INTEGRATION
+-- ============================================================================
+
+-- Initialize Masque support
+function MultiBot.InitializeMasque()
+	if MultiBot.Masque.IsLoaded then return end
+
+	local Masque = LibStub and LibStub("Masque", true)
+	if not Masque then
+		return
+	end
+
+	-- Create MultiBot button group
+	MultiBot.Masque.Group = Masque:Group("MultiBot", "MultiBot Buttons")
+	MultiBot.Masque.IsLoaded = true
+
+	-- Apply current skin to existing buttons
+	if MultiBot.Masque.Group then
+		for button, _ in pairs(MultiBot.Masque.Buttons) do
+			if button and button:IsObjectType("Button") then
+				MultiBot.Masque.Group:AddButton(button, {
+					Icon = button.icon,
+					Normal = button:GetNormalTexture(),
+					Pushed = button:GetPushedTexture(),
+					Highlight = button:GetHighlightTexture(),
+					Border = button.border
+				})
+			end
+		end
+	end
+end
+
+-- Register a button with Masque
+function MultiBot.RegisterButtonWithMasque(button)
+	if not button then return end
+
+	-- Store button reference (even if Masque is not loaded yet)
+	MultiBot.Masque.Buttons[button] = true
+
+	if not MultiBot.Masque.IsLoaded then
+		MultiBot.InitializeMasque()
+	end
+
+	if not MultiBot.Masque.IsLoaded then return end
+
+	-- Add to Masque group if available
+	if MultiBot.Masque.Group and button.icon then
+		MultiBot.Masque.Group:AddButton(button, {
+			Icon = button.icon,
+			Normal = button:GetNormalTexture(),
+			Pushed = button:GetPushedTexture(),
+			Highlight = button:GetHighlightTexture(),
+			Border = button.border
+		})
+	end
+end
+
+-- Unregister a button from Masque
+function MultiBot.UnregisterButtonFromMasque(button)
+	if not MultiBot.Masque.IsLoaded or not button then return end
+
+	-- Remove from tracking
+	MultiBot.Masque.Buttons[button] = nil
+
+	-- Remove from Masque group
+	if MultiBot.Masque.Group then
+		MultiBot.Masque.Group:RemoveButton(button)
+	end
 end
 
 MultiBot.timer = {}
@@ -3708,6 +3786,12 @@ MultiBot.tips.every.misc =
 "Includes: Wipe, Autogear, etc.|r\n\n"..
 "|cffff0000Left-click to toggle this menu|r\n"..
 "|cff999999(Execution order: System)|r"
+
+--[[MultiBot.tips.every.pvp =
+"Send PvP command to bot|cffffffff\n"..
+"Display pvp bots informations.|r\n\n"..
+"|cffff0000Left-click to send command|r\n"..
+"|cff999999(Execution order: Bot)|r";--]]
 
 MultiBot.tips.every.pvptitle =
 "MultiBot PvP Panel";
