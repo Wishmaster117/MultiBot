@@ -1,5 +1,38 @@
 MultiBot = CreateFrame("Frame", nil, UIParent)
 
+local aceConsole = LibStub and LibStub("AceConsole-3.0", true)
+if aceConsole then
+  aceConsole:Embed(MultiBot)
+end
+
+MultiBot._registeredCommands = MultiBot._registeredCommands or {}
+
+local function normalizeAlias(alias)
+  if type(alias) ~= "string" then return nil end
+  local cleaned = alias:gsub("^/", "")
+  if cleaned == "" then return nil end
+  return string.upper(cleaned)
+end
+
+function MultiBot.RegisterCommandAliases(name, handler, aliases)
+  if type(handler) ~= "function" or type(aliases) ~= "table" then return end
+  local commandName = tostring(name or "MULTIBOT")
+  MultiBot._registeredCommands[commandName] = MultiBot._registeredCommands[commandName] or {}
+
+  for _, alias in ipairs(aliases) do
+    local normalized = normalizeAlias(alias)
+    if normalized and not MultiBot._registeredCommands[commandName][normalized] then
+      if MultiBot.RegisterChatCommand then
+        MultiBot:RegisterChatCommand(string.lower(normalized), handler)
+      else
+        _G["SLASH_" .. commandName .. tostring(_)] = "/" .. string.lower(normalized)
+        SlashCmdList[commandName] = handler
+      end
+      MultiBot._registeredCommands[commandName][normalized] = true
+    end
+  end
+end
+
 -- GM core --
 MultiBot.GM = MultiBot.GM or false
 

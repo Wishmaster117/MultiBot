@@ -253,9 +253,7 @@ function MultiBot.BuildOptionsPanel()
   -- print("MultiBotOptions: panel registered")
 end
 
--- Slash pour ouvrir le panneau (double appel nécessaire sur 3.3.5 parfois)
-_G.SLASH_MULTIBOTOPTIONS1 = "/mbopt"
-SlashCmdList["MULTIBOTOPTIONS"] = function()
+local function OpenOptionsPanelFromSlash()
   if not MultiBot._optionsBuilt then
     if MultiBot.BuildOptionsPanel then MultiBot.BuildOptionsPanel() end
   end
@@ -268,6 +266,7 @@ SlashCmdList["MULTIBOTOPTIONS"] = function()
     p:Show()
   end
 end
+MultiBot.RegisterCommandAliases("MULTIBOTOPTIONS", OpenOptionsPanelFromSlash, { "mbopt" })
 
 -- Ouvre/ferme le panneau d'options. Retourne true si ouvert, false si fermé.
 function MultiBot.ToggleOptionsPanel()

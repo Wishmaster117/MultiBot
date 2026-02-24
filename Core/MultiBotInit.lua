@@ -7017,24 +7017,28 @@ do
   end)
 end
 
--- Créer/Afficher (ou cacher) le bouton minimap APRÈS chargement complet
+-- Create/refresh the minimap button after SavedVariables are available.
 do
-  local ev = CreateFrame("Frame")
-  ev:RegisterEvent("PLAYER_LOGIN")
-  ev:SetScript("OnEvent", function(self, event)
-    self:UnregisterEvent("PLAYER_LOGIN")
-    -- SV garanties ici ; appliquer l’état mémorisé proprement
+  local function bootstrapMinimapButton()
     if MultiBot and MultiBot.Minimap_Refresh then
       MultiBot.Minimap_Refresh()
     elseif MultiBot and MultiBot.Minimap_Create then
-      -- Fallback hyper défensif si Refresh pas encore défini
       if not (MultiBotSave and MultiBotSave.Minimap and MultiBotSave.Minimap.hide) then
         MultiBot.Minimap_Create()
-      --else
-        -- hide=true => ne crée pas le bouton
       end
     end
-  end)
+  end
+
+  if IsLoggedIn and IsLoggedIn() then
+    bootstrapMinimapButton()
+  else
+    local ev = CreateFrame("Frame")
+    ev:RegisterEvent("PLAYER_LOGIN")
+    ev:SetScript("OnEvent", function(self)
+      self:UnregisterEvent("PLAYER_LOGIN")
+      bootstrapMinimapButton()
+    end)
+  end
 end
 
 -- FINISH --

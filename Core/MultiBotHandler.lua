@@ -1505,21 +1505,7 @@ MultiBot:SetScript("OnEvent", function()
 	end
 end)
 
-SLASH_MULTIBOT1 = "/multibot"
-SLASH_MULTIBOT2 = "/mbot"
-SLASH_MULTIBOT3 = "/mb"
-
---[[SlashCmdList["MULTIBOT"] = function()
-	if(MultiBot.state) then
-		for key, value in pairs(MultiBot.frames) do value:Hide() end
-		MultiBot.state = false
-	else
-		for key, value in pairs(MultiBot.frames) do value:Show() end
-		MultiBot.state = true
-	end
-end]]--
-
-SlashCmdList["MULTIBOT"] = function()
+local function ToggleMultiBotUI()
 	-- don't touch to Shaman/Hunter bars
 	local function affect(frmKey, frm)
 		return frmKey ~= "ShamanQuick" and frmKey ~= "HunterQuick"
@@ -1538,97 +1524,24 @@ SlashCmdList["MULTIBOT"] = function()
 	-- Persist by character
 	MultiBotSave["UIVisible"] = MultiBot.state and true or false
 end
+MultiBot.RegisterCommandAliases("MULTIBOT", ToggleMultiBotUI, { "multibot", "mbot", "mb" })
 
-SLASH_MULTIBOTOPTIONS1 = "/mbopt"
-SlashCmdList["MULTIBOTOPTIONS"] = function()
+local function OpenMultiBotOptions()
     if InterfaceOptionsFrame_OpenToCategory then
         InterfaceOptionsFrame_OpenToCategory("MultiBot")
         InterfaceOptionsFrame_OpenToCategory("MultiBot") -- double appel: comportement connu 3.3.5
     end
 end
+MultiBot.RegisterCommandAliases("MULTIBOTOPTIONS", OpenMultiBotOptions, { "mbopt" })
 
---[[-- ==== TESTS MULTIBOT ====
-
--- /mbdump  -> affiche les intervalles et le throttle actuels
-SLASH_MBDUMP1 = "/mbdump"
-SlashCmdList["MBDUMP"] = function()
-  local t = MultiBotDB and MultiBotDB.timers or {}
-  local rate  = MultiBot.GetThrottleRate and MultiBot.GetThrottleRate() or 5
-  local burst = MultiBot.GetThrottleBurst and MultiBot.GetThrottleBurst() or 8
-  DEFAULT_CHAT_FRAME:AddMessage(string.format(
-    "[MultiBot] Timers: stats=%.2fs, talent=%.2fs, invite=%.2fs, sort=%.2fs | Throttle: rate=%d/s, burst=%d",
-    t.stats or -1, t.talent or -1, t.invite or -1, t.sort or -1, rate, burst
-  ))
-end
-
--- /mbset <stats> <talent> <invite> <sort>  -> règle les 4 sliders par script
--- ex: /mbset 10 2 3 0.5
-SLASH_MBSET1 = "/mbset"
-SlashCmdList["MBSET"] = function(msg)
-  local a,b,c,d = string.match(msg or "", "([%d%.]+)%s+([%d%.]+)%s+([%d%.]+)%s+([%d%.]+)")
-  if a then
-    MultiBot.SetTimer("stats",  tonumber(a))
-    MultiBot.SetTimer("talent", tonumber(b))
-    MultiBot.SetTimer("invite", tonumber(c))
-    MultiBot.SetTimer("sort",   tonumber(d))
-    DEFAULT_CHAT_FRAME:AddMessage("[MultiBot] MBSET ok."); SlashCmdList["MBDUMP"]()
-  else
-    DEFAULT_CHAT_FRAME:AddMessage("|cffff5555Usage: /mbset <stats> <talent> <invite> <sort>|r")
-  end
-end
-
--- /mbspam <n> -> enfile n messages SAY pour tester le throttle (par défaut 20)
--- ex: /mbspam 30
-SLASH_MBSPAM1 = "/mbspam"
-SlashCmdList["MBSPAM"] = function(msg)
-  local n = tonumber(msg) or 20
-  if n > 200 then n = 200 end
-  for i=1,n do
-    -- Préfixe reconnaissable pour le log throttle facultatif
-    SendChatMessage(string.format("[MB_TEST] #%d", i), "SAY")
-  end
-  DEFAULT_CHAT_FRAME:AddMessage(string.format("[MultiBot] Spam enfile %d messages (throttle actif).", n))
-end
-
--- /mbautostats on|off  -> active/désactive le ping stats auto (pratique pour mesurer l’intervalle)
-SLASH_MBAUTOSTATS1 = "/mbautostats"
-SlashCmdList["MBAUTOSTATS"] = function(msg)
-  local on = string.lower(tostring(msg or "")) == "on"
-  MultiBot.auto = MultiBot.auto or {}
-  MultiBot.auto.stats = on
-  DEFAULT_CHAT_FRAME:AddMessage("[MultiBot] Auto stats: "..(on and "ON" or "OFF"))
-end
-
--- /mbreset -> remet les valeurs d'origine (timers + throttle)
-SLASH_MBRESET1 = "/mbreset"
-SlashCmdList["MBRESET"] = function()
-  MultiBot.SetTimer("stats",  45)
-  MultiBot.SetTimer("talent", 3)
-  MultiBot.SetTimer("invite", 5)
-  MultiBot.SetTimer("sort",   1)
-  if MultiBot.SetThrottleRate then MultiBot.SetThrottleRate(5) end
-  if MultiBot.SetThrottleBurst then MultiBot.SetThrottleBurst(8) end
-  DEFAULT_CHAT_FRAME:AddMessage("[MultiBot] Reset valeurs par défaut."); SlashCmdList["MBDUMP"]()
-end
-
-SLASH_MBCHECK1 = "/mbcheck"
-SlashCmdList["MBCHECK"] = function()
-  local wrapped = (SendChatMessage ~= MultiBot._throttleOrig)
-  DEFAULT_CHAT_FRAME:AddMessage(string.format("[MultiBot] Throttle actif: %s | SendChatMessage=%s",
-    wrapped and "OUI" or "NON",
-    tostring(SendChatMessage)
-  ))
-end]]--
-
-SLASH_MBFAKEGM1 = "/mbfakegm"
-SlashCmdList["MBFAKEGM"] = function(msg)
+local function FakeGMCommand(msg)
   local n = tonumber(msg or "") or 0
   MultiBot.GM_DetectFromSystem(("Account level: %d"):format(n))
   DEFAULT_CHAT_FRAME:AddMessage(("GM now: %s (lvl=%d, threshold=%d)"):format(tostring(MultiBot.GM), n, MultiBot.GM_THRESHOLD))
 end
+MultiBot.RegisterCommandAliases("MBFAKEGM", FakeGMCommand, { "mbfakegm" })
 
-SLASH_MBCLASS1 = "/mbclass"
-SlashCmdList["MBCLASS"] = function(msg)
+local function ClassCommand(msg)
   local canon = MultiBot.NormalizeClass(msg)
   if canon then
     DEFAULT_CHAT_FRAME:AddMessage(("Input='%s' -> Canon='%s' | Display='%s'"):format(
@@ -1637,10 +1550,10 @@ SlashCmdList["MBCLASS"] = function(msg)
     DEFAULT_CHAT_FRAME:AddMessage(("Input='%s' -> (no match)"):format(tostring(msg)))
   end
 end
+MultiBot.RegisterCommandAliases("MBCLASS", ClassCommand, { "mbclass" })
 
 -- /mbclasstest -> batterie de cas utiles (aliases + localisés FR si le client est frFR)
-SLASH_MBCLASSTEST1 = "/mbclasstest"
-SlashCmdList["MBCLASSTEST"] = function()
+local function ClassTestCommand()
   local samples = {
     "dk","death knight","DeathKnight",
     "lock","warlock",
@@ -1652,3 +1565,4 @@ SlashCmdList["MBCLASSTEST"] = function()
     DEFAULT_CHAT_FRAME:AddMessage(("[MB] '%s' -> %s"):format(s, tostring(MultiBot.toClass(s))))
   end
 end
+MultiBot.RegisterCommandAliases("MBCLASSTEST", ClassTestCommand, { "mbclasstest" })
