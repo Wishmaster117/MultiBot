@@ -27,8 +27,11 @@ globals = {
 	"GetMacroIconInfo", "GetPlayerInfoByGUID", "UnitGUID", "ConvertToRaid", "HandleQuestsAllResponse", "UnitXPMax", "UnitXP", "UnitManaMax", "UnitMana",
 	"GetCurrentMapContinent", "GetCurrentMapAreaID", "SLASH_MULTIBOT1", "SLASH_MULTIBOT2", "SLASH_MULTIBOT3", "SLASH_MULTIBOTOPTIONS1", "SLASH_MBFAKEGM1",
 	"SLASH_MBCLASS1", "SLASH_MBCLASSTEST1", "UIDropDownMenu_SetText", "UIDropDownMenu_SetWidth", "UIDropDownMenu_Initialize", "UIDropDownMenu_CreateInfo",
-    "UIDropDownMenu_AddButton", "UIDropDownMenu_SetSelectedValue", "time", "isFav", "ToggleDropDownMenu"
-	
+    "UIDropDownMenu_AddButton", "UIDropDownMenu_SetSelectedValue", "time", "isFav", "ToggleDropDownMenu", "LibStub", "securecallfunction", "geterrorhandler", "GAME_LOCALE",
+	"oldminor", "GameFontHighlightSmall", "PlaySound", "ChatFontNormal", "C_Spell", "hooksecurefunc", "ChatEdit_InsertLink", "ChatFrameUtil", "hooksecurefunc", "AceGUIMultiLineEditBoxInsertLink",
+	"CreateFont", "NOT_BOUND", "IsShiftKeyDown", "IsControlKeyDown", "IsAltKeyDown", "CLOSE", "GameFontDisableSmall", "GameFontNormalSmall", "self", "FONT_COLOR_CODE_CLOSE",
+	"AceGUIEditBoxInsertLink", "tconcat", "loadstring", "assert", "rawset", "rawget", "IsLoggedIn", "hash_SlashCmdList", "GetCurrentRegion", "GetCurrentRegionName", "InterfaceOptionsFramePanelContainer",
+    "GameFontNormal", "_G", "SetDesaturation", "WOW_PROJECT_ID", "WOW_PROJECT_MAINLINE", "ColorPickerFrame", "fixstrata"
 }
 
 read_globals = {
