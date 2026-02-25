@@ -20,7 +20,6 @@ function MultiBot.HandleOnUpdate(pElapsed)
 	if(MultiBot.auto.invite and MultiBot.timer.invite.elapsed >= MultiBot.timer.invite.interval) then
 		local tTable = MultiBot.index[MultiBot.timer.invite.roster]
 
-		--if(MultiBot.timer.invite.needs == 0 or MultiBot.timer.invite.index > table.getn(tTable)) then
 		if(MultiBot.timer.invite.needs == 0 or MultiBot.timer.invite.index > #tTable) then
 			if(MultiBot.timer.invite.roster == "raidus") then
 				MultiBot.timer.sort.elapsed = 0
@@ -139,6 +138,131 @@ local function restorePortalMemory()
 	end
 end
 
+local ATTACK_BUTTON_BINDINGS = {
+	attack = "Attack",
+	attack_ranged = "Ranged",
+	attack_melee = "Melee",
+	attack_healer = "Healer",
+	attack_dps = "Dps",
+	attack_tank = "Tank",
+}
+
+local FLEE_BUTTON_BINDINGS = {
+	flee = "Flee",
+	flee_ranged = "Ranged",
+	flee_melee = "Melee",
+	flee_healer = "Healer",
+	flee_dps = "Dps",
+	flee_tank = "Tank",
+	flee_target = "Target",
+}
+
+local function getMultiBarButton(sectionName, frameName, buttonName)
+	local multiBar = MultiBot.frames and MultiBot.frames["MultiBar"]
+	local section = multiBar and multiBar.frames and multiBar.frames[sectionName]
+	local frame = section and section.frames and section.frames[frameName]
+	return frame and frame.buttons and frame.buttons[buttonName]
+end
+
+local function getMainBarButton(buttonName)
+	local multiBar = MultiBot.frames and MultiBot.frames["MultiBar"]
+	local main = multiBar and multiBar.frames and multiBar.frames["Main"]
+	return main and main.buttons and main.buttons[buttonName]
+end
+
+local function getMastersBarButton(buttonName)
+	local multiBar = MultiBot.frames and MultiBot.frames["MultiBar"]
+	local masters = multiBar and multiBar.frames and multiBar.frames["Masters"]
+	return masters and masters.buttons and masters.buttons[buttonName]
+end
+
+local function restoreRightClickMode(saveKey, frameName, buttonBindings)
+	local savedMode = MultiBotSave[saveKey]
+	if savedMode == nil then return end
+
+	local buttonName = buttonBindings[savedMode]
+	if not buttonName then return end
+
+	local button = getMultiBarButton("Left", frameName, buttonName)
+	if button and button.doRight then
+		button.doRight(button)
+	end
+end
+
+local function restoreBinaryLeftToggle(saveKey, getButton)
+	local savedState = MultiBotSave[saveKey]
+	if savedState == nil then return end
+
+	local button = getButton()
+	if not button then return end
+
+	if savedState == "true" then
+		if button.setDisable then button.setDisable() end
+	else
+		if button.setEnable then button.setEnable() end
+	end
+
+	if button.doLeft then
+		button.doLeft(button)
+	end
+end
+
+local function restoreEnableOnlyLeftToggle(saveKey, getButton, onEnabled)
+	if MultiBotSave[saveKey] ~= "true" then return end
+
+	local button = getButton()
+	if not button then return end
+
+	if onEnabled then
+		onEnabled(button)
+	end
+
+	if button.setDisable then
+		button.setDisable()
+	end
+
+	if button.doLeft then
+		button.doLeft(button)
+	end
+end
+
+local function restoreMainBarSavedStates()
+	restoreRightClickMode("AttackButton", "Attack", ATTACK_BUTTON_BINDINGS)
+	restoreRightClickMode("FleeButton", "Flee", FLEE_BUTTON_BINDINGS)
+
+	restoreBinaryLeftToggle("AutoRelease", function()
+		return getMainBarButton("Release")
+	end)
+	restoreBinaryLeftToggle("NecroNet", function()
+		return getMastersBarButton("NecroNet")
+	end)
+	restoreBinaryLeftToggle("Reward", function()
+		return getMainBarButton("Reward")
+	end)
+
+	restoreEnableOnlyLeftToggle("Masters", function()
+		return getMainBarButton("Masters")
+	end, function()
+		MultiBot.GM = true
+	end)
+	restoreEnableOnlyLeftToggle("Creator", function()
+		return getMainBarButton("Creator")
+	end)
+	restoreEnableOnlyLeftToggle("Beast", function()
+		return getMainBarButton("Beast")
+	end)
+	restoreEnableOnlyLeftToggle("Expand", function()
+		return getMainBarButton("Expand")
+	end)
+	restoreEnableOnlyLeftToggle("RTSC", function()
+		return getMainBarButton("RTSC")
+	end, function()
+		if MultiBot.frames and MultiBot.frames["MultiBar"] then
+			MultiBot.frames["MultiBar"].setPoint(MultiBot.frames["MultiBar"].x, MultiBot.frames["MultiBar"].y - 34)
+		end
+	end)
+end
+
 function MultiBot.HandleMultiBotEvent(event, ...)
 	local arg1, arg2 = ...
 	if(event == "PLAYER_LOGOUT") then
@@ -149,8 +273,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		tValue = string.sub(tValue, 1, string.len(tValue) - 4)
 		MultiBotSave["AttackButton"] = tValue
 
-		--local tValue = MultiBot.doSplit(MultiBot.frames["MultiBar"].frames["Left"].buttons["Flee"].texture, "\\")[5]
-		--tValue = string.sub(tValue, 1, string.len(tValue) - 4)
 		tValue = MultiBot.doSplit(MultiBot.frames["MultiBar"].frames["Left"].buttons["Flee"].texture, "\\")[5]
 		tValue = string.sub(tValue, 1, string.len(tValue) - 4)
 		MultiBotSave["FleeButton"] = tValue
@@ -169,18 +291,9 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 	end
 
 	-- ADDON:LOADED --
-	--[[if(event == "ADDON_LOADED" and arg1 == "MultiBot") then
-		if(MultiBotSave["MultiBarPoint"] ~= nil) then
-			local tPoint = MultiBot.doSplit(MultiBotSave["MultiBarPoint"], ", ")
-			MultiBot.frames["MultiBar"].setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
-		end]]--
+
     if(event == "ADDON_LOADED" and arg1 == "MultiBot") then
-	-- print("MultiBot: ADDON_LOADED fired")
-	-- print("BuildOptionsPanel type:", type(MultiBot.BuildOptionsPanel))
 
-        -- Core startup helpers are now routed via lifecycle (OnInitialize/OnEnable).
-
-	        -- [EXISTANT] restauration des positions / états
 		restoreBoundFramePoints()
 
 	        -- Restore MultiBot bar visibility from saved state (default visible).
@@ -190,143 +303,7 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 		restorePortalMemory()
 
-		if(MultiBotSave["AttackButton"] ~= nil) then
-			if(MultiBotSave["AttackButton"] == "attack") then
-				local tButton = MultiBot.frames["MultiBar"].frames["Left"].frames["Attack"].buttons["Attack"]
-				tButton.doRight(tButton)
-
-			elseif(MultiBotSave["AttackButton"] == "attack_ranged") then
-				local tButton = MultiBot.frames["MultiBar"].frames["Left"].frames["Attack"].buttons["Ranged"]
-				tButton.doRight(tButton)
-
-			elseif(MultiBotSave["AttackButton"] == "attack_melee") then
-				local tButton = MultiBot.frames["MultiBar"].frames["Left"].frames["Attack"].buttons["Melee"]
-				tButton.doRight(tButton)
-
-			elseif(MultiBotSave["AttackButton"] == "attack_healer") then
-				local tButton = MultiBot.frames["MultiBar"].frames["Left"].frames["Attack"].buttons["Healer"]
-				tButton.doRight(tButton)
-
-			elseif(MultiBotSave["AttackButton"] == "attack_dps") then
-				local tButton = MultiBot.frames["MultiBar"].frames["Left"].frames["Attack"].buttons["Dps"]
-				tButton.doRight(tButton)
-
-			elseif(MultiBotSave["AttackButton"] == "attack_tank") then
-				local tButton = MultiBot.frames["MultiBar"].frames["Left"].frames["Attack"].buttons["Tank"]
-				tButton.doRight(tButton)
-			end
-		end
-
-		if(MultiBotSave["FleeButton"] ~= nil) then
-			if(MultiBotSave["FleeButton"] == "flee") then
-				local tButton = MultiBot.frames["MultiBar"].frames["Left"].frames["Flee"].buttons["Flee"]
-				tButton.doRight(tButton)
-
-			elseif(MultiBotSave["FleeButton"] == "flee_ranged") then
-				local tButton = MultiBot.frames["MultiBar"].frames["Left"].frames["Flee"].buttons["Ranged"]
-				tButton.doRight(tButton)
-
-			elseif(MultiBotSave["FleeButton"] == "flee_melee") then
-				local tButton = MultiBot.frames["MultiBar"].frames["Left"].frames["Flee"].buttons["Melee"]
-				tButton.doRight(tButton)
-
-			elseif(MultiBotSave["FleeButton"] == "flee_healer") then
-				local tButton = MultiBot.frames["MultiBar"].frames["Left"].frames["Flee"].buttons["Healer"]
-				tButton.doRight(tButton)
-
-			elseif(MultiBotSave["FleeButton"] == "flee_dps") then
-				local tButton = MultiBot.frames["MultiBar"].frames["Left"].frames["Flee"].buttons["Dps"]
-				tButton.doRight(tButton)
-
-			elseif(MultiBotSave["FleeButton"] == "flee_tank") then
-				local tButton = MultiBot.frames["MultiBar"].frames["Left"].frames["Flee"].buttons["Tank"]
-				tButton.doRight(tButton)
-
-			elseif(MultiBotSave["FleeButton"] == "flee_target") then
-				local tButton = MultiBot.frames["MultiBar"].frames["Left"].frames["Flee"].buttons["Target"]
-				tButton.doRight(tButton)
-			end
-		end
-
-		if(MultiBotSave["AutoRelease"] ~= nil) then
-			local tButton = MultiBot.frames["MultiBar"].frames["Main"].buttons["Release"]
-
-			if(MultiBotSave["AutoRelease"] == "true")
-			then tButton.setDisable()
-			else tButton.setEnable()
-			end
-
-			tButton.doLeft(tButton)
-		end
-
-		if(MultiBotSave["NecroNet"] ~= nil) then
-			local tButton = MultiBot.frames["MultiBar"].frames["Masters"].buttons["NecroNet"]
-
-			if(MultiBotSave["NecroNet"] == "true")
-			then tButton.setDisable()
-			else tButton.setEnable()
-			end
-
-			tButton.doLeft(tButton)
-		end
-
-		if(MultiBotSave["Reward"] ~= nil) then
-			local tButton = MultiBot.frames["MultiBar"].frames["Main"].buttons["Reward"]
-
-			if(MultiBotSave["Reward"] == "true")
-			then tButton.setDisable()
-			else tButton.setEnable()
-			end
-
-			tButton.doLeft(tButton)
-		end
-
-		if(MultiBotSave["Masters"] ~= nil) then
-			local tButton = MultiBot.frames["MultiBar"].frames["Main"].buttons["Masters"]
-
-			if(MultiBotSave["Masters"] == "true") then
-				MultiBot.GM = true
-				tButton.setDisable()
-				tButton.doLeft(tButton)
-			end
-		end
-
-		if(MultiBotSave["Creator"] ~= nil) then
-			local tButton = MultiBot.frames["MultiBar"].frames["Main"].buttons["Creator"]
-
-			if(MultiBotSave["Creator"] == "true") then
-				tButton.setDisable()
-				tButton.doLeft(tButton)
-			end
-		end
-
-		if(MultiBotSave["Beast"] ~= nil) then
-			local tButton = MultiBot.frames["MultiBar"].frames["Main"].buttons["Beast"]
-
-			if(MultiBotSave["Beast"] == "true") then
-				tButton.setDisable()
-				tButton.doLeft(tButton)
-			end
-		end
-
-		if(MultiBotSave["Expand"] ~= nil) then
-			local tButton = MultiBot.frames["MultiBar"].frames["Main"].buttons["Expand"]
-
-			if(MultiBotSave["Expand"] == "true") then
-				tButton.setDisable()
-				tButton.doLeft(tButton)
-			end
-		end
-
-		if(MultiBotSave["RTSC"] ~= nil) then
-			local tButton = MultiBot.frames["MultiBar"].frames["Main"].buttons["RTSC"]
-
-			if(MultiBotSave["RTSC"] == "true") then
-				MultiBot.frames["MultiBar"].setPoint(MultiBot.frames["MultiBar"].x, MultiBot.frames["MultiBar"].y - 34)
-				tButton.setDisable()
-				tButton.doLeft(tButton)
-			end
-		end
+		restoreMainBarSavedStates()
 
         if MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"] ~= nil then
           if MultiBot.ApplyGlobalStrata then
@@ -344,18 +321,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 	-- PLAYER:ENTERING --
 
-	--[[if(event == "PLAYER_ENTERING_WORLD") then
-		SendChatMessage(".account", "SAY")
-
-		if(MultiBot.init == nil) then
-			SendChatMessage(".playerbot bot list", "SAY")
-			MultiBot.init = true
-			return
-		end
-
-		return
-	end]]--if(event == "PLAYER_ENTERING_WORLD") then
-
     if(event == "PLAYER_ENTERING_WORLD") then
 	MultiBot.dprint("EVT", "PLAYER_ENTERING_WORLD") -- DEBUG
         SendChatMessage(".account", "SAY")
@@ -363,7 +328,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
             MultiBot.init = true
             if type(TimerAfter) == "function" then
                 TimerAfter(0.5, function()
-                    -- SendChatMessage(".playerbot bot list", "SAY")
 					MultiBot.dprint("SEND", ".playerbot bot list"); SendChatMessage(".playerbot bot list", "SAY")--Debug
                 end)
             else
@@ -377,11 +341,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 	-- CHAT:SYSTEM --
 	if(event == "CHAT_MSG_SYSTEM") then
 	MultiBot.dprint("SYS", arg1) -- DEBUG
-		--[[if(MultiBot.isInside(arg1, "Accountlevel", "account level", "niveau de compte", "等级")) then
-			local tLevel = tonumber(MultiBot.doSplit(arg1, ": ")[2])
-			if(tLevel ~= nil) then MultiBot.GM = tLevel > 1 end
-			MultiBot.RaidPool("player")
-		end]]--
 
 		-- Détection générique du niveau de compte (toutes langues prises en charge via patrons)
         do
@@ -394,7 +353,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		if(MultiBot.isInside(arg1, "Possible strategies")) then
 			local tStrategies = MultiBot.doSplit(arg1, ", ")
 			SendChatMessage("=== STRATEGIES ===", "SAY")
-			--for i = 1, table.getn(tStrategies) do SendChatMessage(i .. " : " .. tStrategies[i], "SAY") end
 			for i = 1, #tStrategies do SendChatMessage(i .. " : " .. tStrategies[i], "SAY") end
 			return
 		end
@@ -402,7 +360,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		if(MultiBot.isInside(arg1, "Whisper any of")) then
 			local tCommands = MultiBot.doSplit(arg1, ", ")
 			SendChatMessage("=== WHISPER-COMMANDS ===", "SAY")
-			--for i = 1, table.getn(tCommands) do SendChatMessage(i .. " : " .. tCommands[i], "SAY") end
 			for i = 1, #tCommands do SendChatMessage(i .. " : " .. tCommands[i], "SAY") end
 			return
 		end
@@ -474,8 +431,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
                 return
             end
 
-			--local tLocClass, tClass, tLocRace, tRace, tSex, tName = GetPlayerInfoByGUID(UnitGUID("player"))
-			--tClass = MultiBot.toClass(tClass)
 			local _, tClass, _, _, _, tName = GetPlayerInfoByGUID(UnitGUID("player"))
 			tClass = MultiBot.toClass(tClass)
 
@@ -487,43 +442,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 				SendChatMessage(".playerbot bot self", "SAY")
 				MultiBot.OnOffSwitch(pButton)
 			end
-
-			-- PLAYERBOTS --
-			--[[local tTable = MultiBot.doSplit(string.sub(arg1, 13), ", ") -- Commenté pour teste de version plus robuste au 06/12/2025
-						MultiBot.dprint("ROSTER_PARSE_COUNT", #tTable) -- DEBUG
-
-			for key, value in pairs(tTable) do
-				if(value == "") then break end
-				local tBot = MultiBot.doSplit(value, " ")
-				--local tName = string.sub(tBot[1], 2)
-				--local tClass = MultiBot.toClass(tBot[2])
-				-- local tOnline = string.sub(tBot[1], 1, 1)
-
-				--local tPlayer = MultiBot.addPlayer(tClass, tName).setDisable()
-
-				--tPlayer.doRight = function(pButton)
-				local botName = string.sub(tBot[1], 2)
-				local botClass = MultiBot.toClass(tBot[2])
-
-				local botButton = MultiBot.addPlayer(botClass, botName).setDisable()
-
-				botButton.doRight = function(pButton)
-					if(pButton.state == false) then return end
-					SendChatMessage(".playerbot bot remove " .. pButton.name, "SAY")
-					if(pButton.parent.frames[pButton.name] ~= nil) then pButton.parent.frames[pButton.name]:Hide() end
-					pButton.setDisable()
-				end
-
-				--tPlayer.doLeft = function(pButton)
-				botButton.doLeft = function(pButton)
-					if(pButton.state) then
-						if(pButton.parent.frames[pButton.name] ~= nil) then MultiBot.ShowHideSwitch(pButton.parent.frames[pButton.name]) end
-					else
-						SendChatMessage(".playerbot bot add " .. pButton.name, "SAY")
-						pButton.setEnable()
-					end
-				end
-			end]]--
 
 			-- On reste sur le format historique : "Bot roster: +Name Class, -Name Class, ..."
 			local tTable = MultiBot.doSplit(string.sub(arg1, 13), ", ")
@@ -611,7 +529,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
         end
 
 			-- MEMBERBOTS --
-			--for i = 1, 50 do
 			local tGuildCount = 0
 			if type(GetNumGuildMembers) == "function" then
 				tGuildCount = select(1, GetNumGuildMembers()) or 0
@@ -646,7 +563,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			end
 
 			-- FRIENDBOTS --
-			--for i = 1, 50 do
 			local tFriendCount = 0
 			if type(GetNumFriends) == "function" then
 				tFriendCount = GetNumFriends() or 0
@@ -697,8 +613,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 			if(GetNumPartyMembers() > 0) then
 				for i = 1, GetNumPartyMembers() do
-					--local tName = UnitName("party" .. i)
-					--SendChatMessage(".playerbot bot add " .. tName, "SAY")
 					local partyName = UnitName("party" .. i)
 					SendChatMessage(".playerbot bot add " .. partyName, "SAY")
 				end
@@ -714,22 +628,13 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			local tButton = MultiBot.frames["MultiBar"].frames["Units"].buttons[tName]
 			if(tButton == nil) then return end
 
-			--[[if(MultiBot.isMember(tName)) then -- Removed to avoid double wisper of co ?
-				tButton.waitFor = "CO"
-				SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
-				SendChatMessage("co ?", "WHISPER", nil, tName)
-				tButton.setEnable()
-				--MultiBot.doRaid()
-				return
-			end]]--
-
-             if(MultiBot.isMember(tName)) then
-                -- On ne redemande plus les stratégies ici pour éviter les doublons.
-                -- Le flux normal via le WHISPER "Hello" s'en chargera.
-                tButton.waitFor = "CO"
-                tButton.setEnable()
-                return
-             end
+            if(MultiBot.isMember(tName)) then
+               -- On ne redemande plus les stratégies ici pour éviter les doublons.
+               -- Le flux normal via le WHISPER "Hello" s'en chargera.
+               tButton.waitFor = "CO"
+               tButton.setEnable()
+               return
+            end
 
 			if(GetNumPartyMembers() == 4) then ConvertToRaid() end
 			MultiBot.doSlash("/invite", tName)
@@ -751,7 +656,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 			if(tFrame ~= nil) then tFrame:Hide() end
 			tButton.setDisable()
-			--MultiBot.doRaid()
 			return
 		end
 
@@ -760,10 +664,8 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			local tButton = MultiBot.frames["MultiBar"].frames["Units"].buttons[tName]
 			if(tButton == nil) then return end
 			tButton.waitFor = "CO"
-			-- SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", tName), "SAY")
 			SendChatMessage("co ?", "WHISPER", nil, tName)
 			tButton.setEnable()
-			--MultiBot.doRaid()
 			return
 		end
 
@@ -774,7 +676,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			if(tButton == nil) then return end
 			if(tFrame ~= nil) then tFrame:Hide() end
 			tButton.setDisable()
-			--MultiBot.doRaid()
 			return
 		end
 
@@ -816,7 +717,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 	MultiBot.LastGameObjectSearch        = MultiBot.LastGameObjectSearch        or {}
 	MultiBot._GameObjCaptureInProgress   = MultiBot._GameObjCaptureInProgress   or {}
 	MultiBot._questAllBuffer             = MultiBot._questAllBuffer             or {}
-	-- MultiBot._awaitingQuestsAll          = MultiBot._awaitingQuestsAll          or {}
 
 	local function FillQuestTable(tbl, author, msg)
 		MultiBot[tbl] = MultiBot[tbl] or {}
@@ -843,17 +743,11 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		local awaiting   = MultiBot._awaitingQuestsIncompleted[author]
 					or MultiBot._awaitingQuestsCompleted[author]
 		if not hasKeyword and not awaiting then
-			--[[DEFAULT_CHAT_FRAME:AddMessage(
-			"|cff00ff00[DBG]|r Skip non-quest whisper"
-			)]]--
 			return
 		end
 
 		-- Incomp Quests
 		if rawMsg:find("Incompleted quests") then
-			--[[DEFAULT_CHAT_FRAME:AddMessage(
-			"|cff00ff00[DBG]|r Début Incompleted de "..author
-			)]]--
 			MultiBot.BotQuestsIncompleted[author]       = {}  -- reset pour ce bot
 			MultiBot._awaitingQuestsIncompleted[author] = true
 			return
@@ -881,9 +775,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 		-- Comp Quests
 		if rawMsg:find("Completed quests") then
-			--[[DEFAULT_CHAT_FRAME:AddMessage(
-			"|cff00ff00[DBG]|r Début Completed de "..author
-			)]]--
 			MultiBot.BotQuestsCompleted[author]       = {}  -- reset pour ce bot
 			MultiBot._awaitingQuestsCompleted[author] = true
 			return
@@ -1013,10 +904,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 		-- Glyphs start
 		local rawMsg, author = arg1, arg2
-		-- Add for QUESTS
-		--[[DEFAULT_CHAT_FRAME:AddMessage(
-		"|cff00ff00[DBG]|r WHISPER reçu de "..author.." → "..rawMsg
-		)]]--
 
 		if MultiBot._awaitingQuestsAll then -- QuestsAll
 			HandleQuestsAllResponse(rawMsg, author)
@@ -1029,15 +916,7 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			return
 		end
 
-		--[[-- debug d’entrée
-		DEFAULT_CHAT_FRAME:AddMessage(
-		"|cff00ff00[DBG]|r CHAT_MSG_WHISPER reçu from="..
-		tostring(author).." msg="..tostring(rawMsg)
-		)]]--
-
 		if MultiBot.awaitGlyphs and author == MultiBot.awaitGlyphs then
-			--[[DEFAULT_CHAT_FRAME:AddMessage("|cff66ccff[DBG]|r Section GLYPHS start")]]--
-
 			-- On ne traite que les réponses commençant par "Glyphs:" ou "No glyphs"
 			if not rawMsg:match("^[Gg]lyphs:") and not rawMsg:match("^[Nn]o glyphs") then
 				DEFAULT_CHAT_FRAME:AddMessage("|cff66ccff[ERROR]|r Ignored non-glyphs msg")
@@ -1061,10 +940,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 					ids[i] = 0
 				end
 			end
-
-			--[[DEFAULT_CHAT_FRAME:AddMessage(
-			"|cff66ccff[DBG]|r IDs extraits : "..table.concat(ids, ",")
-			)]]--
 
 			-- On stocke cette liste pour le rafraîchissement
 			MultiBot.receivedGlyphs = MultiBot.receivedGlyphs or {}
@@ -1136,10 +1011,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		end
 
 		if(MultiBot.isInside(arg1, "Hello", "你好") and tButton == nil) then
-			-- local tUnit = MultiBot.toUnit(arg2)
-			-- local tLocClass, tClass = UnitClass(tUnit)
-			-- local tLevel = UnitLevel(tUnit)
-			-- Added to avoid error \MultiBotHandler.lua:940: Usage: UnitClass("unit") If toUnit don't found the author (bot still charging, not yet grouped, etc.), it send nil, and this call break.
             local tUnit = MultiBot.toUnit(arg2)
             if not (tUnit and UnitExists(tUnit)) then
                -- Bot is still not in party/raid we stop
@@ -1185,11 +1056,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 				if(tName == nil) then break end
 			end
 
-			--local tClass = MultiBot.toClass(tClass)
-			--local tTable = MultiBot.index.classes[tButton.roster][tButton.class]
-			--local tIndex = 0
-
-			--for i = 1, table.getn(tTable) do
 			tClass = MultiBot.toClass(tClass)
 			local tTable = MultiBot.index.classes[tButton.roster][tButton.class]
 			local tIndex = 0
@@ -1214,14 +1080,11 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 		if(MultiBot.isInside(arg1, "Hello", "你好")) then
 			tButton.waitFor = "CO"
-			-- SendChatMessage(MultiBot.doReplace(MultiBot.info.combat, "NAME", arg2), "SAY")
 			SendChatMessage("co ?", "WHISPER", nil, arg2)
-			--MultiBot.doRaid()
 			return
 		end
 
 		if(MultiBot.isInside(arg1, "Goodbye", "再见")) then
-			--MultiBot.doRaid()
 			return
 		end
 
@@ -1245,13 +1108,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			if(MultiBot.spells[arg2] == nil) then MultiBot.spells[arg2] = {} end
 			tButton.waitFor = "DETAIL"
 
-			--local tSpells = {}
-			--local tIgnores = MultiBot.doSplit(arg1, ": ")[2]
-
-			--if(tIgnores ~= nil) then
-				--tSpells = MultiBot.doSplit(tIgnores, ", ")
-
-				--for k,v in pairs(tSpells) do
 			local tIgnores = MultiBot.doSplit(arg1, ": ")[2]
 
 			if(tIgnores ~= nil) then
@@ -1271,7 +1127,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			tButton.waitFor = "IGNORE"
 			tButton.normal = string.sub(arg1, 13)
 
-			--tFrame = MultiBot.frames["MultiBar"].frames["Units"].addFrame(arg2, tButton.x - tButton.size - 2, tButton.y + 2)
 			local tFrame = MultiBot.frames["MultiBar"].frames["Units"].addFrame(arg2, tButton.x - tButton.size - 2, tButton.y + 2)
 			tFrame.class = tButton.class
 			tFrame.name = tButton.name
@@ -1293,7 +1148,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		if(tButton.waitFor == "CO" and MultiBot.isInside(arg1, "Strategies: ")) then
 			tButton.waitFor = "NC"
 			tButton.combat = string.sub(arg1, 13)
-			--SendChatMessage(MultiBot.doReplace(MultiBot.info.normal, "NAME", arg2), "SAY")
 			SendChatMessage("nc ?", "WHISPER", nil, arg2)
 			return
 		end
@@ -1310,7 +1164,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		if(tButton.waitFor == "INVENTORY" and MultiBot.isInside(arg1, "Inventory", "背包")) then
 			local tItems = MultiBot.inventory.frames["Items"]
 			for key, value in pairs(tItems.buttons) do value:Hide() end
-			--table.wipe(tItems.buttons)
 			for key in pairs(tItems.buttons) do tItems.buttons[key] = nil end
 			MultiBot.inventory.setText("Title", MultiBot.doReplace(MultiBot.info.inventory, "NAME", arg2))
 			MultiBot.inventory.name = arg2
@@ -1338,8 +1191,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		if(tButton.waitFor == "SPELLBOOK" and MultiBot.isInside(arg1, "Spells")) then
 			local tOverlay = MultiBot.spellbook.frames["Overlay"]
 			local tSpellbook = MultiBot.spellbook
-			--table.wipe(tSpellbook.spells)
-			--tSpellbook.frames["Overlay"].setText("Title", MultiBot.doReplace(MultiBot.info.spellbook, "NAME", arg2))
 			for key in pairs(tSpellbook.spells) do tSpellbook.spells[key] = nil end
 			tOverlay.setText("Title", MultiBot.doReplace(MultiBot.info.spellbook, "NAME", arg2))
 			tSpellbook.name = arg2
@@ -1419,13 +1270,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 	end
 
 	if(event == "TRADE_CLOSED") then
-		--[[if(MultiBot.inventory:IsVisible()) then
-			MultiBot.frames["MultiBar"].frames["Units"].buttons[MultiBot.inventory.name].waitFor = "INVENTORY"
-			SendChatMessage("items", "WHISPER", nil, MultiBot.inventory.name)
-			return
-		end
-
-		return]]--
 		if MultiBot.inventory and MultiBot.inventory:IsVisible() and MultiBot.RefreshInventory then
 			MultiBot.RefreshInventory()
 			return
@@ -1482,16 +1326,6 @@ end
 MultiBot:SetScript("OnEvent", function(_, eventName, ...)
 	MultiBot.DispatchEvent(eventName, ...)
 end)
-
---[[SlashCmdList["MULTIBOT"] = function()
-	if(MultiBot.state) then
-		for key, value in pairs(MultiBot.frames) do value:Hide() end
-		MultiBot.state = false
-	else
-		for key, value in pairs(MultiBot.frames) do value:Show() end
-		MultiBot.state = true
-	end
-end]]--
 
 local function ToggleMultiBotUI()
 	if MultiBot.ToggleMainUIVisibility then
