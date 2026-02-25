@@ -63,22 +63,31 @@ local function registerNativeSlashAlias(commandName, aliasIndex, lowerAlias, han
   SlashCmdList[commandName] = handler
 end
 
-local function registerCommandAlias(commandName, aliasIndex, normalizedAlias, handler, registerWithAce)
-  local lowerAlias = string.lower(normalizedAlias)
+local function createAliasRegistrar(commandName, handler, registerWithAce)
   if registerWithAce then
-    MultiBot:RegisterChatCommand(lowerAlias, handler)
-  else
-    registerNativeSlashAlias(commandName, aliasIndex, lowerAlias, handler)
+    return function(aliasIndex, normalizedAlias)
+      MultiBot:RegisterChatCommand(string.lower(normalizedAlias), handler)
+    end
+  end
+
+  return function(aliasIndex, normalizedAlias)
+    registerNativeSlashAlias(commandName, aliasIndex, string.lower(normalizedAlias), handler)
   end
 end
 
-local function forEachNormalizedAlias(aliases, callback)
+local function collectNormalizedAliases(aliases)
+  local normalizedAliases = {}
+  local seen = {}
+
   for i, alias in ipairs(aliases) do
     local normalized = normalizeAlias(alias)
-    if normalized then
-      callback(i, normalized)
+    if normalized and not seen[normalized] then
+      seen[normalized] = true
+      normalizedAliases[#normalizedAliases + 1] = { index = i, value = normalized }
     end
   end
+
+  return normalizedAliases
 end
 
 local function buildCommandRegistrationContext(name, handler, aliases)
@@ -89,21 +98,24 @@ local function buildCommandRegistrationContext(name, handler, aliases)
   local commandName = normalizeCommandName(name)
   local registeredAliases = ensureValue(MultiBot._registeredCommands, commandName, {})
 
+  local registerAlias = createAliasRegistrar(commandName, handler, type(MultiBot.RegisterChatCommand) == "function")
+
   return {
     commandName = commandName,
-    handler = handler,
-    aliases = aliases,
+    aliases = collectNormalizedAliases(aliases),
     registeredAliases = registeredAliases,
-    registerWithAce = type(MultiBot.RegisterChatCommand) == "function",
+    registerAlias = registerAlias,
   }
 end
 
 local function registerCommandAliasesFromContext(context)
-  forEachNormalizedAlias(context.aliases, function(i, normalized)
-    if context.registeredAliases[normalized] then return end
-    registerCommandAlias(context.commandName, i, normalized, context.handler, context.registerWithAce)
-    context.registeredAliases[normalized] = true
-  end)
+  for _, aliasInfo in ipairs(context.aliases) do
+    local normalized = aliasInfo.value
+    if not context.registeredAliases[normalized] then
+      context.registerAlias(aliasInfo.index, normalized)
+      context.registeredAliases[normalized] = true
+    end
+  end
 end
 
 function MultiBot.RegisterCommandAliases(name, handler, aliases)

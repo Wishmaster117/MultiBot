@@ -71,47 +71,79 @@ MultiBot:SetScript("OnUpdate", function(_, pElapsed)
 	MultiBot.DispatchUpdate(pElapsed)
  end)
 
-MultiBot:SetScript("OnUpdate", function(_, pElapsed)
-	if MultiBot.DispatchUpdate then
-		MultiBot.DispatchUpdate(pElapsed)
-	else
-		MultiBot.HandleOnUpdate(pElapsed)
-	end
-end)
-
 -- HANDLER --
+
+local POINT_FRAME_BINDINGS = {
+	{ saveKey = "MultiBarPoint", getFrame = function() return MultiBot.frames and MultiBot.frames["MultiBar"] end },
+	{ saveKey = "InventoryPoint", getFrame = function() return MultiBot.inventory end },
+	{ saveKey = "SpellbookPoint", getFrame = function() return MultiBot.spellbook end },
+	{ saveKey = "ItemusPoint", getFrame = function() return MultiBot.itemus end },
+	{ saveKey = "IconosPoint", getFrame = function() return MultiBot.iconos end },
+	{ saveKey = "StatsPoint", getFrame = function() return MultiBot.stats end },
+	{ saveKey = "RewardPoint", getFrame = function() return MultiBot.reward end },
+	{ saveKey = "TalentPoint", getFrame = function() return MultiBot.talent end },
+}
+
+local PORTAL_MEMORY_BINDINGS = {
+	{ saveKey = "MemoryGem1", color = "Red" },
+	{ saveKey = "MemoryGem2", color = "Green" },
+	{ saveKey = "MemoryGem3", color = "Blue" },
+}
+
+local function getPortalButton(color)
+	local multiBar = MultiBot.frames and MultiBot.frames["MultiBar"]
+	local masters = multiBar and multiBar.frames and multiBar.frames["Masters"]
+	local portal = masters and masters.frames and masters.frames["Portal"]
+	return portal and portal.buttons and portal.buttons[color]
+end
+
+local function saveBoundFramePoints()
+	for _, binding in ipairs(POINT_FRAME_BINDINGS) do
+		local frame = binding.getFrame and binding.getFrame()
+		if frame then
+			local tX, tY = MultiBot.toPoint(frame)
+			MultiBotSave[binding.saveKey] = tX .. ", " .. tY
+		end
+	end
+end
+
+local function restoreBoundFramePoints()
+	for _, binding in ipairs(POINT_FRAME_BINDINGS) do
+		local pointValue = MultiBotSave[binding.saveKey]
+		local frame = binding.getFrame and binding.getFrame()
+		if pointValue ~= nil and frame and frame.setPoint then
+			local tPoint = MultiBot.doSplit(pointValue, ", ")
+			frame.setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
+		end
+	end
+end
+
+local function savePortalMemory()
+	for _, binding in ipairs(PORTAL_MEMORY_BINDINGS) do
+		local portalButton = getPortalButton(binding.color)
+		if portalButton then
+			MultiBotSave[binding.saveKey] = MultiBot.SavePortal(portalButton)
+		end
+	end
+end
+
+local function restorePortalMemory()
+	for _, binding in ipairs(PORTAL_MEMORY_BINDINGS) do
+		local memory = MultiBotSave[binding.saveKey]
+		if memory ~= nil then
+			local portalButton = getPortalButton(binding.color)
+			if portalButton then
+				MultiBot.LoadPortal(portalButton, memory)
+			end
+		end
+	end
+end
 
 function MultiBot.HandleMultiBotEvent(event, ...)
 	local arg1, arg2 = ...
 	if(event == "PLAYER_LOGOUT") then
-		local tX, tY = MultiBot.toPoint(MultiBot.frames["MultiBar"])
-		MultiBotSave["MultiBarPoint"] = tX .. ", " .. tY
-
-		tX, tY = MultiBot.toPoint(MultiBot.inventory)
-		MultiBotSave["InventoryPoint"] = tX .. ", " .. tY
-
-		tX, tY = MultiBot.toPoint(MultiBot.spellbook)
-		MultiBotSave["SpellbookPoint"] = tX .. ", " .. tY
-
-		tX, tY = MultiBot.toPoint(MultiBot.itemus)
-		MultiBotSave["ItemusPoint"] = tX .. ", " .. tY
-
-		tX, tY = MultiBot.toPoint(MultiBot.iconos)
-		MultiBotSave["IconosPoint"] = tX .. ", " .. tY
-
-		tX, tY = MultiBot.toPoint(MultiBot.stats)
-		MultiBotSave["StatsPoint"] = tX .. ", " .. tY
-
-		tX, tY = MultiBot.toPoint(MultiBot.reward)
-		MultiBotSave["RewardPoint"] = tX .. ", " .. tY
-
-		tX, tY = MultiBot.toPoint(MultiBot.talent)
-		MultiBotSave["TalentPoint"] = tX .. ", " .. tY
-
-		local tPortal = MultiBot.frames["MultiBar"].frames["Masters"].frames["Portal"]
-		MultiBotSave["MemoryGem1"] =  MultiBot.SavePortal(tPortal.buttons["Red"])
-		MultiBotSave["MemoryGem2"] =  MultiBot.SavePortal(tPortal.buttons["Green"])
-		MultiBotSave["MemoryGem3"] =  MultiBot.SavePortal(tPortal.buttons["Blue"])
+		saveBoundFramePoints()
+		savePortalMemory()
 
 		local tValue = MultiBot.doSplit(MultiBot.frames["MultiBar"].frames["Left"].buttons["Attack"].texture, "\\")[5]
 		tValue = string.sub(tValue, 1, string.len(tValue) - 4)
@@ -148,66 +180,15 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
         -- Core startup helpers are now routed via lifecycle (OnInitialize/OnEnable).
 
-        -- [EXISTANT] restauration des positions / états
-        if(MultiBotSave["MultiBarPoint"] ~= nil) then
-            local tPoint = MultiBot.doSplit(MultiBotSave["MultiBarPoint"], ", ")
-            MultiBot.frames["MultiBar"].setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
-        end
+	        -- [EXISTANT] restauration des positions / états
+		restoreBoundFramePoints()
 
-        -- Restore MultiBot bar visibility from saved state (default visible).
-        if MultiBot.ToggleMainUIVisibility then
-          MultiBot.ToggleMainUIVisibility(MultiBotSave["UIVisible"] ~= false)
-        end
+	        -- Restore MultiBot bar visibility from saved state (default visible).
+	        if MultiBot.ToggleMainUIVisibility then
+	          MultiBot.ToggleMainUIVisibility(MultiBotSave["UIVisible"] ~= false)
+	        end
 
-		if(MultiBotSave["InventoryPoint"] ~= nil) then
-			local tPoint = MultiBot.doSplit(MultiBotSave["InventoryPoint"], ", ")
-			MultiBot.inventory.setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
-		end
-
-		if(MultiBotSave["SpellbookPoint"] ~= nil) then
-			local tPoint = MultiBot.doSplit(MultiBotSave["SpellbookPoint"], ", ")
-			MultiBot.spellbook.setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
-		end
-
-		if(MultiBotSave["ItemusPoint"] ~= nil) then
-			local tPoint = MultiBot.doSplit(MultiBotSave["ItemusPoint"], ", ")
-			MultiBot.itemus.setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
-		end
-
-		if(MultiBotSave["IconosPoint"] ~= nil) then
-			local tPoint = MultiBot.doSplit(MultiBotSave["IconosPoint"], ", ")
-			MultiBot.iconos.setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
-		end
-
-		if(MultiBotSave["StatsPoint"] ~= nil) then
-			local tPoint = MultiBot.doSplit(MultiBotSave["StatsPoint"], ", ")
-			MultiBot.stats.setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
-		end
-
-		if(MultiBotSave["RewardPoint"] ~= nil) then
-			local tPoint = MultiBot.doSplit(MultiBotSave["RewardPoint"], ", ")
-			MultiBot.reward.setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
-		end
-
-		if(MultiBotSave["TalentPoint"] ~= nil) then
-			local tPoint = MultiBot.doSplit(MultiBotSave["TalentPoint"], ", ")
-			MultiBot.talent.setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
-		end
-
-		if(MultiBotSave["MemoryGem1"] ~= nil) then
-			local tGem = MultiBot.frames["MultiBar"].frames["Masters"].frames["Portal"].buttons["Red"]
-			MultiBot.LoadPortal(tGem, MultiBotSave["MemoryGem1"])
-		end
-
-		if(MultiBotSave["MemoryGem2"] ~= nil) then
-			local tGem = MultiBot.frames["MultiBar"].frames["Masters"].frames["Portal"].buttons["Green"]
-			MultiBot.LoadPortal(tGem, MultiBotSave["MemoryGem2"])
-		end
-
-		if(MultiBotSave["MemoryGem3"] ~= nil) then
-			local tGem = MultiBot.frames["MultiBar"].frames["Masters"].frames["Portal"].buttons["Blue"]
-			MultiBot.LoadPortal(tGem, MultiBotSave["MemoryGem3"])
-		end
+		restorePortalMemory()
 
 		if(MultiBotSave["AttackButton"] ~= nil) then
 			if(MultiBotSave["AttackButton"] == "attack") then
@@ -1502,19 +1483,27 @@ MultiBot:SetScript("OnEvent", function(_, eventName, ...)
 	MultiBot.DispatchEvent(eventName, ...)
 end)
 
+--[[SlashCmdList["MULTIBOT"] = function()
+	if(MultiBot.state) then
+		for key, value in pairs(MultiBot.frames) do value:Hide() end
+		MultiBot.state = false
+	else
+		for key, value in pairs(MultiBot.frames) do value:Show() end
+		MultiBot.state = true
+	end
+end]]--
+
 local function ToggleMultiBotUI()
 	if MultiBot.ToggleMainUIVisibility then
 		MultiBot.ToggleMainUIVisibility()
 	end
 end
-MultiBot.RegisterCommandAliases("MULTIBOT", ToggleMultiBotUI, { "multibot", "mbot", "mb" })
 
 local function FakeGMCommand(msg)
   local n = tonumber(msg or "") or 0
   MultiBot.GM_DetectFromSystem(("Account level: %d"):format(n))
   DEFAULT_CHAT_FRAME:AddMessage(("GM now: %s (lvl=%d, threshold=%d)"):format(tostring(MultiBot.GM), n, MultiBot.GM_THRESHOLD))
 end
-MultiBot.RegisterCommandAliases("MBFAKEGM", FakeGMCommand, { "mbfakegm" })
 
 local function ClassCommand(msg)
   local canon = MultiBot.NormalizeClass(msg)
@@ -1525,7 +1514,6 @@ local function ClassCommand(msg)
     DEFAULT_CHAT_FRAME:AddMessage(("Input='%s' -> (no match)"):format(tostring(msg)))
   end
 end
-MultiBot.RegisterCommandAliases("MBCLASS", ClassCommand, { "mbclass" })
 
 -- /mbclasstest -> batterie de cas utiles (aliases + localisés FR si le client est frFR)
 local function ClassTestCommand()
@@ -1540,4 +1528,14 @@ local function ClassTestCommand()
     DEFAULT_CHAT_FRAME:AddMessage(("[MB] '%s' -> %s"):format(s, tostring(MultiBot.toClass(s))))
   end
 end
-MultiBot.RegisterCommandAliases("MBCLASSTEST", ClassTestCommand, { "mbclasstest" })
+
+local COMMAND_DEFINITIONS = {
+  { "MULTIBOT", ToggleMultiBotUI, { "multibot", "mbot", "mb" } },
+  { "MBFAKEGM", FakeGMCommand, { "mbfakegm" } },
+  { "MBCLASS", ClassCommand, { "mbclass" } },
+  { "MBCLASSTEST", ClassTestCommand, { "mbclasstest" } },
+}
+
+for _, def in ipairs(COMMAND_DEFINITIONS) do
+  MultiBot.RegisterCommandAliases(def[1], def[2], def[3])
+end

@@ -487,7 +487,7 @@ function MultiBot.BuildFormationUI(tLeft)
   local col = 1                                    -- toujours 1
   local row = idx                                   -- 1,2,3…
   AddFormationButton(tFormat, data, col, row, CELL_W, CELL_H)
-  end 
+  end
 end
 
 -- We call it, when tLeft are ready
@@ -3264,7 +3264,7 @@ MultiBot.inventory.addButton("SellGrey", -94, 768, "inv_misc_coin_03", MultiBot.
 		pButton.getButton("Use").setDisable()
 		SendChatMessage("s *", "WHISPER", nil, pButton.getName())
     if MultiBot.RefreshInventory then
-    	MultiBot.RefreshInventory(0.5)
+        MultiBot.RefreshInventory(0.5)
     end
 end
 

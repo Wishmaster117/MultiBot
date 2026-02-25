@@ -33,7 +33,7 @@ globals = {
 	"AceGUIEditBoxInsertLink", "tconcat", "loadstring", "assert", "rawset", "rawget", "IsLoggedIn", "hash_SlashCmdList", "GetCurrentRegion", "GetCurrentRegionName", "InterfaceOptionsFramePanelContainer",
     "GameFontNormal", "_G", "SetDesaturation", "WOW_PROJECT_ID", "WOW_PROJECT_MAINLINE", "ColorPickerFrame", "fixstrata", "UIDropDownMenu_HandleGlobalMouseEvent", "EventRegistry", "BackdropTemplateMixin",
 	"TooltipBackdropTemplateMixin", "NORMAL_FONT_COLOR", "HIGHLIGHT_FONT_COLOR", "GameTooltip_SetDefaultAnchor", "ChatFrame1", "UISpecialFrames", "GetMouseFocus", "ShowUIPanel", "tremove", "min", "max",
-	"GetMinimapShape", "GetMinimapShape", "PanelTemplates_TabResize"
+	"GetMinimapShape", "GetMinimapShape", "PanelTemplates_TabResize", "GetGuildRosterShowOffline", "SetGuildRosterShowOffline", "IsInGuild", "GetGuildInfo", "SetGuildRosterShowOffline"
 }
 
 read_globals = {
