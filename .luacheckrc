@@ -3,8 +3,7 @@ std = "lua53"
 
 exclude_files = {
    "**/MultiBotInit.lua",
-   "**/Libs/AceAddon-3.0/AceAddon-3.0.lua",
-   "**/Libs/AceConsole-3.0/AceConsole-3.0.lua"
+   "Libs/**"
    
 }
 
