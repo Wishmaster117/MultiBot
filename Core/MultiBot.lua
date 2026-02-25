@@ -1,5 +1,290 @@
 MultiBot = CreateFrame("Frame", nil, UIParent)
 
+local function ensureValue(root, key, defaultValue)
+  if root[key] == nil then
+    root[key] = defaultValue
+  end
+  return root[key]
+end
+
+local aceConsole = LibStub and LibStub("AceConsole-3.0", true)
+local aceAddon = LibStub and LibStub("AceAddon-3.0", true)
+if aceConsole then
+  aceConsole:Embed(MultiBot)
+end
+
+ensureValue(MultiBot, "_registeredCommands", {})
+ensureValue(MultiBot, "_coreEventsRegistered", false)
+ensureValue(MultiBot, "_initEventsRegistered", false)
+
+local CORE_EVENTS = {
+  "WORLD_MAP_UPDATE",
+  "PLAYER_ENTERING_WORLD",
+  "PLAYER_TARGET_CHANGED",
+  "PLAYER_LOGOUT",
+  "CHAT_MSG_WHISPER",
+  "CHAT_MSG_SYSTEM",
+  "CHAT_MSG_ADDON",
+  "CHAT_MSG_LOOT",
+  "QUEST_COMPLETE",
+  "QUEST_LOG_UPDATE",
+  "TRADE_CLOSED",
+  "INSPECT_READY",
+  "CHAT_MSG_PARTY",
+  "CHAT_MSG_RAID",
+}
+
+local INIT_EVENTS = { "ADDON_LOADED" }
+local LIFECYCLE_BRIDGE_NAME = "MultiBotLifecycleBridge"
+
+local function normalizeTextToken(value)
+  if type(value) ~= "string" then return nil end
+  local cleaned = value:gsub("^%s+", ""):gsub("%s+$", "")
+  if cleaned == "" then return nil end
+  return cleaned
+end
+
+local function normalizeAlias(alias)
+  local cleaned = normalizeTextToken(alias)
+  if not cleaned then return nil end
+  cleaned = cleaned:gsub("^/+", "")
+  if cleaned == "" then return nil end
+  return string.upper(cleaned)
+end
+
+local function normalizeCommandName(name)
+  local cleaned = normalizeTextToken(tostring(name or "MULTIBOT")) or "MULTIBOT"
+  return string.upper(cleaned)
+end
+
+local function registerNativeSlashAlias(commandName, aliasIndex, lowerAlias, handler)
+  _G["SLASH_" .. commandName .. tostring(aliasIndex)] = "/" .. lowerAlias
+  SlashCmdList = SlashCmdList or {}
+  SlashCmdList[commandName] = handler
+end
+
+local function createAliasRegistrar(commandName, handler, registerWithAce)
+  if registerWithAce then
+    return function(aliasIndex, normalizedAlias)
+      MultiBot:RegisterChatCommand(string.lower(normalizedAlias), handler)
+    end
+  end
+
+  return function(aliasIndex, normalizedAlias)
+    registerNativeSlashAlias(commandName, aliasIndex, string.lower(normalizedAlias), handler)
+  end
+end
+
+local function collectNormalizedAliases(aliases)
+  local normalizedAliases = {}
+  local seen = {}
+
+  for i, alias in ipairs(aliases) do
+    local normalized = normalizeAlias(alias)
+    if normalized and not seen[normalized] then
+      seen[normalized] = true
+      normalizedAliases[#normalizedAliases + 1] = { index = i, value = normalized }
+    end
+  end
+
+  return normalizedAliases
+end
+
+local function buildCommandRegistrationContext(name, handler, aliases)
+  if type(handler) ~= "function" or type(aliases) ~= "table" then
+    return nil
+  end
+
+  local commandName = normalizeCommandName(name)
+  local registeredAliases = ensureValue(MultiBot._registeredCommands, commandName, {})
+
+  local registerAlias = createAliasRegistrar(commandName, handler, type(MultiBot.RegisterChatCommand) == "function")
+
+  return {
+    commandName = commandName,
+    aliases = collectNormalizedAliases(aliases),
+    registeredAliases = registeredAliases,
+    registerAlias = registerAlias,
+  }
+end
+
+local function registerCommandAliasesFromContext(context)
+  for _, aliasInfo in ipairs(context.aliases) do
+    local normalized = aliasInfo.value
+    if not context.registeredAliases[normalized] then
+      context.registerAlias(aliasInfo.index, normalized)
+      context.registeredAliases[normalized] = true
+    end
+  end
+end
+
+function MultiBot.RegisterCommandAliases(name, handler, aliases)
+  local context = buildCommandRegistrationContext(name, handler, aliases)
+  if not context then return end
+  registerCommandAliasesFromContext(context)
+end
+
+local MAIN_VISIBILITY_EXCLUDED_FRAMES = {
+  ShamanQuick = true,
+  HunterQuick = true,
+}
+
+function MultiBot.ShouldAffectMainVisibility(frameKey)
+  return not MAIN_VISIBILITY_EXCLUDED_FRAMES[frameKey]
+end
+
+local function setFrameVisibility(frame, visible)
+  if not frame or not frame.Show or not frame.Hide then return end
+  if visible then
+    frame:Show()
+  else
+    frame:Hide()
+  end
+end
+
+local function applyMainVisibility(frames, visible)
+  for frameKey, frame in pairs(frames or {}) do
+    if MultiBot.ShouldAffectMainVisibility(frameKey) then
+      setFrameVisibility(frame, visible)
+    end
+  end
+end
+
+local function ensureSavedVariables()
+  MultiBotSave = ensureValue(_G, "MultiBotSave", {})
+  MultiBotGlobalSave = ensureValue(_G, "MultiBotGlobalSave", {})
+  return MultiBotSave, MultiBotGlobalSave
+end
+
+local function callIfFunction(fn, ...)
+  if type(fn) == "function" then
+    return fn(...)
+  end
+end
+
+local function callMethodIfFunction(target, methodName, passSelf, ...)
+  local fn = target and target[methodName]
+  if passSelf then
+    return callIfFunction(fn, target, ...)
+  end
+  return callIfFunction(fn, ...)
+end
+
+function MultiBot.ToggleMainUIVisibility(desiredState)
+  local targetState = desiredState
+  if targetState == nil then
+    targetState = not MultiBot.state
+  else
+    targetState = not not targetState
+  end
+
+  applyMainVisibility(MultiBot.frames, targetState)
+
+  MultiBot.state = targetState
+  local save = ensureSavedVariables()
+  save["UIVisible"] = targetState and true or false
+  return targetState
+end
+
+function MultiBot.DispatchEvent(eventName, ...)
+  callMethodIfFunction(MultiBot, "HandleMultiBotEvent", false, eventName, ...)
+end
+
+function MultiBot.DispatchUpdate(pElapsed)
+  callMethodIfFunction(MultiBot, "HandleOnUpdate", false, pElapsed)
+end
+
+local function registerEventsOnce(self, flagKey, eventList)
+  if not self or self[flagKey] then return end
+  self[flagKey] = true
+
+  for _, eventName in ipairs(eventList) do
+    if type(eventName) == "string" then
+      callMethodIfFunction(self, "RegisterEvent", true, eventName)
+    end
+  end
+end
+
+function MultiBot:RegisterCoreEventsOnce()
+  registerEventsOnce(self, "_coreEventsRegistered", CORE_EVENTS)
+end
+
+function MultiBot:RegisterInitEventsOnce()
+  registerEventsOnce(self, "_initEventsRegistered", INIT_EVENTS)
+end
+
+callIfFunction(MultiBot.RegisterInitEventsOnce, MultiBot)
+
+-- ACE3 lifecycle bridge: keep legacy startup logic, but route it through
+-- OnInitialize/OnEnable so migration can stay incremental.
+local LIFECYCLE_INIT_STEPS = {
+  { name = "EnsureFavorites" },
+  { name = "UpdateFavoritesIndex" },
+  { name = "Config_Ensure" },
+  { name = "ApplyTimersToRuntime" },
+  { name = "BuildOptionsPanel" },
+}
+
+local LIFECYCLE_ENABLE_STEPS = {
+  { name = "RegisterCoreEventsOnce", passSelf = true },
+  { name = "Throttle_Init" },
+  { name = "ApplyGlobalStrata" },
+  { name = "Minimap_Refresh" },
+}
+
+local function runLifecycleSteps(self, steps)
+  for _, step in ipairs(steps) do
+    callMethodIfFunction(self, step.name, step.passSelf)
+  end
+end
+
+local function runLifecyclePhase(self, guardKey, steps)
+  if not self or self[guardKey] then return end
+  self[guardKey] = true
+  runLifecycleSteps(self, steps)
+end
+
+function MultiBot:OnInitialize()
+  runLifecyclePhase(self, "_initializedOnce", LIFECYCLE_INIT_STEPS)
+end
+
+function MultiBot:OnEnable()
+  runLifecyclePhase(self, "_enabledOnce", LIFECYCLE_ENABLE_STEPS)
+end
+
+local function runLifecycle()
+  MultiBot:OnInitialize()
+  MultiBot:OnEnable()
+end
+
+local function bindLifecycleBridge(bridge)
+  if not bridge then return false end
+
+  function bridge:OnInitialize()
+    runLifecycle()
+  end
+
+  function bridge:OnEnable()
+    runLifecycle()
+  end
+
+  return true
+end
+
+local function tryCreateLifecycleBridge()
+  if not aceAddon then
+    return false
+  end
+
+  local bridge = callIfFunction(aceAddon.NewAddon, aceAddon, LIFECYCLE_BRIDGE_NAME)
+  return bindLifecycleBridge(bridge)
+end
+
+if not tryCreateLifecycleBridge() then
+  -- Fallback for environments where AceAddon is not available.
+  runLifecycle()
+end
+
 -- GM core --
 MultiBot.GM = MultiBot.GM or false
 
@@ -137,25 +422,6 @@ end
 
 -- end account level detection --
 
-MultiBot:RegisterEvent("ADDON_LOADED")
-MultiBot:RegisterEvent("WORLD_MAP_UPDATE")
-MultiBot:RegisterEvent("PLAYER_ENTERING_WORLD")
-MultiBot:RegisterEvent("PLAYER_TARGET_CHANGED")
-MultiBot:RegisterEvent("PLAYER_LOGOUT")
-MultiBot:RegisterEvent("CHAT_MSG_WHISPER")
-MultiBot:RegisterEvent("CHAT_MSG_SYSTEM")
-MultiBot:RegisterEvent("CHAT_MSG_ADDON")
-MultiBot:RegisterEvent("CHAT_MSG_LOOT")
-MultiBot:RegisterEvent("QUEST_COMPLETE")
-MultiBot:RegisterEvent("QUEST_LOG_UPDATE")
-MultiBot:RegisterEvent("TRADE_CLOSED")
--- GLYPHES --
-MultiBot:RegisterEvent("INSPECT_READY")
-
--- QUESTS --
-MultiBot:RegisterEvent("CHAT_MSG_PARTY")
-MultiBot:RegisterEvent("CHAT_MSG_RAID")
-
 MultiBot:SetPoint("BOTTOMRIGHT", 0, 0)
 MultiBot:SetSize(1, 1)
 MultiBot:Show()
@@ -183,10 +449,9 @@ function MultiBot.RebuildPlayersIndexFromButtons()
   end
 end
 
--- MultiBotSave = {}
--- MultiBotGlobalSave = {}
-MultiBotSave = MultiBotSave or {}
-MultiBotGlobalSave = MultiBotGlobalSave or {}
+local save, globalSave = ensureSavedVariables()
+MultiBotSave = save
+MultiBotGlobalSave = globalSave
 MultiBot.data = {}
 MultiBot.index = {}
 MultiBot.index.classes = {}
@@ -215,7 +480,6 @@ MultiBot.auto.stats = false
 MultiBot.auto.talent = false
 MultiBot.auto.invite = false
 MultiBot.auto.release = false
---MultiBot.auto.language = true
 
 -- =========================
 -- DEBUG helpers (trace chat)
@@ -246,8 +510,8 @@ end
 -- FAVORITES (per-character)
 -- ============================================================================
 function MultiBot.EnsureFavorites()
-  MultiBotSave = MultiBotSave or {}
-  MultiBotSave.Favorites = MultiBotSave.Favorites or {}
+  local save = ensureSavedVariables()
+  save.Favorites = save.Favorites or {}
 end
 
 function MultiBot.IsFavorite(name)

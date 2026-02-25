@@ -2,7 +2,8 @@
 std = "lua53"
 
 exclude_files = {
-   "**/MultiBotInit.lua"
+   "**/Libs/**"
+   
 }
 
 globals = {
@@ -31,7 +32,9 @@ globals = {
 	"oldminor", "GameFontHighlightSmall", "PlaySound", "ChatFontNormal", "C_Spell", "hooksecurefunc", "ChatEdit_InsertLink", "ChatFrameUtil", "hooksecurefunc", "AceGUIMultiLineEditBoxInsertLink",
 	"CreateFont", "NOT_BOUND", "IsShiftKeyDown", "IsControlKeyDown", "IsAltKeyDown", "CLOSE", "GameFontDisableSmall", "GameFontNormalSmall", "self", "FONT_COLOR_CODE_CLOSE",
 	"AceGUIEditBoxInsertLink", "tconcat", "loadstring", "assert", "rawset", "rawget", "IsLoggedIn", "hash_SlashCmdList", "GetCurrentRegion", "GetCurrentRegionName", "InterfaceOptionsFramePanelContainer",
-    "GameFontNormal", "_G", "SetDesaturation", "WOW_PROJECT_ID", "WOW_PROJECT_MAINLINE", "ColorPickerFrame", "fixstrata"
+    "GameFontNormal", "_G", "SetDesaturation", "WOW_PROJECT_ID", "WOW_PROJECT_MAINLINE", "ColorPickerFrame", "fixstrata", "UIDropDownMenu_HandleGlobalMouseEvent", "EventRegistry", "BackdropTemplateMixin",
+	"TooltipBackdropTemplateMixin", "NORMAL_FONT_COLOR", "HIGHLIGHT_FONT_COLOR", "GameTooltip_SetDefaultAnchor", "ChatFrame1", "UISpecialFrames", "GetMouseFocus", "ShowUIPanel", "tremove", "min", "max",
+	"GetMinimapShape", "GetMinimapShape", "PanelTemplates_TabResize", "GetGuildRosterShowOffline", "SetGuildRosterShowOffline", "IsInGuild", "GetGuildInfo", "SetGuildRosterShowOffline"
 }
 
 read_globals = {
