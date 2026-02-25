@@ -1,4 +1,4 @@
-local Type, Version = "MultiLineEditBox", 33
+local Type, Version = "MultiLineEditBox", 23
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -6,34 +6,17 @@ if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local pairs = pairs
 
 -- WoW APIs
-local GetCursorInfo, ClearCursor = GetCursorInfo, ClearCursor
+local GetCursorInfo, GetSpellName, ClearCursor = GetCursorInfo, GetSpellName, ClearCursor
 local CreateFrame, UIParent = CreateFrame, UIParent
 local _G = _G
+
+-- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
+-- List them here for Mikk's FindGlobals script
+-- GLOBALS: ACCEPT, ChatFontNormal
 
 --[[-----------------------------------------------------------------------------
 Support functions
 -------------------------------------------------------------------------------]]
-
-if not AceGUIMultiLineEditBoxInsertLink then
-	-- upgradeable hook
-	if ChatFrameUtil and ChatFrameUtil.InsertLink then
-		hooksecurefunc(ChatFrameUtil, "InsertLink", function(...) return _G.AceGUIMultiLineEditBoxInsertLink(...) end)
-	elseif ChatEdit_InsertLink then
-		hooksecurefunc("ChatEdit_InsertLink", function(...) return _G.AceGUIMultiLineEditBoxInsertLink(...) end)
-	end
-end
-
-function _G.AceGUIMultiLineEditBoxInsertLink(text)
-	for i = 1, AceGUI:GetWidgetCount(Type) do
-		local editbox = _G[("MultiLineEditBox%uEdit"):format(i)]
-		if editbox and editbox:IsVisible() and editbox:HasFocus() then
-			editbox:Insert(text)
-			return true
-		end
-	end
-end
-
-
 local function Layout(self)
 	self:SetHeight(self.numlines * 14 + (self.disablebutton and 19 or 41) + self.labelHeight)
 
@@ -78,7 +61,6 @@ end
 
 local function OnEditFocusLost(self)                                             -- EditBox
 	self:HighlightText(0, 0)
-	self.obj:Fire("OnEditFocusLost")
 end
 
 local function OnEnter(self)                                                     -- EditBox / ScrollFrame
@@ -104,12 +86,11 @@ local function OnMouseUp(self)                                                  
 end
 
 local function OnReceiveDrag(self)                                               -- EditBox / ScrollFrame
-	local type, id, info, extra = GetCursorInfo()
+	local type, id, info = GetCursorInfo()
 	if type == "spell" then
-		if C_Spell and C_Spell.GetSpellName then
-			info = C_Spell.GetSpellName(extra)
-		else
-			info = GetSpellInfo(id, info)
+		info, id = GetSpellName(id, info)
+		if id and id:match("%d") then
+			info = info .. "(" .. id .. ")"
 		end
 	elseif type ~= "item" then
 		return
@@ -149,24 +130,6 @@ local function OnVerticalScroll(self, offset)                                   
 	editBox:SetHitRectInsets(0, 0, offset, editBox:GetHeight() - offset - self:GetHeight())
 end
 
-local function OnScrollRangeChanged(self, xrange, yrange)
-	if yrange == 0 then
-		self.obj.editBox:SetHitRectInsets(0, 0, 0, 0)
-	else
-		OnVerticalScroll(self, self:GetVerticalScroll())
-	end
-end
-
-local function OnShowFocus(frame)
-	frame.obj.editBox:SetFocus()
-	frame:SetScript("OnShow", nil)
-end
-
-local function OnEditFocusGained(frame)
-	AceGUI:SetFocus(frame.obj)
-	frame.obj:Fire("OnEditFocusGained")
-end
-
 --[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
@@ -181,9 +144,7 @@ local methods = {
 		self:SetMaxLetters(0)
 	end,
 
-	["OnRelease"] = function(self)
-		self:ClearFocus()
-	end,
+	-- ["OnRelease"] = nil,
 
 	["SetDisabled"] = function(self, disabled)
 		local editBox = self.editBox
@@ -244,31 +205,7 @@ local methods = {
 			self.button:Show()
 		end
 		Layout(self)
-	end,
-
-	["ClearFocus"] = function(self)
-		self.editBox:ClearFocus()
-		self.frame:SetScript("OnShow", nil)
-	end,
-
-	["SetFocus"] = function(self)
-		self.editBox:SetFocus()
-		if not self.frame:IsShown() then
-			self.frame:SetScript("OnShow", OnShowFocus)
-		end
-	end,
-
-	["HighlightText"] = function(self, from, to)
-		self.editBox:HighlightText(from, to)
-	end,
-
-	["GetCursorPosition"] = function(self)
-		return self.editBox:GetCursorPosition()
-	end,
-
-	["SetCursorPosition"] = function(self, ...)
-		return self.editBox:SetCursorPosition(...)
-	end,
+	end
 }
 
 --[[-----------------------------------------------------------------------------
@@ -283,7 +220,7 @@ local backdrop = {
 local function Constructor()
 	local frame = CreateFrame("Frame", nil, UIParent)
 	frame:Hide()
-
+	
 	local widgetNum = AceGUI:GetNextWidgetNum(Type)
 
 	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -293,21 +230,21 @@ local function Constructor()
 	label:SetText(ACCEPT)
 	label:SetHeight(10)
 
-	local button = CreateFrame("Button", ("%s%dButton"):format(Type, widgetNum), frame, "UIPanelButtonTemplate")
+	local button = CreateFrame("Button", ("%s%dButton"):format(Type, widgetNum), frame, "UIPanelButtonTemplate2")
 	button:SetPoint("BOTTOMLEFT", 0, 4)
 	button:SetHeight(22)
 	button:SetWidth(label:GetStringWidth() + 24)
 	button:SetText(ACCEPT)
 	button:SetScript("OnClick", OnClick)
 	button:Disable()
-
+	
 	local text = button:GetFontString()
 	text:ClearAllPoints()
 	text:SetPoint("TOPLEFT", button, "TOPLEFT", 5, -5)
 	text:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -5, 1)
 	text:SetJustifyV("MIDDLE")
 
-	local scrollBG = CreateFrame("Frame", nil, frame, "BackdropTemplate")
+	local scrollBG = CreateFrame("Frame", nil, frame)
 	scrollBG:SetBackdrop(backdrop)
 	scrollBG:SetBackdropColor(0, 0, 0)
 	scrollBG:SetBackdropBorderColor(0.4, 0.4, 0.4)
@@ -331,9 +268,8 @@ local function Constructor()
 	scrollFrame:SetScript("OnReceiveDrag", OnReceiveDrag)
 	scrollFrame:SetScript("OnSizeChanged", OnSizeChanged)
 	scrollFrame:HookScript("OnVerticalScroll", OnVerticalScroll)
-	scrollFrame:HookScript("OnScrollRangeChanged", OnScrollRangeChanged)
 
-	local editBox = CreateFrame("EditBox", ("%s%dEdit"):format(Type, widgetNum), scrollFrame)
+	local editBox = CreateFrame("EditBox", nil, scrollFrame)
 	editBox:SetAllPoints()
 	editBox:SetFontObject(ChatFontNormal)
 	editBox:SetMultiLine(true)
@@ -349,8 +285,6 @@ local function Constructor()
 	editBox:SetScript("OnReceiveDrag", OnReceiveDrag)
 	editBox:SetScript("OnTextChanged", OnTextChanged)
 	editBox:SetScript("OnTextSet", OnTextSet)
-	editBox:SetScript("OnEditFocusGained", OnEditFocusGained)
-
 
 	scrollFrame:SetScrollChild(editBox)
 

@@ -2,7 +2,7 @@
 Keybinding Widget
 Set Keybindings in the Config UI.
 -------------------------------------------------------------------------------]]
-local Type, Version = "Keybinding", 27
+local Type, Version = "Keybinding", 21
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -12,6 +12,10 @@ local pairs = pairs
 -- WoW APIs
 local IsShiftKeyDown, IsControlKeyDown, IsAltKeyDown = IsShiftKeyDown, IsControlKeyDown, IsAltKeyDown
 local CreateFrame, UIParent = CreateFrame, UIParent
+
+-- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
+-- List them here for Mikk's FindGlobals script
+-- GLOBALS: NOT_BOUND
 
 --[[-----------------------------------------------------------------------------
 Scripts
@@ -30,15 +34,11 @@ local function Keybinding_OnClick(frame, button)
 		local self = frame.obj
 		if self.waitingForKey then
 			frame:EnableKeyboard(false)
-			frame:EnableMouseWheel(false)
-			frame:EnableGamePadButton(false)
 			self.msgframe:Hide()
 			frame:UnlockHighlight()
 			self.waitingForKey = nil
 		else
 			frame:EnableKeyboard(true)
-			frame:EnableMouseWheel(true)
-			frame:EnableGamePadButton(true)
 			self.msgframe:Show()
 			frame:LockHighlight()
 			self.waitingForKey = true
@@ -73,8 +73,6 @@ local function Keybinding_OnKeyDown(frame, key)
 		end
 
 		frame:EnableKeyboard(false)
-		frame:EnableMouseWheel(false)
-		frame:EnableGamePadButton(false)
 		self.msgframe:Hide()
 		frame:UnlockHighlight()
 		self.waitingForKey = nil
@@ -99,16 +97,6 @@ local function Keybinding_OnMouseDown(frame, button)
 	Keybinding_OnKeyDown(frame, button)
 end
 
-local function Keybinding_OnMouseWheel(frame, direction)
-	local button
-	if direction >= 0 then
-		button = "MOUSEWHEELUP"
-	else
-		button = "MOUSEWHEELDOWN"
-	end
-	Keybinding_OnKeyDown(frame, button)
-end
-
 --[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
@@ -120,9 +108,6 @@ local methods = {
 		self.waitingForKey = nil
 		self.msgframe:Hide()
 		self:SetDisabled(false)
-		self.button:EnableKeyboard(false)
-		self.button:EnableMouseWheel(false)
-		self.button:EnableGamePadButton(false)
 	end,
 
 	-- ["OnRelease"] = nil,
@@ -188,23 +173,18 @@ local function Constructor()
 	local name = "AceGUI30KeybindingButton" .. AceGUI:GetNextWidgetNum(Type)
 
 	local frame = CreateFrame("Frame", nil, UIParent)
-	local button = CreateFrame("Button", name, frame, "UIPanelButtonTemplate")
+	local button = CreateFrame("Button", name, frame, "UIPanelButtonTemplate2")
 
 	button:EnableMouse(true)
-	button:EnableMouseWheel(false)
 	button:RegisterForClicks("AnyDown")
 	button:SetScript("OnEnter", Control_OnEnter)
 	button:SetScript("OnLeave", Control_OnLeave)
 	button:SetScript("OnClick", Keybinding_OnClick)
 	button:SetScript("OnKeyDown", Keybinding_OnKeyDown)
 	button:SetScript("OnMouseDown", Keybinding_OnMouseDown)
-	button:SetScript("OnMouseWheel", Keybinding_OnMouseWheel)
-	button:SetScript("OnGamePadButtonDown", Keybinding_OnKeyDown)
 	button:SetPoint("BOTTOMLEFT")
 	button:SetPoint("BOTTOMRIGHT")
 	button:SetHeight(24)
-	button:EnableKeyboard(false)
-	button:EnableGamePadButton(false)
 
 	local text = button:GetFontString()
 	text:SetPoint("LEFT", 7, 0)
@@ -216,13 +196,12 @@ local function Constructor()
 	label:SetJustifyH("CENTER")
 	label:SetHeight(18)
 
-	local msgframe = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+	local msgframe = CreateFrame("Frame", nil, UIParent)
 	msgframe:SetHeight(30)
 	msgframe:SetBackdrop(ControlBackdrop)
 	msgframe:SetBackdropColor(0,0,0)
 	msgframe:SetFrameStrata("FULLSCREEN_DIALOG")
 	msgframe:SetFrameLevel(1000)
-	msgframe:SetToplevel(true)
 
 	local msg = msgframe:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	msg:SetText("Press a key to bind, ESC to clear the binding or click the button again to cancel.")
