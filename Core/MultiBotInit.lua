@@ -106,22 +106,10 @@ do
         if SlashCmdList and SlashCmdList["MULTIBOT"] then
           SlashCmdList["MULTIBOT"]()
         else
-          -- fallback local si jamais les slash ne sont pas dispo
-          local function affect(k, f)
-            return k ~= "ShamanQuick" and k ~= "HunterQuick"
+          -- Fallback local if slash commands are unavailable.
+          if MultiBot.ToggleMainUIVisibility then
+            MultiBot.ToggleMainUIVisibility()
           end
-          if MultiBot.state then
-            for k, frm in pairs(MultiBot.frames or {}) do
-              if affect(k, frm) then frm:Hide() end
-            end
-            MultiBot.state = false
-          else
-            for k, frm in pairs(MultiBot.frames or {}) do
-              if affect(k, frm) then frm:Show() end
-            end
-            MultiBot.state = true
-          end
-          MultiBotSave["UIVisible"] = MultiBot.state and true or false
         end
       end
     end)
@@ -499,7 +487,7 @@ function MultiBot.BuildFormationUI(tLeft)
   local col = 1                                    -- toujours 1
   local row = idx                                   -- 1,2,3…
   AddFormationButton(tFormat, data, col, row, CELL_W, CELL_H)
-  end 
+  end
 end
 
 -- We call it, when tLeft are ready
@@ -2985,16 +2973,21 @@ function MultiBot.ShowGameObjectPopup()
     -- Affiche la liste pour chaque bot auteur
     local y = -4
     for bot, lines in pairs(MultiBot.LastGameObjectSearch) do
-        -- Titre bot
+        -- Bot title
         local botLine = content:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
         botLine:SetPoint("TOPLEFT", 8, y)
-        botLine:SetText("Bot: |cff80ff80"..bot.."|r")
+        botLine:SetText("Bot: |cff80ff80" .. bot .. "|r")
         y = y - 18
-        -- Chaque ligne du résultat
+        -- Grouped section output: headers are highlighted, entries are indented.
         for _, txt in ipairs(lines) do
-            local l = content:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-            l:SetPoint("TOPLEFT", 24, y)
-            l:SetText(txt)
+            local line = content:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+            local isSectionHeader = type(txt) == "string" and txt:find("^%s*%-+%s*.-%s*%-+%s*$") ~= nil
+            line:SetPoint("TOPLEFT", isSectionHeader and 12 or 24, y)
+            if isSectionHeader then
+                line:SetText("|cffffff66" .. txt .. "|r")
+            else
+                line:SetText(txt)
+            end
             y = y - 16
         end
         y = y - 8
@@ -3276,7 +3269,7 @@ MultiBot.inventory.addButton("SellGrey", -94, 768, "inv_misc_coin_03", MultiBot.
 		pButton.getButton("Use").setDisable()
 		SendChatMessage("s *", "WHISPER", nil, pButton.getName())
     if MultiBot.RefreshInventory then
-    	MultiBot.RefreshInventory(0.5)
+        MultiBot.RefreshInventory(0.5)
     end
 end
 
@@ -6145,7 +6138,7 @@ if not MultiBot.InitHunterQuick then
           local unit = "raid"..i
           local name = UnitName(unit)
           local _, cls = UnitClass(unit)
-          if name and cls=="HUNTER" and MultiBot.getBot and (MultiBot.getBot(name) ~= nil or MultiBot.getBot(unit) ~= nil) then
+          if name and cls == "HUNTER" and (not MultiBot.IsBot or MultiBot.IsBot(name)) then
             table.insert(out, name)
           end
         end
@@ -6155,7 +6148,7 @@ if not MultiBot.InitHunterQuick then
             local unit = "party"..i
             local name = UnitName(unit)
             local _, cls = UnitClass(unit)
-            if name and cls=="HUNTER" and MultiBot.getBot and (MultiBot.getBot(name) ~= nil or MultiBot.getBot(unit) ~= nil) then
+            if name and cls == "HUNTER" and (not MultiBot.IsBot or MultiBot.IsBot(name)) then
               table.insert(out, name)
             end
           end
@@ -7017,24 +7010,28 @@ do
   end)
 end
 
--- Créer/Afficher (ou cacher) le bouton minimap APRÈS chargement complet
+-- Create/refresh the minimap button after SavedVariables are available.
 do
-  local ev = CreateFrame("Frame")
-  ev:RegisterEvent("PLAYER_LOGIN")
-  ev:SetScript("OnEvent", function(self, event)
-    self:UnregisterEvent("PLAYER_LOGIN")
-    -- SV garanties ici ; appliquer l’état mémorisé proprement
+  local function bootstrapMinimapButton()
     if MultiBot and MultiBot.Minimap_Refresh then
       MultiBot.Minimap_Refresh()
     elseif MultiBot and MultiBot.Minimap_Create then
-      -- Fallback hyper défensif si Refresh pas encore défini
       if not (MultiBotSave and MultiBotSave.Minimap and MultiBotSave.Minimap.hide) then
         MultiBot.Minimap_Create()
-      --else
-        -- hide=true => ne crée pas le bouton
       end
     end
-  end)
+  end
+
+  if IsLoggedIn and IsLoggedIn() then
+    bootstrapMinimapButton()
+  else
+    local ev = CreateFrame("Frame")
+    ev:RegisterEvent("PLAYER_LOGIN")
+    ev:SetScript("OnEvent", function(self)
+      self:UnregisterEvent("PLAYER_LOGIN")
+      bootstrapMinimapButton()
+    end)
+  end
 end
 
 -- FINISH --
