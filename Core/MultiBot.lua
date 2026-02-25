@@ -510,8 +510,8 @@ end
 -- FAVORITES (per-character)
 -- ============================================================================
 function MultiBot.EnsureFavorites()
-  local save = ensureSavedVariables()
-  save.Favorites = save.Favorites or {}
+  local savedVars = ensureSavedVariables()
+  savedVars.Favorites = savedVars.Favorites or {}
 end
 
 function MultiBot.IsFavorite(name)
