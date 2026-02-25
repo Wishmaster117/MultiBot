@@ -1,6 +1,6 @@
 -- TIMER --
 
-MultiBot:SetScript("OnUpdate", function(pSelf, pElapsed)
+function MultiBot.HandleOnUpdate(pElapsed)
 	if(MultiBot.auto.invite) then MultiBot.timer.invite.elapsed = MultiBot.timer.invite.elapsed + pElapsed end
 	if(MultiBot.auto.talent) then MultiBot.timer.talent.elapsed = MultiBot.timer.talent.elapsed + pElapsed end
 	if(MultiBot.auto.stats) then MultiBot.timer.stats.elapsed = MultiBot.timer.stats.elapsed + pElapsed end
@@ -65,11 +65,24 @@ MultiBot:SetScript("OnUpdate", function(pSelf, pElapsed)
 
 		MultiBot.timer.sort.elapsed = 0
 	end
+end
+
+MultiBot:SetScript("OnUpdate", function(_, pElapsed)
+	MultiBot.DispatchUpdate(pElapsed)
+ end)
+
+MultiBot:SetScript("OnUpdate", function(_, pElapsed)
+	if MultiBot.DispatchUpdate then
+		MultiBot.DispatchUpdate(pElapsed)
+	else
+		MultiBot.HandleOnUpdate(pElapsed)
+	end
 end)
 
 -- HANDLER --
 
-MultiBot:SetScript("OnEvent", function()
+function MultiBot.HandleMultiBotEvent(event, ...)
+	local arg1, arg2 = ...
 	if(event == "PLAYER_LOGOUT") then
 		local tX, tY = MultiBot.toPoint(MultiBot.frames["MultiBar"])
 		MultiBotSave["MultiBarPoint"] = tX .. ", " .. tY
@@ -133,15 +146,7 @@ MultiBot:SetScript("OnEvent", function()
 	-- print("MultiBot: ADDON_LOADED fired")
 	-- print("BuildOptionsPanel type:", type(MultiBot.BuildOptionsPanel))
 
-        -- Initialize Favorites (per-character) and build first index
-        if MultiBot.EnsureFavorites then MultiBot.EnsureFavorites() end
-        if MultiBot.UpdateFavoritesIndex then MultiBot.UpdateFavoritesIndex() end
-
-        -- [AJOUT] init config + applique timers + enregistre le panneau d'options
-        if MultiBot.Config_Ensure then MultiBot.Config_Ensure() end
-        if MultiBot.ApplyTimersToRuntime then MultiBot.ApplyTimersToRuntime() end
-        if MultiBot.BuildOptionsPanel then MultiBot.BuildOptionsPanel() end
-		if MultiBot.Throttle_Init then MultiBot.Throttle_Init() end
+        -- Core startup helpers are now routed via lifecycle (OnInitialize/OnEnable).
 
         -- [EXISTANT] restauration des positions / états
         if(MultiBotSave["MultiBarPoint"] ~= nil) then
@@ -149,21 +154,9 @@ MultiBot:SetScript("OnEvent", function()
             MultiBot.frames["MultiBar"].setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
         end
 
-        -- Restore MultiBot Bar state visible by default if key missing
-        local function affect(frmKey, frm)
-          return frmKey ~= "ShamanQuick" and frmKey ~= "HunterQuick"
-        end
-        if MultiBotSave["UIVisible"] == false then
-          for key, value in pairs(MultiBot.frames) do
-            if affect(key, value) then value:Hide() end
-          end
-          MultiBot.state = false
-        else
-          -- nil or true => we display main frame
-          for key, value in pairs(MultiBot.frames) do
-            if affect(key, value) then value:Show() end
-          end
-          MultiBot.state = true
+        -- Restore MultiBot bar visibility from saved state (default visible).
+        if MultiBot.ToggleMainUIVisibility then
+          MultiBot.ToggleMainUIVisibility(MultiBotSave["UIVisible"] ~= false)
         end
 
 		if(MultiBotSave["InventoryPoint"] ~= nil) then
@@ -1503,36 +1496,18 @@ MultiBot:SetScript("OnEvent", function()
 
 		return
 	end
+end
+
+MultiBot:SetScript("OnEvent", function(_, eventName, ...)
+	MultiBot.DispatchEvent(eventName, ...)
 end)
 
 local function ToggleMultiBotUI()
-	-- don't touch to Shaman/Hunter bars
-	local function affect(frmKey, frm)
-		return frmKey ~= "ShamanQuick" and frmKey ~= "HunterQuick"
+	if MultiBot.ToggleMainUIVisibility then
+		MultiBot.ToggleMainUIVisibility()
 	end
-	if MultiBot.state then
-		for key, value in pairs(MultiBot.frames) do
-			if affect(key, value) then value:Hide() end
-		end
-		MultiBot.state = false
-	else
-		for key, value in pairs(MultiBot.frames) do
-			if affect(key, value) then value:Show() end
-		end
-		MultiBot.state = true
-	end
-	-- Persist by character
-	MultiBotSave["UIVisible"] = MultiBot.state and true or false
 end
 MultiBot.RegisterCommandAliases("MULTIBOT", ToggleMultiBotUI, { "multibot", "mbot", "mb" })
-
-local function OpenMultiBotOptions()
-    if InterfaceOptionsFrame_OpenToCategory then
-        InterfaceOptionsFrame_OpenToCategory("MultiBot")
-        InterfaceOptionsFrame_OpenToCategory("MultiBot") -- double appel: comportement connu 3.3.5
-    end
-end
-MultiBot.RegisterCommandAliases("MULTIBOTOPTIONS", OpenMultiBotOptions, { "mbopt" })
 
 local function FakeGMCommand(msg)
   local n = tonumber(msg or "") or 0

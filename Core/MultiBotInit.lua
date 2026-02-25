@@ -106,22 +106,10 @@ do
         if SlashCmdList and SlashCmdList["MULTIBOT"] then
           SlashCmdList["MULTIBOT"]()
         else
-          -- fallback local si jamais les slash ne sont pas dispo
-          local function affect(k, f)
-            return k ~= "ShamanQuick" and k ~= "HunterQuick"
+          -- Fallback local if slash commands are unavailable.
+          if MultiBot.ToggleMainUIVisibility then
+            MultiBot.ToggleMainUIVisibility()
           end
-          if MultiBot.state then
-            for k, frm in pairs(MultiBot.frames or {}) do
-              if affect(k, frm) then frm:Hide() end
-            end
-            MultiBot.state = false
-          else
-            for k, frm in pairs(MultiBot.frames or {}) do
-              if affect(k, frm) then frm:Show() end
-            end
-            MultiBot.state = true
-          end
-          MultiBotSave["UIVisible"] = MultiBot.state and true or false
         end
       end
     end)
@@ -6145,7 +6133,7 @@ if not MultiBot.InitHunterQuick then
           local unit = "raid"..i
           local name = UnitName(unit)
           local _, cls = UnitClass(unit)
-          if name and cls=="HUNTER" and MultiBot.getBot and (MultiBot.getBot(name) ~= nil or MultiBot.getBot(unit) ~= nil) then
+          if name and cls == "HUNTER" and (not MultiBot.IsBot or MultiBot.IsBot(name)) then
             table.insert(out, name)
           end
         end
@@ -6155,7 +6143,7 @@ if not MultiBot.InitHunterQuick then
             local unit = "party"..i
             local name = UnitName(unit)
             local _, cls = UnitClass(unit)
-            if name and cls=="HUNTER" and MultiBot.getBot and (MultiBot.getBot(name) ~= nil or MultiBot.getBot(unit) ~= nil) then
+            if name and cls == "HUNTER" and (not MultiBot.IsBot or MultiBot.IsBot(name)) then
               table.insert(out, name)
             end
           end
