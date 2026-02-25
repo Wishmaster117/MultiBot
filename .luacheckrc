@@ -2,8 +2,8 @@
 std = "lua53"
 
 exclude_files = {
+   "**/MultiBotInit.lua",
    "**/Libs/**"
-   
 }
 
 globals = {
