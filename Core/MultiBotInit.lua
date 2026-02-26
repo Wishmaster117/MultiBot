@@ -2911,13 +2911,75 @@ tRight.buttons["BotQuestsAllWhisper"] = btnAllWhisper
 -- END BUTTON QUESTS ALL --
 
 -- BUTTONS USE GOB AND LOS --
+-- GAME OBJECT POPUP/COPY HELPERS --
+local function getGameObjectEntries(bot)
+    local entries = MultiBot.LastGameObjectSearch and MultiBot.LastGameObjectSearch[bot]
+    if type(entries) ~= "table" then
+        return nil
+    end
+
+    return entries
+end
+
+local function collectSortedGameObjectBots()
+    local bots = {}
+    for bot in pairs(MultiBot.LastGameObjectSearch or {}) do
+        local entries = getGameObjectEntries(bot)
+        if entries and #entries > 0 then
+            table.insert(bots, bot)
+        end
+    end
+    table.sort(bots)
+    return bots
+end
+
+local function isDashedSectionHeader(text)
+    return type(text) == "string" and text:find("^%s*%-+%s*.-%s*%-+%s*$") ~= nil
+end
+
+--[[local function clearFrameChildren(frame)
+    if not frame or not frame.GetNumChildren or not frame.GetChildren then
+        return
+    end
+
+    local childCount = frame:GetNumChildren() or 0
+    for i = childCount, 1, -1 do
+        local child = select(i, frame:GetChildren())
+        if child then
+            child:Hide()
+            child:SetParent(nil)
+        end
+    end
+end
+
+local function buildGameObjectCopyText(bots)
+    local lines = {}
+
+    for _, bot in ipairs(bots) do
+        local entries = getGameObjectEntries(bot) or {}
+        table.insert(lines, ("Bot: %s"):format(bot))
+
+        for _, entry in ipairs(entries) do
+            table.insert(lines, entry)
+        end
+
+        table.insert(lines, "")
+    end
+
+    if #lines == 0 then
+        return "No search data captured."
+    end
+
+    return table.concat(lines, "\n")
+end
+
 function MultiBot.ShowGameObjectPopup()
 
     if MultiBot.GameObjPopup and MultiBot.GameObjPopup:IsShown() then
         MultiBot.GameObjPopup:Hide()
     end
 
-    -- Crée la popup
+    -- Create popup
     if not MultiBot.GameObjPopup then
         local popup = CreateFrame("Frame", "MB_GameObjPopup", UIParent)
         popup:SetSize(340, 340)
@@ -2963,16 +3025,16 @@ function MultiBot.ShowGameObjectPopup()
 	   end
 	end
 
-    -- Nettoie le contenu
+    -- Clear previous popup lines.
     local content = MultiBot.GameObjPopup.content
-    for _, child in ipairs({content:GetChildren()}) do
-        child:Hide()
-        child:SetParent(nil)
-    end
+    clearFrameChildren(content)
 
-    -- Affiche la liste pour chaque bot auteur
+    -- Render captured lines grouped by bot
     local y = -4
-    for bot, lines in pairs(MultiBot.LastGameObjectSearch) do
+    local bots = collectSortedGameObjectBots()
+
+    for _, bot in ipairs(bots) do
+        local lines = getGameObjectEntries(bot) or {}
         -- Bot title
         local botLine = content:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
         botLine:SetPoint("TOPLEFT", 8, y)
@@ -2981,7 +3043,7 @@ function MultiBot.ShowGameObjectPopup()
         -- Grouped section output: headers are highlighted, entries are indented.
         for _, txt in ipairs(lines) do
             local line = content:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-            local isSectionHeader = type(txt) == "string" and txt:find("^%s*%-+%s*.-%s*%-+%s*$") ~= nil
+            local isSectionHeader = isDashedSectionHeader(txt)
             line:SetPoint("TOPLEFT", isSectionHeader and 12 or 24, y)
             if isSectionHeader then
                 line:SetText("|cffffff66" .. txt .. "|r")
@@ -2992,65 +3054,228 @@ function MultiBot.ShowGameObjectPopup()
         end
         y = y - 8
     end
+    if #bots == 0 then
+        local noData = content:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+        noData:SetPoint("TOPLEFT", 8, y)
+        noData:SetText("No search data captured.")
+        y = y - 16
+    end
+
     content:SetHeight(-y + 4)
     MultiBot.GameObjPopup.scrollFrame:SetVerticalScroll(0)
     MultiBot.GameObjPopup:Show()
 end
 
 function MultiBot.ShowGameObjectCopyBox()
-		-- Ferme la popup GameObj principale si elle est ouverte
+		-- Close main popup if already visible
 		if MultiBot.GameObjPopup and MultiBot.GameObjPopup:IsShown() then
 			MultiBot.GameObjPopup:Hide()
 		end
 
-		if not MultiBot.GameObjCopyBox then
-        local box = CreateFrame("Frame", "MB_GameObjCopyBox", UIParent)
-        box:SetSize(380, 240)
-        box:SetPoint("CENTER")
-        box:SetBackdrop({
-            bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background",
-            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-            tile     = true, tileSize = 32, edgeSize = 16,
-            insets   = { left = 4, right = 4, top = 4, bottom = 4 }
-        })
-        box:SetFrameStrata("DIALOG")
-        local close = CreateFrame("Button", nil, box, "UIPanelCloseButton")
-        close:SetPoint("TOPRIGHT", -2, -2)
-        close:SetScript("OnClick", function() box:Hide() end)
+		if not MultiBot.GameObjCopyBox then]]--
 
-        local label = box:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-        label:SetPoint("TOP", 0, -10)
-        label:SetText(MultiBot.tips.quests.gobctrlctocopy)
-
-        -- EditBox multi-ligne
-        local edit = CreateFrame("EditBox", nil, box)
-        edit:SetFontObject("ChatFontNormal")
-        edit:SetWidth(340)
-        edit:SetHeight(180)
-        edit:SetMultiLine(true)
-        edit:SetAutoFocus(true)
-        edit:EnableMouse(true)
-        edit:SetPoint("TOP", 0, -40)
-        edit:SetScript("OnEscapePressed", function(self) box:Hide() end)
-        edit:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
-        box.edit = edit
-        MultiBot.GameObjCopyBox = box
+local function clearFrameChildren(frame)
+    if not frame or not frame.GetNumChildren or not frame.GetChildren then
+        return
     end
 
-    -- Génère le texte à copier
-    local text = ""
-    for bot, lines in pairs(MultiBot.LastGameObjectSearch) do
-        text = text .. ("Bot: %s\n"):format(bot)
-        for _, l in ipairs(lines) do
-            text = text .. l .. "\n"
+    local childCount = frame:GetNumChildren() or 0
+    for i = childCount, 1, -1 do
+        local child = select(i, frame:GetChildren())
+        if child then
+            child:Hide()
+            child:SetParent(nil)
         end
-        text = text .. "\n"
     end
-    MultiBot.GameObjCopyBox.edit:SetText(text)
-    MultiBot.GameObjCopyBox.edit:HighlightText()
-    MultiBot.GameObjCopyBox:Show()
 end
 
+local function buildGameObjectCopyText(bots)
+    local lines = {}
+
+    for _, bot in ipairs(bots) do
+        local entries = getGameObjectEntries(bot) or {}
+        table.insert(lines, ("Bot: %s"):format(bot))
+
+        for _, entry in ipairs(entries) do
+            table.insert(lines, entry)
+        end
+
+        table.insert(lines, "")
+    end
+
+    if #lines == 0 then
+        return "No search data captured."
+    end
+
+    return table.concat(lines, "\n")
+end
+
+local function applyDialogBackdrop(frame)
+    frame:SetBackdrop({
+        bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile     = true, tileSize = 32, edgeSize = 16,
+        insets   = { left = 4, right = 4, top = 4, bottom = 4 }
+    })
+    frame:SetFrameStrata("DIALOG")
+end
+
+local function createPopupCloseButton(parent)
+    local close = CreateFrame("Button", nil, parent, "UIPanelCloseButton")
+    close:SetPoint("TOPRIGHT", -2, -2)
+    return close
+end
+
+local function ensureGameObjectPopupFrame()
+    if MultiBot.GameObjPopup then
+        return MultiBot.GameObjPopup
+    end
+
+    local popup = CreateFrame("Frame", "MB_GameObjPopup", UIParent)
+    popup:SetSize(340, 340)
+    popup:SetPoint("CENTER")
+    applyDialogBackdrop(popup)
+    popup:EnableMouse(true)
+    popup:SetMovable(true)
+    popup:RegisterForDrag("LeftButton")
+    popup:SetScript("OnDragStart", popup.StartMoving)
+    popup:SetScript("OnDragStop",  popup.StopMovingOrSizing)
+
+    createPopupCloseButton(popup)
+
+    local title = popup:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+    title:SetPoint("TOP", 0, -10)
+    title:SetText(MultiBot.tips.quests.gobsfound)
+
+    local scrollFrame = CreateFrame("ScrollFrame", "MB_GameObjScroll", popup, "UIPanelScrollFrameTemplate")
+    scrollFrame:SetPoint("TOPLEFT", 14, -38)
+    scrollFrame:SetPoint("BOTTOMRIGHT", -30, 14)
+
+    local content = CreateFrame("Frame", nil, scrollFrame)
+    content:SetWidth(1)
+    scrollFrame:SetScrollChild(content)
+
+    popup.content = content
+    popup.scrollFrame = scrollFrame
+
+    local copyBtn = CreateFrame("Button", nil, popup, "UIPanelButtonTemplate")
+    copyBtn:SetSize(120, 20)
+    copyBtn:SetPoint("BOTTOMRIGHT", -40, 12)
+    copyBtn:SetText(MultiBot.tips.quests.gobselectall)
+    copyBtn:SetScript("OnClick", function()
+        MultiBot.ShowGameObjectCopyBox()
+    end)
+    popup.copyBtn = copyBtn
+
+    MultiBot.GameObjPopup = popup
+    return popup
+end
+
+local function ensureGameObjectCopyBoxFrame()
+    if MultiBot.GameObjCopyBox then
+        return MultiBot.GameObjCopyBox
+    end
+    local box = CreateFrame("Frame", "MB_GameObjCopyBox", UIParent)
+    box:SetSize(380, 240)
+    box:SetPoint("CENTER")
+    applyDialogBackdrop(box)
+
+    local close = createPopupCloseButton(box)
+    close:SetScript("OnClick", function()
+        box:Hide()
+    end)
+
+    local label = box:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+    label:SetPoint("TOP", 0, -10)
+    label:SetText(MultiBot.tips.quests.gobctrlctocopy)
+
+    local edit = CreateFrame("EditBox", nil, box)
+    edit:SetFontObject("ChatFontNormal")
+    edit:SetWidth(340)
+    edit:SetHeight(180)
+    edit:SetMultiLine(true)
+    edit:SetAutoFocus(true)
+    edit:EnableMouse(true)
+    edit:SetPoint("TOP", 0, -40)
+    edit:SetScript("OnEscapePressed", function()
+        box:Hide()
+    end)
+    edit:SetScript("OnEditFocusGained", function(self)
+        self:HighlightText()
+    end)
+
+    box.edit = edit
+    MultiBot.GameObjCopyBox = box
+    return box
+end
+
+function MultiBot.ShowGameObjectPopup()
+
+    local popup = ensureGameObjectPopupFrame()
+    if popup:IsShown() then
+        popup:Hide()
+    end
+
+    -- Clear previous popup lines.
+    local content = popup.content
+    clearFrameChildren(content)
+
+    -- Render captured lines grouped by bot
+    local y = -4
+    local bots = collectSortedGameObjectBots()
+
+    for _, bot in ipairs(bots) do
+        local lines = getGameObjectEntries(bot) or {}
+        -- Bot title
+        local botLine = content:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+        botLine:SetPoint("TOPLEFT", 8, y)
+        botLine:SetText("Bot: |cff80ff80" .. bot .. "|r")
+        y = y - 18
+
+        -- Grouped section output: headers are highlighted, entries are indented.
+        for _, txt in ipairs(lines) do
+            local line = content:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+            local isSectionHeader = isDashedSectionHeader(txt)
+            line:SetPoint("TOPLEFT", isSectionHeader and 12 or 24, y)
+            if isSectionHeader then
+                line:SetText("|cffffff66" .. txt .. "|r")
+            else
+                line:SetText(txt)
+            end
+            y = y - 16
+        end
+        y = y - 8
+    end
+
+    if #bots == 0 then
+        local noData = content:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+        noData:SetPoint("TOPLEFT", 8, y)
+        noData:SetText("No search data captured.")
+        y = y - 16
+    end
+
+    content:SetHeight(-y + 4)
+    popup.scrollFrame:SetVerticalScroll(0)
+    popup:Show()
+end
+
+function MultiBot.ShowGameObjectCopyBox()
+    -- Close main popup if already visible
+    if MultiBot.GameObjPopup and MultiBot.GameObjPopup:IsShown() then
+        MultiBot.GameObjPopup:Hide()
+    end
+
+    local box = ensureGameObjectCopyBoxFrame()
+
+    -- Build copy text from sorted game-object entries.
+    local bots = collectSortedGameObjectBots()
+    local text = buildGameObjectCopyText(bots)
+
+    box.edit:SetText(text)
+    box.edit:HighlightText()
+    box:Show()
+end
+		
 local PROMPT
 function ShowPrompt(title, onOk, defaultText)
     if not PROMPT then
