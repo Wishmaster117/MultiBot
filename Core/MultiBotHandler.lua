@@ -323,6 +323,41 @@ local function FillQuestTable(tbl, author, msg)
 	end
 end
 
+local function showPopupIfHidden(popup)
+	if popup and not popup:IsShown() then
+		popup:Show()
+	end
+end
+
+local function scheduleQuestListBuild(delay, modeValue, groupedMode, groupedBuilder, singleBuilder, author)
+	if type(MultiBot.TimerAfter) ~= "function" then
+		if modeValue == groupedMode then
+			if type(groupedBuilder) == "function" then
+				groupedBuilder()
+			end
+		elseif type(singleBuilder) == "function" then
+			singleBuilder(author)
+		end
+		return
+	end
+
+	MultiBot.TimerAfter(delay, function()
+		if modeValue == groupedMode then
+			if type(groupedBuilder) == "function" then
+				groupedBuilder()
+			end
+		elseif type(singleBuilder) == "function" then
+			singleBuilder(author)
+		end
+	end)
+end
+
+local function finalizeQuestSection(author, awaitingTable, popup, modeValue, groupedMode, groupedBuilder, singleBuilder)
+	awaitingTable[author] = nil
+	showPopupIfHidden(popup)
+	scheduleQuestListBuild(0.1, modeValue, groupedMode, groupedBuilder, singleBuilder, author)
+end
+
 local function HandleQuestResponse(rawMsg, author)
 	if MultiBot._awaitingQuestsAll or MultiBot._blockOtherQuests then
 		print("SKIP HandleQuestResponse (awaitingQuestsAll)")
@@ -344,19 +379,15 @@ local function HandleQuestResponse(rawMsg, author)
 	if MultiBot._awaitingQuestsIncompleted[author] then
 		FillQuestTable("BotQuestsIncompleted", author, rawMsg)
 		if rawMsg:find("Summary") then
-			MultiBot._awaitingQuestsIncompleted[author] = nil
-
-			if MultiBot.tBotPopup and not MultiBot.tBotPopup:IsShown() then
-				MultiBot.tBotPopup:Show()
-			end
-
-			MultiBot.TimerAfter(0.1, function()
-				if MultiBot._lastIncMode == "GROUP" then
-					MultiBot.BuildAggregatedQuestList()
-				else
-					MultiBot.BuildBotQuestList(author)
-				end
-			end)
+			finalizeQuestSection(
+				author,
+				MultiBot._awaitingQuestsIncompleted,
+				MultiBot.tBotPopup,
+				MultiBot._lastIncMode,
+				"GROUP",
+				MultiBot.BuildAggregatedQuestList,
+				MultiBot.BuildBotQuestList
+			)
 		end
 		return
 	end
@@ -370,19 +401,15 @@ local function HandleQuestResponse(rawMsg, author)
 	if MultiBot._awaitingQuestsCompleted[author] then
 		FillQuestTable("BotQuestsCompleted", author, rawMsg)
 		if rawMsg:find("Summary") then
-			MultiBot._awaitingQuestsCompleted[author] = nil
-
-			if MultiBot.tBotCompPopup and not MultiBot.tBotCompPopup:IsShown() then
-				MultiBot.tBotCompPopup:Show()
-			end
-
-			MultiBot.TimerAfter(0.1, function()
-				if MultiBot._lastCompMode == "GROUP" then
-					MultiBot.BuildAggregatedCompletedList()
-				else
-					MultiBot.BuildBotCompletedList(author)
-				end
-			end)
+			finalizeQuestSection(
+				author,
+				MultiBot._awaitingQuestsCompleted,
+				MultiBot.tBotCompPopup,
+				MultiBot._lastCompMode,
+				"GROUP",
+				MultiBot.BuildAggregatedCompletedList,
+				MultiBot.BuildBotCompletedList
+			)
 		end
 		return
 	end
