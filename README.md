@@ -36,7 +36,7 @@ Port Multibot to ACE 3
 
 - **Milestone 1 (Baseline / safety net):** In progress.
   - Baseline behavior is mostly known through manual validation.
-  - A dedicated migration checklist file is still missing.
+  - Dedicated migration checklist file :https://github.com/Wishmaster117/MultiBot/blob/feature/ace3-migration/docs/ace3-migration-checklist.md
 - **Milestone 2 (Add ACE3 libs):** Completed.
   - ACE3 libraries are loaded in `MultiBot.toc`.
 - **Milestone 3 (Initialization lifecycle):** Mostly completed, hardening pending.
