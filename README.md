@@ -317,90 +317,119 @@ Screens:
 
 Port Multibot to ACE 3
 
-## ACE3 migration roadmap
+# MultiBot ACE3 Migration Roadmap (Updated)
 
-This addon is currently a classic Lua addon (manual frame/event architecture).
-The ACE3 migration will be done incrementally to avoid regressions.
+## Current Status Snapshot
 
-### Milestone 1 - Baseline and safety net
-1. Creation of a dedicated branch (`ace3-migration`).
-2. Record current behavior (slash commands, minimap button, major windows, bot command actions).
-3. Add a short migration checklist file (`docs/ace3-migration-checklist.md`) with "works before/after" items.
+- **Milestone 1 (Baseline / safety net):** In progress.
+  - Baseline behavior is mostly known through manual validation.
+  - A dedicated migration checklist file is still missing.
+- **Milestone 2 (Add ACE3 libs):** Completed.
+  - ACE3 libraries are loaded in `MultiBot.toc`.
+- **Milestone 3 (Initialization lifecycle):** Mostly completed, hardening pending.
+  - `OnInitialize` and `OnEnable` are in place.
+  - Legacy frame-based startup/event code still exists in a few places.
+- **Milestone 4 (Command system):** Mostly completed.
+  - Central alias registration exists and is used for core commands.
+- **Milestone 5 (Event bus migration):** In progress.
+  - Dispatcher architecture exists.
+  - Some legacy `CreateFrame + RegisterEvent + SetScript` blocks remain.
+- **Milestone 6 (SavedVariables -> AceDB):** Not started.
+- **Milestone 7 (Minimap/options integration):** Partially completed.
+  - Current minimap/options are stable, but not yet AceDB/LibDBIcon-driven.
+- **Milestone 8 (AceGUI UI refactor):** Not started.
 
-Exit criteria:
-- Addon loads with no Lua errors before any ACE3 code is introduced.
+---
 
-### Milestone 2 - Add ACE3 libraries without changing behavior
-1. Add required libs (AceAddon-3.0, AceEvent-3.0, AceConsole-3.0, AceDB-3.0, optional AceGUI-3.0, LibDBIcon-1.0).
-2. Update `MultiBot.toc` to load libs and keep existing files working.
-3. Introduce a minimal addon object (e.g. `MultiBot = LibStub("AceAddon-3.0"):NewAddon(...)`).
+## Execution Plan to Completion
 
-Exit criteria:
-- Addon still behaves exactly the same.
-- No duplicate initialization paths.
+## Phase A — Close lifecycle + command + event gaps
 
-### Milestone 3 - Initialization lifecycle migration
-1. Move startup logic from `Core/MultiBotInit.lua` into `OnInitialize` and `OnEnable`.
-2. Keep old init helpers but call them from ACE3 lifecycle methods.
-3. Ensure events are registered once (avoid duplicate handlers).
+### A1. Lifecycle hardening
+1. Keep `OnInitialize` / `OnEnable` as the single startup path.
+2. Move remaining startup side effects behind lifecycle-safe guards.
+3. Ensure no duplicate initialization on reload/login.
 
-Exit criteria:
-- UI and commands initialize once per login/reload.
+**Exit criteria**
+- No duplicate startup behavior.
+- No extra event registrations after repeated reloads.
 
-### Milestone 4 - Command system migration
-1. Replace/manual-wrap slash command registration with `AceConsole-3.0` (`RegisterChatCommand`).
-2. Keep existing aliases (`/multibot`, `/mbot`, `/mb`).
-3. Route command handlers to existing logic functions (no duplicate business logic).
+### A2. Command system finalization
+1. Keep `RegisterCommandAliases` as the only command registration API.
+2. Remove scattered direct slash registrations if any remain.
+3. Preserve all current aliases and behavior.
 
-Exit criteria:
-- Existing command behavior unchanged.
+**Exit criteria**
+- `/multibot`, `/mbot`, `/mb`, `/mbopt`, `/mbclass`, `/mbclasstest` unchanged.
 
-### Milestone 5 - Event bus migration
-1. Migrate event registration to `AceEvent-3.0` (`RegisterEvent`).
-2. Keep current event handlers and adapt signatures only where required.
-3. Validate frequently fired events for performance (no extra allocations in hot paths).
+### A3. Event convergence
+1. Keep `DispatchEvent` / `DispatchUpdate` as central dispatch points.
+2. Gradually migrate remaining local frame-event blocks into centralized registration.
+3. Validate high-frequency paths for duplicate callback regressions.
 
-Exit criteria:
-- No event spam regressions.
-- No duplicated event callbacks.
+**Exit criteria**
+- No duplicated callbacks.
+- No observable event spam regression.
 
-### Milestone 6 - SavedVariables migration (AceDB)
-1. Map `Core/MultiBotConfig.lua` data into an AceDB schema.
-2. Provide defaults and one-way migration from legacy keys.
-3. Keep backward compatibility for existing users.
+---
 
-Exit criteria:
-- Existing user settings survive migration.
+## Phase B — SavedVariables migration to AceDB
+
+### B1. Introduce AceDB schema (non-breaking)
+1. Add `MultiBot.db = AceDB:New(...)` with defaults equivalent to current settings.
+2. Keep legacy variables readable during transition.
+
+### B2. One-way migration from legacy storage
+1. Migrate old keys once (timers, throttle, minimap, visibility, strata, favorites).
+2. Mark migration version to avoid repeated imports.
+
+### B3. Switch runtime reads/writes to AceDB
+1. Move runtime config access to AceDB first.
+2. Keep temporary fallback reads for one transition cycle.
+
+**Exit criteria**
+- Existing users retain settings.
 - Fresh installs use AceDB defaults.
 
-### Milestone 7 - Minimap/options integration
-1. Keep current UI first; only integrate config access patterns.
-2. Optionally add LibDBIcon integration for minimap behavior.
-3. Defer large UI rewrites (AceGUI) until core migration is stable.
+---
 
-Exit criteria:
-- Minimap toggle and options remain functional.
+## Phase C — Minimap/options and optional UI modernization
 
-### Milestone 8 - Optional UI refactor (last)
-1. Refactor one screen at a time to AceGUI.
-2. Preserve existing data/control flow from `UI/*.lua`.
+### C1. Minimap/options stabilization
+1. Keep current options UI intact.
+2. Connect minimap/options persistence fully to AceDB.
+3. Optionally add LibDBIcon integration without behavior changes.
+
+**Exit criteria**
+- Minimap toggle and options panel behavior unchanged for users.
+
+### C2. Optional AceGUI refactor (last)
+1. Migrate one screen at a time.
+2. Keep data/control flow equivalent for each migrated screen.
 3. Avoid big-bang rewrites.
 
-Exit criteria:
-- Each migrated screen is functionally equivalent before moving to the next.
+**Exit criteria**
+- Screen-by-screen functional parity before moving forward.
 
-### Milestone 9 - Regression pass and release
-1. Run a full in-game test matrix (group controls, individual bot controls, inventory actions, filters, talent/spec windows, PVP UI).
-2. Clean dead code paths and keep one canonical helper per responsibility.
-3. Publish migration notes for users.
+---
 
-Exit criteria:
-- Stable behavior on target 3.3.5 clients.
-- No known blocker regressions.
+## PR Order
 
-### Execution order (small PRs)
-1. PR#1: libs + minimal addon bootstrap.
-2. PR#2: lifecycle + commands.
-3. PR#3: events + AceDB migration.
-4. PR#4: minimap/options integration.
-5. PR#5: optional UI refactors.
+1. Lifecycle hardening.
+2. Command system finalization.
+3. Event convergence.
+4. AceDB bootstrap.
+5. Legacy -> AceDB one-way migration.
+6. Runtime switch to AceDB.
+7. Minimap/options persistence finalization.
+8. Optional per-screen AceGUI refactor.
+
+---
+
+## Risk Controls (Apply on every PR)
+
+- Keep changes localized and incremental.
+- Avoid duplicate helper logic.
+- Prefer reusing existing APIs/functions over adding new parallel paths.
+- Validate no duplicate event registration and no repeated side effects on reload.
+- Keep behavior identical unless explicitly planned and documented.
