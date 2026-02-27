@@ -322,6 +322,28 @@ local function FillQuestTable(tbl, author, msg)
 		end
 	end
 end
+local QUEST_LINE_MARKERS = {
+	incompleted = "Incompleted quests",
+	completed = "Completed quests",
+	summary = "Summary",
+	questToken = "quest",
+	questLink = "|Hquest:",
+}
+
+local function containsAnyToken(rawMsg, tokens)
+	if type(rawMsg) ~= "string" then
+		return false
+	end
+
+	for _, token in ipairs(tokens) do
+		if rawMsg:find(token, 1, true) then
+			return true
+		end
+	end
+
+	return false
+end
+
 
 local function showPopupIfHidden(popup)
 	if popup and not popup:IsShown() then
@@ -360,17 +382,19 @@ end
 
 local function HandleQuestResponse(rawMsg, author)
 	if MultiBot._awaitingQuestsAll or MultiBot._blockOtherQuests then
-		print("SKIP HandleQuestResponse (awaitingQuestsAll)")
+		if MultiBot.dprint then
+			MultiBot.dprint("QUEST", "SKIP HandleQuestResponse (awaitingQuestsAll)")
+		end
 		return
 	end
 
-	local hasKeyword = rawMsg:find("quest") or rawMsg:find("Summary")
+	local hasKeyword = containsAnyToken(rawMsg, { QUEST_LINE_MARKERS.questToken, QUEST_LINE_MARKERS.summary })
 	local awaiting = MultiBot._awaitingQuestsIncompleted[author] or MultiBot._awaitingQuestsCompleted[author]
 	if not hasKeyword and not awaiting then
 		return
 	end
 
-	if rawMsg:find("Incompleted quests") then
+	if rawMsg:find(QUEST_LINE_MARKERS.incompleted, 1, true) then
 		MultiBot.BotQuestsIncompleted[author] = {}
 		MultiBot._awaitingQuestsIncompleted[author] = true
 		return
@@ -378,7 +402,7 @@ local function HandleQuestResponse(rawMsg, author)
 
 	if MultiBot._awaitingQuestsIncompleted[author] then
 		FillQuestTable("BotQuestsIncompleted", author, rawMsg)
-		if rawMsg:find("Summary") then
+		if rawMsg:find(QUEST_LINE_MARKERS.summary, 1, true) then
 			finalizeQuestSection(
 				author,
 				MultiBot._awaitingQuestsIncompleted,
@@ -392,7 +416,7 @@ local function HandleQuestResponse(rawMsg, author)
 		return
 	end
 
-	if rawMsg:find("Completed quests") then
+	if rawMsg:find(QUEST_LINE_MARKERS.completed, 1, true) then
 		MultiBot.BotQuestsCompleted[author] = {}
 		MultiBot._awaitingQuestsCompleted[author] = true
 		return
@@ -400,7 +424,7 @@ local function HandleQuestResponse(rawMsg, author)
 
 	if MultiBot._awaitingQuestsCompleted[author] then
 		FillQuestTable("BotQuestsCompleted", author, rawMsg)
-		if rawMsg:find("Summary") then
+		if rawMsg:find(QUEST_LINE_MARKERS.summary, 1, true) then
 			finalizeQuestSection(
 				author,
 				MultiBot._awaitingQuestsCompleted,
@@ -420,11 +444,13 @@ local function isQuestLikeWhisper(rawMsg)
 		return false
 	end
 
-	return rawMsg:find("quest")
-		or rawMsg:find("Summary")
-		or rawMsg:find("|Hquest:")
-		or rawMsg:find("Incompleted quests")
-		or rawMsg:find("Completed quests")
+	return containsAnyToken(rawMsg, {
+		QUEST_LINE_MARKERS.questToken,
+		QUEST_LINE_MARKERS.summary,
+		QUEST_LINE_MARKERS.questLink,
+		QUEST_LINE_MARKERS.incompleted,
+		QUEST_LINE_MARKERS.completed,
+	})
 end
 
 local function shouldHandleQuestsAllWhisper(rawMsg, author)
@@ -452,11 +478,11 @@ local function fillQuestsAllTablesFromBuffer(author)
 
 	local mode = nil
 	for _, line in ipairs(linesBuffer) do
-		if line:find("Incompleted quests") then
+		if line:find(QUEST_LINE_MARKERS.incompleted, 1, true) then
 			mode = "incomplete"
-		elseif line:find("Completed quests") then
+		elseif line:find(QUEST_LINE_MARKERS.completed, 1, true) then
 			mode = "complete"
-		elseif line:find("Summary") then
+		elseif line:find(QUEST_LINE_MARKERS.summary, 1, true) then
 			mode = nil
 		else
 			local id = tonumber(line:match("|Hquest:(%d+):"))
@@ -487,7 +513,7 @@ function HandleQuestsAllResponse(rawMsg, author)
 	MultiBot._questAllBuffer[author] = MultiBot._questAllBuffer[author] or {}
 	table.insert(MultiBot._questAllBuffer[author], rawMsg)
 
-	if not rawMsg:find("Summary") then
+	if not rawMsg:find(QUEST_LINE_MARKERS.summary, 1, true) then
 		return
 	end
 
@@ -508,9 +534,16 @@ function HandleQuestsAllResponse(rawMsg, author)
 			MultiBot.BuildAggregatedAllList()
 		end
 	else
-		print("Still not finished...")
+		if MultiBot.dprint then
+			MultiBot.dprint("QUEST", "Quests all aggregation still running")
+		end
 	end
 end
+
+local GAMEOBJECT_SECTION_MARKERS = {
+	relevant = { "targets", "npcs", "corpses", "game objects" },
+	terminal = { "triggers" },
+}
 
 local function normalizeGameObjectSectionLabel(label)
 	if type(label) ~= "string" then
@@ -518,6 +551,15 @@ local function normalizeGameObjectSectionLabel(label)
 	end
 
 	return string.lower((label:gsub("^%s+", ""):gsub("%s+$", "")))
+end
+
+local function clearGameObjectCaptureState(author, shouldShowPopup)
+	MultiBot._GameObjCaptureInProgress[author] = nil
+	MultiBot._GameObjCurrentSection[author] = nil
+
+	if shouldShowPopup and MultiBot.ShowGameObjectPopup then
+		MultiBot.ShowGameObjectPopup()
+	end
 end
 
 local function extractGameObjectSectionLabel(rawMsg)
@@ -530,15 +572,12 @@ end
 
 local function isRelevantGameObjectSection(label)
 	local normalized = normalizeGameObjectSectionLabel(label)
-	return normalized:find("targets", 1, true) ~= nil
-		or normalized:find("npcs", 1, true) ~= nil
-		or normalized:find("corpses", 1, true) ~= nil
-		or normalized:find("game objects", 1, true) ~= nil
+	return containsAnyToken(normalized, GAMEOBJECT_SECTION_MARKERS.relevant)
 end
 
 local function isTerminalGameObjectSection(label)
 	local normalized = normalizeGameObjectSectionLabel(label)
-	return normalized:find("triggers", 1, true) ~= nil
+	return containsAnyToken(normalized, GAMEOBJECT_SECTION_MARKERS.terminal)
 end
 
 function MultiBot.HandleGameObjectWhisper(rawMsg, author)
@@ -551,9 +590,7 @@ function MultiBot.HandleGameObjectWhisper(rawMsg, author)
 
 	if isSectionHeader and isTerminalGameObjectSection(sectionLabel) then
 		if MultiBot._GameObjCaptureInProgress[author] then
-			MultiBot._GameObjCaptureInProgress[author] = nil
-			MultiBot._GameObjCurrentSection[author] = nil
-			MultiBot.ShowGameObjectPopup()
+			clearGameObjectCaptureState(author, true)
 			return true
 		end
 		return false
@@ -588,9 +625,7 @@ function MultiBot.HandleGameObjectWhisper(rawMsg, author)
 	end
 
 	if rawMsg == "" then
-		MultiBot._GameObjCaptureInProgress[author] = nil
-		MultiBot._GameObjCurrentSection[author] = nil
-		MultiBot.ShowGameObjectPopup()
+		clearGameObjectCaptureState(author, true)
 	end
 
 	return true
@@ -633,7 +668,7 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 	        -- Core startup helpers are now routed via lifecycle (OnInitialize/OnEnable).
 
-	        -- [EXISTANT] restauration des positions / états			
+	        -- [EXISTANT] restauration des positions / états
 		restoreBoundFramePoints()
 
 	        -- Restore MultiBot bar visibility from saved state (default visible).
