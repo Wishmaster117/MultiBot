@@ -12,13 +12,9 @@ function MultiBot.Throttle_Init()
 
   local orig_SendChatMessage = SendChatMessage
 
-  -- Valeurs par défaut depuis la DB si présentes
-  local rate  = 5
-  local burst = 8
-  if MultiBotDB and MultiBotDB.throttle then
-    if type(MultiBotDB.throttle.rate)  == "number" and MultiBotDB.throttle.rate  > 0 then rate  = MultiBotDB.throttle.rate  end
-    if type(MultiBotDB.throttle.burst) == "number" and MultiBotDB.throttle.burst > 0 then burst = MultiBotDB.throttle.burst end
-  end
+  -- Read configured throttle values through centralized config helpers.
+  local rate = (MultiBot.GetThrottleRate and MultiBot.GetThrottleRate()) or 5
+  local burst = (MultiBot.GetThrottleBurst and MultiBot.GetThrottleBurst()) or 8
 
   local RATE_PER_SEC, BURST = rate, burst
   local tokens = BURST

@@ -70,6 +70,77 @@ MultiBot:SetScript("OnUpdate", function(_, pElapsed)
 	MultiBot.DispatchUpdate(pElapsed)
  end)
 
+local function getLegacyStateStore()
+	MultiBotSave = MultiBotSave or {}
+	return MultiBotSave
+end
+
+local function getMainBarProfileStore()
+	local profile = MultiBot.db and MultiBot.db.profile
+	if not profile then return nil end
+	profile.ui = profile.ui or {}
+	profile.ui.mainBar = profile.ui.mainBar or {}
+	return profile.ui.mainBar
+end
+
+local function getSavedMainBarValue(key)
+	local legacy = getLegacyStateStore()
+	local profileStore = getMainBarProfileStore()
+	if profileStore and profileStore[key] == nil then
+		profileStore[key] = legacy[key]
+	end
+
+	local value = profileStore and profileStore[key] or legacy[key]
+	if profileStore then
+		legacy[key] = value
+	end
+	return value
+end
+
+local function setSavedMainBarValue(key, value)
+	local legacy = getLegacyStateStore()
+	legacy[key] = value
+
+	local profileStore = getMainBarProfileStore()
+	if profileStore then
+		profileStore[key] = value
+	end
+	return value
+end
+
+local function getLayoutProfileStore()
+	local profile = MultiBot.db and MultiBot.db.profile
+	if not profile then return nil end
+	profile.ui = profile.ui or {}
+	profile.ui.layout = profile.ui.layout or {}
+	return profile.ui.layout
+end
+
+local function getSavedLayoutValue(key)
+	local legacy = getLegacyStateStore()
+	local profileStore = getLayoutProfileStore()
+	if profileStore and profileStore[key] == nil then
+		profileStore[key] = legacy[key]
+	end
+
+	local value = profileStore and profileStore[key] or legacy[key]
+	if profileStore then
+		legacy[key] = value
+	end
+	return value
+end
+
+local function setSavedLayoutValue(key, value)
+	local legacy = getLegacyStateStore()
+	legacy[key] = value
+
+	local profileStore = getLayoutProfileStore()
+	if profileStore then
+		profileStore[key] = value
+	end
+	return value
+end
+
 -- HANDLER --
 
 
@@ -102,14 +173,14 @@ local function saveBoundFramePoints()
 		local frame = binding.getFrame and binding.getFrame()
 		if frame then
 			local tX, tY = MultiBot.toPoint(frame)
-			MultiBotSave[binding.saveKey] = tX .. ", " .. tY
+			setSavedLayoutValue(binding.saveKey, tX .. ", " .. tY)
 		end
 	end
 end
 
 local function restoreBoundFramePoints()
 	for _, binding in ipairs(POINT_FRAME_BINDINGS) do
-		local pointValue = MultiBotSave[binding.saveKey]
+		local pointValue = getSavedLayoutValue(binding.saveKey)
 		local frame = binding.getFrame and binding.getFrame()
 		if pointValue ~= nil and frame and frame.setPoint then
 			local tPoint = MultiBot.doSplit(pointValue, ", ")
@@ -122,14 +193,14 @@ local function savePortalMemory()
 	for _, binding in ipairs(PORTAL_MEMORY_BINDINGS) do
 		local portalButton = getPortalButton(binding.color)
 		if portalButton then
-			MultiBotSave[binding.saveKey] = MultiBot.SavePortal(portalButton)
+			setSavedLayoutValue(binding.saveKey, MultiBot.SavePortal(portalButton))
 		end
 	end
 end
 
 local function restorePortalMemory()
 	for _, binding in ipairs(PORTAL_MEMORY_BINDINGS) do
-		local memory = MultiBotSave[binding.saveKey]
+		local memory = getSavedLayoutValue(binding.saveKey)
 		if memory ~= nil then
 			local portalButton = getPortalButton(binding.color)
 			if portalButton then
@@ -178,7 +249,7 @@ local function getMastersBarButton(buttonName)
 end
 
 local function restoreRightClickMode(saveKey, frameName, buttonBindings)
-	local savedMode = MultiBotSave[saveKey]
+	local savedMode = getSavedMainBarValue(saveKey)
 	if savedMode == nil then return end
 
 	local buttonName = buttonBindings[savedMode]
@@ -191,7 +262,7 @@ local function restoreRightClickMode(saveKey, frameName, buttonBindings)
 end
 
 local function restoreBinaryLeftToggle(saveKey, getButton)
-	local savedState = MultiBotSave[saveKey]
+	local savedState = getSavedMainBarValue(saveKey)
 	if savedState == nil then return end
 
 	local button = getButton()
@@ -209,7 +280,7 @@ local function restoreBinaryLeftToggle(saveKey, getButton)
 end
 
 local function restoreEnableOnlyLeftToggle(saveKey, getButton, onEnabled)
-	if MultiBotSave[saveKey] ~= "true" then return end
+	if getSavedMainBarValue(saveKey) ~= "true" then return end
 
 	local button = getButton()
 	if not button then return end
@@ -639,23 +710,23 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 		local tValue = MultiBot.doSplit(MultiBot.frames["MultiBar"].frames["Left"].buttons["Attack"].texture, "\\")[5]
 		tValue = string.sub(tValue, 1, string.len(tValue) - 4)
-		MultiBotSave["AttackButton"] = tValue
+		setSavedMainBarValue("AttackButton", tValue)
 
 		--local tValue = MultiBot.doSplit(MultiBot.frames["MultiBar"].frames["Left"].buttons["Flee"].texture, "\\")[5]
 		--tValue = string.sub(tValue, 1, string.len(tValue) - 4)
 		tValue = MultiBot.doSplit(MultiBot.frames["MultiBar"].frames["Left"].buttons["Flee"].texture, "\\")[5]
 		tValue = string.sub(tValue, 1, string.len(tValue) - 4)
-		MultiBotSave["FleeButton"] = tValue
+		setSavedMainBarValue("FleeButton", tValue)
 
-		MultiBotSave["AutoRelease"] = MultiBot.IF(MultiBot.auto.release, "true", "false")
-		MultiBotSave["NecroNet"] = MultiBot.IF(MultiBot.necronet.state, "true", "false")
-		MultiBotSave["Reward"] = MultiBot.IF(MultiBot.reward.state, "true", "false")
+		setSavedMainBarValue("AutoRelease", MultiBot.IF(MultiBot.auto.release, "true", "false"))
+		setSavedMainBarValue("NecroNet", MultiBot.IF(MultiBot.necronet.state, "true", "false"))
+		setSavedMainBarValue("Reward", MultiBot.IF(MultiBot.reward.state, "true", "false"))
 
-		MultiBotSave["Masters"] = MultiBot.IF(MultiBot.frames["MultiBar"].frames["Main"].buttons["Masters"].state, "true", "false")
-		MultiBotSave["Creator"] = MultiBot.IF(MultiBot.frames["MultiBar"].frames["Main"].buttons["Creator"].state, "true", "false")
-		MultiBotSave["Beast"] = MultiBot.IF(MultiBot.frames["MultiBar"].frames["Main"].buttons["Beast"].state, "true", "false")
-		MultiBotSave["Expand"] = MultiBot.IF(MultiBot.frames["MultiBar"].frames["Main"].buttons["Expand"].state, "true", "false")
-		MultiBotSave["RTSC"] = MultiBot.IF(MultiBot.frames["MultiBar"].frames["Main"].buttons["RTSC"].state, "true", "false")
+		setSavedMainBarValue("Masters", MultiBot.IF(MultiBot.frames["MultiBar"].frames["Main"].buttons["Masters"].state, "true", "false"))
+		setSavedMainBarValue("Creator", MultiBot.IF(MultiBot.frames["MultiBar"].frames["Main"].buttons["Creator"].state, "true", "false"))
+		setSavedMainBarValue("Beast", MultiBot.IF(MultiBot.frames["MultiBar"].frames["Main"].buttons["Beast"].state, "true", "false"))
+		setSavedMainBarValue("Expand", MultiBot.IF(MultiBot.frames["MultiBar"].frames["Main"].buttons["Expand"].state, "true", "false"))
+		setSavedMainBarValue("RTSC", MultiBot.IF(MultiBot.frames["MultiBar"].frames["Main"].buttons["RTSC"].state, "true", "false"))
 
 		return
 	end
@@ -673,20 +744,22 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 	        -- Restore MultiBot bar visibility from saved state (default visible).
 	        if MultiBot.ToggleMainUIVisibility then
-	          MultiBot.ToggleMainUIVisibility(MultiBotSave["UIVisible"] ~= false)
+	          local savedVisible = (MultiBot.GetMainUIVisibleConfig and MultiBot.GetMainUIVisibleConfig())
+	          MultiBot.ToggleMainUIVisibility(savedVisible ~= false)
 	        end
 
 		restorePortalMemory()
 
 		restoreMainBarSavedStates()
 
-        if MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"] ~= nil then
+        local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel() or nil
+        if strataLevel ~= nil then
           if MultiBot.ApplyGlobalStrata then
             MultiBot.ApplyGlobalStrata()
           else
             -- minimal fallback if the function does not exist
             if MultiBot.frames and MultiBot.frames["MultiBar"] then
-              MultiBot.PromoteFrame(MultiBot.frames["MultiBar"], MultiBotGlobalSave["Strata.Level"])
+              MultiBot.PromoteFrame(MultiBot.frames["MultiBar"], strataLevel)
             end
           end
         end

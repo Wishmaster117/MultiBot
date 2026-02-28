@@ -146,45 +146,139 @@ MultiBot.raidus.wowButton("x", -13, 841, 16, 20, 12)
 	tButton.doLeft(tButton)
 end
 
+local function getRaidusLayoutStore()
+    local profile = MultiBot.db and MultiBot.db.profile
+    if profile then
+        profile.ui = profile.ui or {}
+        profile.ui.raidusLayouts = profile.ui.raidusLayouts or {}
+        return profile.ui.raidusLayouts
+    end
+
+    MultiBotSave = MultiBotSave or {}
+    return MultiBotSave
+end
+
+local function getRaidusLayoutKey(slot)
+    return "Raidus" .. (slot or "")
+end
+
+local function getRaidusLayoutValue(slot)
+    local key = getRaidusLayoutKey(slot)
+    local store = getRaidusLayoutStore()
+    local value = store[key]
+
+    MultiBotSave = MultiBotSave or {}
+    if value == nil then
+        value = MultiBotSave[key]
+        if value ~= nil then
+            store[key] = value
+        end
+    elseif MultiBotSave[key] ~= value then
+        MultiBotSave[key] = value
+    end
+
+    return value
+end
+
+local function setRaidusLayoutValue(slot, value)
+    local key = getRaidusLayoutKey(slot)
+    local store = getRaidusLayoutStore()
+    store[key] = value
+
+    MultiBotSave = MultiBotSave or {}
+    MultiBotSave[key] = value
+end
+
+local function parseRaidusLayoutData(layoutData)
+    if type(layoutData) ~= "string" or layoutData == "" then
+        return nil
+    end
+
+    local layout = {}
+    local serializedGroups = MultiBot.doSplit(layoutData, ";")
+    for groupIndex = 1, 8 do
+        layout[groupIndex] = MultiBot.doSplit(serializedGroups[groupIndex], ",")
+    end
+
+    return layout
+end
+
+local function findRaidusPoolFrameByName(poolFrames, name)
+    if not poolFrames or not name or name == "" or name == "-" then
+        return nil
+    end
+
+    for _, dragFrame in pairs(poolFrames) do
+        if dragFrame.name ~= nil and dragFrame.name == name then
+            return dragFrame
+        end
+    end
+
+    return nil
+end
+
+local function swapRaidusFrameIntoSlot(dragFrame, dropFrame)
+    if not dragFrame or not dropFrame then
+        return
+    end
+
+    local wasDragVisible = dragFrame:IsVisible()
+    local dragParent = dragFrame.parent
+    local dragHeight = dragFrame.height
+    local dragWidth = dragFrame.width
+    local dragSlot = dragFrame.slot
+    local dragX = dragFrame.x
+    local dragY = dragFrame.y
+
+    MultiBot.raidus.doDrop(dragFrame, dropFrame.parent, dropFrame.x, dropFrame.y, dropFrame.width, dropFrame.height, dropFrame.slot)
+    if dropFrame:IsVisible() then dragFrame:Show() else dragFrame:Hide() end
+
+    MultiBot.raidus.doDrop(dropFrame, dragParent, dragX, dragY, dragWidth, dragHeight, dragSlot)
+    if wasDragVisible then dropFrame:Show() else dropFrame:Hide() end
+end
+
+local function applyRaidusLayout(layout)
+    if type(layout) ~= "table" then
+        return
+    end
+
+    local frames = MultiBot.raidus and MultiBot.raidus.frames
+    local pool = frames and frames["Pool"]
+    local poolFrames = pool and pool.frames
+    if not poolFrames then
+        return
+    end
+
+    for groupIndex = 1, 8 do
+        local groupLayout = layout[groupIndex]
+        local groupFrame = frames and frames["Group" .. groupIndex]
+        local groupSlots = groupFrame and groupFrame.frames
+
+        if groupLayout and groupSlots then
+            for slotIndex = 1, 5 do
+                local botName = groupLayout[slotIndex]
+                if botName and botName ~= "-" then
+                    local dropFrame = groupSlots["Slot" .. slotIndex]
+                    local dragFrame = findRaidusPoolFrameByName(poolFrames, botName)
+                    if dropFrame and dragFrame then
+                        swapRaidusFrameIntoSlot(dragFrame, dropFrame)
+                    end
+                end
+            end
+        end
+    end
+end
+
 MultiBot.raidus.wowButton("Load", -762, 360, 80, 20, 12)
 .doLeft = function(pButton)
-	local tPool = MultiBot.raidus.frames["Pool"]
-	local tData = MultiBotSave["Raidus" .. MultiBot.raidus.save]
-
-	if(tData == nil or tData == "") then
-		SendChatMessage(MultiBot.info.nothing, "SAY");
+	local layoutData = getRaidusLayoutValue(MultiBot.raidus.save)
+	if(layoutData == nil or layoutData == "") then
+		SendChatMessage(MultiBot.info.nothing, "SAY")
+		return
 	end
 
-	local tLoad = MultiBot.doSplit(tData, ";")
-
-	for i = 1, 8, 1 do
-		local tGroup = MultiBot.doSplit(tLoad[i], ",")
-
-		for j = 1, 5, 1 do
-			local tDrop = MultiBot.raidus.frames["Group" .. i].frames["Slot" .. j]
-			local tName = tGroup[j]
-
-			if(tName ~= "-") then
-				for tIndex, tDrag in pairs(tPool.frames) do
-					if(tDrag.name ~= nil and tDrag.name == tName) then
-						local tVisible = tDrag:IsVisible()
-						local tParent = tDrag.parent
-						local tHeight = tDrag.height
-						local tWidth = tDrag.width
-						local tSlot = tDrag.slot
-						local tX = tDrag.x
-						local tY = tDrag.y
-
-						MultiBot.raidus.doDrop(tDrag, tDrop.parent, tDrop.x, tDrop.y, tDrop.width, tDrop.height, tDrop.slot)
-						if(tDrop:IsVisible()) then tDrag:Show() else tDrag:Hide() end
-
-						MultiBot.raidus.doDrop(tDrop, tParent, tX, tY, tWidth, tHeight, tSlot)
-						if(tVisible) then tDrop:Show() else tDrop:Hide() end
-					end
-				end
-			end
-		end
-	end
+	local layout = parseRaidusLayoutData(layoutData)
+	applyRaidusLayout(layout)
 end
 
 local function UpdateRaidusSlotButtonText(button)
@@ -342,7 +436,7 @@ MultiBot.raidus.wowButton("Save", -597, 360, 80, 20, 12)
 		tSave = tSave .. tGroup
 	end
 
-	MultiBotSave["Raidus" .. MultiBot.raidus.save] = tSave
+	setRaidusLayoutValue(MultiBot.raidus.save, tSave)
 	SendChatMessage("I wrote it down.", "SAY")
 end
 
@@ -507,7 +601,43 @@ MultiBot.raidus.getDrop = function()
 	return nil
 end
 
--- SETTTER --
+-- SETTER --
+
+local function getRaidusGlobalBotStore()
+    MultiBotGlobalSave = MultiBotGlobalSave or {}
+    return MultiBotGlobalSave
+end
+
+local function buildRaidusBotFromGlobalSave(name, value)
+    if not value then
+        return nil
+    end
+
+    local details = MultiBot.doSplit(value, ",")
+    local rawClass = details[5]
+    if not rawClass or rawClass == "" then
+        return nil
+    end
+
+    local bot = {}
+    bot.name = name
+    bot.race = details[1]
+    bot.gender = details[2]
+    bot.special = details[3]
+    bot.talents = details[4]
+    bot.class = rawClass
+    bot.level = tonumber(details[6]) or 0
+    bot.score = tonumber(details[7]) or 0
+    bot.role = MultiBotRaidusDetectRole(bot)
+    return bot
+end
+
+local function appendRaidusBotIfValid(bots, name, value)
+    local bot = buildRaidusBotFromGlobalSave(name, value)
+    if bot then
+        table.insert(bots, bot)
+    end
+end
 
 MultiBot.raidus.setRaidus = function()
 	local tPool = MultiBot.raidus.frames["Pool"]
@@ -521,20 +651,9 @@ MultiBot.raidus.setRaidus = function()
 	-- Mode de tri actuel ("Score", "Level", "Class")
 	local sortMode = MultiBot.raidus.sortMode or "Score"
 
-    for tName, tValue in pairs(MultiBotGlobalSave) do
-        local tDetails = MultiBot.doSplit(tValue, ",")
-        local rawClass = tDetails[5]
-        if rawClass and rawClass ~= "" then
-            local tBot = {}
-            tBot.name = tName
-            tBot.race = tDetails[1]
-            tBot.gender = tDetails[2]
-            tBot.special = tDetails[3]
-            tBot.talents = tDetails[4]
-            tBot.class = rawClass
-            tBot.level = tonumber(tDetails[6]) or 0
-            tBot.score = tonumber(tDetails[7]) or 0
-            tBot.role = MultiBotRaidusDetectRole(tBot)
+    for tName, tValue in pairs(getRaidusGlobalBotStore()) do
+        local tBot = buildRaidusBotFromGlobalSave(tName, tValue)
+        if tBot then
 
             -- DEBUG
             --[[local debugClass   = MultiBot.toClass(tBot.class or "?")
@@ -885,132 +1004,34 @@ end
 -- Si aucun n'est coché, on prend tous les bots connus dans MultiBotGlobalSave
 local function MultiBotRaidusCollectSelectedBots()
     local bots = {}
-    local index = 1
 
     local multiBar = MultiBot.frames and MultiBot.frames["MultiBar"]
     local unitsFrame = multiBar and multiBar.frames and multiBar.frames["Units"]
     local unitButtons = unitsFrame and unitsFrame.buttons
 
+    local globalBots = getRaidusGlobalBotStore()
+
     if unitButtons then
         for name, button in pairs(unitButtons) do
-            if button.state and MultiBotGlobalSave and MultiBotGlobalSave[name] then
-                local value = MultiBotGlobalSave[name]
-                local details = MultiBot.doSplit(value, ",")
-                local rawClass = details[5]
-                if rawClass and rawClass ~= "" then
-                    local bot = {}
-                    bot.name = name
-                    bot.race = details[1]
-                    bot.gender = details[2]
-                    bot.special = details[3]
-                    bot.talents = details[4]
-                    bot.class = rawClass
-                    bot.level = tonumber(details[6]) or 0
-                    bot.score = tonumber(details[7]) or 0
-                    bot.role = MultiBotRaidusDetectRole(bot)
-
-                    bots[index] = bot
-                    index = index + 1
-                end
+            if button.state then
+                appendRaidusBotIfValid(bots, name, globalBots[name])
             end
         end
     end
 
     -- Fallback : aucun bot sélectionné = on prend tout le monde
-    if index == 1 and MultiBotGlobalSave then
-        for name, value in pairs(MultiBotGlobalSave) do
-            local details = MultiBot.doSplit(value, ",")
-            local rawClass = details[5]
-            if rawClass and rawClass ~= "" then
-                local bot = {}
-                bot.name = name
-                bot.race = details[1]
-                bot.gender = details[2]
-                bot.special = details[3]
-                bot.talents = details[4]
-                bot.class = rawClass
-                bot.level = tonumber(details[6]) or 0
-                bot.score = tonumber(details[7]) or 0
-                bot.role = MultiBotRaidusDetectRole(bot)
-
-                bots[index] = bot
-                index = index + 1
-            end
+    if #bots == 0 then
+        for name, value in pairs(globalBots) do
+            appendRaidusBotIfValid(bots, name, value)
         end
     end
 
     return bots
 end
 
--- Applique une matrice de noms [groupe][slot] sur les frames Reidus,
--- en réutilisant la même logique de swap que le bouton "Load".
+-- Apply a [group][slot] layout matrix to the Raidus frames.
 local function MultiBotRaidusApplyLayout(layout)
-    local tPool = MultiBot.raidus.frames and MultiBot.raidus.frames["Pool"]
-    if not tPool or not tPool.frames then
-        return
-    end
-
-    for groupIndex = 1, 8 do
-        local groupLayout = layout[groupIndex]
-        if groupLayout then
-            local tGroup = MultiBot.raidus.frames["Group" .. groupIndex]
-            if tGroup and tGroup.frames then
-                for slotIndex = 1, 5 do
-                    local name = groupLayout[slotIndex]
-                    if name and name ~= "-" then
-                        local tDrop = tGroup.frames["Slot" .. slotIndex]
-                        if tDrop then
-                            for _, tDrag in pairs(tPool.frames) do
-                                if tDrag.name ~= nil and tDrag.name == name then
-                                    local tVisible = tDrag:IsVisible()
-                                    local tParent = tDrag.parent
-                                    local tHeight = tDrag.height
-                                    local tWidth = tDrag.width
-                                    local tSlot = tDrag.slot
-                                    local tX = tDrag.x
-                                    local tY = tDrag.y
-
-                                    -- On place le bot dans le slot de raid
-                                    MultiBot.raidus.doDrop(
-                                        tDrag,
-                                        tDrop.parent,
-                                        tDrop.x,
-                                        tDrop.y,
-                                        tDrop.width,
-                                        tDrop.height,
-                                        tDrop.slot
-                                    )
-                                    if tDrop:IsVisible() then
-                                        tDrag:Show()
-                                    else
-                                        tDrag:Hide()
-                                    end
-
-                                    -- Et on remet le frame de destination à la place d'origine
-                                    MultiBot.raidus.doDrop(
-                                        tDrop,
-                                        tParent,
-                                        tX,
-                                        tY,
-                                        tWidth,
-                                        tHeight,
-                                        tSlot
-                                    )
-                                    if tVisible then
-                                        tDrop:Show()
-                                    else
-                                        tDrop:Hide()
-                                    end
-
-                                    break
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
+    applyRaidusLayout(layout)
 end
 
 -- Tri générique par score décroissant puis niveau décroissant

@@ -159,6 +159,96 @@ local function ensureSavedVariables()
   return MultiBotSave, MultiBotGlobalSave
 end
 
+local MINIMAP_CONFIG_DEFAULTS = {
+  hide = false,
+  angle = 220,
+}
+
+local function getLegacyMinimapConfig()
+  local save = ensureSavedVariables()
+  save.Minimap = save.Minimap or {}
+
+  if type(save.Minimap.hide) ~= "boolean" then
+    save.Minimap.hide = MINIMAP_CONFIG_DEFAULTS.hide
+  end
+  if type(save.Minimap.angle) ~= "number" then
+    save.Minimap.angle = MINIMAP_CONFIG_DEFAULTS.angle
+  end
+
+  return save.Minimap
+end
+
+function MultiBot.GetMinimapConfig()
+  local profile = MultiBot.db and MultiBot.db.profile
+  if profile then
+    profile.ui = profile.ui or {}
+    profile.ui.minimap = profile.ui.minimap or {}
+
+    local minimap = profile.ui.minimap
+    local legacy = getLegacyMinimapConfig()
+
+    if type(minimap.hide) ~= "boolean" then
+      minimap.hide = legacy.hide
+    end
+    if type(minimap.angle) ~= "number" then
+      minimap.angle = legacy.angle
+    end
+
+    legacy.hide = minimap.hide
+    legacy.angle = minimap.angle
+    return minimap
+  end
+
+  return getLegacyMinimapConfig()
+end
+
+function MultiBot.SetMinimapConfig(key, value)
+  local minimap = MultiBot.GetMinimapConfig()
+  minimap[key] = value
+
+  local legacy = getLegacyMinimapConfig()
+  legacy[key] = value
+
+  return minimap
+end
+
+local STRATA_LEVEL_DEFAULT = "HIGH"
+
+function MultiBot.GetGlobalStrataLevel()
+  local _, globalSave = ensureSavedVariables()
+  globalSave["Strata.Level"] = globalSave["Strata.Level"] or STRATA_LEVEL_DEFAULT
+
+  local profile = MultiBot.db and MultiBot.db.profile
+  if profile then
+    profile.ui = profile.ui or {}
+    if type(profile.ui.strataLevel) ~= "string" or profile.ui.strataLevel == "" then
+      profile.ui.strataLevel = globalSave["Strata.Level"]
+    end
+
+    globalSave["Strata.Level"] = profile.ui.strataLevel
+    return profile.ui.strataLevel
+  end
+
+  return globalSave["Strata.Level"]
+end
+
+function MultiBot.SetGlobalStrataLevel(level)
+  if type(level) ~= "string" or level == "" then
+    level = STRATA_LEVEL_DEFAULT
+  end
+
+  local _, globalSave = ensureSavedVariables()
+  globalSave["Strata.Level"] = level
+
+  local profile = MultiBot.db and MultiBot.db.profile
+  if profile then
+    profile.ui = profile.ui or {}
+    profile.ui.strataLevel = level
+  end
+
+  return level
+end
+
 local function callIfFunction(fn, ...)
   if type(fn) == "function" then
     return fn(...)
@@ -173,6 +263,42 @@ local function callMethodIfFunction(target, methodName, passSelf, ...)
   return callIfFunction(fn, ...)
 end
 
+local MAIN_UI_VISIBLE_DEFAULT = true
+
+function MultiBot.GetMainUIVisibleConfig()
+  local save = ensureSavedVariables()
+  if type(save["UIVisible"]) ~= "boolean" then
+    save["UIVisible"] = MAIN_UI_VISIBLE_DEFAULT
+  end
+
+  local profile = MultiBot.db and MultiBot.db.profile
+  if profile then
+    profile.ui = profile.ui or {}
+    if type(profile.ui.mainVisible) ~= "boolean" then
+      profile.ui.mainVisible = save["UIVisible"]
+    end
+
+    save["UIVisible"] = profile.ui.mainVisible
+    return profile.ui.mainVisible
+  end
+
+  return save["UIVisible"]
+end
+
+function MultiBot.SetMainUIVisibleConfig(value)
+  local visible = not not value
+  local save = ensureSavedVariables()
+  save["UIVisible"] = visible
+
+  local profile = MultiBot.db and MultiBot.db.profile
+  if profile then
+    profile.ui = profile.ui or {}
+    profile.ui.mainVisible = visible
+  end
+
+  return visible
+end
+
 function MultiBot.ToggleMainUIVisibility(desiredState)
   local targetState = desiredState
   if targetState == nil then
@@ -184,8 +310,7 @@ function MultiBot.ToggleMainUIVisibility(desiredState)
   applyMainVisibility(MultiBot.frames, targetState)
 
   MultiBot.state = targetState
-  local save = ensureSavedVariables()
-  save["UIVisible"] = targetState and true or false
+  MultiBot.SetMainUIVisibleConfig(targetState and true or false)
   return targetState
 end
 
@@ -307,7 +432,7 @@ end
 function MultiBot.PromoteFrame(f, strata)
   if not f or not f.SetFrameStrata then return end
   -- Add a default fallback kept at "DIALOG" to avoid regressions and it's safer
-  local level = strata or (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or "HIGH"
+  local level = strata or (MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()) or STRATA_LEVEL_DEFAULT
   f:SetFrameStrata(level)
   if f.SetToplevel then f:SetToplevel(true) end
   if f.HookScript then
@@ -316,7 +441,7 @@ function MultiBot.PromoteFrame(f, strata)
 end
 
 function MultiBot.ApplyGlobalStrata()
-  local level = (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or nil
+  local level = (MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()) or nil
   if not MultiBot.frames then return end
   --for name, frm in pairs(MultiBot.frames) do
     for _, frm in pairs(MultiBot.frames) do
@@ -476,7 +601,6 @@ MultiBot.frames = {}
 MultiBot.units = {}
 MultiBot.tips = {}
 MultiBot.tips.spec = MultiBot.tips.spec or {}
-MultiBotSave.Minimap = MultiBotSave.Minimap or {}
 
 MultiBot.auto = {}
 MultiBot.auto.sort = false
@@ -513,22 +637,45 @@ end
 -- ============================================================================
 -- FAVORITES (per-character)
 -- ============================================================================
-function MultiBot.EnsureFavorites()
+local function getFavoritesStore()
   local savedVars = ensureSavedVariables()
   savedVars.Favorites = savedVars.Favorites or {}
+
+  local profile = MultiBot.db and MultiBot.db.profile
+  if profile then
+    profile.favorites = profile.favorites or {}
+
+    for name, isFavorite in pairs(savedVars.Favorites) do
+      if profile.favorites[name] == nil then
+        profile.favorites[name] = isFavorite
+      end
+    end
+
+    savedVars.Favorites = profile.favorites
+    return profile.favorites
+  end
+
+  return savedVars.Favorites
+end
+
+function MultiBot.EnsureFavorites()
+  getFavoritesStore()
 end
 
 function MultiBot.IsFavorite(name)
-  return MultiBotSave and MultiBotSave.Favorites and MultiBotSave.Favorites[name] == true
+  local favorites = getFavoritesStore()
+  return favorites and favorites[name] == true
 end
 
 function MultiBot.UpdateFavoritesIndex()
+  local favorites = getFavoritesStore()
+
   MultiBot.index.favorites = {}
   MultiBot.index.classes.favorites = {}
-  for name, _ in pairs(MultiBotSave.Favorites or {}) do
+  for name, _ in pairs(favorites or {}) do
     table.insert(MultiBot.index.favorites, name)
     local cls = nil
-    -- 1) si le bouton d’unité existe déjà, on prend sa classe
+    -- 1) If the unit button already exists, use its class.
     local units = nil
     if MultiBot.frames and MultiBot.frames["MultiBar"]
        and MultiBot.frames["MultiBar"].frames
@@ -540,7 +687,7 @@ function MultiBot.UpdateFavoritesIndex()
     if buttons and buttons[name] and buttons[name].class then
       cls = buttons[name].class
     else
-      -- 2) sinon on essaie via l’index players (après parsing bot list)
+      -- 2) Otherwise fallback to players class index.
       local byClass = MultiBot.index and MultiBot.index.classes and MultiBot.index.classes.players
       if byClass then
         for c, arr in pairs(byClass) do
@@ -558,9 +705,9 @@ function MultiBot.UpdateFavoritesIndex()
 end
 
 function MultiBot.SetFavorite(name, isFav)
-  MultiBot.EnsureFavorites()
-  if isFav then MultiBotSave.Favorites[name] = true
-           else MultiBotSave.Favorites[name] = nil
+  local favorites = getFavoritesStore()
+  if isFav then favorites[name] = true
+           else favorites[name] = nil
   end
   MultiBot.UpdateFavoritesIndex()
 end

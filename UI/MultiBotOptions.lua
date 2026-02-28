@@ -104,8 +104,7 @@ function MultiBot.BuildOptionsPanel()
     title:SetText(MultiBot.tips.sliders.frametitle)
 
     -- SV minimap garanties côté options
-    MultiBotSave = MultiBotSave or {}
-    MultiBotSave.Minimap = MultiBotSave.Minimap or {}
+    local minimapConfig = MultiBot.GetMinimapConfig and MultiBot.GetMinimapConfig() or { hide = false }
 
     local strataDropDown = CreateFrame("Frame", "MultiBotStrataDropDown", self, "UIDropDownMenuTemplate")
     --strataDropDown:SetPoint("TOPLEFT", title, "BOTTOMLEFT", -14, -30)
@@ -120,12 +119,13 @@ function MultiBot.BuildOptionsPanel()
     chkMinimapHide.tooltipText = MultiBot.info.buttonoptionshidetooltip
 
       -- État initial
-      chkMinimapHide:SetChecked(MultiBotSave.Minimap.hide and true or false)
+      chkMinimapHide:SetChecked(minimapConfig.hide and true or false)
 
       chkMinimapHide:SetScript("OnClick", function(btn)
         local hide = btn:GetChecked() and true or false
-	  MultiBotSave.Minimap = MultiBotSave.Minimap or {}
-      MultiBotSave.Minimap.hide = hide
+      if MultiBot.SetMinimapConfig then
+        MultiBot.SetMinimapConfig("hide", hide)
+      end
       if MultiBot.Minimap_Refresh then
         MultiBot.Minimap_Refresh()
       else
@@ -154,12 +154,14 @@ function MultiBot.BuildOptionsPanel()
     -- Conserver la référence
     panel.chkMinimapHide = chkMinimapHide
 
-    local current = (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or "HIGH"
+    local current = (MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()) or "HIGH"
     local strataLevels = { "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "TOOLTIP" }
 
     local function OnClick(button)
         UIDropDownMenu_SetSelectedID(strataDropDown, button:GetID())
-        MultiBotGlobalSave["Strata.Level"] = strataLevels[button:GetID()]
+        if MultiBot.SetGlobalStrataLevel then
+          MultiBot.SetGlobalStrataLevel(strataLevels[button:GetID()])
+        end
         if MultiBot.ApplyGlobalStrata then
           MultiBot.ApplyGlobalStrata()
         end

@@ -16,9 +16,9 @@
   - Dispatcher architecture drives core/quick-bar/UI whisper flows.
   - Legacy `CreateFrame + RegisterEvent + SetScript` listener blocks have been removed from addon runtime paths.
 - **Milestone 6 (SavedVariables -> AceDB):** In progress.
-  - AceDB bootstrap is now initialized for config timers/throttle with legacy fallback.
+  - AceDB bootstrap is now initialized for config timers/throttle + main UI/main bar state + layout memory + favorites with legacy fallback.
 - **Milestone 7 (Minimap/options integration):** Partially completed.
-  - Current minimap/options are stable, but not yet AceDB/LibDBIcon-driven.
+  - Minimap hide/angle and global frame strata now use AceDB profile with legacy compatibility; broader options persistence remains.
 - **Milestone 8 (AceGUI UI refactor):** Not started.
 
 ---

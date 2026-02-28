@@ -1,6 +1,4 @@
--- Init des préférences minimap
-MultiBotSave = MultiBotSave or {}
-MultiBotSave.Minimap = MultiBotSave.Minimap or {}
+-- Minimap config is resolved through MultiBot.GetMinimapConfig().
 
 -- =====================================================================
 --  MINIMAP BUTTON (simple, sans LibDBIcon)
@@ -12,7 +10,8 @@ do
   local function deg2rad(d) return d * math.pi / 180 end
 
   local function UpdatePosition(self, angle)
-    angle = angle or (MultiBotSave.Minimap and MultiBotSave.Minimap.angle) or 220
+    local minimap = MultiBot.GetMinimapConfig and MultiBot.GetMinimapConfig() or nil
+    angle = angle or (minimap and minimap.angle) or 220
     if not Minimap or not Minimap:GetCenter() then return end
     local mx, my = Minimap:GetCenter()
     local sx, sy = GetScreenWidth(), GetScreenHeight()
@@ -32,8 +31,9 @@ do
     local dx, dy = cx - mx, cy - my
     local angle  = math.deg(math.atan2(dy, dx))
     if angle < 0 then angle = angle + 360 end
-    MultiBotSave.Minimap = MultiBotSave.Minimap or {}
-    MultiBotSave.Minimap.angle = angle
+    if MultiBot.SetMinimapConfig then
+      MultiBot.SetMinimapConfig("angle", angle)
+    end
     UpdatePosition(self, angle)
   end
 
@@ -43,8 +43,8 @@ do
       return _G[BTN_NAME]
     end
     -- Respecter l’éventuel “hide”
-    MultiBotSave.Minimap = MultiBotSave.Minimap or {}
-    if MultiBotSave.Minimap.hide then return nil end
+    local minimap = MultiBot.GetMinimapConfig and MultiBot.GetMinimapConfig() or nil
+    if minimap and minimap.hide then return nil end
 
     local b = CreateFrame("Button", BTN_NAME, Minimap)
     b:SetSize(31, 31)
@@ -121,12 +121,10 @@ do
   end
 
   function MultiBot.Minimap_Refresh()
-    -- Toujours disposer d’une table SV valide ici
-    MultiBotSave = MultiBotSave or {}
-    MultiBotSave.Minimap = MultiBotSave.Minimap or {}
+    local minimap = MultiBot.GetMinimapConfig and MultiBot.GetMinimapConfig() or nil
 
     local b = _G[BTN_NAME] or MultiBot.MinimapButton
-    if MultiBotSave.Minimap and MultiBotSave.Minimap.hide then
+    if minimap and minimap.hide then
       if b then b:Hide() end
       return
     end
