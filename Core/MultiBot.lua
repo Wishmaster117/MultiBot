@@ -354,33 +354,10 @@ function MultiBot.SetMainUIVisibleConfig(value)
   return visible
 end
 
-local QUICK_FRAME_POSITIONS_MIGRATION_VERSION = 1
-local HUNTER_PET_STANCE_MIGRATION_VERSION = 1
-
 local function getLegacyQuickFramePositionStore()
   MultiBotSaved = ensureValue(_G, "MultiBotSaved", {})
   MultiBotSaved.pos = MultiBotSaved.pos or {}
   return MultiBotSaved.pos
-end
-
-local function getUiMigrationStore()
-  local profile = MultiBot.db and MultiBot.db.profile
-  if not profile then
-    return nil
-  end
-
-  profile.migrations = profile.migrations or {}
-  return profile.migrations
-end
-
-local function shouldSyncLegacyUiState(versionKey, targetVersion)
-  local migrations = getUiMigrationStore()
-  if not migrations then
-    return true
-  end
-
-  local version = migrations[versionKey]
-  return type(version) ~= "number" or version < targetVersion
 end
 
 local function migrateLegacyQuickFramePositionsIfNeeded(store, legacyStore)
