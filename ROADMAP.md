@@ -4,7 +4,7 @@
 
 - **Milestone 1 (Baseline / safety net):** In progress.
   - Baseline behavior is mostly known through manual validation.
-  - A dedicated migration checklist file is still missing.
+  - Migration checklist is tracked in `docs/ace3-migration-checklist.md` and must be updated per PR.
 - **Milestone 2 (Add ACE3 libs):** Completed.
   - ACE3 libraries are loaded in `MultiBot.toc`.
 - **Milestone 3 (Initialization lifecycle):** Mostly completed, hardening pending.
@@ -12,9 +12,9 @@
   - Legacy frame-based startup/event code still exists in a few places.
 - **Milestone 4 (Command system):** Mostly completed.
   - Central alias registration exists and is used for core commands.
-- **Milestone 5 (Event bus migration):** In progress.
-  - Dispatcher architecture exists.
-  - Some legacy `CreateFrame + RegisterEvent + SetScript` blocks remain.
+- **Milestone 5 (Event bus migration):** Mostly completed.
+  - Dispatcher architecture exists and drives core/quick-bar flows.
+  - Remaining legacy listeners are now mostly localized to standalone UI modules.
 - **Milestone 6 (SavedVariables -> AceDB):** Not started.
 - **Milestone 7 (Minimap/options integration):** Partially completed.
   - Current minimap/options are stable, but not yet AceDB/LibDBIcon-driven.

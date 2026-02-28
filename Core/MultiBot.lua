@@ -20,6 +20,10 @@ ensureValue(MultiBot, "_initEventsRegistered", false)
 local CORE_EVENTS = {
   "WORLD_MAP_UPDATE",
   "PLAYER_ENTERING_WORLD",
+  "GROUP_ROSTER_UPDATE",
+  "PARTY_MEMBERS_CHANGED",
+  "RAID_ROSTER_UPDATE",
+  "UNIT_PET",
   "PLAYER_TARGET_CHANGED",
   "PLAYER_LOGOUT",
   "CHAT_MSG_WHISPER",
@@ -221,6 +225,7 @@ local LIFECYCLE_INIT_STEPS = {
   { name = "UpdateFavoritesIndex" },
   { name = "Config_Ensure" },
   { name = "ApplyTimersToRuntime" },
+  { name = "BuildGlyphClassTable" },
   { name = "BuildOptionsPanel" },
 }
 

@@ -694,6 +694,34 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		return
 	end
 
+	-- QUICK BARS: roster/pet refresh now routed through central dispatcher.
+	if (event == "PLAYER_ENTERING_WORLD"
+		or event == "GROUP_ROSTER_UPDATE"
+		or event == "PARTY_MEMBERS_CHANGED"
+		or event == "RAID_ROSTER_UPDATE"
+		or event == "UNIT_PET") then
+		local hunterQuick = MultiBot and MultiBot.HunterQuick
+		if hunterQuick then
+			if event ~= "UNIT_PET" and hunterQuick.Rebuild then
+				hunterQuick:Rebuild()
+			end
+			if hunterQuick.UpdateAllPetPresence then
+				hunterQuick:UpdateAllPetPresence()
+			end
+		end
+
+		if event ~= "UNIT_PET" then
+			local shamanQuick = MultiBot and MultiBot.ShamanQuick
+			if shamanQuick and shamanQuick.RefreshFromGroup then
+				shamanQuick:RefreshFromGroup()
+			end
+		end
+
+		if event ~= "PLAYER_ENTERING_WORLD" then
+			return
+		end
+	end
+
 	-- PLAYER:ENTERING --
 
 	if(event == "PLAYER_ENTERING_WORLD") then

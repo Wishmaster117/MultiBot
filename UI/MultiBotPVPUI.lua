@@ -431,10 +431,18 @@ local function MBPVP_IsNoTeamMessage(msg)
     return false
 end
 
--- Create frame on login and listen for whispers
+-- Listen for whispers; frame init is now lifecycle-safe and idempotent.
 local loader = CreateFrame("Frame")
-loader:RegisterEvent("PLAYER_LOGIN")
 loader:RegisterEvent("CHAT_MSG_WHISPER")
+
+local function EnsurePvpUiInitialized()
+    if not MultiBotPVPFrame then
+        MultiBotPVPFrame = CreateStyledFrame()
+    end
+
+    MBPVP_EnsureCache(MultiBotPVPFrame)
+    MBPVP_InitBotDropDown(MultiBotPVPFrame)
+end
 
 local function NormalizeSenderName(sender)
     if not sender or sender == "" then
@@ -470,48 +478,29 @@ local function ResetPvpUi(frame)
 end
 
 loader:SetScript("OnEvent", function(self, event, ...)
-    if event == "PLAYER_LOGIN" then
-        if not MultiBotPVPFrame then
-            MultiBotPVPFrame = CreateStyledFrame()
-        end
-
-        MBPVP_EnsureCache(MultiBotPVPFrame)
-        MBPVP_InitBotDropDown(MultiBotPVPFrame)
-
-        return
-    end
-
     if event == "CHAT_MSG_WHISPER" then
         local msg, sender = ...
-        if not MultiBotPVPFrame then return end
 
         if type(msg) ~= "string" then return end
 
-        -- Ouvrir la frame uniquement sur les réponses PvP du module playerbots
+        -- Only process PvP answers from playerbots module.
         if not msg:find("%[PVP%]") then
             return
         end
 
+        EnsurePvpUiInitialized()
+
         local simpleName = NormalizeSenderName(sender)
 
-        -- Si on reçoit un nouveau bot, on réinitialise l'affichage pour éviter de mélanger les données
+        -- Reset display when switching sender to avoid mixed data.
         if MultiBotPVPFrame._currentSender ~= simpleName then
             MultiBotPVPFrame._currentSender = simpleName
             ResetPvpUi(MultiBotPVPFrame)
         end
 
-        -- Ouvre la frame dès qu'un bot répond
+        -- Open frame as soon as a bot replies.
         if not MultiBotPVPFrame:IsShown() then
             MultiBotPVPFrame:Show()
-        end
-
-        if type(msg) ~= "string" then
-            return
-        end
-
-        -- Ne traiter que les réponses PvP du module playerbots
-        if not msg:find("%[PVP%]") then
-            return
         end
 
         MBPVP_InitBotDropDown(MultiBotPVPFrame)
@@ -572,6 +561,8 @@ loader:SetScript("OnEvent", function(self, event, ...)
         end
     end
 end)
+
+EnsurePvpUiInitialized()
 
 -- Expose helper to recreate if needed
 _G.MultiBotPVP_Ensure = CreateStyledFrame

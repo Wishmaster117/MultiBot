@@ -5458,7 +5458,7 @@ local function GetGlyphItemType(itemID)
 end
 
 -- 3) Build the itemID→classKey table once
-local function BuildGlyphClassTable()
+function MultiBot.BuildGlyphClassTable()
     if MultiBot.__glyphClass then return end
     if not MultiBot.data or not MultiBot.data.talent or not MultiBot.data.talent.glyphs then return end
     MultiBot.__glyphClass = {}
@@ -5471,16 +5471,6 @@ local function BuildGlyphClassTable()
         end
     end
 end
-
--- Preloading during ADDON_LOADED
-local initFrame = CreateFrame("Frame")
-initFrame:RegisterEvent("ADDON_LOADED")
-initFrame:SetScript("OnEvent", function(self, event, name)
-    if name == "MultiBot" then
-        BuildGlyphClassTable()
-        self:UnregisterEvent("ADDON_LOADED")
-    end
-end)
 
 -- Send true if a least a glyph socket are filled
 local function HasPendingGlyph()
@@ -5520,7 +5510,9 @@ local function CG_OnReceiveDrag(self)
     local typ, itemID = GetCursorInfo()
     if typ ~= "item" then return end
 
-    BuildGlyphClassTable()
+    if MultiBot.BuildGlyphClassTable then
+        MultiBot.BuildGlyphClassTable()
+    end
     local socket = self:GetParent()
 
 	-- Reject drop if required level is not reached
@@ -6604,37 +6596,11 @@ if not MultiBot.InitHunterQuick then
       ff:Show()
     end
 
-    function MBH:HasHunterInGroup()
-      local _, cls = UnitClass("player")
-      if cls == "HUNTER" then return true end
-      if GetNumRaidMembers and GetNumRaidMembers() > 0 then
-        for i = 1, GetNumRaidMembers() do
-          local _, c = UnitClass("raid"..i)
-          if c == "HUNTER" then return true end
-        end
-      else
-        if GetNumPartyMembers then
-          for i = 1, GetNumPartyMembers() do
-            local _, c = UnitClass("party"..i)
-            if c == "HUNTER" then return true end
-          end
-        end
-      end
-      return false
-    end
-
-    MBH.presenceFrame = CreateFrame("Frame")
-    MBH.presenceFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-    if MBH.presenceFrame.RegisterEvent then
-      MBH.presenceFrame:RegisterEvent("PARTY_MEMBERS_CHANGED")
-      MBH.presenceFrame:RegisterEvent("RAID_ROSTER_UPDATE")
-    end
-    MBH.presenceFrame:SetScript("OnEvent", function()
-      MBH:Rebuild()
-    end)
-
     if MultiBot.TimerAfter then
-      MultiBot.TimerAfter(0.5, function() MBH:Rebuild() end)
+      MultiBot.TimerAfter(0.5, function()
+        if MBH.Rebuild then MBH:Rebuild() end
+        if MBH.UpdateAllPetPresence then MBH:UpdateAllPetPresence() end
+      end)
     end
 
   end
@@ -6647,19 +6613,6 @@ if not MultiBot.InitHunterQuick then
     MultiBot.HunterQuick:RestorePosition()
   end
 
-  if not MultiBot.HunterQuick.ev then
-    local f = CreateFrame("Frame")
-    MultiBot.HunterQuick.ev = f
-    f:RegisterEvent("PLAYER_ENTERING_WORLD")
-    f:RegisterEvent("GROUP_ROSTER_UPDATE")
-    f:RegisterEvent("PARTY_MEMBERS_CHANGED")
-    f:RegisterEvent("RAID_ROSTER_UPDATE")
-    f:RegisterEvent("UNIT_PET")
-    f:SetScript("OnEvent", function()
-      local HQ = MultiBot and MultiBot.HunterQuick
-      if HQ and HQ.UpdateAllPetPresence then HQ:UpdateAllPetPresence() end
-    end)
-  end
 end
 -- End Hunter --
 
@@ -7086,41 +7039,15 @@ if MultiBot.ShamanQuick and MultiBot.ShamanQuick.RestorePosition then
   MultiBot.ShamanQuick:RestorePosition()
 end
 
-do
-  local f = CreateFrame("Frame")
-  f:RegisterEvent("PLAYER_ENTERING_WORLD")
-  f:RegisterEvent("GROUP_ROSTER_UPDATE")
-  f:RegisterEvent("PARTY_MEMBERS_CHANGED")
-  f:SetScript("OnEvent", function()
+if MultiBot.TimerAfter then
+  MultiBot.TimerAfter(0.5, function()
     if MultiBot and MultiBot.ShamanQuick and MultiBot.ShamanQuick.RefreshFromGroup then
       MultiBot.ShamanQuick:RefreshFromGroup()
     end
   end)
 end
 
--- Create/refresh the minimap button after SavedVariables are available.
-do
-  local function bootstrapMinimapButton()
-    if MultiBot and MultiBot.Minimap_Refresh then
-      MultiBot.Minimap_Refresh()
-    elseif MultiBot and MultiBot.Minimap_Create then
-      if not (MultiBotSave and MultiBotSave.Minimap and MultiBotSave.Minimap.hide) then
-        MultiBot.Minimap_Create()
-      end
-    end
-  end
-
-  if IsLoggedIn and IsLoggedIn() then
-    bootstrapMinimapButton()
-  else
-    local ev = CreateFrame("Frame")
-    ev:RegisterEvent("PLAYER_LOGIN")
-    ev:SetScript("OnEvent", function(self)
-      self:UnregisterEvent("PLAYER_LOGIN")
-      bootstrapMinimapButton()
-    end)
-  end
-end
+-- Minimap bootstrap is handled by OnEnable via LIFECYCLE_ENABLE_STEPS.
 
 -- FINISH --
 
