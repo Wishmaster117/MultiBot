@@ -12,10 +12,11 @@
   - Legacy frame-based startup/event code still exists in a few places.
 - **Milestone 4 (Command system):** Mostly completed.
   - Central alias registration exists and is used for core commands.
-- **Milestone 5 (Event bus migration):** Mostly completed.
-  - Dispatcher architecture exists and drives core/quick-bar flows.
-  - Remaining legacy listeners are now mostly localized to standalone UI modules.
-- **Milestone 6 (SavedVariables -> AceDB):** Not started.
+- **Milestone 5 (Event bus migration):** Completed.
+  - Dispatcher architecture drives core/quick-bar/UI whisper flows.
+  - Legacy `CreateFrame + RegisterEvent + SetScript` listener blocks have been removed from addon runtime paths.
+- **Milestone 6 (SavedVariables -> AceDB):** In progress.
+  - AceDB bootstrap is now initialized for config timers/throttle with legacy fallback.
 - **Milestone 7 (Minimap/options integration):** Partially completed.
   - Current minimap/options are stable, but not yet AceDB/LibDBIcon-driven.
 - **Milestone 8 (AceGUI UI refactor):** Not started.

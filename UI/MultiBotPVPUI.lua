@@ -431,10 +431,7 @@ local function MBPVP_IsNoTeamMessage(msg)
     return false
 end
 
--- Listen for whispers; frame init is now lifecycle-safe and idempotent.
-local loader = CreateFrame("Frame")
-loader:RegisterEvent("CHAT_MSG_WHISPER")
-
+-- Frame init is lifecycle-safe and idempotent.
 local function EnsurePvpUiInitialized()
     if not MultiBotPVPFrame then
         MultiBotPVPFrame = CreateStyledFrame()
@@ -442,17 +439,6 @@ local function EnsurePvpUiInitialized()
 
     MBPVP_EnsureCache(MultiBotPVPFrame)
     MBPVP_InitBotDropDown(MultiBotPVPFrame)
-end
-
-local function NormalizeSenderName(sender)
-    if not sender or sender == "" then
-        return ""
-    end
-
-    -- Strip realm if present ("Name-Realm") and any separators you already used elsewhere
-    local simpleName = sender:match("([^%-]+)") or sender
-    simpleName = simpleName:match("([^%.%-]+)") or simpleName
-    return simpleName
 end
 
 local function ResetPvpUi(frame)
@@ -477,90 +463,85 @@ local function ResetPvpUi(frame)
     end
 end
 
-loader:SetScript("OnEvent", function(self, event, ...)
-    if event == "CHAT_MSG_WHISPER" then
-        local msg, sender = ...
+function MultiBot.HandlePvpWhisper(msg, sender)
+    if type(msg) ~= "string" then return end
 
-        if type(msg) ~= "string" then return end
+    -- Only process PvP answers from playerbots module.
+    if not msg:find("%[PVP%]") then
+        return
+    end
 
-        -- Only process PvP answers from playerbots module.
-        if not msg:find("%[PVP%]") then
-            return
-        end
+    EnsurePvpUiInitialized()
 
-        EnsurePvpUiInitialized()
+    local simpleName = MBPVP_NormalizeSenderName(sender)
 
-        local simpleName = NormalizeSenderName(sender)
+    -- Reset display when switching sender to avoid mixed data.
+    if MultiBotPVPFrame._currentSender ~= simpleName then
+        MultiBotPVPFrame._currentSender = simpleName
+        ResetPvpUi(MultiBotPVPFrame)
+    end
 
-        -- Reset display when switching sender to avoid mixed data.
-        if MultiBotPVPFrame._currentSender ~= simpleName then
-            MultiBotPVPFrame._currentSender = simpleName
-            ResetPvpUi(MultiBotPVPFrame)
-        end
+    -- Open frame as soon as a bot replies.
+    if not MultiBotPVPFrame:IsShown() then
+        MultiBotPVPFrame:Show()
+    end
 
-        -- Open frame as soon as a bot replies.
-        if not MultiBotPVPFrame:IsShown() then
-            MultiBotPVPFrame:Show()
-        end
+    MBPVP_InitBotDropDown(MultiBotPVPFrame)
 
-        MBPVP_InitBotDropDown(MultiBotPVPFrame)
+    local botName = MBPVP_NormalizeSenderName(sender)
+    if botName == "" then
+        return
+    end
 
-        local botName = MBPVP_NormalizeSenderName(sender)
-        if botName == "" then
-            return
-        end
+    local st = MBPVP_GetState(MultiBotPVPFrame, botName)
+    st.lastUpdate = time()
 
-        local st = MBPVP_GetState(MultiBotPVPFrame, botName)
-        st.lastUpdate = time()
+    -- 1) Currency line: always has a "|" and two numbers in order.
+    if msg:find("|", 1, true) then
+        local arenaPoints, honorPoints = MBPVP_ExtractFirstTwoNumbers(msg)
+        if arenaPoints then st.arenaPoints = arenaPoints end
+        if honorPoints then st.honorPoints = honorPoints end
+    else
+        local bracket = msg:match("([235]v[235])")
 
-        -- 1) Ligne currency: toujours un "|" et 2 nombres dans l'ordre (arena_points puis honor_points)
-        if msg:find("|", 1, true) then
-            local arenaPoints, honorPoints = MBPVP_ExtractFirstTwoNumbers(msg)
-            if arenaPoints then st.arenaPoints = arenaPoints end
-            if honorPoints then st.honorPoints = honorPoints end
-        else
-            local bracket = msg:match("([235]v[235])")
+        -- 2) Global "no arena team" message (EN + localized DB).
+        if MBPVP_IsNoTeamMessage(msg) then
+            for _, mode in ipairs({ "2v2", "3v3", "5v5" }) do
+                st.teams[mode] = st.teams[mode] or {}
+                st.teams[mode].team = nil
+                st.teams[mode].rating = nil
+            end
+        -- 3) Per-bracket line: "[PVP] 5v5 : <TeamName> (localizedWord 1047)"
+        elseif bracket then
+            st.teams[bracket] = st.teams[bracket] or {}
 
-            -- 2) Message global "no arena team" (EN + locales DB)
-            if MBPVP_IsNoTeamMessage(msg) then
-                for _, mode in ipairs({ "2v2", "3v3", "5v5" }) do
-                    st.teams[mode] = st.teams[mode] or {}
-                    st.teams[mode].team = nil
-                    st.teams[mode].rating = nil
-                end
-            -- 3) Ligne par bracket: "[PVP] 5v5 : <TeamName> (motLocalisé 1047)"
-            elseif bracket then
-                st.teams[bracket] = st.teams[bracket] or {}
+            local team = msg:match("<([^>]+)>")
+            local rating = MBPVP_ExtractTeamRating(msg)
 
-                local team = msg:match("<([^>]+)>")
-                local rating = MBPVP_ExtractTeamRating(msg)
-
-                if team then
-                    st.teams[bracket].team = team
-                    st.teams[bracket].rating = rating
-                else
-                    -- Bracket présent mais pas de nom d'équipe => on réinitialise ce bracket
-                    st.teams[bracket].team = nil
-                    st.teams[bracket].rating = nil
-                end
+            if team then
+                st.teams[bracket].team = team
+                st.teams[bracket].rating = rating
+            else
+                -- Bracket present but no team name: reset this bracket.
+                st.teams[bracket].team = nil
+                st.teams[bracket].rating = nil
             end
         end
-
-        -- Ouvre la frame dès qu'un bot répond
-        if not MultiBotPVPFrame:IsShown() then
-            MultiBotPVPFrame:Show()
-        end
-
-        -- Sélection automatique:
-        -- - si aucune sélection en cours, on sélectionne le bot qui vient de répondre
-        -- - sinon, on n'écrase pas l'affichage (cache seulement), sauf si c'est le bot affiché
-        if not MultiBotPVPFrame._currentBot or MultiBotPVPFrame._currentBot == "" then
-            MBPVP_SetCurrentBot(MultiBotPVPFrame, botName)
-        elseif MultiBotPVPFrame._currentBot == botName then
-            MBPVP_ApplyStateToUi(MultiBotPVPFrame, botName)
-        end
     end
-end)
+
+    if not MultiBotPVPFrame:IsShown() then
+        MultiBotPVPFrame:Show()
+    end
+
+    -- Auto-select behavior:
+    -- - if no current selection, select the replying bot
+    -- - otherwise do not overwrite current display unless it is the same bot
+    if not MultiBotPVPFrame._currentBot or MultiBotPVPFrame._currentBot == "" then
+        MBPVP_SetCurrentBot(MultiBotPVPFrame, botName)
+    elseif MultiBotPVPFrame._currentBot == botName then
+        MBPVP_ApplyStateToUi(MultiBotPVPFrame, botName)
+    end
+end
 
 EnsurePvpUiInitialized()
 

@@ -312,43 +312,36 @@ local function short(name)
 end
 
 --------------------------------------------------------------
--- Listener des whispers  (capture build & liste des specs)
+-- Whisper handler routed by central event dispatcher.
 --------------------------------------------------------------
-local whisperFrame = CreateFrame("Frame")
-whisperFrame:RegisterEvent("CHAT_MSG_WHISPER")
-whisperFrame:SetScript("OnEvent", function(_, _, msg, sender)
+function MultiBot.HandleSpecWhisper(msg, sender)
+    if type(msg) ~= "string" or type(sender) ~= "string" then
+        return
+    end
 
     ----------------------------------------------------------------
-    -- 1) Nettoyage basique de la ligne reçue
+    -- 1) Basic cleanup for the incoming line
     ----------------------------------------------------------------
     local clean = msg
-        :gsub("|c%x%x%x%x%x%x%x%x", "")   -- codes couleur
+        :gsub("|c%x%x%x%x%x%x%x%x", "")
         :gsub("|r", "")
-        :gsub("\r?\n", " ")               -- retours à la ligne → espace
+        :gsub("\r?\n", " ")
 
-    --[[if not clean:match("^%s*My current talent spec is:")
-       and not (Spec.pending and short(sender) == short(Spec.pending.bot)) then
-        -- Pas un message talent, on ne fait RIEN ici!
-        return
-    end]]--
     ----------------------------------------------------------------
-    -- 2) « My current talent spec is: … (x/x/x) »
+    -- 2) "My current talent spec is: … (x/x/x)"
     ----------------------------------------------------------------
     if clean:match("^%s*My current talent spec is:") then
-        -- a) extrait ce qu’il y a entre parenthèses
         local inside = clean:match("%(([^%)]+)%)")
         if inside then
-            -- b) récupère les trois nombres, séparateur quelconque
             local a, b, c = inside:match("(%d+)[^%d]*(%d+)[^%d]*(%d+)")
             if a and b and c then
-                local key = short(sender):lower()        -- clé normalisée
+                local key = short(sender):lower()
                 Spec.currentBuild[key] = a.."-"..b.."-"..c
-                -- print("Captured build for", key, "=", Spec.currentBuild[key])
             end
         end
 
         ----------------------------------------------------------------
-        -- 2-bis) refresh en attente
+        -- 2-bis) pending refresh
         ----------------------------------------------------------------
         if Spec.pendingRefresh and short(sender) == short(Spec.pendingRefresh) then
             local unit = MultiBot.toUnit(sender)
@@ -370,16 +363,15 @@ whisperFrame:SetScript("OnEvent", function(_, _, msg, sender)
             Spec.pendingRefresh = nil
             Spec.busy           = false
         end
-        return           -- on stoppe là pour cette ligne
+        return
     end
 
     ----------------------------------------------------------------
-    -- 3) Liste des specs : “1) Feral pve (0-60-11)” … “Total …”
+    -- 3)  Spec list lines: "1) Feral pve (0-60-11)" … "Total …"
     ----------------------------------------------------------------
     local P = Spec.pending
     if not P or short(sender) ~= short(P.bot) then return end
 
-    -- a) ligne de spec
     local name  = clean:match("^%d+[%.%)]?%s*([^%(]+)%s*%(")
                 or clean:match("^([^%(]+)%s*%(")
     if name then
@@ -389,13 +381,12 @@ whisperFrame:SetScript("OnEvent", function(_, _, msg, sender)
         return
     end
 
-    -- b) ligne de fin (« Total X specs found »)
     local plain = clean:lower()
     if plain:find("total") and plain:find("spec") then
         Spec:BuildDropdown()
         Spec.pending = nil
     end
-end)
+end
 
 
 function Spec:HideDropdown()

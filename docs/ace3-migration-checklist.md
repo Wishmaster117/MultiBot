@@ -8,8 +8,8 @@ Checklist for each migration PR to verify no user-facing regressions.
 - [x] Lifecycle bridge exists (`OnInitialize` / `OnEnable`) with fallback behavior.
 - [x] Central command alias registration is in place.
 - [x] Central event/update dispatch entry points are in place.
-- [x] Full event registration convergence for `Core/MultiBotInit.lua` (quick-bar/minimap/glyph startup handlers now lifecycle/dispatcher-driven)
-- [ ] SavedVariables migration to AceDB.
+- [x] Full event registration convergence (core + UI whisper handlers now dispatcher/lifecycle-driven, no standalone event listener frames remain).
+- [ ] SavedVariables migration to AceDB (bootstrap in progress for timers/throttle).
 - [ ] Minimap/options persistence fully switched to AceDB.
 - [ ] Optional AceGUI screen-by-screen migration.
 

@@ -1081,6 +1081,15 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 		-- Glyphs start
 		local rawMsg, author = arg1, arg2
+
+		if MultiBot.HandleSpecWhisper then
+			MultiBot.HandleSpecWhisper(rawMsg, author)
+		end
+
+		if MultiBot.HandlePvpWhisper then
+			MultiBot.HandlePvpWhisper(rawMsg, author)
+		end
+
 		-- Add for QUESTS
 		local questsAllPredicate = MultiBot.ShouldHandleQuestsAllWhisper or shouldHandleQuestsAllWhisper
 		if questsAllPredicate and questsAllPredicate(rawMsg, author) then -- QuestsAll
