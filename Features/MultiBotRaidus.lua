@@ -133,10 +133,49 @@ MultiBot.raidus.addFrame("Group3", -350, 604, 28, 160, 240)
 MultiBot.raidus.addFrame("Group2", -515, 604, 28, 160, 240)
 MultiBot.raidus.addFrame("Group1", -680, 604, 28, 160, 240)
 MultiBot.raidus.addText("RaidScore", "RaidScore: 0", "BOTTOMLEFT", 376, 364, 12)
+
+local RAIDUS_GROUP_COUNT = 8
+local RAIDUS_GROUP_SLOT_COUNT = 5
+local RAIDUS_POOL_PAGE_SIZE = 11
+
 MultiBot.raidus.save = ""
 MultiBot.raidus.from = 1
-MultiBot.raidus.to = 11
+MultiBot.raidus.to = RAIDUS_POOL_PAGE_SIZE
 MultiBot.raidus.sortMode = "Score" -- "Score" | "Level" | "Class"
+
+local function getRaidusGroupSlotFrame(groupIndex, slotIndex)
+    local groupFrame = MultiBot.raidus.frames["Group" .. groupIndex]
+    local groupSlots = groupFrame and groupFrame.frames
+    if not groupSlots then
+        return nil
+    end
+
+    return groupSlots["Slot" .. slotIndex]
+end
+
+local function forEachRaidusGroupSlot(visitor)
+    for groupIndex = 1, RAIDUS_GROUP_COUNT do
+        for slotIndex = 1, RAIDUS_GROUP_SLOT_COUNT do
+            visitor(groupIndex, slotIndex, getRaidusGroupSlotFrame(groupIndex, slotIndex))
+        end
+    end
+end
+
+local function serializeRaidusLayoutFromFrames()
+    local serializedGroups = {}
+
+    for groupIndex = 1, RAIDUS_GROUP_COUNT do
+        local serializedNames = {}
+        for slotIndex = 1, RAIDUS_GROUP_SLOT_COUNT do
+            local slotFrame = getRaidusGroupSlotFrame(groupIndex, slotIndex)
+            local slotName = MultiBot.IF(slotFrame and slotFrame.name ~= nil, slotFrame.name, "-")
+            table.insert(serializedNames, slotName)
+        end
+        table.insert(serializedGroups, table.concat(serializedNames, ","))
+    end
+
+    return table.concat(serializedGroups, ";")
+end
 
 MultiBot.raidus.movButton("Move", -780, 790, 90, MultiBot.tips.move.raidus)
 
@@ -196,25 +235,34 @@ local function parseRaidusLayoutData(layoutData)
 
     local layout = {}
     local serializedGroups = MultiBot.doSplit(layoutData, ";")
-    for groupIndex = 1, 8 do
+    for groupIndex = 1, RAIDUS_GROUP_COUNT do
         layout[groupIndex] = MultiBot.doSplit(serializedGroups[groupIndex], ",")
     end
 
     return layout
 end
 
-local function findRaidusPoolFrameByName(poolFrames, name)
-    if not poolFrames or not name or name == "" or name == "-" then
-        return nil
+local function buildRaidusPoolFrameIndex(poolFrames)
+    local index = {}
+    if not poolFrames then
+        return index
     end
 
     for _, dragFrame in pairs(poolFrames) do
-        if dragFrame.name ~= nil and dragFrame.name == name then
-            return dragFrame
+        if dragFrame and dragFrame.name ~= nil and dragFrame.name ~= "" and dragFrame.name ~= "-" then
+            index[dragFrame.name] = dragFrame
         end
     end
 
-    return nil
+    return index
+end
+
+local function getRaidusPoolFrameByName(poolFrameIndex, name)
+    if not poolFrameIndex or not name or name == "" or name == "-" then
+        return nil
+    end
+
+    return poolFrameIndex[name]
 end
 
 local function swapRaidusFrameIntoSlot(dragFrame, dropFrame)
@@ -248,18 +296,16 @@ local function applyRaidusLayout(layout)
     if not poolFrames then
         return
     end
+    local poolFrameIndex = buildRaidusPoolFrameIndex(poolFrames)
 
-    for groupIndex = 1, 8 do
+    for groupIndex = 1, RAIDUS_GROUP_COUNT do
         local groupLayout = layout[groupIndex]
-        local groupFrame = frames and frames["Group" .. groupIndex]
-        local groupSlots = groupFrame and groupFrame.frames
-
-        if groupLayout and groupSlots then
-            for slotIndex = 1, 5 do
+        if groupLayout then
+            for slotIndex = 1, RAIDUS_GROUP_SLOT_COUNT do
                 local botName = groupLayout[slotIndex]
                 if botName and botName ~= "-" then
-                    local dropFrame = groupSlots["Slot" .. slotIndex]
-                    local dragFrame = findRaidusPoolFrameByName(poolFrames, botName)
+                    local dropFrame = getRaidusGroupSlotFrame(groupIndex, slotIndex)
+                    local dragFrame = getRaidusPoolFrameByName(poolFrameIndex, botName)
                     if dropFrame and dragFrame then
                         swapRaidusFrameIntoSlot(dragFrame, dropFrame)
                     end
@@ -420,107 +466,103 @@ end
 
 MultiBot.raidus.wowButton("Save", -597, 360, 80, 20, 12)
 .doLeft = function(pButton)
-	local tSave = ""
-
-	for i = 1, 8, 1 do
-		local tGroup = ""
-
-		for j = 1, 5, 1 do
-			local tSlot = MultiBot.raidus.frames["Group" .. i].frames["Slot" .. j]
-			local tName = MultiBot.IF(tSlot.name == nil, "-", tSlot.name)
-			tGroup = tGroup .. MultiBot.IF(tGroup == "", "", ",")
-			tGroup = tGroup .. tName
-		end
-
-		tSave = tSave .. MultiBot.IF(tSave == "", "", ";")
-		tSave = tSave .. tGroup
-	end
-
-	setRaidusLayoutValue(MultiBot.raidus.save, tSave)
+	setRaidusLayoutValue(MultiBot.raidus.save, serializeRaidusLayoutFromFrames())
 	SendChatMessage("I wrote it down.", "SAY")
+end
+
+local function collectRaidusApplyInviteList(raidByName, selfName)
+    local inviteList = {}
+    local selectedCount = 0
+    local selectedNames = {}
+
+    for unitName, unitButton in pairs(MultiBot.frames["MultiBar"].frames["Units"].buttons) do
+        if unitButton.state then
+            selectedCount = selectedCount + 1
+            selectedNames[unitName] = true
+        elseif unitName ~= selfName and raidByName[unitName] ~= nil then
+            table.insert(inviteList, unitName)
+        end
+    end
+
+    local fallbackInviteList = {}
+    local hasLayoutOnly = false
+    for raidName, _ in pairs(raidByName) do
+        if raidName ~= selfName then
+            if not selectedNames[raidName] then
+                hasLayoutOnly = true
+            end
+            if not MultiBot.isMember(raidName) then
+                table.insert(fallbackInviteList, raidName)
+            end
+        end
+    end
+
+    local usedLayoutFallback = false
+    if (selectedCount == 0 or hasLayoutOnly) and #fallbackInviteList > 0 then
+        inviteList = fallbackInviteList
+        usedLayoutFallback = true
+    end
+
+    return selectedCount, inviteList, usedLayoutFallback
+end
+
+local function removeRaidusMembersOutsideLayout(raidByMembers, raidByName, selfName)
+    for raidMemberName, _ in pairs(raidByMembers) do
+        if raidMemberName ~= selfName and raidByName[raidMemberName] == nil then
+            if MultiBot.isMember(raidMemberName) then
+                UninviteUnit(raidMemberName)
+            end
+            SendChatMessage(".playerbot bot remove " .. raidMemberName, "SAY")
+        end
+    end
+end
+
+local function announceRaidusApplySelection(selectedCount, inviteList, usedLayoutFallback)
+    local inviteCount = #inviteList
+    local selectedList = inviteCount > 0 and table.concat(inviteList, ", ") or ""
+
+    if usedLayoutFallback then
+        SendChatMessage("Raidus Apply: using layout list, selected=" .. selectedCount .. " toInvite=" .. inviteCount, "SAY")
+    else
+        SendChatMessage("Raidus Apply: selected=" .. selectedCount .. " toInvite=" .. inviteCount, "SAY")
+    end
+
+    if selectedList ~= "" then
+        SendChatMessage("Raidus Apply list: " .. selectedList, "SAY")
+    end
+end
+
+local function startRaidusApplyInviteOrSort(inviteCount)
+    if inviteCount > 0 then
+        SendChatMessage(MultiBot.info.starting, "SAY")
+        MultiBot.timer.invite.roster = "raidus"
+        MultiBot.timer.invite.needs = inviteCount
+        MultiBot.timer.invite.index = 1
+        MultiBot.auto.invite = true
+    else
+        MultiBot.timer.sort.elapsed = 0
+        MultiBot.timer.sort.index = 1
+        MultiBot.timer.sort.needs = 0
+        MultiBot.auto.sort = true
+    end
 end
 
 MultiBot.raidus.wowButton("Apply", -514, 360, 80, 20, 12)
 .doLeft = function(pButton)
-	local tRaidByIndex, tRaidByName = MultiBot.raidus.getRaidTarget()
-	if(tRaidByIndex == nil or tRaidByName == nil) then return end
+    local tRaidByIndex, tRaidByName = MultiBot.raidus.getRaidTarget()
+    if(tRaidByIndex == nil or tRaidByName == nil) then return end
 
-	local tSelf = UnitName("player")
-	MultiBot.index.raidus = {}
-    local tSelected = 0
-    local selectedNames = {}
+    local tSelf = UnitName("player")
+    local tSelected, inviteList, usedLayoutFallback = collectRaidusApplyInviteList(tRaidByName, tSelf)
 
-	for tName, tValue in pairs(MultiBot.frames["MultiBar"].frames["Units"].buttons) do
-		if(tValue.state) then
-            tSelected = tSelected + 1
-            selectedNames[tName] = true
-		else
-			if(tName ~= tSelf and tRaidByName[tName] ~= nil) then
-				table.insert(MultiBot.index.raidus, tName)
-			end
-		end
-	end
-
-	local tNeeds = #MultiBot.index.raidus
-
-    local usedLayoutFallback = false
-
-    local tFallback = {}
-    local hasLayoutOnly = false
-    for tName, _ in pairs(tRaidByName) do
-        if tName ~= tSelf then
-            if not selectedNames[tName] then
-                hasLayoutOnly = true
-            end
-            if not MultiBot.isMember(tName) then
-                table.insert(tFallback, tName)
-            end
-        end
-    end
-
-    if tSelected == 0 or hasLayoutOnly then
-        if #tFallback > 0 then
-            MultiBot.index.raidus = tFallback
-            tNeeds = #tFallback
-            usedLayoutFallback = true
-        end
-    end
+    MultiBot.index.raidus = inviteList
+    local tNeeds = #inviteList
 
     local tRaidByMembers = MultiBot.raidus.getRaidState()
-    for tName, _ in pairs(tRaidByMembers) do
-        if tName ~= tSelf and tRaidByName[tName] == nil then
-            if MultiBot.isMember(tName) then
-                UninviteUnit(tName)
-            end
-            SendChatMessage(".playerbot bot remove " .. tName, "SAY")
-        end
-    end
+    removeRaidusMembersOutsideLayout(tRaidByMembers, tRaidByName, tSelf)
 
-    local tList = ""
-    if tNeeds > 0 then
-        tList = table.concat(MultiBot.index.raidus, ", ")
-    end
-    if usedLayoutFallback then
-        SendChatMessage("Raidus Apply: using layout list, selected=" .. tSelected .. " toInvite=" .. tNeeds, "SAY")
-    else
-        SendChatMessage("Raidus Apply: selected=" .. tSelected .. " toInvite=" .. tNeeds, "SAY")
-    end
-    if tList ~= "" then
-        SendChatMessage("Raidus Apply list: " .. tList, "SAY")
-    end
-
-    if(tNeeds > 0) then
-		SendChatMessage(MultiBot.info.starting, "SAY")
-		MultiBot.timer.invite.roster = "raidus"
-		MultiBot.timer.invite.needs = tNeeds
-		MultiBot.timer.invite.index = 1
-		MultiBot.auto.invite = true
-	else
-		MultiBot.timer.sort.elapsed = 0
-		MultiBot.timer.sort.index = 1
-		MultiBot.timer.sort.needs = 0
-		MultiBot.auto.sort = true
-	end
+    announceRaidusApplySelection(tSelected, inviteList, usedLayoutFallback)
+    startRaidusApplyInviteOrSort(tNeeds)
 end
 
 -- Bouton Auto-balance raid :
@@ -547,46 +589,47 @@ btnAuto.doRight = function(pButton)
     MultiBot.raidus.autoBalanceRaid("role")
 end
 
+-- Update pool visibility according to current Raidus page window.
+local function refreshRaidusPoolPageVisibility()
+	local poolFrames = MultiBot.raidus.frames["Pool"].frames
+	for slotIndex = 1, MultiBot.raidus.slots, 1 do
+		local poolSlot = poolFrames["Slot" .. slotIndex]
+		if(slotIndex >= MultiBot.raidus.from and slotIndex <= MultiBot.raidus.to) then poolSlot:Show() else poolSlot:Hide() end
+	end
+end
+
 MultiBot.raidus.wowButton("<", -40, 360, 16, 20, 12)
 .doLeft = function(pButton)
-	for k,v in pairs(MultiBot.raidus.frames["Pool"].frames) do v:Hide() end
-
-	MultiBot.raidus.from = MultiBot.raidus.from - 11
-	MultiBot.raidus.to = MultiBot.raidus.to - 11
+	MultiBot.raidus.from = MultiBot.raidus.from - RAIDUS_POOL_PAGE_SIZE
+	MultiBot.raidus.to = MultiBot.raidus.to - RAIDUS_POOL_PAGE_SIZE
 
 	if(MultiBot.raidus.to < 1) then
-		MultiBot.raidus.from = MultiBot.raidus.slots - 10
+		MultiBot.raidus.from = MultiBot.raidus.slots - (RAIDUS_POOL_PAGE_SIZE - 1)
 		MultiBot.raidus.to = MultiBot.raidus.slots
 	end
 
-	for i = 1, MultiBot.raidus.slots, 1 do
-		local tSlot = MultiBot.raidus.frames["Pool"].frames["Slot" .. i]
-		if(i >= MultiBot.raidus.from and i <= MultiBot.raidus.to) then tSlot:Show() else tSlot:Hide() end
-	end
+	refreshRaidusPoolPageVisibility()
 end
 
 MultiBot.raidus.wowButton(">", -20, 360, 16, 20, 12)
 .doLeft = function(pButton)
-	MultiBot.raidus.from = MultiBot.raidus.from + 11
-	MultiBot.raidus.to = MultiBot.raidus.to + 11
+	MultiBot.raidus.from = MultiBot.raidus.from + RAIDUS_POOL_PAGE_SIZE
+	MultiBot.raidus.to = MultiBot.raidus.to + RAIDUS_POOL_PAGE_SIZE
 
 	if(MultiBot.raidus.from > MultiBot.raidus.slots) then
 		MultiBot.raidus.from = 1
-		MultiBot.raidus.to = 11
+		MultiBot.raidus.to = RAIDUS_POOL_PAGE_SIZE
 	end
 
-	for i = 1, MultiBot.raidus.slots, 1 do
-		local tSlot = MultiBot.raidus.frames["Pool"].frames["Slot" .. i]
-		if(i >= MultiBot.raidus.from and i <= MultiBot.raidus.to) then tSlot:Show() else tSlot:Hide() end
-	end
+	refreshRaidusPoolPageVisibility()
 end
 
 MultiBot.raidus.getDrop = function()
-	for i = 1, 8, 1 do
+	for i = 1, RAIDUS_GROUP_COUNT, 1 do
 		local tGroup = MultiBot.raidus.frames["Group" .. i]
 
 		if(MouseIsOver(tGroup)) then
-			for j = 1, 5, 1 do
+			for j = 1, RAIDUS_GROUP_SLOT_COUNT, 1 do
 				local tSlot = tGroup.frames["Slot" .. j]
 				if(MouseIsOver(tSlot)) then return tSlot end
 			end
@@ -647,21 +690,12 @@ MultiBot.raidus.setRaidus = function()
 	for k,v in pairs(tPool.frames) do v:Hide() end
 
 	local tBots = {}
-	local tBotsIndex = 1
 	-- Mode de tri actuel ("Score", "Level", "Class")
 	local sortMode = MultiBot.raidus.sortMode or "Score"
 
     for tName, tValue in pairs(getRaidusGlobalBotStore()) do
         local tBot = buildRaidusBotFromGlobalSave(tName, tValue)
         if tBot then
-
-            -- DEBUG
-            --[[local debugClass   = MultiBot.toClass(tBot.class or "?")
-            local debugTalents = tBot.talents or "?"
-            local debugRole    = tBot.role or "nil"
-            local debugName    = tBot.name or "?"
-            print(string.format("[MultiBot Raidus] %s -> role=%s (class=%s, talents=%s)",
-                debugName, debugRole, debugClass, debugTalents))--]]
 
             local tClass = MultiBot.toClass(tBot.class)
 			local classWeight = MultiBotRaidusClassWeight[tClass] or 0
@@ -683,22 +717,13 @@ MultiBot.raidus.setRaidus = function()
 				tBot.sort = botScore * 1000000 + botLevel * 1000 + classWeight
 			end
 
-			tBots[tBotsIndex] = tBot
-			tBotsIndex = tBotsIndex + 1
+			table.insert(tBots, tBot)
 		end
 	end
 
-	for tIndex = 1, #tBots do
-		local tMax = tIndex
-
-		for tSearch = tIndex + 1, #tBots do
-			if(tBots[tMax].sort < tBots[tSearch].sort) then
-				tMax = tSearch
-			end
-		end
-
-		tBots[tIndex], tBots[tMax] = tBots[tMax], tBots[tIndex]
-	end
+	table.sort(tBots, function(a, b)
+		return (a.sort or 0) > (b.sort or 0)
+	end)
 
 	for tIndex = 1, #tBots do
 		local tBot = tBots[tIndex]
@@ -711,11 +736,6 @@ MultiBot.raidus.setRaidus = function()
 		tFrame.slot = "Slot" .. tSlot
 		tFrame.name = tBot.name
 		tFrame.bot = tBot
-
-		--local tButton = tFrame.addButton("Icon", -128, 3, "Interface\\AddOns\\MultiBot\\Icons\\class_" .. string.lower(tFrame.class) .. ".blp", "")
-		--tButton.doRight = function(pButton)
-			--SendChatMessage(".playerbot bot add " .. pButton.parent.name, "SAY")
-		--end
 
         local tButton = tFrame.addButton("Icon", -128, 3, "Interface\\AddOns\\MultiBot\\Icons\\class_" .. string.lower(tFrame.class) .. ".blp", "")
 
@@ -825,23 +845,23 @@ MultiBot.raidus.setRaidus = function()
 		tFrame.addText("1", displayLevel .. " - " .. displayClass, "BOTTOMLEFT", 36, 18, 12)
 		tFrame.addText("2", displayScore .. " - " .. displaySpecial, "BOTTOMLEFT", 36, 6, 12)
 
-		if(tSlot > 11) then tFrame:Hide() else tFrame:Show() end
-		tY = MultiBot.IF(tSlot % 11 == 0, 426, tY - 40)
+		if(tSlot > RAIDUS_POOL_PAGE_SIZE) then tFrame:Hide() else tFrame:Show() end
+		tY = MultiBot.IF(tSlot % RAIDUS_POOL_PAGE_SIZE == 0, 426, tY - 40)
 		tSlot = tSlot + 1
 	end
 
-	for i = tSlot % 11, 11, 1 do
+	for i = tSlot % RAIDUS_POOL_PAGE_SIZE, RAIDUS_POOL_PAGE_SIZE, 1 do
 		local tFrame = tPool.addFrame("Slot" .. tSlot, 0, tY, 28, 160, 36)
 		tFrame.addTexture("Interface\\AddOns\\MultiBot\\Textures\\grey.blp")
 		tFrame.slot = "Slot" .. tSlot
-		if(tSlot > 11) then tFrame:Hide() else tFrame:Show() end
+		if(tSlot > RAIDUS_POOL_PAGE_SIZE) then tFrame:Hide() else tFrame:Show() end
 		tSlot = tSlot + 1
 		tY = tY - 40
 	end
 
 	MultiBot.raidus.slots = tSlot - 1
 
-	for i = 1, 8, 1 do
+	for i = 1, RAIDUS_GROUP_COUNT, 1 do
 		local tGroup = MultiBot.raidus.frames["Group" .. i]
 		local groupY = 182
 
@@ -849,7 +869,7 @@ MultiBot.raidus.setRaidus = function()
 		tGroup.group = "Group" .. i
 		tGroup.score = 0
 
-		for j = 1, 5, 1 do
+		for j = 1, RAIDUS_GROUP_SLOT_COUNT, 1 do
 			local tFrame = tGroup.addFrame("Slot" .. j, 0, groupY, 28, 160, 36)
 			tFrame.addTexture("Interface\\AddOns\\MultiBot\\Textures\\grey.blp")
 			tFrame.slot = "Slot" .. j
@@ -888,18 +908,16 @@ MultiBot.raidus.getRaidTarget = function()
 	local tUser = true
 	local tBots = true
 
-	for tGroup = 1, 8 do
-		for tSlot = 1, 5 do
-			local tName = MultiBot.raidus.frames["Group" .. tGroup].frames["Slot" .. tSlot].name
-			if(tName ~= nil) then
-				if(tName == tSelf) then tUser = false end
-				tRaidByIndex[tIndex] = { name = tName, group = tGroup }
-				tRaidByName[tName] = tGroup
-				tIndex = tIndex + 1
-				tBots = false
-			end
+	forEachRaidusGroupSlot(function(groupIndex, slotIndex, slotFrame)
+		local slotName = slotFrame and slotFrame.name
+		if(slotName ~= nil) then
+			if(slotName == tSelf) then tUser = false end
+			tRaidByIndex[tIndex] = { name = slotName, group = groupIndex }
+			tRaidByName[slotName] = groupIndex
+			tIndex = tIndex + 1
+			tBots = false
 		end
-	end
+	end)
 
 	if(tBots) then return SendChatMessage("There is no Bot in the Raid", "SAY") end
 	if(tUser) then return SendChatMessage("I must be in the Raid!", "SAY") end
@@ -1048,6 +1066,17 @@ local function MultiBotRaidusSortByScore(list)
     end)
 end
 
+local function createEmptyRaidusLayout()
+    local layout = {}
+    for groupIndex = 1, RAIDUS_GROUP_COUNT do
+        layout[groupIndex] = {}
+        for slotIndex = 1, RAIDUS_GROUP_SLOT_COUNT do
+            layout[groupIndex][slotIndex] = "-"
+        end
+    end
+    return layout
+end
+
 -- Auto balance :
 --   mode == "score" : simple équilibrage par score
 --   mode == "role"  : Tank / Heal / DPS
@@ -1065,19 +1094,13 @@ MultiBot.raidus.autoBalanceRaid = function(mode)
         return
     end
 
-    local groupsUsed = math.min(8, math.ceil(botCount / 5))
+    local groupsUsed = math.min(RAIDUS_GROUP_COUNT, math.ceil(botCount / RAIDUS_GROUP_SLOT_COUNT))
     if groupsUsed <= 0 then
         return
     end
 
     -- Matrice [groupe][slot] initialisée à "-"
-    local layout = {}
-    for g = 1, 8 do
-        layout[g] = {}
-        for s = 1, 5 do
-            layout[g][s] = "-"
-        end
-    end
+    local layout = createEmptyRaidusLayout()
 
     if mode == "role" then
         -- Mode avancé Tank / Heal / DPS
@@ -1109,7 +1132,7 @@ MultiBot.raidus.autoBalanceRaid = function(mode)
             local g = 1
             for _, bot in ipairs(list) do
                 local tries = 0
-                while tries < groupsUsed and nextFreeSlot[g] > 5 do
+                while tries < groupsUsed and nextFreeSlot[g] > RAIDUS_GROUP_SLOT_COUNT do
                     g = g + 1
                     if g > groupsUsed then
                         g = 1
@@ -1117,7 +1140,7 @@ MultiBot.raidus.autoBalanceRaid = function(mode)
                     tries = tries + 1
                 end
 
-                if nextFreeSlot[g] <= 5 then
+                if nextFreeSlot[g] <= RAIDUS_GROUP_SLOT_COUNT then
                     layout[g][nextFreeSlot[g]] = bot.name
                     nextFreeSlot[g] = nextFreeSlot[g] + 1
                 else
@@ -1143,7 +1166,7 @@ MultiBot.raidus.autoBalanceRaid = function(mode)
             local idx0 = index - 1
             local g = (idx0 % groupsUsed) + 1
             local s = math.floor(idx0 / groupsUsed) + 1
-            if s <= 5 then
+            if s <= RAIDUS_GROUP_SLOT_COUNT then
                 layout[g][s] = bot.name
             end
         end

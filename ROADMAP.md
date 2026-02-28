@@ -16,7 +16,7 @@
   - Dispatcher architecture drives core/quick-bar/UI whisper flows.
   - Legacy `CreateFrame + RegisterEvent + SetScript` listener blocks have been removed from addon runtime paths.
 - **Milestone 6 (SavedVariables -> AceDB):** In progress.
-  - AceDB bootstrap is now initialized for config timers/throttle + main UI/main bar state + layout memory + favorites with legacy fallback.
+  - AceDB bootstrap is now initialized for config timers/throttle + main UI/main bar state + layout memory + favorites + Raidus slot/layout persistence with legacy fallback; Raidus roster sorting path has been simplified (table.sort) and layout apply now uses indexed pool lookup to reduce repeated scans and Raidus group/slot sizing now uses shared constants and pool page navigation now uses a shared refresh helper/page-size constant, and auto-balance sizing/layout initialization now reuse shared constants/helpers, and Raidus slot traversal/serialization now use shared helpers and apply/invite flows now reuse shared helper routines without behavior change.
 - **Milestone 7 (Minimap/options integration):** Partially completed.
   - Minimap hide/angle and global frame strata now use AceDB profile with legacy compatibility; broader options persistence remains.
 - **Milestone 8 (AceGUI UI refactor):** Not started.
