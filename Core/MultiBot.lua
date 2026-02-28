@@ -79,11 +79,11 @@ local function collectNormalizedAliases(aliases)
   local normalizedAliases = {}
   local seen = {}
 
-  for i, alias in ipairs(aliases) do
+  for _, alias in ipairs(aliases) do
     local normalized = normalizeAlias(alias)
     if normalized and not seen[normalized] then
       seen[normalized] = true
-      normalizedAliases[#normalizedAliases + 1] = { index = i, value = normalized }
+      normalizedAliases[#normalizedAliases + 1] = normalized
     end
   end
 
@@ -109,10 +109,9 @@ local function buildCommandRegistrationContext(name, handler, aliases)
 end
 
 local function registerCommandAliasesFromContext(context)
-  for _, aliasInfo in ipairs(context.aliases) do
-    local normalized = aliasInfo.value
+  for aliasIndex, normalized in ipairs(context.aliases) do
     if not context.registeredAliases[normalized] then
-      context.registerAlias(aliasInfo.index, normalized)
+      context.registerAlias(aliasIndex, normalized)
       context.registeredAliases[normalized] = true
     end
   end
