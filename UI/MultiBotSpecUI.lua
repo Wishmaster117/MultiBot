@@ -312,6 +312,7 @@ local function short(name)
 end
 
 local SPEC_DROPDOWN_MIGRATION_VERSION = 1
+local SPEC_DROPDOWN_MIGRATION_KEY = "specDropdownPositionsVersion"
 
 local function getLegacySpecDropdownStore()
     MultiBotSave = MultiBotSave or {}
@@ -324,40 +325,18 @@ local function getSpecDropdownStore()
     if profile then
         profile.ui = profile.ui or {}
         profile.ui.specDropdownPositions = profile.ui.specDropdownPositions or {}
-        return profile.ui.specDropdownPositions, true
+        return profile.ui.specDropdownPositions
     end
 
-    return getLegacySpecDropdownStore(), false
-end
-
-local function getSpecDropdownMigrationStore()
-    local profile = MultiBot.db and MultiBot.db.profile
-    if not profile then
-        return nil
-    end
-
-    profile.migrations = profile.migrations or {}
-    return profile.migrations
-end
-
-local function shouldSyncLegacySpecDropdownPositions()
-    local migrationStore = getSpecDropdownMigrationStore()
-    if not migrationStore then
-        return true
-    end
-
-    local version = migrationStore.specDropdownPositionsVersion
-    return type(version) ~= "number" or version < SPEC_DROPDOWN_MIGRATION_VERSION
+    return getLegacySpecDropdownStore()
 end
 
 local function migrateLegacySpecDropdownPositionsIfNeeded(store)
-    local migrationStore = getSpecDropdownMigrationStore()
-    if not migrationStore then
+    if not MultiBot.GetProfileMigrationStore() then
         return
     end
 
-    local version = migrationStore.specDropdownPositionsVersion
-    if type(version) == "number" and version >= SPEC_DROPDOWN_MIGRATION_VERSION then
+    if not MultiBot.ShouldSyncLegacyState(SPEC_DROPDOWN_MIGRATION_KEY, SPEC_DROPDOWN_MIGRATION_VERSION) then
         return
     end
 
@@ -368,7 +347,7 @@ local function migrateLegacySpecDropdownPositionsIfNeeded(store)
         end
     end
 
-    migrationStore.specDropdownPositionsVersion = SPEC_DROPDOWN_MIGRATION_VERSION
+    MultiBot.MarkLegacyStateMigrated(SPEC_DROPDOWN_MIGRATION_KEY, SPEC_DROPDOWN_MIGRATION_VERSION)
 end
 
 local function getSpecDropdownPosition(charKey)
@@ -384,7 +363,8 @@ local function getSpecDropdownPosition(charKey)
         return pos
     end
 
-    if shouldSyncLegacySpecDropdownPositions() then
+    local shouldSyncLegacy = MultiBot.ShouldSyncLegacyState(SPEC_DROPDOWN_MIGRATION_KEY, SPEC_DROPDOWN_MIGRATION_VERSION)
+    if shouldSyncLegacy then
         local legacyStore = getLegacySpecDropdownStore()
         pos = legacyStore[charKey]
         if pos ~= nil then
@@ -404,7 +384,8 @@ local function setSpecDropdownPosition(charKey, position)
     migrateLegacySpecDropdownPositionsIfNeeded(store)
     store[charKey] = position
 
-    if shouldSyncLegacySpecDropdownPositions() then
+    local shouldSyncLegacy = MultiBot.ShouldSyncLegacyState(SPEC_DROPDOWN_MIGRATION_KEY, SPEC_DROPDOWN_MIGRATION_VERSION)
+    if shouldSyncLegacy then
         local legacyStore = getLegacySpecDropdownStore()
         legacyStore[charKey] = position
     end

@@ -72,6 +72,8 @@ MultiBot:SetScript("OnUpdate", function(_, pElapsed)
 
 local MAINBAR_MIGRATION_VERSION = 1
 local LAYOUT_MIGRATION_VERSION = 1
+local MAINBAR_MIGRATION_KEY = "mainBarStateVersion"
+local LAYOUT_MIGRATION_KEY = "layoutStateVersion"
 
 local MAINBAR_STATE_KEYS = {
 	"AttackButton",
@@ -105,31 +107,6 @@ local function getLegacyStateStore()
 	return MultiBotSave
 end
 
-local function getProfileMigrationStore()
-	local profile = MultiBot.db and MultiBot.db.profile
-	if not profile then return nil end
-	profile.migrations = profile.migrations or {}
-	return profile.migrations
-end
-
-local function shouldSyncLegacyState(versionKey, targetVersion)
-	local migrations = getProfileMigrationStore()
-	if not migrations then
-		return true
-	end
-
-	local version = migrations[versionKey]
-	return type(version) ~= "number" or version < targetVersion
-end
-
-local function markLegacyStateMigrated(versionKey, targetVersion)
-	local migrations = getProfileMigrationStore()
-	if not migrations then
-		return
-	end
-	migrations[versionKey] = targetVersion
-end
-
 local function getMainBarProfileStore()
 	local profile = MultiBot.db and MultiBot.db.profile
 	if not profile then return nil end
@@ -139,7 +116,7 @@ local function getMainBarProfileStore()
 end
 
 local function migrateLegacyMainBarStateIfNeeded(profileStore)
-	if not profileStore or not shouldSyncLegacyState("mainBarStateVersion", MAINBAR_MIGRATION_VERSION) then
+	if not profileStore or not MultiBot.ShouldSyncLegacyState(MAINBAR_MIGRATION_KEY, MAINBAR_MIGRATION_VERSION) then
 		return
 	end
 
@@ -150,7 +127,7 @@ local function migrateLegacyMainBarStateIfNeeded(profileStore)
 		end
 	end
 
-	markLegacyStateMigrated("mainBarStateVersion", MAINBAR_MIGRATION_VERSION)
+	MultiBot.MarkLegacyStateMigrated(MAINBAR_MIGRATION_KEY, MAINBAR_MIGRATION_VERSION)
 end
 
 local function getSavedMainBarValue(key)
@@ -161,7 +138,7 @@ local function getSavedMainBarValue(key)
 	end
 
 	local value = profileStore and profileStore[key] or legacy[key]
-	if profileStore and value == nil and shouldSyncLegacyState("mainBarStateVersion", MAINBAR_MIGRATION_VERSION) then
+	if profileStore and value == nil and MultiBot.ShouldSyncLegacyState(MAINBAR_MIGRATION_KEY, MAINBAR_MIGRATION_VERSION) then
 		value = legacy[key]
 		if value ~= nil then
 			profileStore[key] = value
@@ -177,7 +154,7 @@ local function setSavedMainBarValue(key, value)
 		profileStore[key] = value
 	end
 
-	if shouldSyncLegacyState("mainBarStateVersion", MAINBAR_MIGRATION_VERSION) then
+	if MultiBot.ShouldSyncLegacyState(MAINBAR_MIGRATION_KEY, MAINBAR_MIGRATION_VERSION) then
 		local legacy = getLegacyStateStore()
 		legacy[key] = value
 	end
@@ -193,7 +170,7 @@ local function getLayoutProfileStore()
 end
 
 local function migrateLegacyLayoutStateIfNeeded(profileStore)
-	if not profileStore or not shouldSyncLegacyState("layoutStateVersion", LAYOUT_MIGRATION_VERSION) then
+	if not profileStore or not MultiBot.ShouldSyncLegacyState(LAYOUT_MIGRATION_KEY, LAYOUT_MIGRATION_VERSION) then
 		return
 	end
 
@@ -204,7 +181,7 @@ local function migrateLegacyLayoutStateIfNeeded(profileStore)
 		end
 	end
 
-	markLegacyStateMigrated("layoutStateVersion", LAYOUT_MIGRATION_VERSION)
+	MultiBot.MarkLegacyStateMigrated(LAYOUT_MIGRATION_KEY, LAYOUT_MIGRATION_VERSION)
 end
 
 local function getSavedLayoutValue(key)
@@ -215,7 +192,7 @@ local function getSavedLayoutValue(key)
 	end
 
 	local value = profileStore and profileStore[key] or legacy[key]
-	if profileStore and value == nil and shouldSyncLegacyState("layoutStateVersion", LAYOUT_MIGRATION_VERSION) then
+	if profileStore and value == nil and MultiBot.ShouldSyncLegacyState(LAYOUT_MIGRATION_KEY, LAYOUT_MIGRATION_VERSION) then
 		value = legacy[key]
 		if value ~= nil then
 			profileStore[key] = value
@@ -231,7 +208,7 @@ local function setSavedLayoutValue(key, value)
 		profileStore[key] = value
 	end
 
-	if shouldSyncLegacyState("layoutStateVersion", LAYOUT_MIGRATION_VERSION) then
+	if MultiBot.ShouldSyncLegacyState(LAYOUT_MIGRATION_KEY, LAYOUT_MIGRATION_VERSION) then
 		local legacy = getLegacyStateStore()
 		legacy[key] = value
 	end

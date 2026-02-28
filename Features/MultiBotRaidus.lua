@@ -188,6 +188,7 @@ end
 
 local RAIDUS_LAYOUT_SLOT_MAX = 8
 local RAIDUS_LAYOUT_MIGRATION_VERSION = 1
+local RAIDUS_LAYOUT_MIGRATION_KEY = "raidusLayoutsVersion"
 
 -- Forward declaration keeps a local upvalue even if helpers are reordered later.
 local getRaidusLayoutKey
@@ -208,34 +209,12 @@ getRaidusLayoutKey = function(slot)
     return "Raidus" .. (slot or "")
 end
 
-local function getRaidusLayoutMigrationStore()
-    local profile = MultiBot.db and MultiBot.db.profile
-    if not profile then
-        return nil
-    end
-
-    profile.migrations = profile.migrations or {}
-    return profile.migrations
-end
-
-local function shouldSyncLegacyRaidusLayouts()
-    local migrationStore = getRaidusLayoutMigrationStore()
-    if not migrationStore then
-        return true
-    end
-
-    local version = migrationStore.raidusLayoutsVersion
-    return type(version) ~= "number" or version < RAIDUS_LAYOUT_MIGRATION_VERSION
-end
-
 local function migrateLegacyRaidusLayoutsIfNeeded(store)
-    local migrationStore = getRaidusLayoutMigrationStore()
-    if not migrationStore then
+    if not MultiBot.GetProfileMigrationStore() then
         return
     end
 
-    local version = migrationStore.raidusLayoutsVersion
-    if type(version) == "number" and version >= RAIDUS_LAYOUT_MIGRATION_VERSION then
+    if not MultiBot.ShouldSyncLegacyState(RAIDUS_LAYOUT_MIGRATION_KEY, RAIDUS_LAYOUT_MIGRATION_VERSION) then
         return
     end
 
@@ -248,7 +227,7 @@ local function migrateLegacyRaidusLayoutsIfNeeded(store)
         end
     end
 
-    migrationStore.raidusLayoutsVersion = RAIDUS_LAYOUT_MIGRATION_VERSION
+    MultiBot.MarkLegacyStateMigrated(RAIDUS_LAYOUT_MIGRATION_KEY, RAIDUS_LAYOUT_MIGRATION_VERSION)
 end
 
 local function getRaidusLayoutValue(slot)
@@ -261,7 +240,8 @@ local function getRaidusLayoutValue(slot)
         return value
     end
 
-    if shouldSyncLegacyRaidusLayouts() then
+    local shouldSyncLegacy = MultiBot.ShouldSyncLegacyState(RAIDUS_LAYOUT_MIGRATION_KEY, RAIDUS_LAYOUT_MIGRATION_VERSION)
+    if shouldSyncLegacy then
         MultiBotSave = MultiBotSave or {}
         value = MultiBotSave[key]
         if value ~= nil then
@@ -278,7 +258,8 @@ local function setRaidusLayoutValue(slot, value)
     migrateLegacyRaidusLayoutsIfNeeded(store)
     store[key] = value
 
-    if shouldSyncLegacyRaidusLayouts() then
+    local shouldSyncLegacy = MultiBot.ShouldSyncLegacyState(RAIDUS_LAYOUT_MIGRATION_KEY, RAIDUS_LAYOUT_MIGRATION_VERSION)
+    if shouldSyncLegacy then
         MultiBotSave = MultiBotSave or {}
         MultiBotSave[key] = value
     end
@@ -705,6 +686,9 @@ end
 -- SETTER --
 
 local function getRaidusGlobalBotStore()
+    if MultiBot.GetGlobalBotStore then
+        return MultiBot.GetGlobalBotStore()
+    end
     MultiBotGlobalSave = MultiBotGlobalSave or {}
     return MultiBotGlobalSave
 end

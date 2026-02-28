@@ -423,7 +423,10 @@ MultiBot.RaidPool = function(pUnit, oWho)
 	if(tLocalClass == nil) then tLocalClass = tClass end
 	if(tLocalRace == nil) then tLocalRace = tRace end
 
-	MultiBotGlobalSave[tName] =  tLocalRace .. "," .. tGender .. "," .. tSpecial .. "," .. tTabs[1] .. "/" .. tTabs[2] .. "/" .. tTabs[3] .. "," .. tLocalClass .. "," .. tLevel .. "," .. tScore
+	local botValue = tLocalRace .. "," .. tGender .. "," .. tSpecial .. "," .. tTabs[1] .. "/" .. tTabs[2] .. "/" .. tTabs[3] .. "," .. tLocalClass .. "," .. tLevel .. "," .. tScore
+	if MultiBot.SetGlobalBotEntry then
+		MultiBot.SetGlobalBotEntry(tName, botValue)
+	end
 end
 
 --[[MultiBot.ItemLevel = function(pUnit)

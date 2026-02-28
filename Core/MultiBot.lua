@@ -164,6 +164,8 @@ local STRATA_LEVEL_MIGRATION_VERSION = 1
 local MAIN_VISIBLE_MIGRATION_VERSION = 1
 local QUICK_FRAME_POSITIONS_MIGRATION_VERSION = 1
 local HUNTER_PET_STANCE_MIGRATION_VERSION = 1
+local FAVORITES_MIGRATION_VERSION = 1
+local GLOBAL_BOT_STORE_MIGRATION_VERSION = 1
 
 local function getUiMigrationStore()
   local profile = MultiBot.db and MultiBot.db.profile
@@ -192,6 +194,109 @@ local function markLegacyUiStateMigrated(versionKey, targetVersion)
   end
 
   migrations[versionKey] = targetVersion
+end
+
+function MultiBot.GetProfileMigrationStore()
+  return getUiMigrationStore()
+end
+
+function MultiBot.ShouldSyncLegacyState(versionKey, targetVersion)
+  return shouldSyncLegacyUiState(versionKey, targetVersion)
+end
+
+function MultiBot.MarkLegacyStateMigrated(versionKey, targetVersion)
+  markLegacyUiStateMigrated(versionKey, targetVersion)
+end
+
+local function getLegacyGlobalBotStore()
+  local _, globalSave = ensureSavedVariables()
+  return globalSave
+end
+
+local function isGlobalBotRosterEntry(value)
+  if type(value) ~= "string" then
+    return false
+  end
+  return value:match("^[^,]+,%[[^%]]+%],[^,]*,%d+/%d+/%d+,[^,]+,%-?%d+,%-?%d+$") ~= nil
+end
+
+local function sanitizeGlobalBotStore(store)
+  if type(store) ~= "table" then
+    return
+  end
+  for botName, value in pairs(store) do
+    if type(botName) ~= "string" or not isGlobalBotRosterEntry(value) then
+      store[botName] = nil
+    end
+  end
+end
+
+local function migrateLegacyGlobalBotStoreIfNeeded(store, legacyStore)
+  if not store or not shouldSyncLegacyUiState("globalBotStoreVersion", GLOBAL_BOT_STORE_MIGRATION_VERSION) then
+    return
+  end
+
+  for botName, value in pairs(legacyStore or {}) do
+    if store[botName] == nil and isGlobalBotRosterEntry(value) then
+      store[botName] = value
+    end
+  end
+
+  markLegacyUiStateMigrated("globalBotStoreVersion", GLOBAL_BOT_STORE_MIGRATION_VERSION)
+end
+
+function MultiBot.GetGlobalBotStore()
+  local profile = MultiBot.db and MultiBot.db.profile
+  local legacyStore = getLegacyGlobalBotStore()
+  if profile then
+    profile.bots = profile.bots or {}
+    migrateLegacyGlobalBotStoreIfNeeded(profile.bots, legacyStore)
+    sanitizeGlobalBotStore(profile.bots)
+    return profile.bots
+  end
+
+  return legacyStore
+end
+
+function MultiBot.SetGlobalBotEntry(name, value)
+  if type(name) ~= "string" or name == "" then
+    return nil
+  end
+  if not isGlobalBotRosterEntry(value) then
+    return nil
+  end
+
+  local store = MultiBot.GetGlobalBotStore and MultiBot.GetGlobalBotStore() or getLegacyGlobalBotStore()
+  store[name] = value
+
+  if shouldSyncLegacyUiState("globalBotStoreVersion", GLOBAL_BOT_STORE_MIGRATION_VERSION) then
+    local legacyStore = getLegacyGlobalBotStore()
+    legacyStore[name] = value
+  end
+
+  return value
+end
+
+function MultiBot.ClearGlobalBotStore()
+  local store = MultiBot.GetGlobalBotStore and MultiBot.GetGlobalBotStore() or getLegacyGlobalBotStore()
+  if wipe then
+    wipe(store)
+  else
+    for key in pairs(store) do
+      store[key] = nil
+    end
+  end
+
+  if shouldSyncLegacyUiState("globalBotStoreVersion", GLOBAL_BOT_STORE_MIGRATION_VERSION) then
+    local legacyStore = getLegacyGlobalBotStore()
+    if wipe then
+      wipe(legacyStore)
+    else
+      for key in pairs(legacyStore) do
+        legacyStore[key] = nil
+      end
+    end
+  end
 end
 
 local MINIMAP_CONFIG_DEFAULTS = {
@@ -989,13 +1094,17 @@ local function getFavoritesStore()
   if profile then
     profile.favorites = profile.favorites or {}
 
-    for name, isFavorite in pairs(savedVars.Favorites) do
-      if profile.favorites[name] == nil then
-        profile.favorites[name] = isFavorite
+    if shouldSyncLegacyUiState("favoritesVersion", FAVORITES_MIGRATION_VERSION) then
+      for name, isFavorite in pairs(savedVars.Favorites) do
+        if profile.favorites[name] == nil then
+          profile.favorites[name] = isFavorite
+        end
       end
+
+      savedVars.Favorites = profile.favorites
+      markLegacyUiStateMigrated("favoritesVersion", FAVORITES_MIGRATION_VERSION)
     end
 
-    savedVars.Favorites = profile.favorites
     return profile.favorites
   end
 

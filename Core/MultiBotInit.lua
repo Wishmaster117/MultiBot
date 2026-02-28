@@ -1936,16 +1936,35 @@ function MultiBot.BuildGmUI(tMultiBar)
       button1      = YES,
       button2      = NO,
       OnAccept     = function()
-          if wipe then wipe(MultiBotGlobalSave)
-          else          for k in pairs(MultiBotGlobalSave) do MultiBotGlobalSave[k]=nil end end
+          if MultiBot.ClearGlobalBotStore then
+            MultiBot.ClearGlobalBotStore()
+          elseif wipe then
+            wipe(MultiBotGlobalSave)
+          else
+            for k in pairs(MultiBotGlobalSave) do MultiBotGlobalSave[k]=nil end
+          end
           ReloadUI()
       end,
       timeout      = 0,   whileDead=true, hideOnEscape=true,
   }
 
+  function MultiBot.ShowDeleteSVPrompt()
+    if MultiBot.GM == false then
+      SendChatMessage(MultiBot.info.rights, "SAY")
+      return
+    end
+    StaticPopup_Show("MULTIBOT_DELETE_SV")
+  end
+
   tMasters.addButton("DelSV", 0, 204, "ability_golemstormbolt",
                      MultiBot.tips.game.delsv, "ActionButtonTemplate")
-    .doLeft = function() StaticPopup_Show("MULTIBOT_DELETE_SV") end
+    .doLeft = function() MultiBot.ShowDeleteSVPrompt() end
+
+  MultiBot.RegisterCommandAliases("MULTIBOTDELSV", function()
+    if MultiBot.ShowDeleteSVPrompt then
+      MultiBot.ShowDeleteSVPrompt()
+    end
+  end, { "mbdelsv" })
 end
 
 --  Calling the function
@@ -6603,9 +6622,6 @@ end
 -- SHAMAN TOTEMS QUICK BAR --
 if not MultiBot.InitShamanQuick then
   function MultiBot.InitShamanQuick()
-    -- SavedVariables
-    MultiBotSaved = MultiBotSaved or {}
-
     local MBS = MultiBot.ShamanQuick or {}
     MultiBot.ShamanQuick = MBS
 
