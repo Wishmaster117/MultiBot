@@ -5949,10 +5949,6 @@ end
 if not MultiBot.InitHunterQuick then
   function MultiBot.InitHunterQuick()
     local MBH = MultiBot.HunterQuick or {}
-	-- Espace de sauvegarde pour la position de la barre des chasseurs
-    MultiBotSaved = MultiBotSaved or {}
-    MultiBotSaved.pos = MultiBotSaved.pos or {}
-    MultiBotSaved.pos.HunterQuick = MultiBotSaved.pos.HunterQuick or {}
     MultiBot.HunterQuick = MBH
 
     MBH.frame = MultiBot.addFrame("HunterQuick", -820, 300, 36, 36*8, 36*4)
@@ -5965,19 +5961,14 @@ if not MultiBot.InitHunterQuick then
     MBH.frame:SetScript("OnDragStop", function(self)
       self:StopMovingOrSizing()
       local p, _, rp, x, y = self:GetPoint()
-      -- Assurer l'existence des SV
-      MultiBotSaved = MultiBotSaved or {}
-      MultiBotSaved.pos = MultiBotSaved.pos or {}
-      MultiBotSaved.pos.HunterQuick = MultiBotSaved.pos.HunterQuick or {}
-      -- Sauvegarde
-      MultiBotSaved.pos.HunterQuick.frame = { point = p, relPoint = rp, x = x, y = y }
+      if MultiBot.SetQuickFramePosition then
+        MultiBot.SetQuickFramePosition("HunterQuick", p, rp, x, y)
+      end
     end)
     MBH.frame:Hide()
 
     function MBH:RestorePosition()
-      local st = MultiBotSaved.pos
-                and MultiBotSaved.pos.HunterQuick
-                and MultiBotSaved.pos.HunterQuick.frame
+      local st = MultiBot.GetQuickFramePosition and MultiBot.GetQuickFramePosition("HunterQuick")
       if not st then return end
       local f = self.frame
       if not f then return end
@@ -6024,19 +6015,17 @@ if not MultiBot.InitHunterQuick then
       end
     end
 
-    function MBH:_ensureSaved()
-      MultiBotSaved = MultiBotSaved or {}
-      MultiBotSaved.hunterPetStance = MultiBotSaved.hunterPetStance or {}
-    end
-
 	function MBH:GetSavedStance(name)
-      self:_ensureSaved()
-      return MultiBotSaved.hunterPetStance[name]
+      if MultiBot.GetHunterPetStance then
+        return MultiBot.GetHunterPetStance(name)
+      end
+      return nil
     end
 
 	function MBH:SetSavedStance(name, stance)
-      self:_ensureSaved()
-      MultiBotSaved.hunterPetStance[name] = stance
+      if MultiBot.SetHunterPetStance then
+        MultiBot.SetHunterPetStance(name, stance)
+      end
     end
 
 	function MBH:ApplyStanceVisual(row, stance)
@@ -6071,12 +6060,9 @@ if not MultiBot.InitHunterQuick then
       row.mainBtn:SetScript("OnDragStop", function()
         self.frame:StopMovingOrSizing()
         local p, _, rp, x, y = self.frame:GetPoint()
-        -- Assurer l'existence des SV
-        MultiBotSaved = MultiBotSaved or {}
-        MultiBotSaved.pos = MultiBotSaved.pos or {}
-        MultiBotSaved.pos.HunterQuick = MultiBotSaved.pos.HunterQuick or {}
-        -- Sauvegarde
-        MultiBotSaved.pos.HunterQuick.frame = { point = p, relPoint = rp, x = x, y = y }
+        if MultiBot.SetQuickFramePosition then
+          MultiBot.SetQuickFramePosition("HunterQuick", p, rp, x, y)
+        end
       end)
 
       row.vmenu = row.addFrame("HunterQuickMenu_"..san, 0, 0, 36, 36, 36*3)
@@ -6619,17 +6605,6 @@ if not MultiBot.InitShamanQuick then
   function MultiBot.InitShamanQuick()
     -- SavedVariables
     MultiBotSaved = MultiBotSaved or {}
-    MultiBotSaved.pos = MultiBotSaved.pos or {}
-    MultiBotSaved.pos.ShamanQuick = MultiBotSaved.pos.ShamanQuick or {}
-	MultiBotSaved.shamanTotems = MultiBotSaved.shamanTotems or {}
-
-    -- Helper: garantit l'existence de MultiBotSaved.pos.ShamanQuick
-    local function _MB_GetOrCreateShamanPos()
-      MultiBotSaved = MultiBotSaved or {}
-      MultiBotSaved.pos = MultiBotSaved.pos or {}
-      MultiBotSaved.pos.ShamanQuick = MultiBotSaved.pos.ShamanQuick or {}
-      return MultiBotSaved.pos.ShamanQuick
-    end
 
     local MBS = MultiBot.ShamanQuick or {}
     MultiBot.ShamanQuick = MBS
@@ -6666,15 +6641,14 @@ if not MultiBot.InitShamanQuick then
       self:StopMovingOrSizing()
       local p, _, rp, x, y = self:GetPoint()
       local _sp = _MB_GetOrCreateShamanPos()
-      _sp.frame = { point=p, relPoint=rp, x=x, y=y }
+      if MultiBot.SetQuickFramePosition then
+        MultiBot.SetQuickFramePosition("ShamanQuick", p, rp, x, y)
+      end
     end)
 
     -- Restaure la position sauvegardée
     function MBS:RestorePosition()
-      -- Récupère la sous-table et la frame sauvegardée
-      local _sp = (_MB_GetOrCreateShamanPos and _MB_GetOrCreateShamanPos())
-                  or (MultiBotSaved and MultiBotSaved.pos and MultiBotSaved.pos.ShamanQuick)
-      local st = _sp and _sp.frame
+      local st = MultiBot.GetQuickFramePosition and MultiBot.GetQuickFramePosition("ShamanQuick")
       if not st then return end
       local f = self.frame
       if not f then return end
@@ -6784,9 +6758,9 @@ if not MultiBot.InitShamanQuick then
               _Grey(b, false)
               row._selectedBtn[ek] = nil
             end
-            -- Nettoie la sauvegarde pour cet élément
-            if MultiBotSaved and MultiBotSaved.shamanTotems and MultiBotSaved.shamanTotems[who] then
-              MultiBotSaved.shamanTotems[who][ek] = nil
+            -- Clear saved choice for this bot/element.
+            if MultiBot.ClearShamanTotemChoice then
+              MultiBot.ClearShamanTotemChoice(who, ek)
             end
           end
           -- Dégrise le bouton (retour visuel) + nettoie la sélection exclusive
@@ -6796,7 +6770,7 @@ if not MultiBot.InitShamanQuick then
           end
         else
           MultiBot.ActionToTarget("co +" .. spell .. ",?", who)
-          b._mb_on = tru
+          b._mb_on = true
           if row and ek then
             row._chosen = row._chosen or {}
             row._chosen[ek] = b._mb_icon
@@ -6812,11 +6786,10 @@ if not MultiBot.InitShamanQuick then
             if prev and prev ~= b then _Grey(prev, false) end
             _Grey(b, true)
             row._selectedBtn[ek] = b
-            -- Persiste pour ce bot + élément
-            MultiBotSaved.shamanTotems = MultiBotSaved.shamanTotems or {}
-            local perBot = MultiBotSaved.shamanTotems[who] or {}
-            perBot[ek] = b._mb_icon
-            MultiBotSaved.shamanTotems[who] = perBot
+            -- Persist selected totem for this bot/element.
+            if MultiBot.SetShamanTotemChoice then
+              MultiBot.SetShamanTotemChoice(who, ek, b._mb_icon)
+            end
           end
           -- Grise le bouton sélectionné
           local tex = b.icon or b.texture
@@ -6860,8 +6833,9 @@ if not MultiBot.InitShamanQuick then
       row.mainBtn:SetScript("OnDragStop" , function()
         self.frame:StopMovingOrSizing()
         local p, _, rp, x, y = self.frame:GetPoint()
-        local _sp = _MB_GetOrCreateShamanPos()
-        _sp.frame = { point=p, relPoint=rp, x=x, y=y }
+        if MultiBot.SetQuickFramePosition then
+          MultiBot.SetQuickFramePosition("ShamanQuick", p, rp, x, y)
+        end
       end)
 
       row.mainBtn.doLeft = function()
@@ -6962,7 +6936,7 @@ if not MultiBot.InitShamanQuick then
 
       -- Restauration depuis SavedVariables (icône et grisé exclusif)
       do
-        local saved = MultiBotSaved and MultiBotSaved.shamanTotems and MultiBotSaved.shamanTotems[sName]
+        local saved = MultiBot.GetShamanTotemsForBot and MultiBot.GetShamanTotemsForBot(sName)
         if saved then
           for ek, icon in pairs(saved) do
             if icon and row._elemBtns[ek] then

@@ -70,9 +70,64 @@ MultiBot:SetScript("OnUpdate", function(_, pElapsed)
 	MultiBot.DispatchUpdate(pElapsed)
  end)
 
+local MAINBAR_MIGRATION_VERSION = 1
+local LAYOUT_MIGRATION_VERSION = 1
+
+local MAINBAR_STATE_KEYS = {
+	"AttackButton",
+	"FleeButton",
+	"AutoRelease",
+	"NecroNet",
+	"Reward",
+	"Masters",
+	"Creator",
+	"Beast",
+	"Expand",
+	"RTSC",
+}
+
+local LAYOUT_STATE_KEYS = {
+	"MultiBarPoint",
+	"InventoryPoint",
+	"SpellbookPoint",
+	"ItemusPoint",
+	"IconosPoint",
+	"StatsPoint",
+	"RewardPoint",
+	"TalentPoint",
+	"MemoryGem1",
+	"MemoryGem2",
+	"MemoryGem3",
+}
+
 local function getLegacyStateStore()
 	MultiBotSave = MultiBotSave or {}
 	return MultiBotSave
+end
+
+local function getProfileMigrationStore()
+	local profile = MultiBot.db and MultiBot.db.profile
+	if not profile then return nil end
+	profile.migrations = profile.migrations or {}
+	return profile.migrations
+end
+
+local function shouldSyncLegacyState(versionKey, targetVersion)
+	local migrations = getProfileMigrationStore()
+	if not migrations then
+		return true
+	end
+
+	local version = migrations[versionKey]
+	return type(version) ~= "number" or version < targetVersion
+end
+
+local function markLegacyStateMigrated(versionKey, targetVersion)
+	local migrations = getProfileMigrationStore()
+	if not migrations then
+		return
+	end
+	migrations[versionKey] = targetVersion
 end
 
 local function getMainBarProfileStore()
@@ -83,27 +138,48 @@ local function getMainBarProfileStore()
 	return profile.ui.mainBar
 end
 
+local function migrateLegacyMainBarStateIfNeeded(profileStore)
+	if not profileStore or not shouldSyncLegacyState("mainBarStateVersion", MAINBAR_MIGRATION_VERSION) then
+		return
+	end
+
+	local legacy = getLegacyStateStore()
+	for _, key in ipairs(MAINBAR_STATE_KEYS) do
+		if profileStore[key] == nil and legacy[key] ~= nil then
+			profileStore[key] = legacy[key]
+		end
+	end
+
+	markLegacyStateMigrated("mainBarStateVersion", MAINBAR_MIGRATION_VERSION)
+end
+
 local function getSavedMainBarValue(key)
 	local legacy = getLegacyStateStore()
 	local profileStore = getMainBarProfileStore()
-	if profileStore and profileStore[key] == nil then
-		profileStore[key] = legacy[key]
+	if profileStore then
+		migrateLegacyMainBarStateIfNeeded(profileStore)
 	end
 
 	local value = profileStore and profileStore[key] or legacy[key]
-	if profileStore then
-		legacy[key] = value
+	if profileStore and value == nil and shouldSyncLegacyState("mainBarStateVersion", MAINBAR_MIGRATION_VERSION) then
+		value = legacy[key]
+		if value ~= nil then
+			profileStore[key] = value
+		end
 	end
 	return value
 end
 
 local function setSavedMainBarValue(key, value)
-	local legacy = getLegacyStateStore()
-	legacy[key] = value
-
 	local profileStore = getMainBarProfileStore()
 	if profileStore then
+		migrateLegacyMainBarStateIfNeeded(profileStore)
 		profileStore[key] = value
+	end
+
+	if shouldSyncLegacyState("mainBarStateVersion", MAINBAR_MIGRATION_VERSION) then
+		local legacy = getLegacyStateStore()
+		legacy[key] = value
 	end
 	return value
 end
@@ -116,27 +192,48 @@ local function getLayoutProfileStore()
 	return profile.ui.layout
 end
 
+local function migrateLegacyLayoutStateIfNeeded(profileStore)
+	if not profileStore or not shouldSyncLegacyState("layoutStateVersion", LAYOUT_MIGRATION_VERSION) then
+		return
+	end
+
+	local legacy = getLegacyStateStore()
+	for _, key in ipairs(LAYOUT_STATE_KEYS) do
+		if profileStore[key] == nil and legacy[key] ~= nil then
+			profileStore[key] = legacy[key]
+		end
+	end
+
+	markLegacyStateMigrated("layoutStateVersion", LAYOUT_MIGRATION_VERSION)
+end
+
 local function getSavedLayoutValue(key)
 	local legacy = getLegacyStateStore()
 	local profileStore = getLayoutProfileStore()
-	if profileStore and profileStore[key] == nil then
-		profileStore[key] = legacy[key]
+	if profileStore then
+		migrateLegacyLayoutStateIfNeeded(profileStore)
 	end
 
 	local value = profileStore and profileStore[key] or legacy[key]
-	if profileStore then
-		legacy[key] = value
+	if profileStore and value == nil and shouldSyncLegacyState("layoutStateVersion", LAYOUT_MIGRATION_VERSION) then
+		value = legacy[key]
+		if value ~= nil then
+			profileStore[key] = value
+		end
 	end
 	return value
 end
 
 local function setSavedLayoutValue(key, value)
-	local legacy = getLegacyStateStore()
-	legacy[key] = value
-
 	local profileStore = getLayoutProfileStore()
 	if profileStore then
+		migrateLegacyLayoutStateIfNeeded(profileStore)
 		profileStore[key] = value
+	end
+
+	if shouldSyncLegacyState("layoutStateVersion", LAYOUT_MIGRATION_VERSION) then
+		local legacy = getLegacyStateStore()
+		legacy[key] = value
 	end
 	return value
 end

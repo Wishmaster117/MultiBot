@@ -9,8 +9,8 @@ Checklist for each migration PR to verify no user-facing regressions.
 - [x] Central command alias registration is in place.
 - [x] Central event/update dispatch entry points are in place.
 - [x] Full event registration convergence (core + UI whisper handlers now dispatcher/lifecycle-driven, no standalone event listener frames remain).
-- [ ] SavedVariables migration to AceDB (bootstrap in progress for timers/throttle + main UI/main bar state + layout memory + favorites + Raidus slots/layout apply path + roster sort refactor cleanup + indexed layout apply lookup + shared group/slot constants cleanup + pool page navigation helper cleanup + auto-balance constants/helper cleanup + shared slot traversal/serialization helper cleanup + apply-flow helper cleanup + raid sort/swap context helper cleanup).
-- [ ] Minimap/options persistence fully switched to AceDB (minimap hide/angle + frame strata migrated, remaining options pending).
+- [ ] SavedVariables migration to AceDB (bootstrap in progress for timers/throttle + main UI/main bar state + layout memory + favorites + one-way versioned main-bar/layout state cutover + Raidus slots/layout apply path + one-way versioned Raidus legacy cutover + roster sort refactor cleanup + indexed layout apply lookup + shared group/slot constants cleanup + pool page navigation helper cleanup + auto-balance constants/helper cleanup + shared slot traversal/serialization helper cleanup + apply-flow helper cleanup + raid sort/swap context helper cleanup).
+- [ ] Minimap/options persistence fully switched to AceDB (minimap hide/angle + frame strata + spec dropdown position + Hunter/Shaman quick-bar positions + Hunter pet stance state + Shaman totem choice state migrated with one-way legacy cutover, remaining options pending).
 - [ ] Optional AceGUI screen-by-screen migration.
 
 ---

@@ -122,8 +122,10 @@ end
 
 -- Read
 function MultiBot.GetTimer(name)
-  if MultiBotDB and MultiBotDB.timers then
-    return MultiBotDB.timers[name]
+  local config = getConfigStore()
+  local value = config and config.timers and config.timers[name]
+  if type(value) == "number" and value > 0 then
+    return value
   end
   return DEFAULTS[name]
 end

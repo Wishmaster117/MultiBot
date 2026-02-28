@@ -186,6 +186,12 @@ MultiBot.raidus.wowButton("x", -13, 841, 16, 20, 12)
 end
 
 
+local RAIDUS_LAYOUT_SLOT_MAX = 8
+local RAIDUS_LAYOUT_MIGRATION_VERSION = 1
+
+-- Forward declaration keeps a local upvalue even if helpers are reordered later.
+local getRaidusLayoutKey
+
 local function getRaidusLayoutStore()
     local profile = MultiBot.db and MultiBot.db.profile
     if profile then
@@ -198,23 +204,69 @@ local function getRaidusLayoutStore()
     return MultiBotSave
 end
 
-local function getRaidusLayoutKey(slot)
+getRaidusLayoutKey = function(slot)
     return "Raidus" .. (slot or "")
+end
+
+local function getRaidusLayoutMigrationStore()
+    local profile = MultiBot.db and MultiBot.db.profile
+    if not profile then
+        return nil
+    end
+
+    profile.migrations = profile.migrations or {}
+    return profile.migrations
+end
+
+local function shouldSyncLegacyRaidusLayouts()
+    local migrationStore = getRaidusLayoutMigrationStore()
+    if not migrationStore then
+        return true
+    end
+
+    local version = migrationStore.raidusLayoutsVersion
+    return type(version) ~= "number" or version < RAIDUS_LAYOUT_MIGRATION_VERSION
+end
+
+local function migrateLegacyRaidusLayoutsIfNeeded(store)
+    local migrationStore = getRaidusLayoutMigrationStore()
+    if not migrationStore then
+        return
+    end
+
+    local version = migrationStore.raidusLayoutsVersion
+    if type(version) == "number" and version >= RAIDUS_LAYOUT_MIGRATION_VERSION then
+        return
+    end
+
+    MultiBotSave = MultiBotSave or {}
+    for slotIndex = 1, RAIDUS_LAYOUT_SLOT_MAX do
+        local slot = (slotIndex == 1) and nil or slotIndex
+        local key = getRaidusLayoutKey(slot)
+        if store[key] == nil and MultiBotSave[key] ~= nil then
+            store[key] = MultiBotSave[key]
+        end
+    end
+
+    migrationStore.raidusLayoutsVersion = RAIDUS_LAYOUT_MIGRATION_VERSION
 end
 
 local function getRaidusLayoutValue(slot)
     local key = getRaidusLayoutKey(slot)
     local store = getRaidusLayoutStore()
-    local value = store[key]
+    migrateLegacyRaidusLayoutsIfNeeded(store)
 
-    MultiBotSave = MultiBotSave or {}
-    if value == nil then
+    local value = store[key]
+    if value ~= nil then
+        return value
+    end
+
+    if shouldSyncLegacyRaidusLayouts() then
+        MultiBotSave = MultiBotSave or {}
         value = MultiBotSave[key]
         if value ~= nil then
             store[key] = value
         end
-    elseif MultiBotSave[key] ~= value then
-        MultiBotSave[key] = value
     end
 
     return value
@@ -223,10 +275,13 @@ end
 local function setRaidusLayoutValue(slot, value)
     local key = getRaidusLayoutKey(slot)
     local store = getRaidusLayoutStore()
+    migrateLegacyRaidusLayoutsIfNeeded(store)
     store[key] = value
 
-    MultiBotSave = MultiBotSave or {}
-    MultiBotSave[key] = value
+    if shouldSyncLegacyRaidusLayouts() then
+        MultiBotSave = MultiBotSave or {}
+        MultiBotSave[key] = value
+    end
 end
 
 local function parseRaidusLayoutData(layoutData)

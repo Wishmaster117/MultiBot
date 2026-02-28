@@ -311,6 +311,105 @@ local function short(name)
     return dash and name:sub(1, dash-1) or name
 end
 
+local SPEC_DROPDOWN_MIGRATION_VERSION = 1
+
+local function getLegacySpecDropdownStore()
+    MultiBotSave = MultiBotSave or {}
+    MultiBotSave.SpecDropdown = MultiBotSave.SpecDropdown or {}
+    return MultiBotSave.SpecDropdown
+end
+
+local function getSpecDropdownStore()
+    local profile = MultiBot.db and MultiBot.db.profile
+    if profile then
+        profile.ui = profile.ui or {}
+        profile.ui.specDropdownPositions = profile.ui.specDropdownPositions or {}
+        return profile.ui.specDropdownPositions, true
+    end
+
+    return getLegacySpecDropdownStore(), false
+end
+
+local function getSpecDropdownMigrationStore()
+    local profile = MultiBot.db and MultiBot.db.profile
+    if not profile then
+        return nil
+    end
+
+    profile.migrations = profile.migrations or {}
+    return profile.migrations
+end
+
+local function shouldSyncLegacySpecDropdownPositions()
+    local migrationStore = getSpecDropdownMigrationStore()
+    if not migrationStore then
+        return true
+    end
+
+    local version = migrationStore.specDropdownPositionsVersion
+    return type(version) ~= "number" or version < SPEC_DROPDOWN_MIGRATION_VERSION
+end
+
+local function migrateLegacySpecDropdownPositionsIfNeeded(store)
+    local migrationStore = getSpecDropdownMigrationStore()
+    if not migrationStore then
+        return
+    end
+
+    local version = migrationStore.specDropdownPositionsVersion
+    if type(version) == "number" and version >= SPEC_DROPDOWN_MIGRATION_VERSION then
+        return
+    end
+
+    local legacyStore = getLegacySpecDropdownStore()
+    for charKey, pos in pairs(legacyStore) do
+        if store[charKey] == nil and pos ~= nil then
+            store[charKey] = pos
+        end
+    end
+
+    migrationStore.specDropdownPositionsVersion = SPEC_DROPDOWN_MIGRATION_VERSION
+end
+
+local function getSpecDropdownPosition(charKey)
+    if type(charKey) ~= "string" or charKey == "" then
+        return nil
+    end
+
+    local store = getSpecDropdownStore()
+    migrateLegacySpecDropdownPositionsIfNeeded(store)
+
+    local pos = store[charKey]
+    if pos ~= nil then
+        return pos
+    end
+
+    if shouldSyncLegacySpecDropdownPositions() then
+        local legacyStore = getLegacySpecDropdownStore()
+        pos = legacyStore[charKey]
+        if pos ~= nil then
+            store[charKey] = pos
+        end
+    end
+
+    return pos
+end
+
+local function setSpecDropdownPosition(charKey, position)
+    if type(charKey) ~= "string" or charKey == "" or type(position) ~= "table" then
+        return
+    end
+
+    local store = getSpecDropdownStore()
+    migrateLegacySpecDropdownPositionsIfNeeded(store)
+    store[charKey] = position
+
+    if shouldSyncLegacySpecDropdownPositions() then
+        local legacyStore = getLegacySpecDropdownStore()
+        legacyStore[charKey] = position
+    end
+end
+
 --------------------------------------------------------------
 -- Whisper handler routed by central event dispatcher.
 --------------------------------------------------------------
@@ -437,10 +536,8 @@ local current = Spec.currentBuild[botKey]
                 local cx, cy = frame:GetCenter()
                 local ux, uy = UIParent:GetCenter()
                 local dx, dy = (cx - ux), (cy - uy)
-                MultiBotSave = MultiBotSave or {}
-                MultiBotSave.SpecDropdown = MultiBotSave.SpecDropdown or {}
                 local charKey = (UnitName("player") or "Player") .. "-" .. (GetRealmName() or "")
-                MultiBotSave.SpecDropdown[charKey] = { point = "CENTER", x = dx, y = dy }
+                setSpecDropdownPosition(charKey, { point = "CENTER", x = dx, y = dy })
             end)
             df._mb_movable_init = true
         end
@@ -450,12 +547,10 @@ local current = Spec.currentBuild[botKey]
     -- Restaure la position mémorisée (par personnage) si elle existe
     local restored = false
     local charKey = (UnitName("player") or "Player") .. "-" .. (GetRealmName() or "")
-    if MultiBotSave and MultiBotSave.SpecDropdown and MultiBotSave.SpecDropdown[charKey] then
-        local pos = MultiBotSave.SpecDropdown[charKey]
-        if type(pos) == "table" and pos.point then
-            df:SetPoint(pos.point, UIParent, pos.point, pos.x or 0, pos.y or 0)
-            restored = true
-        end
+    local pos = getSpecDropdownPosition(charKey)
+    if type(pos) == "table" and pos.point then
+        df:SetPoint(pos.point, UIParent, pos.point, pos.x or 0, pos.y or 0)
+        restored = true
     end
     if not restored then
         df:SetPoint("TOP", p.anchor, "BOTTOM", 0, -4)
