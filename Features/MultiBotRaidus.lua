@@ -185,6 +185,7 @@ MultiBot.raidus.wowButton("x", -13, 841, 16, 20, 12)
 	tButton.doLeft(tButton)
 end
 
+
 local function getRaidusLayoutStore()
     local profile = MultiBot.db and MultiBot.db.profile
     if profile then
@@ -300,6 +301,7 @@ local function applyRaidusLayout(layout)
 
     for groupIndex = 1, RAIDUS_GROUP_COUNT do
         local groupLayout = layout[groupIndex]
+
         if groupLayout then
             for slotIndex = 1, RAIDUS_GROUP_SLOT_COUNT do
                 local botName = groupLayout[slotIndex]
@@ -565,6 +567,7 @@ MultiBot.raidus.wowButton("Apply", -514, 360, 80, 20, 12)
     startRaidusApplyInviteOrSort(tNeeds)
 end
 
+
 -- Bouton Auto-balance raid :
 -- Clic gauche  : équilibrage simple par score
 -- Clic droit   : équilibrage avancé Tank / Heal / DPS
@@ -696,7 +699,6 @@ MultiBot.raidus.setRaidus = function()
     for tName, tValue in pairs(getRaidusGlobalBotStore()) do
         local tBot = buildRaidusBotFromGlobalSave(tName, tValue)
         if tBot then
-
             local tClass = MultiBot.toClass(tBot.class)
 			local classWeight = MultiBotRaidusClassWeight[tClass] or 0
 			local botLevel   = tBot.level or 0
@@ -880,23 +882,24 @@ end
 
 -- GETTER --
 
-MultiBot.raidus.getRaidState = function()
-	local tRaidByMembers = {}
-	local tRaidByGroups = {}
+local function buildRaidusCurrentRosterState()
+	local raidByMembers = {}
+	local raidByGroups = {}
+	local raidCount = GetNumRaidMembers() or 0
 
-	local tRaid = GetNumRaidMembers()
-	local tGroup = GetNumPartyMembers()
-	local tAmount = MultiBot.IF(tRaid > tGroup, tRaid, tGroup)
-
-	for tIndex = 1, tAmount do
-		local xName, xRank, xGroup = GetRaidRosterInfo(tIndex)
-		if(xName and xRank and xGroup) then
-			tRaidByMembers[xName] = { index = tIndex, group = xGroup }
-			tRaidByGroups[xGroup] = (tRaidByGroups[xGroup] or 0) + 1
+	for raidIndex = 1, raidCount do
+		local raidName, _, raidGroup = GetRaidRosterInfo(raidIndex)
+		if raidName and raidGroup then
+			raidByMembers[raidName] = { index = raidIndex, group = raidGroup }
+			raidByGroups[raidGroup] = (raidByGroups[raidGroup] or 0) + 1
 		end
 	end
 
-	return tRaidByMembers, tRaidByGroups
+	return raidByMembers, raidByGroups
+end
+
+MultiBot.raidus.getRaidState = function()
+	return buildRaidusCurrentRosterState()
 end
 
 MultiBot.raidus.getRaidTarget = function()
@@ -924,44 +927,88 @@ MultiBot.raidus.getRaidTarget = function()
 	return tRaidByIndex, tRaidByName
 end
 
+local function getRaidusTargetAndState()
+	local raidByIndex, raidByName = MultiBot.raidus.getRaidTarget()
+	if not raidByIndex or not raidByName then
+		return nil
+	end
+
+	local raidByMembers, raidByGroups = buildRaidusCurrentRosterState()
+	return {
+		raidByIndex = raidByIndex,
+		raidByName = raidByName,
+		raidByMembers = raidByMembers,
+		raidByGroups = raidByGroups,
+	}
+end
+
+local function findRaidusSwapCandidateIndex(raidByMembers, raidByName, expectedGroup)
+	for memberName, memberData in pairs(raidByMembers) do
+		if memberData.group == expectedGroup and raidByName[memberName] ~= expectedGroup then
+			return memberData.index
+		end
+	end
+
+	return nil
+end
+
+local function moveRaidusMemberToTargetGroup(memberData, expectedGroup, raidByGroups, raidByMembers, raidByName)
+	if not memberData or memberData.group == expectedGroup then
+		return false
+	end
+
+	local targetSize = raidByGroups[expectedGroup] or 0
+	if targetSize < RAIDUS_GROUP_SLOT_COUNT then
+		SetRaidSubgroup(memberData.index, expectedGroup)
+		return true
+	end
+
+	local swapIndex = findRaidusSwapCandidateIndex(raidByMembers, raidByName, expectedGroup)
+	if swapIndex then
+		SwapRaidSubgroup(memberData.index, swapIndex)
+		return true
+	end
+
+	return false
+end
+
 -- EVENTS --
 
 MultiBot.raidus.doRaidSortCheck = function()
-	local _, tRaidByName = MultiBot.raidus.getRaidTarget()
-	local tRaidByMembers = MultiBot.raidus.getRaidState()
+	local raidContext = getRaidusTargetAndState()
+	if not raidContext then
+		return nil
+	end
 
-	for tName, tGroup in pairs(tRaidByName) do
-		if(tRaidByMembers[tName] ~= nil and tRaidByMembers[tName].group ~= tGroup) then return 1 end
+	for targetName, targetGroup in pairs(raidContext.raidByName) do
+		local memberData = raidContext.raidByMembers[targetName]
+		if memberData and memberData.group ~= targetGroup then
+			return 1
+		end
 	end
 
 	return nil
 end
 
 MultiBot.raidus.doRaidSort = function(pIndex)
-	local tRaidByIndex, tRaidByName = MultiBot.raidus.getRaidTarget()
-	local tRaidByMembers, tRaidByGroups = MultiBot.raidus.getRaidState()
-
-	if(pIndex > #tRaidByIndex) then return nil end
-
-	local tName = tRaidByIndex[pIndex].name
-	local tGroup = tRaidByIndex[pIndex].group
-
-	if(tRaidByMembers[tName] ~= nil and tRaidByMembers[tName].group ~= tGroup) then
-		if(tRaidByGroups[tGroup] == nil) then
-			SetRaidSubgroup(tRaidByMembers[tName].index, tGroup)
-		else
-			if(tRaidByGroups[tGroup] < 5) then
-				SetRaidSubgroup(tRaidByMembers[tName].index, tGroup)
-			else
-				for xName, xValue in pairs(tRaidByMembers) do
-					if(xValue.group == tGroup and tRaidByName[xName] ~= tGroup) then
-						SwapRaidSubgroup(tRaidByMembers[tName].index, xValue.index)
-						break
-					end
-				end
-			end
-		end
+	local raidContext = getRaidusTargetAndState()
+	if not raidContext then
+		return nil
 	end
+
+	local targetEntry = raidContext.raidByIndex[pIndex]
+	if not targetEntry then
+		return nil
+	end
+
+	local memberData = raidContext.raidByMembers[targetEntry.name]
+	moveRaidusMemberToTargetGroup(
+		memberData,
+		targetEntry.group,
+		raidContext.raidByGroups,
+		raidContext.raidByMembers,
+		raidContext.raidByName
+	)
 
 	return pIndex + 1
 end
@@ -1045,11 +1092,6 @@ local function MultiBotRaidusCollectSelectedBots()
     end
 
     return bots
-end
-
--- Apply a [group][slot] layout matrix to the Raidus frames.
-local function MultiBotRaidusApplyLayout(layout)
-    applyRaidusLayout(layout)
 end
 
 -- Tri générique par score décroissant puis niveau décroissant
@@ -1172,5 +1214,5 @@ MultiBot.raidus.autoBalanceRaid = function(mode)
         end
     end
 
-    MultiBotRaidusApplyLayout(layout)
+     applyRaidusLayout(layout)
 end
