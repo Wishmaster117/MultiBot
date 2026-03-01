@@ -174,6 +174,14 @@ local function getUiMigrationStore()
   end
 
   profile.migrations = profile.migrations or {}
+
+  -- Keep only numeric migration version entries in this table.
+  for key, value in pairs(profile.migrations) do
+    if type(value) ~= "number" then
+      profile.migrations[key] = nil
+    end
+  end
+
   return profile.migrations
 end
 
