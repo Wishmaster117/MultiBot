@@ -193,7 +193,7 @@ local RAIDUS_LAYOUT_MIGRATION_KEY = "raidusLayoutsVersion"
 -- Forward declaration keeps a local upvalue even if helpers are reordered later.
 local getRaidusLayoutKey
 
-local function getRaidusLayoutStore()
+local function getRaidusLayoutStore(createLegacyIfMissing)
     local profile = MultiBot.db and MultiBot.db.profile
     if profile then
         profile.ui = profile.ui or {}
@@ -201,12 +201,39 @@ local function getRaidusLayoutStore()
         return profile.ui.raidusLayouts
     end
 
-    MultiBotSave = MultiBotSave or {}
-    return MultiBotSave
+    return getLegacyRaidusLayoutStore(createLegacyIfMissing)
 end
 
 getRaidusLayoutKey = function(slot)
     return "Raidus" .. (slot or "")
+end
+
+local function getLegacyRaidusLayoutStore(createIfMissing)
+    local store = _G.MultiBotSave
+    if type(store) ~= "table" then
+        if not createIfMissing then
+            return nil
+        end
+
+        store = {}
+        _G.MultiBotSave = store
+    end
+
+    return store
+end
+
+local function cleanupLegacyRaidusLayoutKeys(legacyStore)
+    if type(legacyStore) ~= "table" then
+        return
+    end
+
+    for slotIndex = 1, RAIDUS_LAYOUT_SLOT_MAX do
+        local slot = (slotIndex == 1) and nil or slotIndex
+        local key = getRaidusLayoutKey(slot)
+        if legacyStore[key] == "" then
+            legacyStore[key] = nil
+        end
+    end
 end
 
 local function migrateLegacyRaidusLayoutsIfNeeded(store)
@@ -218,21 +245,32 @@ local function migrateLegacyRaidusLayoutsIfNeeded(store)
         return
     end
 
-    MultiBotSave = MultiBotSave or {}
+    local legacyStore = getLegacyRaidusLayoutStore(false)
     for slotIndex = 1, RAIDUS_LAYOUT_SLOT_MAX do
         local slot = (slotIndex == 1) and nil or slotIndex
         local key = getRaidusLayoutKey(slot)
-        if store[key] == nil and MultiBotSave[key] ~= nil then
-            store[key] = MultiBotSave[key]
+        if store[key] == nil and legacyStore and legacyStore[key] ~= nil then
+            store[key] = legacyStore[key]
         end
     end
 
     MultiBot.MarkLegacyStateMigrated(RAIDUS_LAYOUT_MIGRATION_KEY, RAIDUS_LAYOUT_MIGRATION_VERSION)
+
+    -- Purge migrated legacy Raidus layout keys to avoid stale duplicate persistence.
+    if type(legacyStore) == "table" then
+        for slotIndex = 1, RAIDUS_LAYOUT_SLOT_MAX do
+            local slot = (slotIndex == 1) and nil or slotIndex
+            legacyStore[getRaidusLayoutKey(slot)] = nil
+        end
+
+        cleanupLegacyRaidusLayoutKeys(legacyStore)
+    end
 end
 
 local function getRaidusLayoutValue(slot)
     local key = getRaidusLayoutKey(slot)
-    local store = getRaidusLayoutStore()
+    local hasProfileStore = MultiBot.db and MultiBot.db.profile
+    local store = getRaidusLayoutStore(not hasProfileStore)
     migrateLegacyRaidusLayoutsIfNeeded(store)
 
     local value = store[key]
@@ -242,8 +280,8 @@ local function getRaidusLayoutValue(slot)
 
     local shouldSyncLegacy = MultiBot.ShouldSyncLegacyState(RAIDUS_LAYOUT_MIGRATION_KEY, RAIDUS_LAYOUT_MIGRATION_VERSION)
     if shouldSyncLegacy then
-        MultiBotSave = MultiBotSave or {}
-        value = MultiBotSave[key]
+        local legacyStore = getLegacyRaidusLayoutStore(false)
+        value = legacyStore and legacyStore[key]
         if value ~= nil then
             store[key] = value
         end
@@ -254,14 +292,14 @@ end
 
 local function setRaidusLayoutValue(slot, value)
     local key = getRaidusLayoutKey(slot)
-    local store = getRaidusLayoutStore()
+    local store = getRaidusLayoutStore(true)
     migrateLegacyRaidusLayoutsIfNeeded(store)
     store[key] = value
 
     local shouldSyncLegacy = MultiBot.ShouldSyncLegacyState(RAIDUS_LAYOUT_MIGRATION_KEY, RAIDUS_LAYOUT_MIGRATION_VERSION)
     if shouldSyncLegacy then
-        MultiBotSave = MultiBotSave or {}
-        MultiBotSave[key] = value
+        local legacyStore = getLegacyRaidusLayoutStore(true)
+        legacyStore[key] = value
     end
 end
 
@@ -689,8 +727,12 @@ local function getRaidusGlobalBotStore()
     if MultiBot.GetGlobalBotStore then
         return MultiBot.GetGlobalBotStore()
     end
-    MultiBotGlobalSave = MultiBotGlobalSave or {}
-    return MultiBotGlobalSave
+
+    if type(_G.MultiBotGlobalSave) ~= "table" then
+        _G.MultiBotGlobalSave = {}
+    end
+
+    return _G.MultiBotGlobalSave
 end
 
 local function buildRaidusBotFromGlobalSave(name, value)

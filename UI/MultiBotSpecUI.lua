@@ -314,10 +314,40 @@ end
 local SPEC_DROPDOWN_MIGRATION_VERSION = 1
 local SPEC_DROPDOWN_MIGRATION_KEY = "specDropdownPositionsVersion"
 
-local function getLegacySpecDropdownStore()
-    MultiBotSave = MultiBotSave or {}
-    MultiBotSave.SpecDropdown = MultiBotSave.SpecDropdown or {}
-    return MultiBotSave.SpecDropdown
+local function getLegacySpecDropdownStore(createIfMissing)
+    local save = _G.MultiBotSave
+    if type(save) ~= "table" then
+        if not createIfMissing then
+            return nil
+        end
+
+        save = {}
+        _G.MultiBotSave = save
+    end
+
+    local store = save.SpecDropdown
+    if type(store) ~= "table" then
+        if not createIfMissing then
+            return nil
+        end
+
+        store = {}
+        save.SpecDropdown = store
+    end
+
+    return store
+end
+
+local function cleanupLegacySpecDropdownStoreIfEmpty()
+    local save = _G.MultiBotSave
+    if type(save) ~= "table" then
+        return
+    end
+
+    local store = save.SpecDropdown
+    if type(store) == "table" and next(store) == nil then
+        save.SpecDropdown = nil
+    end
 end
 
 local function getSpecDropdownStore()
@@ -328,7 +358,7 @@ local function getSpecDropdownStore()
         return profile.ui.specDropdownPositions
     end
 
-    return getLegacySpecDropdownStore()
+    return getLegacySpecDropdownStore(true)
 end
 
 local function migrateLegacySpecDropdownPositionsIfNeeded(store)
@@ -340,14 +370,27 @@ local function migrateLegacySpecDropdownPositionsIfNeeded(store)
         return
     end
 
-    local legacyStore = getLegacySpecDropdownStore()
-    for charKey, pos in pairs(legacyStore) do
+    local legacyStore = getLegacySpecDropdownStore(false)
+    for charKey, pos in pairs(legacyStore or {}) do
         if store[charKey] == nil and pos ~= nil then
             store[charKey] = pos
         end
     end
 
     MultiBot.MarkLegacyStateMigrated(SPEC_DROPDOWN_MIGRATION_KEY, SPEC_DROPDOWN_MIGRATION_VERSION)
+
+    -- Purge migrated legacy payload to avoid stale duplicate persistence.
+    if type(legacyStore) == "table" then
+        if wipe then
+            wipe(legacyStore)
+        else
+            for key in pairs(legacyStore) do
+                legacyStore[key] = nil
+            end
+        end
+    end
+
+    cleanupLegacySpecDropdownStoreIfEmpty()
 end
 
 local function getSpecDropdownPosition(charKey)
@@ -365,8 +408,8 @@ local function getSpecDropdownPosition(charKey)
 
     local shouldSyncLegacy = MultiBot.ShouldSyncLegacyState(SPEC_DROPDOWN_MIGRATION_KEY, SPEC_DROPDOWN_MIGRATION_VERSION)
     if shouldSyncLegacy then
-        local legacyStore = getLegacySpecDropdownStore()
-        pos = legacyStore[charKey]
+        local legacyStore = getLegacySpecDropdownStore(false)
+        pos = legacyStore and legacyStore[charKey]
         if pos ~= nil then
             store[charKey] = pos
         end
@@ -386,7 +429,7 @@ local function setSpecDropdownPosition(charKey, position)
 
     local shouldSyncLegacy = MultiBot.ShouldSyncLegacyState(SPEC_DROPDOWN_MIGRATION_KEY, SPEC_DROPDOWN_MIGRATION_VERSION)
     if shouldSyncLegacy then
-        local legacyStore = getLegacySpecDropdownStore()
+        local legacyStore = getLegacySpecDropdownStore(true)
         legacyStore[charKey] = position
     end
 end

@@ -1,5 +1,5 @@
 local MAJOR = "LibDropdown-1.0"
-local MINOR = tonumber("20260118164546") or tonumber(date("%Y%m%d%H%M%S"))
+local MINOR = 2024
 
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
@@ -209,25 +209,14 @@ local function ReleaseInput(input)
 end
 
 local function MouseOver(frame)
-    if GetMouseFocus then
-        local f = GetMouseFocus()
-        while f and f ~= UIParent do
-            if f == frame then return true end
-            f = f:GetParent()
-        end
-    else
-        local mouseFoci = GetMouseFoci()
-        for _, f in ipairs(mouseFoci) do
-            while f do
-                if f == frame then
-                    return true
-                end
-                f = f:GetParent()
-            end
-        end
+	local f = GetMouseFocus()
+	while f and f ~= UIParent do
+		if f == frame then return true end
+		f = f:GetParent()
 	end
 	return false
 end
+
 -- Frame methods
 function AddButton(self, b)
 	b:ClearAllPoints()
@@ -1215,13 +1204,15 @@ if UIDropDownMenu_HandleGlobalMouseEvent then
 		end
 	end)
 else
-	lib.mousecallback = EventRegistry:RegisterFrameEventAndCallback("GLOBAL_MOUSE_DOWN",function(ownerID,button)
-		if openMenu and (button == "LeftButton" or button == "RightButton") then
-			for i = 0, frameCount - 1 do
-				if _G["LibDropdownFrame" .. i]:IsMouseOver() then return end
-			end
+	if EventRegistry and EventRegistry.RegisterFrameEventAndCallback then
+		lib.mousecallback = EventRegistry:RegisterFrameEventAndCallback("GLOBAL_MOUSE_DOWN",function(ownerID,button)
+			if openMenu and (button == "LeftButton" or button == "RightButton") then
+				for i = 0, frameCount - 1 do
+					if _G["LibDropdownFrame" .. i]:IsMouseOver() then return end
+				end
 
-			openMenu:Release()
-		end
-	end)
+				openMenu:Release()
+			end
+		end)
+	end
 end

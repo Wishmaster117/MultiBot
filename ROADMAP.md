@@ -10,15 +10,21 @@
 - **Milestone 3 (Initialization lifecycle):** Mostly completed, hardening pending.
   - `OnInitialize` and `OnEnable` are in place.
   - Legacy frame-based startup/event code still exists in a few places.
-- **Milestone 4 (Command system):** Mostly completed.
-  - Central alias registration exists and is used for core commands.
+- **Milestone 4 (Command system):** Completed.
+  - Central alias registration is used for core commands via `RegisterCoreCommandsOnce` in lifecycle init.
+  - Runtime command invocation paths are centralized through `RunRegisteredCommand` (slash + minimap click + helper dispatch).
 - **Milestone 5 (Event bus migration):** Completed.
   - Dispatcher architecture drives core/quick-bar/UI whisper flows.
   - Legacy `CreateFrame + RegisterEvent + SetScript` listener blocks have been removed from addon runtime paths.
-- **Milestone 6 (SavedVariables -> AceDB):** Mostly completed; final cleanup/hardening and legacy deprecation policy pending.
-  - AceDB bootstrap is now initialized for config timers/throttle + main UI/main bar state + layout memory + favorites + Raidus slot/layout persistence; main-bar/layout + favorites + global bot roster legacy state now use one-way versioned cutover, Raidus legacy slot migration now uses a one-way versioned cutover and stops legacy writes after migration, and Raidus roster sorting path has been simplified (table.sort) and layout apply now uses indexed pool lookup to reduce repeated scans and Raidus group/slot sizing now uses shared constants and pool page navigation now uses a shared refresh helper/page-size constant, and auto-balance sizing/layout initialization now reuse shared constants/helpers, and Raidus slot traversal/serialization now use shared helpers and apply/invite flow is helperized, and raid sort/swap logic now reuses a shared roster-state context and move helpers.
-- **Milestone 7 (Minimap/options integration):** Partially completed; remaining options persistence migration pending.
-  - Minimap hide/angle and global frame strata now use AceDB profile with legacy compatibility, and Spec dropdown position persistence now uses AceDB profile with a one-way versioned legacy cutover, and Hunter/Shaman quick-bar frame positions + Hunter pet stance state + Shaman totem choice state now use one-way versioned legacy cutover through AceDB-backed helpers; broader options persistence remains.
+- **Milestone 6 (SavedVariables -> AceDB):** Functionally completed for runtime data paths; controlled legacy deprecation policy still pending.
+  - AceDB bootstrap and migration helpers are in place and actively used across migrated features (global bot store, frame positions, quick-bar class states, Raidus layouts/main-bar state, timers/config branches).
+  - One-way versioned cutover is now established for migrated paths, with compatibility fallbacks kept intentionally during transition.
+  - Remaining work is now policy/documentation driven (legacy SavedVariables retention window and purge criteria), not core runtime wiring.
+- **Milestone 7 (Minimap/options integration):** Completed for current options scope.
+  - Options panel controls are now centralized on AceDB-backed helpers: timers (`Get/SetTimer`), throttle (`Get/SetThrottleRate`, `Get/SetThrottleBurst`), minimap (`Get/SetMinimapConfig`) and global frame strata (`Get/SetGlobalStrataLevel`).
+  - Minimap hide/angle, global frame strata, spec dropdown position, hunter pet stance, shaman totems, quick-frame positions, Raidus layout slots, mainbar/layout state, Raidus sort-mode, Raidus selected-slot, and Raidus pool-page persistence are migrated to AceDB-backed storage with one-way compatibility cutover; spec dropdown, Raidus layout, mainbar/layout persistence, Raidus roster store reads, Raidus sort-mode, Raidus selected-slot, and Raidus pool-page now go through centralized core helpers (including page normalization write-back when pool-size shrinks), and the Raidus feature now calls core layout helpers directly (UI/features/handler no longer carry local migration blocks or local layout/sort wrapper shims for these paths); mainbar/layout handler path and spec-dropdown UI path now call core persistence helpers directly as well.
+  - Saved-state reset flow clears both AceDB profile runtime state and legacy SavedVariables tables through a centralized helper used by DelSV, and DelSV suppresses the immediate logout-save pass during ReloadUI to prevent old runtime state from being re-written.
+  - Current in-game validation protocol for Milestone 7 is documented in `docs/milestone-7-final-validation.md` and the exhaustive 77/77 Lua matrix `docs/milestone-7-audit-77x77.md`.
 - **Milestone 8 (AceGUI UI refactor):** Not started.
 
 ---

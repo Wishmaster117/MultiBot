@@ -261,6 +261,13 @@ local function migrateLegacyGlobalBotStoreIfNeeded(store, legacyStore)
   end
 
   markLegacyUiStateMigrated(GLOBAL_BOT_STORE_MIGRATION_KEY, GLOBAL_BOT_STORE_MIGRATION_VERSION)
+
+  -- Purge migrated legacy global bot entries without touching unrelated global keys.
+  for botName, value in pairs(legacyStore or {}) do
+    if isGlobalBotRosterEntry(value) then
+      legacyStore[botName] = nil
+    end
+  end
 end
 
 function MultiBot.GetGlobalBotStore()
@@ -322,15 +329,24 @@ local MINIMAP_CONFIG_DEFAULTS = {
   angle = 220,
 }
 
-local function getLegacyMinimapConfig()
+local function getLegacyMinimapConfig(createIfMissing)
   local save = ensureSavedVariables()
-  save.Minimap = save.Minimap or {}
+  local minimap = save.Minimap
 
-  if type(save.Minimap.hide) ~= "boolean" then
-    save.Minimap.hide = MINIMAP_CONFIG_DEFAULTS.hide
+  if type(minimap) ~= "table" then
+    if not createIfMissing then
+      return nil
+    end
+
+    minimap = {}
+    save.Minimap = minimap
   end
-  if type(save.Minimap.angle) ~= "number" then
-    save.Minimap.angle = MINIMAP_CONFIG_DEFAULTS.angle
+
+  if type(minimap.hide) ~= "boolean" then
+    minimap.hide = MINIMAP_CONFIG_DEFAULTS.hide
+  end
+  if type(minimap.angle) ~= "number" then
+    minimap.angle = MINIMAP_CONFIG_DEFAULTS.angle
   end
 
   return save.Minimap
@@ -344,14 +360,18 @@ function MultiBot.GetMinimapConfig()
 
     local minimap = profile.ui.minimap
     if shouldSyncLegacyUiState(MINIMAP_CONFIG_MIGRATION_KEY, MINIMAP_CONFIG_MIGRATION_VERSION) then
-      local legacy = getLegacyMinimapConfig()
+      local legacy = getLegacyMinimapConfig(false)
       if type(minimap.hide) ~= "boolean" then
-        minimap.hide = legacy.hide
+        minimap.hide = (legacy and legacy.hide) or MINIMAP_CONFIG_DEFAULTS.hide
       end
       if type(minimap.angle) ~= "number" then
-        minimap.angle = legacy.angle
+        minimap.angle = (legacy and legacy.angle) or MINIMAP_CONFIG_DEFAULTS.angle
       end
       markLegacyUiStateMigrated(MINIMAP_CONFIG_MIGRATION_KEY, MINIMAP_CONFIG_MIGRATION_VERSION)
+
+      -- Purge migrated legacy minimap payload to avoid stale duplicate persistence.
+      local save = ensureSavedVariables()
+      save.Minimap = nil
     end
 
     if type(minimap.hide) ~= "boolean" then
@@ -363,7 +383,7 @@ function MultiBot.GetMinimapConfig()
     return minimap
   end
 
-  return getLegacyMinimapConfig()
+  return getLegacyMinimapConfig(true)
 end
 
 function MultiBot.SetMinimapConfig(key, value)
@@ -371,7 +391,7 @@ function MultiBot.SetMinimapConfig(key, value)
   minimap[key] = value
 
   if shouldSyncLegacyUiState(MINIMAP_CONFIG_MIGRATION_KEY, MINIMAP_CONFIG_MIGRATION_VERSION) then
-    local legacy = getLegacyMinimapConfig()
+    local legacy = getLegacyMinimapConfig(true)
     legacy[key] = value
   end
 
@@ -380,18 +400,35 @@ end
 
 local STRATA_LEVEL_DEFAULT = "HIGH"
 
-function MultiBot.GetGlobalStrataLevel()
+local function getLegacyGlobalStrataLevel(createIfMissing)
   local _, globalSave = ensureSavedVariables()
-  globalSave["Strata.Level"] = globalSave["Strata.Level"] or STRATA_LEVEL_DEFAULT
+  local value = globalSave["Strata.Level"]
+  if type(value) ~= "string" or value == "" then
+    if not createIfMissing then
+      return nil
+    end
 
+    value = STRATA_LEVEL_DEFAULT
+    globalSave["Strata.Level"] = value
+  end
+
+  return value
+end
+
+function MultiBot.GetGlobalStrataLevel()
   local profile = MultiBot.db and MultiBot.db.profile
   if profile then
     profile.ui = profile.ui or {}
     if shouldSyncLegacyUiState(STRATA_LEVEL_MIGRATION_KEY, STRATA_LEVEL_MIGRATION_VERSION) then
+      local legacyLevel = getLegacyGlobalStrataLevel(false)
       if type(profile.ui.strataLevel) ~= "string" or profile.ui.strataLevel == "" then
-        profile.ui.strataLevel = globalSave["Strata.Level"]
+        profile.ui.strataLevel = legacyLevel or STRATA_LEVEL_DEFAULT
       end
       markLegacyUiStateMigrated(STRATA_LEVEL_MIGRATION_KEY, STRATA_LEVEL_MIGRATION_VERSION)
+
+      -- Purge migrated legacy strata key to avoid stale duplicate persistence.
+      local _, globalSave = ensureSavedVariables()
+      globalSave["Strata.Level"] = nil
     end
     if type(profile.ui.strataLevel) ~= "string" or profile.ui.strataLevel == "" then
       profile.ui.strataLevel = STRATA_LEVEL_DEFAULT
@@ -399,7 +436,7 @@ function MultiBot.GetGlobalStrataLevel()
     return profile.ui.strataLevel
   end
 
-  return globalSave["Strata.Level"]
+  return getLegacyGlobalStrataLevel(true)
 end
 
 function MultiBot.SetGlobalStrataLevel(level)
@@ -407,8 +444,8 @@ function MultiBot.SetGlobalStrataLevel(level)
     level = STRATA_LEVEL_DEFAULT
   end
 
-  local _, globalSave = ensureSavedVariables()
   if shouldSyncLegacyUiState(STRATA_LEVEL_MIGRATION_KEY, STRATA_LEVEL_MIGRATION_VERSION) then
+    local _, globalSave = ensureSavedVariables()
     globalSave["Strata.Level"] = level
   end
 
@@ -437,20 +474,35 @@ end
 
 local MAIN_UI_VISIBLE_DEFAULT = true
 
-function MultiBot.GetMainUIVisibleConfig()
+local function getLegacyMainUIVisible(createIfMissing)
   local save = ensureSavedVariables()
-  if type(save["UIVisible"]) ~= "boolean" then
-    save["UIVisible"] = MAIN_UI_VISIBLE_DEFAULT
+  local value = save["UIVisible"]
+  if type(value) ~= "boolean" then
+    if not createIfMissing then
+      return nil
+    end
+
+    value = MAIN_UI_VISIBLE_DEFAULT
+    save["UIVisible"] = value
   end
+
+  return value
+end
+
+function MultiBot.GetMainUIVisibleConfig()
 
   local profile = MultiBot.db and MultiBot.db.profile
   if profile then
     profile.ui = profile.ui or {}
     if shouldSyncLegacyUiState(MAIN_VISIBLE_MIGRATION_KEY, MAIN_VISIBLE_MIGRATION_VERSION) then
       if type(profile.ui.mainVisible) ~= "boolean" then
-        profile.ui.mainVisible = save["UIVisible"]
+        profile.ui.mainVisible = getLegacyMainUIVisible(false)
       end
       markLegacyUiStateMigrated(MAIN_VISIBLE_MIGRATION_KEY, MAIN_VISIBLE_MIGRATION_VERSION)
+
+      -- Purge migrated legacy main UI visibility key to avoid stale duplicate persistence.
+      local save = ensureSavedVariables()
+      save["UIVisible"] = nil
     end
     if type(profile.ui.mainVisible) ~= "boolean" then
       profile.ui.mainVisible = MAIN_UI_VISIBLE_DEFAULT
@@ -458,13 +510,13 @@ function MultiBot.GetMainUIVisibleConfig()
     return profile.ui.mainVisible
   end
 
-  return save["UIVisible"]
+  return getLegacyMainUIVisible(true)
 end
 
 function MultiBot.SetMainUIVisibleConfig(value)
   local visible = not not value
-  local save = ensureSavedVariables()
   if shouldSyncLegacyUiState(MAIN_VISIBLE_MIGRATION_KEY, MAIN_VISIBLE_MIGRATION_VERSION) then
+    local save = ensureSavedVariables()
     save["UIVisible"] = visible
   end
 
@@ -477,10 +529,54 @@ function MultiBot.SetMainUIVisibleConfig(value)
   return visible
 end
 
-local function getLegacyQuickFramePositionStore()
-  MultiBotSaved = ensureValue(_G, "MultiBotSaved", {})
-  MultiBotSaved.pos = MultiBotSaved.pos or {}
-  return MultiBotSaved.pos
+local function getLegacyCharacterStateRoot(createIfMissing)
+  local saved = _G.MultiBotSaved
+  if type(saved) ~= "table" then
+    if not createIfMissing then
+      return nil
+    end
+
+    saved = {}
+    _G.MultiBotSaved = saved
+  end
+
+  return saved
+end
+
+local function cleanupLegacyCharacterStateKey(key)
+  if type(key) ~= "string" or key == "" then
+    return
+  end
+
+  local saved = getLegacyCharacterStateRoot(false)
+  if type(saved) ~= "table" then
+    return
+  end
+
+  local value = saved[key]
+  if type(value) == "table" and next(value) == nil then
+    saved[key] = nil
+  end
+
+  if next(saved) == nil then
+    _G.MultiBotSaved = nil
+  end
+end
+
+local function getLegacyQuickFramePositionStore(createIfMissing)
+  local saved = getLegacyCharacterStateRoot(createIfMissing)
+  local pos = saved and saved.pos
+
+  if type(pos) ~= "table" then
+    if not createIfMissing then
+      return nil
+    end
+
+    pos = {}
+    saved.pos = pos
+  end
+
+  return pos
 end
 
 local function migrateLegacyQuickFramePositionsIfNeeded(store, legacyStore)
@@ -499,6 +595,19 @@ local function migrateLegacyQuickFramePositionsIfNeeded(store, legacyStore)
   if migrations then
     migrations[QUICK_FRAME_POSITIONS_MIGRATION_KEY] = QUICK_FRAME_POSITIONS_MIGRATION_VERSION
   end
+
+  -- Purge migrated legacy quick-frame payload to avoid stale duplicate persistence.
+  if type(legacyStore) == "table" then
+    if wipe then
+      wipe(legacyStore)
+    else
+      for key in pairs(legacyStore) do
+        legacyStore[key] = nil
+      end
+    end
+  end
+
+  cleanupLegacyCharacterStateKey("pos")
 end
 
 function MultiBot.GetQuickFramePosition(frameKey)
@@ -507,7 +616,7 @@ function MultiBot.GetQuickFramePosition(frameKey)
   end
 
   local profile = MultiBot.db and MultiBot.db.profile
-  local legacyPosStore = getLegacyQuickFramePositionStore()
+  local legacyPosStore = getLegacyQuickFramePositionStore(false)
 
   if profile then
     profile.ui = profile.ui or {}
@@ -518,7 +627,7 @@ function MultiBot.GetQuickFramePosition(frameKey)
 
     local pos = store[frameKey]
     if pos == nil and shouldSyncLegacyUiState(QUICK_FRAME_POSITIONS_MIGRATION_KEY, QUICK_FRAME_POSITIONS_MIGRATION_VERSION) then
-      local legacyFrame = legacyPosStore[frameKey] and legacyPosStore[frameKey].frame
+      local legacyFrame = legacyPosStore and legacyPosStore[frameKey] and legacyPosStore[frameKey].frame
       if legacyFrame ~= nil then
         store[frameKey] = legacyFrame
         pos = legacyFrame
@@ -528,7 +637,7 @@ function MultiBot.GetQuickFramePosition(frameKey)
     return pos
   end
 
-  return legacyPosStore[frameKey] and legacyPosStore[frameKey].frame
+  return legacyPosStore and legacyPosStore[frameKey] and legacyPosStore[frameKey].frame
 end
 
 function MultiBot.SetQuickFramePosition(frameKey, point, relPoint, x, y)
@@ -544,7 +653,7 @@ function MultiBot.SetQuickFramePosition(frameKey, point, relPoint, x, y)
   }
 
   local profile = MultiBot.db and MultiBot.db.profile
-  local legacyPosStore = getLegacyQuickFramePositionStore()
+  local legacyPosStore = getLegacyQuickFramePositionStore(false)
   if profile then
     profile.ui = profile.ui or {}
     profile.ui.quickFramePositions = profile.ui.quickFramePositions or {}
@@ -555,6 +664,7 @@ function MultiBot.SetQuickFramePosition(frameKey, point, relPoint, x, y)
   end
 
   if shouldSyncLegacyUiState(QUICK_FRAME_POSITIONS_MIGRATION_KEY, QUICK_FRAME_POSITIONS_MIGRATION_VERSION) then
+    legacyPosStore = legacyPosStore or getLegacyQuickFramePositionStore(true)
     legacyPosStore[frameKey] = legacyPosStore[frameKey] or {}
     legacyPosStore[frameKey].frame = position
   end
@@ -562,10 +672,20 @@ function MultiBot.SetQuickFramePosition(frameKey, point, relPoint, x, y)
   return position
 end
 
-local function getLegacyHunterPetStanceStore()
-  MultiBotSaved = ensureValue(_G, "MultiBotSaved", {})
-  MultiBotSaved.hunterPetStance = MultiBotSaved.hunterPetStance or {}
-  return MultiBotSaved.hunterPetStance
+local function getLegacyHunterPetStanceStore(createIfMissing)
+  local saved = getLegacyCharacterStateRoot(createIfMissing)
+  local store = saved and saved.hunterPetStance
+
+  if type(store) ~= "table" then
+    if not createIfMissing then
+      return nil
+    end
+
+    store = {}
+    saved.hunterPetStance = store
+  end
+
+  return store
 end
 
 local function migrateLegacyHunterPetStanceIfNeeded(store, legacyStore)
@@ -583,6 +703,19 @@ local function migrateLegacyHunterPetStanceIfNeeded(store, legacyStore)
   if migrations then
     migrations[HUNTER_PET_STANCE_MIGRATION_KEY] = HUNTER_PET_STANCE_MIGRATION_VERSION
   end
+
+  -- Purge migrated legacy hunter-pet stance payload to avoid stale duplicate persistence.
+  if type(legacyStore) == "table" then
+    if wipe then
+      wipe(legacyStore)
+    else
+      for key in pairs(legacyStore) do
+        legacyStore[key] = nil
+      end
+    end
+  end
+
+  cleanupLegacyCharacterStateKey("hunterPetStance")
 end
 
 function MultiBot.GetHunterPetStance(name)
@@ -590,7 +723,7 @@ function MultiBot.GetHunterPetStance(name)
     return nil
   end
 
-  local legacyStore = getLegacyHunterPetStanceStore()
+  local legacyStore = getLegacyHunterPetStanceStore(false)
   local profile = MultiBot.db and MultiBot.db.profile
 
   if profile then
@@ -602,7 +735,7 @@ function MultiBot.GetHunterPetStance(name)
 
     local value = store[name]
     if value == nil and shouldSyncLegacyUiState(HUNTER_PET_STANCE_MIGRATION_KEY, HUNTER_PET_STANCE_MIGRATION_VERSION) then
-      value = legacyStore[name]
+      value = legacyStore and legacyStore[name]
       if value ~= nil then
         store[name] = value
       end
@@ -611,7 +744,7 @@ function MultiBot.GetHunterPetStance(name)
     return value
   end
 
-  return legacyStore[name]
+  return legacyStore and legacyStore[name]
 end
 
 function MultiBot.SetHunterPetStance(name, stance)
@@ -620,7 +753,7 @@ function MultiBot.SetHunterPetStance(name, stance)
   end
 
   local profile = MultiBot.db and MultiBot.db.profile
-  local legacyStore = getLegacyHunterPetStanceStore()
+  local legacyStore = getLegacyHunterPetStanceStore(false)
 
   if profile then
     profile.ui = profile.ui or {}
@@ -632,6 +765,7 @@ function MultiBot.SetHunterPetStance(name, stance)
   end
 
   if shouldSyncLegacyUiState(HUNTER_PET_STANCE_MIGRATION_KEY, HUNTER_PET_STANCE_MIGRATION_VERSION) then
+    legacyStore = legacyStore or getLegacyHunterPetStanceStore(true)
     legacyStore[name] = stance
   end
 
@@ -640,13 +774,23 @@ end
 
 local SHAMAN_TOTEMS_MIGRATION_VERSION = 1
 
-local function getLegacyShamanTotemsStore()
-  MultiBotSaved = ensureValue(_G, "MultiBotSaved", {})
-  MultiBotSaved.shamanTotems = MultiBotSaved.shamanTotems or {}
-  return MultiBotSaved.shamanTotems
+local function getLegacyShamanTotemsStore(createIfMissing)
+  local saved = getLegacyCharacterStateRoot(createIfMissing)
+  local store = saved and saved.shamanTotems
+
+  if type(store) ~= "table" then
+    if not createIfMissing then
+      return nil
+    end
+
+    store = {}
+    saved.shamanTotems = store
+  end
+
+  return store
 end
 
-local function getShamanTotemsStore()
+local function getShamanTotemsStore(createLegacyIfMissing)
   local profile = MultiBot.db and MultiBot.db.profile
   if profile then
     profile.ui = profile.ui or {}
@@ -654,7 +798,7 @@ local function getShamanTotemsStore()
     return profile.ui.shamanTotems, true
   end
 
-  return getLegacyShamanTotemsStore(), false
+  return getLegacyShamanTotemsStore(createLegacyIfMissing), false
 end
 
 local function getShamanTotemsMigrationStore()
@@ -688,14 +832,27 @@ local function migrateLegacyShamanTotemsIfNeeded(store)
     return
   end
 
-  local legacyStore = getLegacyShamanTotemsStore()
-  for botName, perBot in pairs(legacyStore) do
+  local legacyStore = getLegacyShamanTotemsStore(false)
+  for botName, perBot in pairs(legacyStore or {}) do
     if store[botName] == nil and perBot ~= nil then
       store[botName] = perBot
     end
   end
 
   migrationStore.shamanTotemsVersion = SHAMAN_TOTEMS_MIGRATION_VERSION
+
+  -- Purge migrated legacy shaman-totems payload to avoid stale duplicate persistence.
+  if type(legacyStore) == "table" then
+    if wipe then
+      wipe(legacyStore)
+    else
+      for key in pairs(legacyStore) do
+        legacyStore[key] = nil
+      end
+    end
+  end
+
+  cleanupLegacyCharacterStateKey("shamanTotems")
 end
 
 function MultiBot.GetShamanTotemsForBot(name)
@@ -703,19 +860,21 @@ function MultiBot.GetShamanTotemsForBot(name)
     return nil
   end
 
-  local store = getShamanTotemsStore()
+  local store = getShamanTotemsStore(false)
   migrateLegacyShamanTotemsIfNeeded(store)
 
-  local perBot = store[name]
+  local perBot = store and store[name]
   if perBot ~= nil then
     return perBot
   end
 
   if shouldSyncLegacyShamanTotems() then
-    local legacyStore = getLegacyShamanTotemsStore()
-    perBot = legacyStore[name]
+    local legacyStore = getLegacyShamanTotemsStore(false)
+    perBot = legacyStore and legacyStore[name]
     if perBot ~= nil then
-      store[name] = perBot
+      if store then
+        store[name] = perBot
+      end
     end
   end
 
@@ -730,13 +889,16 @@ function MultiBot.SetShamanTotemChoice(name, elementKey, icon)
     return nil
   end
 
-  local store = getShamanTotemsStore()
+  local store = getShamanTotemsStore(true)
   migrateLegacyShamanTotemsIfNeeded(store)
+  if not store then
+    return nil
+  end
   store[name] = store[name] or {}
   store[name][elementKey] = icon
 
   if shouldSyncLegacyShamanTotems() then
-    local legacyStore = getLegacyShamanTotemsStore()
+    local legacyStore = getLegacyShamanTotemsStore(true)
     legacyStore[name] = legacyStore[name] or {}
     legacyStore[name][elementKey] = icon
   end
@@ -752,14 +914,14 @@ function MultiBot.ClearShamanTotemChoice(name, elementKey)
     return
   end
 
-  local store = getShamanTotemsStore()
+  local store = getShamanTotemsStore(true)
   migrateLegacyShamanTotemsIfNeeded(store)
-  if store[name] then
+  if store and store[name] then
     store[name][elementKey] = nil
   end
 
   if shouldSyncLegacyShamanTotems() then
-    local legacyStore = getLegacyShamanTotemsStore()
+    local legacyStore = getLegacyShamanTotemsStore(true)
     if legacyStore[name] then
       legacyStore[name][elementKey] = nil
     end
@@ -1104,29 +1266,46 @@ end
 -- ============================================================================
 -- FAVORITES (per-character)
 -- ============================================================================
-local function getFavoritesStore()
+local function getLegacyFavoritesStore(createIfMissing)
   local savedVars = ensureSavedVariables()
-  savedVars.Favorites = savedVars.Favorites or {}
+  local favorites = savedVars.Favorites
 
+  if type(favorites) ~= "table" then
+    if not createIfMissing then
+      return nil
+    end
+
+    favorites = {}
+    savedVars.Favorites = favorites
+  end
+
+  return favorites
+end
+
+local function getFavoritesStore()
   local profile = MultiBot.db and MultiBot.db.profile
   if profile then
     profile.favorites = profile.favorites or {}
 
     if shouldSyncLegacyUiState(FAVORITES_MIGRATION_KEY, FAVORITES_MIGRATION_VERSION) then
-      for name, isFavorite in pairs(savedVars.Favorites) do
+      local legacyFavorites = getLegacyFavoritesStore(false) or {}
+      for name, isFavorite in pairs(legacyFavorites) do
         if profile.favorites[name] == nil then
           profile.favorites[name] = isFavorite
         end
       end
 
-      savedVars.Favorites = profile.favorites
       markLegacyUiStateMigrated(FAVORITES_MIGRATION_KEY, FAVORITES_MIGRATION_VERSION)
+
+      -- Purge migrated legacy favorites payload to avoid stale duplicate persistence.
+      local savedVars = ensureSavedVariables()
+      savedVars.Favorites = nil
     end
 
     return profile.favorites
   end
 
-  return savedVars.Favorites
+  return getLegacyFavoritesStore(false) or {}
 end
 
 function MultiBot.EnsureFavorites()
@@ -1176,7 +1355,8 @@ function MultiBot.UpdateFavoritesIndex()
 end
 
 function MultiBot.SetFavorite(name, isFav)
-  local favorites = getFavoritesStore()
+  local profile = MultiBot.db and MultiBot.db.profile
+  local favorites = profile and getFavoritesStore() or getLegacyFavoritesStore(true)
   if isFav then favorites[name] = true
            else favorites[name] = nil
   end
