@@ -192,6 +192,7 @@ local RAIDUS_LAYOUT_MIGRATION_KEY = "raidusLayoutsVersion"
 
 -- Forward declaration keeps a local upvalue even if helpers are reordered later.
 local getRaidusLayoutKey
+local getLegacyRaidusLayoutStore
 
 local function getRaidusLayoutStore(createLegacyIfMissing)
     local profile = MultiBot.db and MultiBot.db.profile
@@ -208,7 +209,7 @@ getRaidusLayoutKey = function(slot)
     return "Raidus" .. (slot or "")
 end
 
-local function getLegacyRaidusLayoutStore(createIfMissing)
+getLegacyRaidusLayoutStore = function(createIfMissing)
     local store = _G.MultiBotSave
     if type(store) ~= "table" then
         if not createIfMissing then

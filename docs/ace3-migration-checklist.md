@@ -9,8 +9,8 @@ Checklist for each migration PR to verify no user-facing regressions.
 - [x] Central command alias registration is in place.
 - [x] Central event/update dispatch entry points are in place.
 - [x] Full event registration convergence (core + UI whisper handlers now dispatcher/lifecycle-driven, no standalone event listener frames remain).
-- [x] SavedVariables migration to AceDB “cleanup remaining” (legacy cleanup/purge policy)
-- [ ] Minimap/options persistence fully switched to AceDB “core migrated, remaining options pending”
+- [x] SavedVariables migration to AceDB completed for runtime paths (timers/throttle + main UI/main bar state + layout memory + favorites + global-bot state + Raidus slots/layout apply path + one-way versioned legacy cutovers with guarded legacy creation/cleanup).
+- [x] Minimap/options persistence fully switched to AceDB (minimap hide/angle + frame strata + timers/throttle + spec dropdown position + Hunter/Shaman quick-bar positions + Hunter pet stance state + Shaman totem choice state migrated with one-way versioned legacy cutover; read paths avoid legacy table creation and legacy writes are constrained to migration fallback windows).
 - [ ] Optional AceGUI screen-by-screen migration.
 
 ---
