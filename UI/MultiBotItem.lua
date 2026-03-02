@@ -22,10 +22,6 @@ MultiBot.addItem = function(pFrame, pInfo)
 	tButton.item.info = pInfo
 	tButton.item.rare = tRare
 
-	--tButton.doLeft = function(pButton)
-		--local tAction = MultiBot.inventory.action
-		--local tName = MultiBot.inventory.name
-
     tButton.doLeft = function(pButton)
         local tAction = MultiBot.inventory.action
         -- Nom du bot cible (destinataire du whisper), on évite de masquer tName (nom de l'objet)
@@ -35,17 +31,6 @@ MultiBot.addItem = function(pFrame, pInfo)
 			SendChatMessage(MultiBot.info.action, "SAY")
 			return
 		end
-
-		--[[if(tAction == "s" and MultiBot.isTarget()) then
-			if(pButton.item.id == "6948") then return SendChatMessage(MultiBot.info.itemsellalert, "SAY") end
-			if(MultiBot.isInside(pButton.item.info or "", "%f[%a][Kk]ey%f[%A]")) then
-                return SendChatMessage(MultiBot.info.keydestroyalert, "SAY")
-			end
-			--SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, tName)
-			SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, botName)
-			pButton:Hide()
-			return
-		end]]--
 
         if(tAction == "s" and MultiBot.isTarget()) then
 			if(pButton.item.id == "6948") then
@@ -57,7 +42,6 @@ MultiBot.addItem = function(pFrame, pInfo)
 			end
 
 			-- Envoi de la commande "s [item]" au bot dont l’inventaire est ouvert
-			--SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, tName)
 			SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, botName)
 
 			-- On masque l’item cliqué pour un feedback immédiat
@@ -72,7 +56,6 @@ MultiBot.addItem = function(pFrame, pInfo)
 		end
 
 		if(tAction == "e" or tAction == "u" or tAction == "give") then
-			--SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, tName)
 			SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, botName)
 			return
 		end
@@ -104,7 +87,6 @@ MultiBot.addItem = function(pFrame, pInfo)
 				return
 			end
 			-- Pas de confirmation requise
-			--SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, tName)
 			SendChatMessage(tAction .. " " .. pButton.tip, "WHISPER", nil, botName)
 			pButton:Hide()
 			return

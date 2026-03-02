@@ -250,7 +250,6 @@ _G["MultiBot"] = MultiBot
 
 local Spec = MultiBot.spec or {}
 Spec.currentBuild = {}  -- table pour conserver la build courante de chaque bot (ex : "0-13-58")
--- Spec.currentBuild = Spec.currentBuild or {}
 Spec.busy = false
 Spec.pendingRefresh = nil
 MultiBot.spec = Spec
@@ -268,7 +267,6 @@ function Spec:RequestList(bot, wrapper)
     end
     local frame = unwrapFrame(wrapper)
     if type(frame) ~= "userdata" then
-        -- print("|cffff0000[SpecUI] impossible de localiser le frame du bouton|r")
         return
     end
 
@@ -284,8 +282,6 @@ function Spec:RequestList(bot, wrapper)
 
     -- 1) on demande d'abord la spé courante
     SendChatMessage("talents", "WHISPER", nil, bot)
-	-- print(">>> TALENTS demandé à", bot)
-
     -- 2) on attend ~0.2s puis on enchaîne sur la liste
     local t = self._timerFrame or CreateFrame("Frame")
     self._timerFrame = t

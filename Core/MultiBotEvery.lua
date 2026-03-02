@@ -33,11 +33,8 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
        end
     end
 
-	-- local dy = 26
-	-- local y  = 0
     -- Texture étoile
     local STAR_TEX = "Interface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1"
-	-- for _, data in ipairs{
     local y, dy = 0, 28
     -- Buttons inside the "Misc" sub-frame
 	for _, data in ipairs{
@@ -55,11 +52,6 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
         { "Favorite",   STAR_TEX,  MultiBot.tips.every.favorite, function(b)
             local name = b.getName()
             MultiBot.ToggleFavorite(name)
-            --[[if MultiBot.IsFavorite(name) then
-              b.icon:SetTexture("Interface\\RaidFrame\\ReadyCheck-NotReady")
-            else
-              b.icon:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
-            end--]]
             local tex = b.icon
             if tex then
               tex:SetTexture(MultiBot.SafeTexturePath(STAR_TEX))
@@ -96,9 +88,6 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
       local favBtn = tMisc.buttons and tMisc.buttons["Favorite"]
       if favBtn then
         local name = favBtn.getName and favBtn.getName()
-        --[[if name and MultiBot.IsFavorite and MultiBot.IsFavorite(name) then
-          favBtn.icon:SetTexture("Interface\\RaidFrame\\ReadyCheck-NotReady")
-        end--]]
         local tex = favBtn.icon
         if tex then
           tex:SetTexture(MultiBot.SafeTexturePath(STAR_TEX))

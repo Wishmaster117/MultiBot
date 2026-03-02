@@ -100,12 +100,6 @@ local function CreateStyledFrame()
     local hdr1 = honor:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     hdr1:SetPoint("TOPRIGHT", honor, "TOPRIGHT", colOffsets[1], -2)
     hdr1:SetText(MultiBot.tips.every.pvptotal)
-    --local hdr2 = honor:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    --hdr2:SetPoint("TOPRIGHT", honor, "TOPRIGHT", colOffsets[2], -2)
-    --hdr2:SetText("Hier")
-    --local hdr3 = honor:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    --hdr3:SetPoint("TOPRIGHT", honor, "TOPRIGHT", colOffsets[3], -2)
-    --hdr3:SetText("À vie")
 
     -- separator
     local sepH = honor:CreateTexture(nil, "ARTWORK")
