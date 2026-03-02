@@ -348,6 +348,15 @@ local function migrateLegacySpecDropdownPositionsIfNeeded(store)
     end
 
     MultiBot.MarkLegacyStateMigrated(SPEC_DROPDOWN_MIGRATION_KEY, SPEC_DROPDOWN_MIGRATION_VERSION)
+
+    -- Purge migrated legacy payload to avoid stale duplicate persistence.
+    if wipe then
+        wipe(legacyStore)
+    else
+        for key in pairs(legacyStore) do
+            legacyStore[key] = nil
+        end
+    end
 end
 
 local function getSpecDropdownPosition(charKey)

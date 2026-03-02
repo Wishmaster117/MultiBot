@@ -128,6 +128,11 @@ local function migrateLegacyMainBarStateIfNeeded(profileStore)
 	end
 
 	MultiBot.MarkLegacyStateMigrated(MAINBAR_MIGRATION_KEY, MAINBAR_MIGRATION_VERSION)
+
+	-- Purge migrated legacy main-bar keys to avoid stale duplicate persistence.
+	for _, key in ipairs(MAINBAR_STATE_KEYS) do
+		legacy[key] = nil
+	end
 end
 
 local function getSavedMainBarValue(key)
@@ -182,6 +187,11 @@ local function migrateLegacyLayoutStateIfNeeded(profileStore)
 	end
 
 	MultiBot.MarkLegacyStateMigrated(LAYOUT_MIGRATION_KEY, LAYOUT_MIGRATION_VERSION)
+
+	-- Purge migrated legacy layout keys to avoid stale duplicate persistence.
+	for _, key in ipairs(LAYOUT_STATE_KEYS) do
+		legacy[key] = nil
+	end
 end
 
 local function getSavedLayoutValue(key)

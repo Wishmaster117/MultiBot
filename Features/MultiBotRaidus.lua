@@ -219,15 +219,22 @@ local function migrateLegacyRaidusLayoutsIfNeeded(store)
     end
 
     MultiBotSave = MultiBotSave or {}
+    local legacyStore = MultiBotSave
     for slotIndex = 1, RAIDUS_LAYOUT_SLOT_MAX do
         local slot = (slotIndex == 1) and nil or slotIndex
         local key = getRaidusLayoutKey(slot)
-        if store[key] == nil and MultiBotSave[key] ~= nil then
-            store[key] = MultiBotSave[key]
+        if store[key] == nil and legacyStore[key] ~= nil then
+            store[key] = legacyStore[key]
         end
     end
 
     MultiBot.MarkLegacyStateMigrated(RAIDUS_LAYOUT_MIGRATION_KEY, RAIDUS_LAYOUT_MIGRATION_VERSION)
+
+    -- Purge migrated legacy Raidus layout keys to avoid stale duplicate persistence.
+    for slotIndex = 1, RAIDUS_LAYOUT_SLOT_MAX do
+        local slot = (slotIndex == 1) and nil or slotIndex
+        legacyStore[getRaidusLayoutKey(slot)] = nil
+    end
 end
 
 local function getRaidusLayoutValue(slot)
