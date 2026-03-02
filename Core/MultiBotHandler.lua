@@ -102,9 +102,18 @@ local LAYOUT_STATE_KEYS = {
 	"MemoryGem3",
 }
 
-local function getLegacyStateStore()
-	MultiBotSave = MultiBotSave or {}
-	return MultiBotSave
+local function getLegacyStateStore(createIfMissing)
+	local store = _G.MultiBotSave
+	if type(store) ~= "table" then
+		if not createIfMissing then
+			return nil
+		end
+
+		store = {}
+		_G.MultiBotSave = store
+	end
+
+	return store
 end
 
 local function getMainBarProfileStore()
@@ -120,9 +129,9 @@ local function migrateLegacyMainBarStateIfNeeded(profileStore)
 		return
 	end
 
-	local legacy = getLegacyStateStore()
+	local legacy = getLegacyStateStore(false)
 	for _, key in ipairs(MAINBAR_STATE_KEYS) do
-		if profileStore[key] == nil and legacy[key] ~= nil then
+		if profileStore[key] == nil and legacy and legacy[key] ~= nil then
 			profileStore[key] = legacy[key]
 		end
 	end
@@ -130,21 +139,23 @@ local function migrateLegacyMainBarStateIfNeeded(profileStore)
 	MultiBot.MarkLegacyStateMigrated(MAINBAR_MIGRATION_KEY, MAINBAR_MIGRATION_VERSION)
 
 	-- Purge migrated legacy main-bar keys to avoid stale duplicate persistence.
-	for _, key in ipairs(MAINBAR_STATE_KEYS) do
-		legacy[key] = nil
+	if type(legacy) == "table" then
+		for _, key in ipairs(MAINBAR_STATE_KEYS) do
+			legacy[key] = nil
+		end
 	end
 end
 
 local function getSavedMainBarValue(key)
-	local legacy = getLegacyStateStore()
+	local legacy = getLegacyStateStore(false)
 	local profileStore = getMainBarProfileStore()
 	if profileStore then
 		migrateLegacyMainBarStateIfNeeded(profileStore)
 	end
 
-	local value = profileStore and profileStore[key] or legacy[key]
+	local value = profileStore and profileStore[key] or (legacy and legacy[key])
 	if profileStore and value == nil and MultiBot.ShouldSyncLegacyState(MAINBAR_MIGRATION_KEY, MAINBAR_MIGRATION_VERSION) then
-		value = legacy[key]
+		value = legacy and legacy[key]
 		if value ~= nil then
 			profileStore[key] = value
 		end
@@ -160,7 +171,7 @@ local function setSavedMainBarValue(key, value)
 	end
 
 	if MultiBot.ShouldSyncLegacyState(MAINBAR_MIGRATION_KEY, MAINBAR_MIGRATION_VERSION) then
-		local legacy = getLegacyStateStore()
+		local legacy = getLegacyStateStore(true)
 		legacy[key] = value
 	end
 	return value
@@ -179,9 +190,9 @@ local function migrateLegacyLayoutStateIfNeeded(profileStore)
 		return
 	end
 
-	local legacy = getLegacyStateStore()
+	local legacy = getLegacyStateStore(false)
 	for _, key in ipairs(LAYOUT_STATE_KEYS) do
-		if profileStore[key] == nil and legacy[key] ~= nil then
+		if profileStore[key] == nil and legacy and legacy[key] ~= nil then
 			profileStore[key] = legacy[key]
 		end
 	end
@@ -189,21 +200,23 @@ local function migrateLegacyLayoutStateIfNeeded(profileStore)
 	MultiBot.MarkLegacyStateMigrated(LAYOUT_MIGRATION_KEY, LAYOUT_MIGRATION_VERSION)
 
 	-- Purge migrated legacy layout keys to avoid stale duplicate persistence.
-	for _, key in ipairs(LAYOUT_STATE_KEYS) do
-		legacy[key] = nil
+	if type(legacy) == "table" then
+		for _, key in ipairs(LAYOUT_STATE_KEYS) do
+			legacy[key] = nil
+		end
 	end
 end
 
 local function getSavedLayoutValue(key)
-	local legacy = getLegacyStateStore()
+	local legacy = getLegacyStateStore(false)
 	local profileStore = getLayoutProfileStore()
 	if profileStore then
 		migrateLegacyLayoutStateIfNeeded(profileStore)
 	end
 
-	local value = profileStore and profileStore[key] or legacy[key]
+	local value = profileStore and profileStore[key] or (legacy and legacy[key])
 	if profileStore and value == nil and MultiBot.ShouldSyncLegacyState(LAYOUT_MIGRATION_KEY, LAYOUT_MIGRATION_VERSION) then
-		value = legacy[key]
+		value = legacy and legacy[key]
 		if value ~= nil then
 			profileStore[key] = value
 		end
@@ -219,7 +232,7 @@ local function setSavedLayoutValue(key, value)
 	end
 
 	if MultiBot.ShouldSyncLegacyState(LAYOUT_MIGRATION_KEY, LAYOUT_MIGRATION_VERSION) then
-		local legacy = getLegacyStateStore()
+		local legacy = getLegacyStateStore(true)
 		legacy[key] = value
 	end
 	return value

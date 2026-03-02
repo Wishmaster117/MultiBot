@@ -64,13 +64,22 @@ local function migrateLegacyConfigIntoProfile(profile)
   end
 end
 
-local function getConfigStore()
+local function getConfigStore(createIfMissing)
   if MultiBot.db and MultiBot.db.profile then
     return MultiBot.db.profile
   end
 
-  MultiBotDB = MultiBotDB or {}
-  return MultiBotDB
+  local legacy = _G.MultiBotDB
+  if type(legacy) ~= "table" then
+    if not createIfMissing then
+      return nil
+    end
+
+    legacy = {}
+    _G.MultiBotDB = legacy
+  end
+
+  return legacy
 end
 
 function MultiBot.Config_InitDB()
@@ -92,7 +101,7 @@ end
 function MultiBot.Config_Ensure()
   MultiBot.Config_InitDB()
 
-  local config = getConfigStore()
+  local config = getConfigStore(true)
 
   config.timers = config.timers or {}
   for key, defaultValue in pairs(DEFAULTS) do
@@ -113,7 +122,10 @@ end
 -- Copy saved values into runtime timers.
 function MultiBot.ApplyTimersToRuntime()
   if not (MultiBot and MultiBot.timer) then return end
-  local config = getConfigStore()
+  local config = getConfigStore(false)
+  if not config then
+    return
+  end
   for key, value in pairs(config.timers or {}) do
     MultiBot.timer[key] = MultiBot.timer[key] or { elapsed = 0, interval = value }
     MultiBot.timer[key].interval = value
@@ -122,7 +134,7 @@ end
 
 -- Read
 function MultiBot.GetTimer(name)
-  local config = getConfigStore()
+  local config = getConfigStore(false)
   local value = config and config.timers and config.timers[name]
   if type(value) == "number" and value > 0 then
     return value
@@ -151,7 +163,7 @@ function MultiBot.SetTimer(name, value)
   if value < 0.1 then value = 0.1 end
   if value > 600 then value = 600 end
 
-  local config = getConfigStore()
+  local config = getConfigStore(true)
   config.timers = config.timers or {}
   config.timers[name] = value
 
@@ -168,7 +180,7 @@ function MultiBot.GetThrottleRate()
 end
 
 function MultiBot.GetThrottleBurst()
-  local config = getConfigStore()
+  local config = getConfigStore(false)
   return (config and config.throttle and config.throttle.burst) or THROTTLE_DEFAULTS.burst
 end
 
@@ -178,7 +190,7 @@ function MultiBot.SetThrottleRate(value)
   if value < 1 then value = 1 end
   if value > 50 then value = 50 end
 
-  local config = getConfigStore()
+  local config = getConfigStore(true)
   config.throttle = config.throttle or {}
   config.throttle.rate = value
 
@@ -192,7 +204,7 @@ function MultiBot.SetThrottleBurst(value)
   if value < 1 then value = 1 end
   if value > 100 then value = 100 end
 
-  local config = getConfigStore()
+  local config = getConfigStore(true)
   config.throttle = config.throttle or {}
   config.throttle.burst = value
 
