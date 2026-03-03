@@ -22,8 +22,9 @@
   - Minimap hide/angle, global frame strata, options timers/throttle, Spec dropdown positions, Hunter/Shaman quick-bar positions, Hunter pet stance state and Shaman totem choice state now run through AceDB-backed helpers with one-way versioned legacy cutover and guarded legacy fallback (no legacy table creation on pure read paths).
 - **Milestone 8 (AceGUI UI refactor):** Planned (next).
   - Replace legacy frame construction screen-by-screen with AceGUI containers/widgets while preserving behavior and slash/open flows.
-- **Milestone 9 (Localization and text pipeline):** Planned.
-  - Consolidate user-facing strings into AceLocale tables and remove duplicated inline literals where feasible.
+- **Milestone 9 (Localization and text pipeline):** In progress.
+  - Core locale loader + per-locale payload files are integrated (`Core/MultiBotLocale.lua`, `Locales/MultiBotAceLocale-*.lua`).
+  - Incremental migration of UI/Core call sites to `MultiBot.L(...)` is ongoing (targeted PRs, behavior parity first).
 - **Milestone 10 (Data model and table lifecycle hardening):** Planned.
   - Normalize runtime stores and remove ad-hoc table creation paths via centralized getters/validators.
 - **Milestone 11 (Scheduler/timers convergence):** Planned.
@@ -114,9 +115,9 @@
 - Each migrated screen reaches behavior parity before moving to the next one.
 
 ### D2. Milestone 9 — Localization and text pipeline
-1. Inventory all user-facing strings in `Core/`, `UI/`, `Features/`.
-2. Route strings through locale tables (AceLocale integration when feasible with current packaging).
-3. Preserve fallback locale behavior and avoid nil-text regressions.
+1. Inventory all user-facing strings in `Core/`, `UI/`, `Features/`. *(in progress)*
+2. Route strings through locale tables (AceLocale integration when feasible with current packaging). *(in progress)*
+3. Preserve fallback locale behavior and avoid nil-text regressions. *(in progress)*
 
 **Exit criteria**
 - New/edited UI text no longer ships as hardcoded literals outside locale tables.

@@ -31,7 +31,7 @@ local function CreateStyledFrame()
     titleBg:SetHeight(48)
     f.Title = f:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     f.Title:SetPoint("TOP", titleBg, "TOP", 0, -10)
-    f.Title:SetText("MultiBot PvP Panel")
+    f.Title:SetText(MultiBot.L("options.pvp.title", "MultiBot PvP Panel"))
 
     -- Close button
     local close = CreateFrame("Button", nil, f, "UIPanelCloseButton")
@@ -83,23 +83,23 @@ local function CreateStyledFrame()
     -- Header that will display bot name (updated from whisper sender)
     local customHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     customHeader:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -top)
-    customHeader:SetText(MultiBot.tips.every.pvpcustom)
+    customHeader:SetText(MultiBot.L("tips.every.pvpcustom", "Custom PVP Datas"))
     top = top + 18 + 6
 
     -- Bot selector (cache par bot) - alimenté par les réponses [PVP] reçues en whisper
     local botDropDown = CreateFrame("Frame", "MultiBotPVPBotDropDown", content, "UIDropDownMenuTemplate")
     botDropDown:SetPoint("TOPRIGHT", content, "TOPRIGHT", 18, 10)
     UIDropDownMenu_SetWidth(botDropDown, 180)
-    UIDropDownMenu_SetText(botDropDown, "Bot")
+    UIDropDownMenu_SetText(botDropDown, MultiBot.L("ui.pvp.bot_selector", "Bot"))
 
     -- HONNEUR section: only one row "Honneur"
     local honorHeight = 18 + 1 * 18 + 8
-    local honor = CreateSection(content, top, honorHeight, "Honneur")
+    local honor = CreateSection(content, top, honorHeight, MultiBot.L("ui.pvp.honor_section", "Honnor"))
 
     -- Column header labels for Honneur (1st renamed Total)
     local hdr1 = honor:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     hdr1:SetPoint("TOPRIGHT", honor, "TOPRIGHT", colOffsets[1], -2)
-    hdr1:SetText(MultiBot.tips.every.pvptotal)
+    hdr1:SetText(MultiBot.L("tips.every.pvptotal", "Total"))
 
     -- separator
     local sepH = honor:CreateTexture(nil, "ARTWORK")
@@ -109,7 +109,7 @@ local function CreateStyledFrame()
     sepH:SetTexture(0.5, 0.5, 0.5, 0.6)
 
     -- Only the Honneur row (we keep placeholders)
-    local honorRow = AddRow(honor, 1, "Honneur", "-", "-", "-")
+    local honorRow = AddRow(honor, 1, MultiBot.L("ui.pvp.honor_row", "Honneur"), "-", "-", "-")
 	if honorRow[2] then honorRow[2]:Hide() end
     if honorRow[3] then honorRow[3]:Hide() end
     -- honorRow[1] = Total column fontstring
@@ -118,7 +118,7 @@ local function CreateStyledFrame()
 
     -- ARENE section: we create three sub-blocks, one per mode, stacked vertically
     local arenaBlockHeight = 18 + 2 * 18 + 6 -- title + two lines (team + rating) approx
-    local arena = CreateSection(content, top, arenaBlockHeight * 3 + spacing * 2, "Arène")
+    local arena = CreateSection(content, top, arenaBlockHeight * 3 + spacing * 2, MultiBot.L("ui.pvp.arena_section", "Arène"))
 
     -- separator
     local arenaSep = arena:CreateTexture(nil, "ARTWORK")
@@ -130,7 +130,7 @@ local function CreateStyledFrame()
     -- Points d'Arène (affiché à gauche de la section Arène)
     arena.pointsLabel = arena:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     arena.pointsLabel:SetPoint("TOPLEFT", arena, "TOPLEFT", 120, 0)
-    arena.pointsLabel:SetText(MultiBot.tips.every.pvparenapoints)
+    arena.pointsLabel:SetText(MultiBot.L("tips.every.pvparenapoints", "Arena Points"))
 
     arena.pointsValue = arena:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     arena.pointsValue:SetPoint("LEFT", arena.pointsLabel, "RIGHT", 6, 0)
@@ -141,16 +141,20 @@ local function CreateStyledFrame()
         -- mode title (e.g., "Mode: 2v2")
         local modeText = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         modeText:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -offsetY -32)
-        modeText:SetText(MultiBot.tips.every.pvparenamode .. modeLabel)
+        modeText:SetText(MultiBot.L("tips.every.pvparenamode", "Mode") .. modeLabel)
 
         -- team name
         local teamText = parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         teamText:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -offsetY - 50)
-        teamText:SetText(MultiBot.tips.every.pvparenanoteam)
+        --ratingText:SetText(MultiBot.L("tips.every.pvparenanoteamrank", "Team Rank: -"))
 
         -- rating
         local ratingText = parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         ratingText:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -8, -offsetY - 34)
+
+        -- Keep explicit local variables before SetText assignments
+        -- to avoid accidental global lookups if this block is edited later.
+        teamText:SetText(MultiBot.L("tips.every.pvparenanoteam", "Team: No team"))
         ratingText:SetText(MultiBot.tips.every.pvparenanoteamrank)
 
         return { mode = modeText, team = teamText, rating = ratingText }
@@ -168,7 +172,7 @@ local function CreateStyledFrame()
     -- Tabs (bottom)
     local tabs = {}
     --local tabNames = { "JcJ", "Dummy" }
-	local tabNames = { "JcJ" }
+	local tabNames = { MultiBot.L("ui.pvp.tab.pvp", "JcJ") }
 
     for i, name in ipairs(tabNames) do
         local template = (_G["CharacterFrameTabButtonTemplate"] and
@@ -189,7 +193,7 @@ local function CreateStyledFrame()
     dummy:Hide()
     dummy.text = dummy:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     dummy.text:SetPoint("TOPLEFT", dummy, "TOPLEFT", 4, -4)
-    dummy.text:SetText("Dummy tab (placeholder)")
+    dummy.text:SetText(MultiBot.L("ui.pvp.tab.placeholder", "Dummy tab (placeholder)"))
 
     -- SelectTab: show/hide + visual feedback
     local function SelectTab(id)
@@ -322,7 +326,7 @@ local function MBPVP_ApplyStateToUi(frame, botName)
 
     -- Header
     if frame._customHeader then
-        frame._customHeader:SetText(MultiBot.tips.every.pvparenadata .. botName)
+        frame._customHeader:SetText(MultiBot.L("tips.every.pvparenadata", "PvP Datas ") .. botName)
     end
 
     -- Currency
@@ -336,25 +340,25 @@ local function MBPVP_ApplyStateToUi(frame, botName)
 
     -- Rows
     if frame._arenaRows then
-        local teamPrefix = MBPVP_PrefixFromTemplate(MultiBot.tips.every.pvparenanoteam, "Team: ")
-        local rankPrefix = MBPVP_PrefixFromTemplate(MultiBot.tips.every.pvparenanoteamrank, "Rating: ")
+        local teamPrefix = MBPVP_PrefixFromTemplate(MultiBot.L("tips.every.pvparenanoteam", "Team: No team"), MultiBot.L("ui.pvp.prefix.team", "Team: "))
+        local rankPrefix = MBPVP_PrefixFromTemplate(MultiBot.L("tips.every.pvparenanoteamrank", "Team Rank: -"), MultiBot.L("ui.pvp.prefix.rating", "Rating: "))
 
         for _, mode in ipairs({ "2v2", "3v3", "5v5" }) do
             local row = frame._arenaRows[mode]
             local mt = st.teams and st.teams[mode]
             if row then
-                row.mode:SetText(MultiBot.tips.every.pvparenamode .. mode)
+                row.mode:SetText(MultiBot.L("tips.every.pvparenamode", "Mode") .. mode)
 
                 if mt and mt.team then
                     row.team:SetText(teamPrefix .. mt.team)
                 else
-                    row.team:SetText(MultiBot.tips.every.pvparenanoteam)
+                    row.team:SetText(MultiBot.L("tips.every.pvparenanoteam", "Team: No team"))
                 end
 
                 if mt and mt.rating then
                     row.rating:SetText(rankPrefix .. mt.rating)
                 else
-                    row.rating:SetText(MultiBot.tips.every.pvparenanoteamrank)
+                    row.rating:SetText(MultiBot.L("tips.every.pvparenanoteamrank", "Team Rank: -"))
                 end
             end
         end
@@ -370,7 +374,7 @@ local function MBPVP_SetCurrentBot(frame, botName)
 
     if frame._botDropDown then
         UIDropDownMenu_SetSelectedValue(frame._botDropDown, botName)
-        UIDropDownMenu_SetText(frame._botDropDown, botName ~= "" and botName or "Bot")
+        UIDropDownMenu_SetText(frame._botDropDown, botName ~= "" and botName or MultiBot.L("ui.pvp.bot_selector", "Bot"))
     end
 
     MBPVP_ApplyStateToUi(frame, botName)
@@ -400,7 +404,7 @@ local function MBPVP_InitBotDropDown(frame)
         end
     end)
 
-    UIDropDownMenu_SetText(frame._botDropDown, "Bot")
+    UIDropDownMenu_SetText(frame._botDropDown, MultiBot.L("ui.pvp.bot_selector", "Bot"))
 end
 
 local function MBPVP_IsNoTeamMessage(msg)
@@ -449,9 +453,9 @@ local function ResetPvpUi(frame)
         for _, mode in ipairs({ "2v2", "3v3", "5v5" }) do
             local row = frame._arenaRows[mode]
             if row then
-                row.mode:SetText(MultiBot.tips.every.pvparenamode .. mode)
-                row.team:SetText(MultiBot.tips.every.pvparenanoteam)
-                row.rating:SetText(MultiBot.tips.every.pvparenanoteamrank)
+                row.mode:SetText(MultiBot.L("tips.every.pvparenamode", "Mode") .. mode)
+                row.team:SetText(MultiBot.L("tips.every.pvparenanoteam", "Team: No team"))
+                row.rating:SetText(MultiBot.L("tips.every.pvparenanoteamrank", "Team Rank: -"))
             end
         end
     end

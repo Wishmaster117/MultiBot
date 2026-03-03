@@ -8,6 +8,14 @@ local icons = MultiBot.data.iconos or {}
 
 local defaultIcon = "Interface\\Icons\\Achievement_Reputation_08"
 
+local function specTip(key, fallback)
+  local multiBot = _G["MultiBot"]
+  if multiBot and multiBot.L then
+    return multiBot.L("tips.spec." .. key, fallback)
+  end
+  return fallback or ("tips.spec." .. key)
+end
+
 -- canonicalisation des petits préfixes
 local specCanonical = {
   -- Paladin
@@ -55,160 +63,160 @@ local specCanonical = {
 local specIconMap = {
   DeathKnight = {
     Blood  = {
-      pve = { icon = icons[5427], tip =  MultiBot.tips.spec.dkbloodpve },
-      pvp = { icon = icons[5427], tip =  MultiBot.tips.spec.dkbloodpvp },
+      pve = { icon = icons[5427], tip =  specTip("dkbloodpve") },
+      pvp = { icon = icons[5427], tip =  specTip("dkbloodpvp") },
     },
     Frost  = {
-      pve = { icon = icons[5438], tip = MultiBot.tips.spec.dkbfrostpve },
-      pvp = { icon = icons[5438], tip = MultiBot.tips.spec.dkbfrostpvp },
+      pve = { icon = icons[5438], tip = specTip("dkbfrostpve") },
+      pvp = { icon = icons[5438], tip = specTip("dkbfrostpvp") },
     },
     Unholy = {
-      pve = { icon = icons[5454], tip = MultiBot.tips.spec.dkunhopve },
-      pvp = { icon = icons[5454], tip = MultiBot.tips.spec.dkunhopvp  },
+      pve = { icon = icons[5454], tip = specTip("dkunhopve") },
+      pvp = { icon = icons[5454], tip = specTip("dkunhopvp")  },
     },
     Double = {
-      pve = { icon = icons[5946], tip = MultiBot.tips.spec.dkdoublepve },
+      pve = { icon = icons[5946], tip = specTip("dkdoublepve") },
     },
   },
 
   Druid = {
     Balance     = {
-      pve = { icon = icons[73], tip = MultiBot.tips.spec.druidbalpve },
-      pvp = { icon = icons[73], tip = MultiBot.tips.spec.druidbalpvp },
+      pve = { icon = icons[73], tip = specTip("druidbalpve") },
+      pvp = { icon = icons[73], tip = specTip("druidbalpvp") },
     },
     Cat        = {
-      pve = { icon = icons[28] , tip = MultiBot.tips.spec.druidcatpve },
-      pvp = { icon = icons[28], tip = MultiBot.tips.spec.druidcatpvp },
+      pve = { icon = icons[28] , tip = specTip("druidcatpve") },
+      pvp = { icon = icons[28], tip = specTip("druidcatpvp") },
     },
     Bear       = {
-      pve = { icon = icons[325] , tip = MultiBot.tips.spec.druidbearpve },
+      pve = { icon = icons[325] , tip = specTip("druidbearpve") }
     },
     Restoration = {
-      pve = { icon = icons[5745]  , tip = MultiBot.tips.spec.druidrestopve },
-      pvp = { icon = icons[5745], tip = MultiBot.tips.spec.druidrestopvp },
+      pve = { icon = icons[5745]  , tip = specTip("druidrestopve") },
+      pvp = { icon = icons[5745], tip = specTip("druidrestopvp") },
     },
   },
 
   Hunter = {
     BM           = {
-      pve = { icon = icons[103], tip = MultiBot.tips.spec.huntbmpve },
-      pvp = { icon = icons[103], tip = MultiBot.tips.spec.huntbmpvp },
+      pve = { icon = icons[103], tip = specTip("huntbmpve") },
+      pvp = { icon = icons[103], tip = specTip("huntbmpvp") },
     },
     Marksmanship = {
-      pve = { icon = icons[214], tip = MultiBot.tips.spec.huntmarkpve },
-      pvp = { icon = icons[214], tip = MultiBot.tips.spec.huntmarkpvp },
+      pve = { icon = icons[214], tip = specTip("huntmarkpve") },
+      pvp = { icon = icons[214], tip = specTip("huntmarkpvp") },
     },
     Survival     = {
-      pve = { icon = icons[181]  , tip = MultiBot.tips.spec.huntsurvpve },
-      pvp = { icon = icons[181]  , tip = MultiBot.tips.spec.huntsurvpvp },
+      pve = { icon = icons[181]  , tip = specTip("huntsurvpve") },
+      pvp = { icon = icons[181]  , tip = specTip("huntsurvpvp") },
     },
   },
 
   Mage = {
     Arcane = {
-      pve = { icon = icons[5551], tip = MultiBot.tips.spec.magearcapve},
-      pvp = { icon = icons[5551], tip = MultiBot.tips.spec.magearcapvp },
+      pve = { icon = icons[5551], tip = specTip("magearcapve")},
+      pvp = { icon = icons[5551], tip = specTip("magearcapvp") },
     },
     Fire   = {
-      pve = { icon = icons[5494] , tip = MultiBot.tips.spec.magefirepve },
-      pvp = { icon = icons[5494], tip = MultiBot.tips.spec.magefirepvp },
+      pve = { icon = icons[5494] , tip = specTip("magefirepve") },
+      pvp = { icon = icons[5494], tip = specTip("magefirepvp") },
     },
     Frostfire   = {
-      pve = { icon = icons[200] , tip = MultiBot.tips.spec.magefrostfirepve },
+      pve = { icon = icons[200] , tip = specTip("magefrostfirepve") },
     },
     Frost  = {
-      pve = { icon = icons[5521] , tip = MultiBot.tips.spec.magefrostpve },
-      pvp = { icon = icons[5521], tip = MultiBot.tips.spec.magefrostpvp},
+      pve = { icon = icons[5521] , tip = specTip("magefrostpve") },
+      pvp = { icon = icons[5521], tip = specTip("magefrostpvp")},
     },
   },
 
   Paladin = {
     Holy = {
-      pve = { icon = icons[5608], tip = MultiBot.tips.spec.paladinholypve},
-      pvp = { icon = icons[5608], tip = MultiBot.tips.spec.paladinholypvp},
+      pve = { icon = icons[5608], tip = specTip("paladinholypve")},
+      pvp = { icon = icons[5608], tip = specTip("paladinholypvp")},
     },
     Protection = {
-      pve = { icon = icons[5578] , tip = MultiBot.tips.spec.paladinprotpve },
-      pvp = { icon = icons[5578], tip = MultiBot.tips.spec.paladinprotpvp },
+      pve = { icon = icons[5578] , tip = specTip("paladinprotpve") },
+      pvp = { icon = icons[5578], tip = specTip("paladinprotpvp") },
     },
     Ret   = {
-      pve = { icon = icons[300], tip = MultiBot.tips.spec.paladinretpve },
-      pvp = { icon = icons[300], tip = MultiBot.tips.spec.paladinretpvp },
+      pve = { icon = icons[300], tip = specTip("paladinretpve") },
+      pvp = { icon = icons[300], tip = specTip("paladinretpvp") }
     },
   },
 
   Priest = {
     Discipline = {
-      pve = { icon = icons[5685], tip = MultiBot.tips.spec.priestdiscipve },
-      pvp = { icon = icons[5685], tip = MultiBot.tips.spec.priestdiscipvp },
+      pve = { icon = icons[5685], tip = specTip("priestdiscipve") },
+      pvp = { icon = icons[5685], tip = specTip("priestdiscipvp") },
     },
     Holy = {
-      pve = { icon = icons[5601], tip = MultiBot.tips.spec.priestholypve },
-      pvp = { icon = icons[5601], tip = MultiBot.tips.spec.priestholypvp },
+      pve = { icon = icons[5601], tip = specTip("priestholypve") },
+      pvp = { icon = icons[5601], tip = specTip("priestholypvp") },
     },
     Shadow = {
-      pve = { icon = icons[5929], tip = MultiBot.tips.spec.priestshadowpve },
-      pvp = { icon = icons[5929], tip = MultiBot.tips.spec.priestshadowpvp },
+      pve = { icon = icons[5929], tip = specTip("priestshadowpve") },
+      pvp = { icon = icons[5929], tip = specTip("priestshadowpvp") },
     },
   },
 
   Rogue = {
     As = {
-      pve = { icon = icons[346], tip = MultiBot.tips.spec.rogassapve },
-      pvp = { icon = icons[346], tip = MultiBot.tips.spec.rogassapvp },
+      pve = { icon = icons[346], tip = specTip("rogassapve") },
+      pvp = { icon = icons[346], tip = specTip("rogassapvp") },
     },
     Combat = {
-      pve = { icon = icons[358], tip = MultiBot.tips.spec.rogcombatpve },
-      pvp = { icon = icons[358], tip = MultiBot.tips.spec.rogcombatpvp },
+      pve = { icon = icons[358], tip = specTip("rogcombatpve") },
+      pvp = { icon = icons[358], tip = specTip("rogcombatpvp") },
     },
     Subtlety = {
-      pve = { icon = icons[331], tip = MultiBot.tips.spec.rogsubtipve },
-      pvp = { icon = icons[331], tip = MultiBot.tips.spec.rogsubtipvp },
+      pve = { icon = icons[331], tip = specTip("rogsubtipve") },
+      pvp = { icon = icons[331], tip = specTip("rogsubtipvp") },
     },
   },
 
   Shaman = {
     Ele   = {
-      pve = { icon = icons[5716], tip = MultiBot.tips.spec.shamanelempve },
-      pvp = { icon = icons[5716], tip = MultiBot.tips.spec.shamanelempvp },
+      pve = { icon = icons[5716], tip = specTip("shamanelempve") },
+      pvp = { icon = icons[5716], tip = specTip("shamanelempvp") },
     },
     Enh  = {
-      pve = { icon = icons[5755], tip = MultiBot.tips.spec.shamanenhpve },
-      pvp = { icon = icons[5755], tip = MultiBot.tips.spec.shamanenhpvp },
+      pve = { icon = icons[5755], tip = specTip("shamanenhpve") },
+      pvp = { icon = icons[5755], tip = specTip("shamanenhpvp") },
     },
     Restoration = {
-      pve = { icon = icons[5756], tip = MultiBot.tips.spec.shamanrestopve },
-      pvp = { icon = icons[5756], tip = MultiBot.tips.spec.shamanrestopvp },
+      pve = { icon = icons[5756], tip = specTip("shamanrestopve") },
+      pvp = { icon = icons[5756], tip = specTip("shamanrestopvp") },
     },
   },
 
   Warlock = {
     Affliction = {
-      pve = { icon = icons[5852], tip = MultiBot.tips.spec.warlockafflipve },
-      pvp = { icon = icons[5852], tip = MultiBot.tips.spec.warlockafflipvp },
+      pve = { icon = icons[5852], tip = specTip("warlockafflipve") },
+      pvp = { icon = icons[5852], tip = specTip("warlockafflipvp") },
     },
     Demonology = {
-      pve = { icon = icons[5889], tip = MultiBot.tips.spec.warlockdemonopve },
-      pvp = { icon = icons[5889], tip = MultiBot.tips.spec.warlockdemonopvp },
+      pve = { icon = icons[5889], tip = specTip("warlockdemonopve") },
+      pvp = { icon = icons[5889], tip = specTip("warlockdemonopvp") },
     },
     Destruction = {
-      pve = { icon = icons[5907], tip = MultiBot.tips.spec.warlockdestrupve },
-      pvp = { icon = icons[5907], tip = MultiBot.tips.spec.warlockdestrupvp },
+      pve = { icon = icons[5907], tip = specTip("warlockdestrupve") },
+      pvp = { icon = icons[5907], tip = specTip("warlockdestrupvp") },
     },
   },
 
   Warrior = {
     Arms = {
-      pve = { icon = icons[436], tip = MultiBot.tips.spec.warriorarmspve },
-      pvp = { icon = icons[436], tip = MultiBot.tips.spec.warriorarmspvp },
+      pve = { icon = icons[436], tip = specTip("warriorarmspve") },
+      pvp = { icon = icons[436], tip = specTip("warriorarmspvp") },
     },
     Fury = {
-      pve = { icon = icons[480], tip = MultiBot.tips.spec.warriorfurypve },
-      pvp = { icon = icons[480], tip = MultiBot.tips.spec.warriorfurypvp },
+      pve = { icon = icons[480], tip = specTip("warriorfurypve") },
+      pvp = { icon = icons[480], tip = specTip("warriorfurypvp") },
     },
     Protection = {
-      pve = { icon = icons[4456], tip = MultiBot.tips.spec.warriorprotecpve },
-      pvp = { icon = icons[4456], tip = MultiBot.tips.spec.warriorprotecpvp },
+      pve = { icon = icons[4456], tip = specTip("warriorprotecpve") },
+      pvp = { icon = icons[4456], tip = specTip("warriorprotecpvp") },
     },
   },
 }

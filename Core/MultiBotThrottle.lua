@@ -54,6 +54,6 @@ function MultiBot.Throttle_Init()
   MultiBot._throttleInited = true
   MultiBot._throttleOrig   = orig_SendChatMessage
   if DEFAULT_CHAT_FRAME then
-    DEFAULT_CHAT_FRAME:AddMessage(string.format(MultiBot.tips.sliders.throttleinstalled .. " (%.0f msg/s, rafale %d)", RATE_PER_SEC, BURST))
+    DEFAULT_CHAT_FRAME:AddMessage(string.format(MultiBot.L("tips.sliders.throttleinstalled", "Throttle installed") .. " (%.0f msg/s, rafale %d)", RATE_PER_SEC, BURST))
   end
 end

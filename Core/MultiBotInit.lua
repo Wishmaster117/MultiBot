@@ -1106,11 +1106,11 @@ end)
 -- UNITS:BROWSE --
 
 -- PVP STATS --
-local btnPvpStats = tControl.addButton("PvPStats", 0, 60, "Ability_Parry", MultiBot.tips.units.pvpstatsmaster).setEnable()
+local btnPvpStats = tControl.addButton("PvPStats", 0, 60, "Ability_Parry", MultiBot.L("tips.units.pvpstatsmaster", "PvP stats")).setEnable()
 
-local btnPvpWhisper = tControl.addButton("PvPStatsWhisper", 31, 60, "inv_Mask_04", MultiBot.tips.units.pvpstatstobot)
-local btnPvpParty   = tControl.addButton("PvPStatsParty",   61, 60, "achievement_reputation_08", MultiBot.tips.units.pvpstatstoparty)
-local btnPvpRaid    = tControl.addButton("PvPStatsRaid",    91, 60, "achievement_pvp_o_10",  MultiBot.tips.units.pvpstatstoraid)
+local btnPvpWhisper = tControl.addButton("PvPStatsWhisper", 31, 60, "inv_Mask_04", MultiBot.L("tips.units.pvpstatstobot", "Whisper PvP stats"))
+local btnPvpParty   = tControl.addButton("PvPStatsParty",   61, 60, "achievement_reputation_08", MultiBot.L("tips.units.pvpstatstoparty", "Party PvP stats"))
+local btnPvpRaid    = tControl.addButton("PvPStatsRaid",    91, 60, "achievement_pvp_o_10",  MultiBot.L("tips.units.pvpstatstoraid", "Raid PvP stats"))
 btnPvpWhisper:doHide()
 btnPvpParty:doHide()
 btnPvpRaid:doHide()
@@ -1499,9 +1499,9 @@ tMain.addButton("Release", 0, 238, "achievement_bg_xkills_avgraveyard", MultiBot
 	end
 end
 
-tMain.addButton("Stats", 0, 272, "inv_scroll_08", MultiBot.tips.main.stats).setDisable()
+tMain.addButton("Stats", 0, 272, "inv_scroll_08", MultiBot.L("tips.main.stats", "Stats")).setDisable()
 .doLeft = function(pButton)
-	if(GetNumRaidMembers() > 0) then return SendChatMessage(MultiBot.info.stats, "SAY") end
+	if(GetNumRaidMembers() > 0) then return SendChatMessage(MultiBot.L("info.stats", "This feature is disabled in raid."), "SAY") end
 	if(MultiBot.OnOffSwitch(pButton)) then
 		MultiBot.auto.stats = true
 		for i = 1, GetNumPartyMembers() do SendChatMessage("stats", "WHISPER", nil, UnitName("party" .. i)) end
@@ -3214,7 +3214,7 @@ MultiBot.stats = MultiBot.newFrame(MultiBot, -60, 560, 32)
 MultiBot.stats:SetMovable(true)
 MultiBot.stats:Hide()
 
-MultiBot.stats.movButton("Move", 0, -80, 160, MultiBot.tips.move.stats)
+MultiBot.stats.movButton("Move", 0, -80, 160, MultiBot.L("tips.move.stats", "Move stats frame"))
 
 MultiBot.addStats(MultiBot.stats, "party1", 0,    0, 32, 192, 96)
 MultiBot.addStats(MultiBot.stats, "party2", 0,  -60, 32, 192, 96)
