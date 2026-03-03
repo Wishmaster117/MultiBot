@@ -1649,7 +1649,6 @@ MultiBot.data.talent.specGlyphs = {
 do
     local unified = {}                                   -- nouvelle table
     for upperKey, tbl in pairs(MultiBot.data.talent.specGlyphs) do
-        --  upperKey  = "DRUID"  /  mixedKey = "Druid"
         local mixedKey = upperKey:sub(1,1)..upperKey:sub(2):lower()
         unified[upperKey] = tbl                          -- conservation MAJ
         unified[mixedKey] = tbl                          -- ajout minuscule

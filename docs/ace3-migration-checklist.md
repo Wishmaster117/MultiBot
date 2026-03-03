@@ -18,38 +18,38 @@ Checklist for each migration PR to verify no user-facing regressions.
 ## Smoke Tests (Run Before and After Each PR)
 
 ### 1) Load / reload safety
-- [ ] Addon loads without Lua errors.
-- [ ] `/reload` does not duplicate handlers, timers, or startup side effects.
+- [x] Addon loads without Lua errors.
+- [x] `/reload` does not duplicate handlers, timers, or startup side effects.
 
 ### 2) Core slash commands
-- [ ] `/multibot` toggles main UI.
-- [ ] `/mbot` and `/mb` behave exactly like `/multibot`.
-- [ ] `/mbopt` opens options panel reliably.
-- [ ] `/mbclass` and `/mbclasstest` still work.
+- [x] `/multibot` toggles main UI.
+- [x] `/mbot` and `/mb` behave exactly like `/multibot`.
+- [x] `/mbopt` opens options panel reliably.
+- [x] `/mbclass` and `/mbclasstest` still work.
 
 ### 3) Core event-driven behavior
-- [ ] Bot roster processing still populates units/buttons correctly.
-- [ ] Party/raid refresh behavior remains stable.
-- [ ] Frequent events do not create chat/event spam regressions.
+- [x] Bot roster processing still populates units/buttons correctly.
+- [x] Party/raid refresh behavior remains stable.
+- [x] Frequent events do not create chat/event spam regressions.
 
 ### 4) Quest / whisper parsing
-- [ ] Incompleted/completed quest parsing still updates expected views.
-- [ ] "Quests all" aggregation completes and displays correctly.
-- [ ] No blocking regressions between quest and non-quest whispers.
+- [x] Incompleted/completed quest parsing still updates expected views.
+- [x] "Quests all" aggregation completes and displays correctly.
+- [x] No blocking regressions between quest and non-quest whispers.
 
 ### 5) GameObject flow
-- [ ] Capture starts on relevant section headers.
-- [ ] Capture stops on terminal section/blank line and popup is shown once.
-- [ ] Copy box output is complete and readable.
+- [x] Capture starts on relevant section headers.
+- [x] Capture stops on terminal section/blank line and popup is shown once.
+- [x] Copy box output is complete and readable.
 
 ### 6) Persistence
-- [ ] Frame positions restore after relog/reload.
-- [ ] Portal memory restore works.
-- [ ] Main UI visibility persists correctly.
-- [ ] Main bar state toggles restore correctly.
+- [x] Frame positions restore after relog/reload.
+- [x] Portal memory restore works.
+- [x] Main UI visibility persists correctly.
+- [x] Main bar state toggles restore correctly.
 
 ### 7) Options / minimap
-- [ ] Minimap button show/hide behavior is unchanged.
-- [ ] Options panel controls still apply values immediately.
+- [x] Minimap button show/hide behavior is unchanged.
+- [x] Options panel controls still apply values immediately.
 
 ---

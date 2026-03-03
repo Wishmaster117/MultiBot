@@ -107,7 +107,6 @@ function MultiBot.BuildOptionsPanel()
     local minimapConfig = MultiBot.GetMinimapConfig and MultiBot.GetMinimapConfig() or { hide = false }
 
     local strataDropDown = CreateFrame("Frame", "MultiBotStrataDropDown", self, "UIDropDownMenuTemplate")
-    --strataDropDown:SetPoint("TOPLEFT", title, "BOTTOMLEFT", -14, -30)
 
     --------------------------------------------------------------------
     -- Minimap: Hide button
@@ -149,7 +148,6 @@ function MultiBot.BuildOptionsPanel()
     -- local hint = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
 	local hint = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
     hint:SetPoint("TOPLEFT", chkMinimapHide, "BOTTOMLEFT", 28, -4)
-    --hint:SetText("Tip: drag the button around the minimap to reposition it.")
 
     -- Conserver la référence
     panel.chkMinimapHide = chkMinimapHide

@@ -100,13 +100,9 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 		MultiBot.ShowHideSwitch(pButton.getFrame("DpsControl"))
 	end
 
-	--local tFrame = pFrame.addFrame("DpsControl", -92, 30)
-	--tFrame:Hide()
-
 	local tDpsFrame = pFrame.addFrame("DpsControl", -92, 30)
 	tDpsFrame:Hide()
 
-	--tFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.tips.druid.dps.dpsAssist).setDisable()
 	tDpsFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.tips.druid.dps.dpsAssist).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps assist,?", "co -dps assist,?", pButton.getName())) then
@@ -115,7 +111,6 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	--tFrame.addButton("DpsDebuff", 0, 26, "spell_holy_restoration", MultiBot.tips.druid.dps.dpsDebuff).setDisable()
 	tDpsFrame.addButton("DpsDebuff", 0, 26, "spell_holy_restoration", MultiBot.tips.druid.dps.dpsDebuff).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +caster debuff,?", "co -caster debuff,?", pButton.getName())) then
@@ -125,7 +120,6 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	-- tFrame.addButton("DpsAoe", 0, 52, "spell_holy_surgeoflight", MultiBot.tips.druid.dps.dpsAoe).setDisable()
 	tDpsFrame.addButton("DpsAoe", 0, 52, "spell_holy_surgeoflight", MultiBot.tips.druid.dps.dpsAoe).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps aoe,?", "co -dps aoe,?", pButton.getName())) then
@@ -135,7 +129,6 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 	end
 
     -- Missing HEALER DPS --
-    --tFrame.addButton("HealerDps", 0, 130, "INV_Alchemy_Elixir_02", MultiBot.tips.druid.dps.healerdps).setDisable()
 	tDpsFrame.addButton("HealerDps", 0, 130, "INV_Alchemy_Elixir_02", MultiBot.tips.druid.dps.healerdps).setDisable()
     .doLeft = function(pButton)
       if(MultiBot.OnOffActionToTarget(pButton, "co +healer dps,?", "co -healer dps,?", pButton.getName())) then
@@ -145,7 +138,6 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
       end
     end
 
-	--tFrame.addButton("Dps", 0, 78, "spell_holy_divinepurpose", MultiBot.tips.druid.dps.dps).setDisable()
 	tDpsFrame.addButton("Dps", 0, 78, "spell_holy_divinepurpose", MultiBot.tips.druid.dps.dps).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +cat,?", "co -cat,?", pButton.getName())) then
@@ -159,7 +151,6 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 	end
 
     -- OFF-HEAL --
-    --tFrame.addButton("OffHeal", 0, 104, "spell_nature_healingtouch", MultiBot.tips.druid.dps.offheal).setDisable()
 	tDpsFrame.addButton("OffHeal", 0, 104, "spell_nature_healingtouch", MultiBot.tips.druid.dps.offheal).setDisable()
         .doLeft = function(pButton)
             if (MultiBot.OnOffActionToTarget(

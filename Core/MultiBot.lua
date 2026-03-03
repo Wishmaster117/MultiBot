@@ -1381,35 +1381,6 @@ MultiBot.timer.invite = {}
 MultiBot.timer.invite.elapsed = 0
 MultiBot.timer.invite.interval = 5
 
--- CLASSES --
-
---[[MultiBot.data.classes = {}
-MultiBot.data.classes.input = {
-[1] = "DeathKnight",
-[2] = "Druid",
-[3] = "Hunter",
-[4] = "Mage",
-[5] = "Paladin",
-[6] = "Priest",
-[7] = "Rogue",
-[8] = "Shaman",
-[9] = "Warlock",
-[10] = "Warrior"
-}
-
-MultiBot.data.classes.output = {
-[1] = "DeathKnight",
-[2] = "Druid",
-[3] = "Hunter",
-[4] = "Mage",
-[5] = "Paladin",
-[6] = "Priest",
-[7] = "Rogue",
-[8] = "Shaman",
-[9] = "Warlock",
-[10] = "Warrior"
-}]]--
-
 -- CLASSES (canonical + backward-compat)
 MultiBot.CLASSES_CANON = {
   "DeathKnight","Druid","Hunter","Mage","Paladin",
@@ -1425,12 +1396,9 @@ local function _mb_copy(a)
   return r
 end
 
--- Back-compat: si du code existant lit encore ces tables, on lui fournit la même liste.
--- (On copie pour éviter les mutations involontaires.)
 MultiBot.data.classes.input  = MultiBot.data.classes.input  or _mb_copy(MultiBot.CLASSES_CANON)
 MultiBot.data.classes.output = MultiBot.data.classes.output or _mb_copy(MultiBot.CLASSES_CANON)
 
--- Construction des maps
 function MultiBot.BuildClassMaps()
   if MultiBot._classMapsBuilt then return end
   MultiBot._classMapsBuilt = true

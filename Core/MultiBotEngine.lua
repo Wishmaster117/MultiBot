@@ -124,21 +124,6 @@ MultiBot.isActive = function(pName)
 	return false
 end
 
---[[MultiBot.isInside = function(pString, p1stPattern, o2ndPattern, o3rdPattern,
-    o4thPattern, o5thPattern, o6thPattern, o7thPattern, o8thPattern, o9thPattern)
-	if(pString == nil) then return false end
-	if(p1stPattern ~= nil and string.find(pString, p1stPattern)) then return true end
-	if(o2ndPattern ~= nil and string.find(pString, o2ndPattern)) then return true end
-	if(o3rdPattern ~= nil and string.find(pString, o3rdPattern)) then return true end
-	if(o4thPattern ~= nil and string.find(pString, o4thPattern)) then return true end
-	if(o5thPattern ~= nil and string.find(pString, o5thPattern)) then return true end
-	if(o6thPattern ~= nil and string.find(pString, o6thPattern)) then return true end
-	if(o7thPattern ~= nil and string.find(pString, o7thPattern)) then return true end
-	if(o8thPattern ~= nil and string.find(pString, o8thPattern)) then return true end
-	if(o9thPattern ~= nil and string.find(pString, o9thPattern)) then return true end
-	return false
-end]]--
-
 MultiBot.isInside = function(pString, ...)
 	if(pString == nil) then return false end
 	for i = 1, select("#", ...) do
@@ -149,21 +134,6 @@ MultiBot.isInside = function(pString, ...)
 	end
 	return false
 end
-
---[[MultiBot.beInside = function(pString, p1stPattern, o2ndPattern, o3rdPattern,
-    o4thPattern, o5thPattern, o6thPattern, o7thPattern, o8thPattern, o9thPattern)
-	if(pString == nil) then return false end
-	if(p1stPattern ~= nil and nil == string.find(pString, p1stPattern)) then return false end
-	if(o2ndPattern ~= nil and nil == string.find(pString, o2ndPattern)) then return false end
-	if(o3rdPattern ~= nil and nil == string.find(pString, o3rdPattern)) then return false end
-	if(o4thPattern ~= nil and nil == string.find(pString, o4thPattern)) then return false end
-	if(o5thPattern ~= nil and nil == string.find(pString, o5thPattern)) then return false end
-	if(o6thPattern ~= nil and nil == string.find(pString, o6thPattern)) then return false end
-	if(o7thPattern ~= nil and nil == string.find(pString, o7thPattern)) then return false end
-	if(o8thPattern ~= nil and nil == string.find(pString, o8thPattern)) then return false end
-	if(o9thPattern ~= nil and nil == string.find(pString, o9thPattern)) then return false end
-	return true
-end]]--
 
 MultiBot.beInside = function(pString, ...)
 	if(pString == nil) then return false end
@@ -244,38 +214,6 @@ MultiBot.SafeTexturePath = function(pTexture)
     return tex
 end
 
-
-
---[[MultiBot.toClass = function(pClass)
-	local pLower = string.lower(pClass)
-	local pStart = string.sub(pLower, 1, 5)
-
-	for i = 1, 10 do
-		local tOutput = MultiBot.data.classes.output[i]
-		local tInput = MultiBot.data.classes.input[i]
-		local tLower = string.lower(tInput)
-		local tStart = string.sub(tLower, 1, 5)
-
-		if(pClass == tInput) then return tOutput end
-		if(pLower == tLower) then return tOutput end
-		if(pStart == tStart) then return tOutput end
-	end
-
-	local tClass = string.lower(string.sub(pClass, 1, 1) .. string.sub(pClass, 4, 4))
-	if(tClass == "te" or tClass == "dt") then return "DeathKnight" end
-	if(tClass == "di" or tClass == "di") then return "Druid" end
-	if(tClass == "jg" or tClass == "ht") then return "Hunter" end
-	if(tClass == "mi" or tClass == "me") then return "Mage" end
-	if(tClass == "pa" or tClass == "pa") then return "Paladin" end
-	if(tClass == "pe" or tClass == "pe") then return "Priest" end
-	if(tClass == "su" or tClass == "ru") then return "Rogue" end
-	if(tClass == "sa" or tClass == "sm") then return "Shaman" end
-	if(tClass == "he" or tClass == "wl") then return "Warlock" end
-	if(tClass == "ke" or tClass == "wr") then return "Warrior" end
-	if(pClass == "dk") then return "DeathKnight" end
-	return "Unknown"
-end]]--
-
 -- Classe refactor
 -- Sauvegarde l’ancienne version si elle existait avant refactor
 if not MultiBot._toClass_legacy and type(MultiBot.toClass) == "function" then
@@ -327,16 +265,6 @@ MultiBot.toTip = function(pClass, pLevel, pName)
 	tTip = MultiBot.doReplace(tTip, "NAME", pName)
 	return tTip
 end
-
---[[MultiBot.toPoint = function(pFrame)
-	local tX = pFrame:GetRight()
-	local tY = pFrame:GetBottom()
-	local tResolution = MultiBot.doSplit(({ GetScreenResolutions() })[GetCurrentResolution()], "x")
-	local tHeight = tonumber(tResolution[2])
-	local tWidth = tonumber(tResolution[1])
-	local tScale = 1 / tWidth * MultiBot:GetRight()
-	return math.floor(tX - (tWidth * tScale)), math.floor(tY)
-end]]--
 
 MultiBot.toPoint = function(pFrame)
     -- Mesurer par rapport au parent global stable et arrondir à l’unité.
@@ -393,25 +321,6 @@ MultiBot.RaidPool = function(pUnit, oWho)
 		tTabs[3] = GetNumTalents(3)
 	end
 
-	   --[[-- [SAFETY] tTabs doivent être numériques
-       tTabs[1] = tonumber(tTabs[1]) or 0
-       tTabs[2] = tonumber(tTabs[2]) or 0
-       tTabs[3] = tonumber(tTabs[3]) or 0
-
-       -- [SAFETY] iLevel : toujours un nombre, même si tScore est vide ou textuel
-       local iLevel = nil
-       do
-         if type(tScore) == "number" then
-           iLevel = tScore
-           tScore = tostring(tScore)               -- on garde tScore chaîne pour l’enregistrement final
-         elseif type(tScore) == "string" then
-           -- prend le DERNIER nombre trouvé dans la chaîne (ex: "GS: 5120" -> 5120)
-           for d in string.gmatch(tScore, "(%d+)") do iLevel = tonumber(d) end
-         end
-         if not iLevel then iLevel = tonumber(tLevel) end
-         if not iLevel then iLevel = (UnitLevel and UnitLevel(pUnit)) or 0 end
-       end]]--
-
 	-- [SAFETY] tTabs doivent être numériques
 	tTabs[1] = tonumber(tTabs[1]) or 0
 	tTabs[2] = tonumber(tTabs[2]) or 0
@@ -428,24 +337,6 @@ MultiBot.RaidPool = function(pUnit, oWho)
 		MultiBot.SetGlobalBotEntry(tName, botValue)
 	end
 end
-
---[[MultiBot.ItemLevel = function(pUnit)
-	local tTitan = IsSpellKnown(49152) -- Titan's Grip
-	local tCount = 16
-	local tScore = 0
-
-	for i = 1, 18, 1 do
-		local tItem = GetInventoryItemLink(pUnit, i)
-		if(tItem ~= nil and i ~= 4) then
-			--local iName, iLink, iRare, iLevel, iMinLevel, iType, iSubType, iStack, iEquipLoc = GetItemInfo(tItem)
-			local _, _, _, iLevel, _, _, _, _, iEquipLoc = GetItemInfo(tItem)
-			if((i == 16 and iEquipLoc ~= "INVTYPE_2HWEAPON") or (i == 16 and tTitan) or (i == 17)) then tCount = 17 end
-			tScore = tScore + iLevel
-		end
-	end
-
-	return floor(tScore / tCount), tCount
-end--]]
 
 -- New Score formula
 MultiBot.ItemLevel = function(pUnit)
@@ -853,11 +744,9 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
 		return frame.texture
 	end
 
-	--frame.addModel = function(pName, pX, pY, pWidth, pHeight, oScale)
 	frame.addModel = function(pName, x, y, pWidth, pHeight, oScale)
 		if(frame.model ~= nil) then frame.model:Hide() end
 		frame.model = CreateFrame("DressUpModel", "MyModel" .. pName, frame)
-		--frame.model:SetPoint("CENTER", pX, pY)
 		frame.model:SetPoint("CENTER", x, y)
 		frame.model:SetSize(pWidth, pHeight)
 		frame.model:SetUnit(pName)
@@ -865,12 +754,9 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
 		return frame.model
 	end
 
-	--frame.addText = function(pIndex, pText, pAlign, pX, pY, pSize)
 	frame.addText = function(pIndex, pText, pAlign, x, y, fontSize)
 		if(frame.texts[pIndex] ~= nil) then frame.texts[pIndex]:Hide() end
 		frame.texts[pIndex] = frame:CreateFontString(nil, "ARTWORK")
-		--frame.texts[pIndex]:SetFont("Fonts\\ARIALN.ttf", pSize, "PLAIN")
-		--frame.texts[pIndex]:SetPoint(pAlign, pX, pY)
         frame.texts[pIndex]:SetFont("Fonts\\ARIALN.ttf", fontSize, "PLAIN")
         frame.texts[pIndex]:SetPoint(pAlign, x, y)
 		frame.texts[pIndex]:SetText(pText)
@@ -878,60 +764,44 @@ MultiBot.newFrame = function(pParent, pX, pY, pSize, oWidth, oHeight, oAlign)
 		return frame.texts[pIndex]
 	end
 
-	--frame.wowButton = function(pName, pX, pY, pWidth, pHeight, pSize)
 	frame.wowButton = function(pName, x, y, pWidth, pHeight, size)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
-		--frame.buttons[pName] = MultiBot.wowButton(frame, pName, pX, pY, pWidth, pHeight, pSize)
 		frame.buttons[pName] = MultiBot.wowButton(frame, pName, x, y, pWidth, pHeight, size)
 		return frame.buttons[pName]
 	end
 
-	--frame.addButton = function(pName, pX, pY, pTexture, pTip, oTemplate)
 	frame.addButton = function(pName, x, y, pTexture, pTip, oTemplate)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
-		--frame.buttons[pName] = MultiBot.newButton(frame, pX, pY, frame.size, pTexture, pTip, oTemplate)
 		frame.buttons[pName] = MultiBot.newButton(frame, x, y, frame.size, pTexture, pTip, oTemplate)
 		return frame.buttons[pName]
 	end
 
-	--frame.movButton = function(pName, pX, pY, pSize, pTip, oFrame)
 	frame.movButton = function(pName, x, y, size, pTip, oFrame)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
-		--frame.buttons[pName] = MultiBot.movButton(frame, pX, pY, pSize, pTip, oFrame)
 		frame.buttons[pName] = MultiBot.movButton(frame, x, y, size, pTip, oFrame)
 		return frame.buttons[pName]
 	end
 
-	--frame.boxButton = function(pName, pX, pY, pSize, pState)
 	frame.boxButton = function(pName, x, y, size, pState)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
-		--frame.buttons[pName] = MultiBot.boxButton(frame, pX, pY, pSize, pState)
 		frame.buttons[pName] = MultiBot.boxButton(frame, x, y, size, pState)
 		return frame.buttons[pName]
 	end
 
-	--frame.catButton = function(pName, pX, pY, pWidth, pHeight)
 	frame.catButton = function(pName, x, y, pWidth, pHeight)
 		if(frame.buttons[pName] ~= nil) then frame.buttons[pName]:Hide() end
-		--frame.buttons[pName] = MultiBot.catButton(frame, pX, pY, pWidth, pHeight)
 		frame.buttons[pName] = MultiBot.catButton(frame, x, y, pWidth, pHeight)
 		return frame.buttons[pName]
 	end
 
-	--frame.addFrame = function(pName, pX, pY, oSize, oWidth, oHeight)
 	frame.addFrame = function(pName, x, y, oSize, subWidth, subHeight)
 		if(frame.frames[pName] ~= nil) then frame.frames[pName]:Hide() end
-		--frame.frames[pName] = MultiBot.newFrame(frame, pX, pY, MultiBot.IF(oSize ~= nil, oSize, frame.size - 4), oWidth, oHeight)
 		frame.frames[pName] = MultiBot.newFrame(frame, x, y, MultiBot.IF(oSize ~= nil, oSize, frame.size - 4), subWidth, subHeight)
 		return frame.frames[pName]
 	end
 
 	-- SET --
 
-	--[[frame.setPoint = function(pX, pY)
-		frame:SetPoint("BOTTOMRIGHT", pX, pY)
-		frame.x = pX
-		frame.y = pY]]--
     frame.setPoint = function(x, y)
         frame:SetPoint("BOTTOMRIGHT", x, y)
         frame.x = x
@@ -1053,7 +923,6 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 	button:SetPushedTexture("Interface/Buttons/UI-Quickslot-Depress")
 	button:SetNormalTexture("")
 
-	--button.texture = pTexture
     button.texture = MultiBot.SafeTexturePath(pTexture)
 	button.parent = pParent
 	button.size = pSize
@@ -1558,25 +1427,6 @@ MultiBot.MaintenanceAllBots = function()
 	return count
 end
 
---[[MultiBot.addSelf = function(pClass, pName)
-MultiBot.dprint("addSelf", pName, pClass) -- DEBUG
-	if(MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] ~= nil) then return MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] end
-	local tClass = MultiBot.toClass(pClass)
-	local tButton = MultiBot.frames["MultiBar"].frames["Units"].addButton(pName, 0, 0, "inv_misc_head_clockworkgnome_01", MultiBot.tips.unit.selfbot)
-	if(MultiBot.index.classes.players[tClass] == nil) then MultiBot.index.classes.players[tClass] = {} end
-	table.insert(MultiBot.index.classes.players[tClass], pName)
-	-- table.insert(MultiBot.index.players, pName)
-	table.insert(MultiBot.index.players, pName); MultiBot.dprint("players++", pName, "total", table.getn(MultiBot.index.players)) -- DEBUG
-	tButton.roster = "players"
-	tButton.class = tClass
-	tButton.name = pName
-	-- Si ce joueur est en favoris, on rafraîchit l’index
-	if MultiBot.IsFavorite and MultiBot.IsFavorite(pName) and MultiBot.UpdateFavoritesIndex then
-		MultiBot.UpdateFavoritesIndex()
-	end
-	return tButton
-end]]--
-
 MultiBot.addSelf = function(pClass, pName)
   local units = MultiBot.frames["MultiBar"].frames["Units"]
   local btn   = units.buttons[pName]
@@ -1603,21 +1453,6 @@ MultiBot.addSelf = function(pClass, pName)
   end
   return btn
 end
-
---[[MultiBot.addPlayer = function(pClass, pName)
-MultiBot.dprint("addPlayer", pName, pClass) -- DEBUG
-	if(MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] ~= nil) then return MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] end
-	local tClass = MultiBot.toClass(pClass)
-	local tTexture = "Interface\\AddOns\\MultiBot\\Icons\\class_" .. string.lower(tClass) .. ".blp"
-	local tButton = MultiBot.frames["MultiBar"].frames["Units"].addButton(pName, 0, 0, tTexture, MultiBot.toTip(tClass, nil, pName))
-	if(MultiBot.index.classes.players[tClass] == nil) then MultiBot.index.classes.players[tClass] = {} end
-	table.insert(MultiBot.index.classes.players[tClass], pName)
-	table.insert(MultiBot.index.players, pName)
-	tButton.roster = "players"
-	tButton.class = tClass
-	tButton.name = pName
-	return tButton
-end]]--
 
 MultiBot.addPlayer = function(pClass, pName)
   local units = MultiBot.frames["MultiBar"].frames["Units"]
@@ -1646,13 +1481,6 @@ MultiBot.addPlayer = function(pClass, pName)
   return btn
 end
 
---[[local function MB_InsertUnique(pTable, pValue)
-  if(pTable == nil) then return end
-  for i = 1, table.getn(pTable) do
-    if(pTable[i] == pValue) then return end
-  end
-  table.insert(pTable, pValue)
-end]]--
 local function MB_InsertUnique(pTable, pValue)
   if(pTable == nil) then return end
   for i = 1, #pTable do
@@ -1662,17 +1490,6 @@ local function MB_InsertUnique(pTable, pValue)
 end
 
 MultiBot.addMember = function(pClass, pLevel, pName)
-	--[[if(MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] ~= nil) then return MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] end
-	local tClass = MultiBot.toClass(pClass)
-	local tTexture = "Interface\\AddOns\\MultiBot\\Icons\\class_" .. string.lower(tClass) .. ".blp"
-	local tButton = MultiBot.frames["MultiBar"].frames["Units"].addButton(pName, 0, 0, tTexture, MultiBot.toTip(tClass, pLevel, pName))
-	if(MultiBot.index.classes.members[tClass] == nil) then MultiBot.index.classes.members[tClass] = {} end
-	table.insert(MultiBot.index.classes.members[tClass], pName)
-	table.insert(MultiBot.index.members, pName)
-	tButton.roster = "members"
-	tButton.class = tClass
-	tButton.name = pName
-	return tButton]]--
   local tUnits = MultiBot.frames["MultiBar"].frames["Units"]
   local tButton = tUnits.buttons[pName]
   local tClass = MultiBot.toClass(pClass)
@@ -1694,18 +1511,6 @@ MultiBot.addMember = function(pClass, pLevel, pName)
 end
 
 MultiBot.addFriend = function(pClass, pLevel, pName)
-	--[[if(MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] ~= nil) then return MultiBot.frames["MultiBar"].frames["Units"].buttons[pName] end
-	local tClass = MultiBot.toClass(pClass)
-	local tTexture = "Interface\\AddOns\\MultiBot\\Icons\\class_" .. string.lower(tClass) .. ".blp"
-	local tButton = MultiBot.frames["MultiBar"].frames["Units"].addButton(pName, 0, 0, tTexture, MultiBot.toTip(tClass, pLevel, pName))
-	if(MultiBot.index.classes.friends[tClass] == nil) then MultiBot.index.classes.friends[tClass] = {} end
-	table.insert(MultiBot.index.classes.friends[tClass], pName)
-	table.insert(MultiBot.index.friends, pName)
-	tButton.roster = "friends"
-	tButton.class = tClass
-	tButton.name = pName
-	return tButton]]--
-
   local tUnits = MultiBot.frames["MultiBar"].frames["Units"]
   local tButton = tUnits.buttons[pName]
   local tClass = MultiBot.toClass(pClass)

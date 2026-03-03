@@ -809,8 +809,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		tValue = string.sub(tValue, 1, string.len(tValue) - 4)
 		setSavedMainBarValue("AttackButton", tValue)
 
-		--local tValue = MultiBot.doSplit(MultiBot.frames["MultiBar"].frames["Left"].buttons["Flee"].texture, "\\")[5]
-		--tValue = string.sub(tValue, 1, string.len(tValue) - 4)
 		tValue = MultiBot.doSplit(MultiBot.frames["MultiBar"].frames["Left"].buttons["Flee"].texture, "\\")[5]
 		tValue = string.sub(tValue, 1, string.len(tValue) - 4)
 		setSavedMainBarValue("FleeButton", tValue)
@@ -831,11 +829,7 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 	-- ADDON:LOADED --
 
     if(event == "ADDON_LOADED" and arg1 == "MultiBot") then
-	-- print("MultiBot: ADDON_LOADED fired")
-	-- print("BuildOptionsPanel type:", type(MultiBot.BuildOptionsPanel))
-
 	        -- Core startup helpers are now routed via lifecycle (OnInitialize/OnEnable).
-
 	        -- [EXISTANT] restauration des positions / états
 		restoreBoundFramePoints()
 
@@ -901,7 +895,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
             MultiBot.init = true
             if type(TimerAfter) == "function" then
                 TimerAfter(0.5, function()
-                    -- SendChatMessage(".playerbot bot list", "SAY")
 					MultiBot.dprint("SEND", ".playerbot bot list"); SendChatMessage(".playerbot bot list", "SAY")--Debug
                 end)
             else
@@ -927,7 +920,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		if(MultiBot.isInside(arg1, "Possible strategies")) then
 			local tStrategies = MultiBot.doSplit(arg1, ", ")
 			SendChatMessage("=== STRATEGIES ===", "SAY")
-			--for i = 1, table.getn(tStrategies) do SendChatMessage(i .. " : " .. tStrategies[i], "SAY") end
 			for i = 1, #tStrategies do SendChatMessage(i .. " : " .. tStrategies[i], "SAY") end
 			return
 		end
@@ -935,7 +927,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		if(MultiBot.isInside(arg1, "Whisper any of")) then
 			local tCommands = MultiBot.doSplit(arg1, ", ")
 			SendChatMessage("=== WHISPER-COMMANDS ===", "SAY")
-			--for i = 1, table.getn(tCommands) do SendChatMessage(i .. " : " .. tCommands[i], "SAY") end
 			for i = 1, #tCommands do SendChatMessage(i .. " : " .. tCommands[i], "SAY") end
 			return
 		end
@@ -1007,8 +998,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
                 return
             end
 
-			--local tLocClass, tClass, tLocRace, tRace, tSex, tName = GetPlayerInfoByGUID(UnitGUID("player"))
-			--tClass = MultiBot.toClass(tClass)
 			local _, tClass, _, _, _, tName = GetPlayerInfoByGUID(UnitGUID("player"))
 			tClass = MultiBot.toClass(tClass)
 
@@ -1090,7 +1079,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
         end
 
 			-- MEMBERBOTS --
-			--for i = 1, 50 do
 			local tGuildCount = 0
 			if type(GetNumGuildMembers) == "function" then
 				tGuildCount = select(1, GetNumGuildMembers()) or 0
@@ -1110,7 +1098,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			end
 
 			-- FRIENDBOTS --
-			--for i = 1, 50 do
 			local tFriendCount = 0
 			if type(GetNumFriends) == "function" then
 				tFriendCount = GetNumFriends() or 0
@@ -1133,8 +1120,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 			if(GetNumRaidMembers() > 4) then
 				for i = 1, GetNumRaidMembers() do
-					--local tName = UnitName("raid" .. i)
-					--SendChatMessage(".playerbot bot add " .. tName, "SAY")
 					local raidName = UnitName("raid" .. i)
 					SendChatMessage(".playerbot bot add " .. raidName, "SAY")
 				end
@@ -1146,8 +1131,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 			if(GetNumPartyMembers() > 0) then
 				for i = 1, GetNumPartyMembers() do
-					--local tName = UnitName("party" .. i)
-					--SendChatMessage(".playerbot bot add " .. tName, "SAY")
 					local partyName = UnitName("party" .. i)
 					SendChatMessage(".playerbot bot add " .. partyName, "SAY")
 				end
@@ -1369,10 +1352,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		end
 
 		if(MultiBot.isInside(arg1, "Hello", "你好") and tButton == nil) then
-			-- local tUnit = MultiBot.toUnit(arg2)
-			-- local tLocClass, tClass = UnitClass(tUnit)
-			-- local tLevel = UnitLevel(tUnit)
-			-- Added to avoid error \MultiBotHandler.lua:940: Usage: UnitClass("unit") If toUnit don't found the author (bot still charging, not yet grouped, etc.), it send nil, and this call break.
             local tUnit = MultiBot.toUnit(arg2)
             if not (tUnit and UnitExists(tUnit)) then
                -- Bot is still not in party/raid we stop
@@ -1390,8 +1369,6 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			local tName = ""
 			local tLevel = ""
 			local tClass = ""
-
-			--for i = 1, 50 do
 			local tFriendScanCount = 0
 			if type(GetNumFriends) == "function" then
 				tFriendScanCount = GetNumFriends() or 0

@@ -163,7 +163,6 @@ end
 
 local tMultiBar = MultiBot.addFrame("MultiBar", -322, 144, 36)
 MultiBot.PromoteFrame(tMultiBar)
---tMultiBar:SetMovable(true)
 tMultiBar:SetMovable(true)
 -- Évite les micro-dépassements avec certains UI scale qui finissent par décaler Y
 tMultiBar:SetClampedToScreen(true)
@@ -313,75 +312,6 @@ tLeft.addButton("ExpandFollow", -102, 0, "Interface\\AddOns\\MultiBot\\Icons\\co
 	pButton.parent.buttons["ExpandStay"].setDisable()
 	pButton.setEnable()
 end
-
--- FLEE --
-
---[[local tButton = tLeft.addButton("Flee", -34, 0, "Interface\\AddOns\\MultiBot\\Icons\\flee.blp", MultiBot.tips.flee.master)
-tButton.doRight = function(pButton)
-	MultiBot.ShowHideSwitch(pButton.parent.frames["Flee"])
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("flee")
-end
-
-local tFlee = tLeft.addFrame("Flee", -36, 34)
-tFlee:Hide()
-
-local tButton = tFlee.addButton("Flee", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\flee.blp", MultiBot.tips.flee.flee)
-tButton.doRight = function(pButton)
-	MultiBot.SelectToGroupButton(pButton.parent.parent, "Flee", pButton.texture, "flee")
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("flee")
-end
-
-local tButton = tFlee.addButton("Ranged", 0, 30, "Interface\\AddOns\\MultiBot\\Icons\\flee_ranged.blp", MultiBot.tips.flee.ranged)
-tButton.doRight = function(pButton)
-	MultiBot.SelectToGroupButton(pButton.parent.parent, "Flee", pButton.texture, "@ranged flee")
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@ranged flee")
-end
-
-local tButton = tFlee.addButton("Melee", 0, 60, "Interface\\AddOns\\MultiBot\\Icons\\flee_melee.blp", MultiBot.tips.flee.melee)
-tButton.doRight = function(pButton)
-	MultiBot.SelectToGroupButton(pButton.parent.parent, "Flee", pButton.texture, "@melee flee")
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@melee flee")
-end
-
-local tButton = tFlee.addButton("Healer", 0, 90, "Interface\\AddOns\\MultiBot\\Icons\\flee_healer.blp", MultiBot.tips.flee.healer)
-tButton.doRight = function(pButton)
-	MultiBot.SelectToGroupButton(pButton.parent.parent, "Flee", pButton.texture, "@healer flee")
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@healer flee")
-end
-
-local tButton = tFlee.addButton("Dps", 0, 120, "Interface\\AddOns\\MultiBot\\Icons\\flee_dps.blp", MultiBot.tips.flee.dps)
-tButton.doRight = function(pButton)
-	MultiBot.SelectToGroupButton(pButton.parent.parent, "Flee", pButton.texture, "@dps flee")
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@dps flee")
-end
-
-local tButton = tFlee.addButton("Tank", 0, 150, "Interface\\AddOns\\MultiBot\\Icons\\flee_tank.blp", MultiBot.tips.flee.tank)
-tButton.doRight = function(pButton)
-	MultiBot.SelectToGroupButton(pButton.parent.parent, "Flee", pButton.texture, "@tank flee")
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToGroup("@tank flee")
-end
-
-local tButton = tFlee.addButton("Target", 0, 180, "Interface\\AddOns\\MultiBot\\Icons\\flee_target.blp", MultiBot.tips.flee.target)
-tButton.doRight = function(pButton)
-	MultiBot.SelectToTargetButton(pButton.parent.parent, "Flee", pButton.texture, "flee")
-end
-tButton.doLeft = function(pButton)
-	MultiBot.ActionToTarget("flee")
-end]]--
 
 --  UI FLEE REFORGED --
 function MultiBot.BuildFleeUI(tLeft)
@@ -687,73 +617,6 @@ tButton.doRight = function(pButton)
   end
   local needGuildRetry = false
 
---[[	-- MEMBERBOTS --
-
-	for i = 1, 50 do
-		local tName, tRank, tIndex, tLevel, tClass = GetGuildRosterInfo(i)
-		-- Ensure that the Counter is not bigger than the Amount of Members in Guildlist
-		if(tName ~= nil and tLevel ~= nil and tClass ~= nil and tName ~= UnitName("player")) then
-			local tMember = MultiBot.addMember(tClass, tLevel, tName)
-
-			if(tMember.state == false)
-			then tMember.setDisable()
-			else tMember.setEnable()
-			end
-
-			tMember.doRight = function(pButton)
-				if(pButton.state == false) then return end
-				SendChatMessage(".playerbot bot remove " .. pButton.name, "SAY")
-				if(pButton.parent.frames[pButton.name] ~= nil) then pButton.parent.frames[pButton.name]:Hide() end
-				pButton.setDisable()
-			end
-
-			tMember.doLeft = function(pButton)
-				if(pButton.state) then
-					if(pButton.parent.frames[pButton.name] ~= nil) then MultiBot.ShowHideSwitch(pButton.parent.frames[pButton.name]) end
-				else
-					SendChatMessage(".playerbot bot add " .. pButton.name, "SAY")
-					pButton.setEnable()
-				end
-			end
-		else
-			break
-		end
-	end
-
-	-- FRIENDBOTS --
-
-	for i = 1, 50 do
-		local tName, tLevel, tClass = GetFriendInfo(i)
-		-- Ensure that the Counter is not bigger than the Amount of Members in Friendlist
-		if(tName ~= nil and tLevel ~= nil and tClass ~= nil and tName ~= UnitName("player")) then
-			local tFriend = MultiBot.addFriend(tClass, tLevel, tName)
-
-			if(tFriend.state == false)
-			then tFriend.setDisable()
-			else tFriend.setEnable()
-			end
-
-			tFriend.doRight = function(pButton)
-				if(pButton.state == false) then return end
-				SendChatMessage(".playerbot bot remove " .. pButton.name, "SAY")
-				if(pButton.parent.frames[pButton.name] ~= nil) then pButton.parent.frames[pButton.name]:Hide() end
-				pButton.setDisable()
-			end
-			tFriend.doLeft = function(pButton)
-				if(pButton.state) then
-					if(pButton.parent.frames[pButton.name] ~= nil) then MultiBot.ShowHideSwitch(pButton.parent.frames[pButton.name]) end
-				else
-					SendChatMessage(".playerbot bot add " .. pButton.name, "SAY")
-					pButton.setEnable()
-				end
-			end
-		else
-			break
-		end
-	end
-
-	pButton.doLeft(pButton, pButton.roster, pButton.filter)]]--
-
   -- Always refresh guild/friend rosters so their indexes stay in sync
   local prevShowOffline = nil
   if type(GetGuildRosterShowOffline) == "function" and type(SetGuildRosterShowOffline) == "function" then
@@ -988,12 +851,6 @@ tButton.doLeft = function(pButton, oRoster, oFilter)
       end
     end
 
-	--[[if(pButton.filter ~= "none")
-	then tTable = MultiBot.index.classes[pButton.roster][pButton.filter]
-	else tTable = MultiBot.index[pButton.roster]
-	MultiBot.dprint("Units.tTable.size", tTable and table.getn(tTable) or 0) -- DEBUG
-	end]]--
-
     -- Construction de la table source selon roster/filtre
     if pButton.roster == "players" then
       -- On fusionne players ∪ actives pour que les bots déjà groupés apparaissent aussi
@@ -1018,45 +875,12 @@ tButton.doLeft = function(pButton, oRoster, oFilter)
       end
     end
     MultiBot.dprint("Units.tTable.size", tTable and table.getn(tTable) or 0) -- DEBUG
---	-- Fin Construction de la table source selon roster/filtre
---
---	local tButton = nil
---	local tFrame = nil
---	local tIndex = 0
---
---	if(tTable ~= nil)
---	then pButton.limit = table.getn(tTable)
---	else pButton.limit = 0
---	end
---
---	pButton.from = 1
---	pButton.to = 10
---
---	for i = 1, pButton.limit do
---		tIndex = (i - 1)%10 + 1
---		tFrame = tUnits.frames[tTable[i]]
---		tButton = tUnits.buttons[tTable[i]]
---		tButton.setPoint(0, (tUnits.size + 2) * (tIndex - 1))
---		if(tFrame ~=nil) then tFrame.setPoint(-34, (tUnits.size + 2) * (tIndex - 1) + 2) end
---
---		if(pButton.from <= i and pButton.to >= i) then
---			if(tFrame ~= nil and tButton.state) then tFrame:Show() end
---			tButton:Show()
---		end
---	end
---
---	if(pButton.limit < pButton.to)
---	then tUnits.frames["Control"].setPoint(-2, (tUnits.size + 2) * pButton.limit)
---	else tUnits.frames["Control"].setPoint(-2, (tUnits.size + 2) * pButton.to)
---	end
-
         -- Fin Construction de la table source selon roster/filtre
 
         local tButton = nil
         local tFrame = nil
         local tIndex = 0
 
-        --
         -- Certains favoris peuvent être chargés avant que leurs boutons ne soient créés
         -- (par exemple juste après un login, avant le retour de `.playerbot bot list`).
         -- On filtre donc la liste à afficher pour ne conserver que les entrées disposant
@@ -1204,16 +1028,6 @@ function MultiBot.BuildRosterUI(tControl)
 									 "Interface\\AddOns\\MultiBot\\Icons\\roster_players.blp",
                                      MultiBot.tips.units.roster)
 
- --[[ -- Left Click = toggle sub frame  |  Right Click = select “Players”
-  rootBtn.doLeft  = function(b) MultiBot.ShowHideSwitch(b.parent.frames.Roster) end
-  rootBtn.doRight = function(b)
-    local unitsBtn = MultiBot.frames.MultiBar.buttons.Units
-    MultiBot.Select(b.parent, "Roster",
-                    "Interface\\AddOns\\MultiBot\\Icons\\roster_players.blp")
-					MultiBot.dprint("Click Roster>Players") -- DEBUG
-    unitsBtn.doLeft(unitsBtn, "players")
-  end]]--
-
   -- Left Click = ouvre le menu, Right Click vas sur “Actives”
   rootBtn.doLeft = function(b)
     MultiBot.ShowHideSwitch(b.parent.frames.Roster)
@@ -1276,15 +1090,12 @@ MultiBot.BuildRosterUI(tControl)
 
 -- Icic on choisit quelle roster sera affiché par défaut: "players, actives etc....)
 TimerAfter(0.05, function()
-  --local btn = tControl.buttons and tControl.buttons["Roster"]
-  --if btn and btn.doRight then btn.doRight(btn) end
   local unitsBtn = MultiBot.frames
                  and MultiBot.frames.MultiBar
                  and MultiBot.frames.MultiBar.buttons
                  and MultiBot.frames.MultiBar.buttons.Units
 
   if unitsBtn and tControl and tControl.buttons and tControl.buttons.Roster then
-    --MultiBot.Select(tControl, "Roster")
     local rosterBtn = tControl.buttons.Roster
     local tex = (rosterBtn and rosterBtn.texture) or "Interface\\AddOns\\MultiBot\\Icons\\roster_players.blp"
     MultiBot.Select(tControl, "Roster", tex)
@@ -1294,9 +1105,7 @@ end)
 
 -- UNITS:BROWSE --
 
--- local tButton = tControl.addButton("Invite", 0, 60, "Interface\\AddOns\\MultiBot\\Icons\\invite.blp", MultiBot.tips.units.invite).setEnable()
 -- PVP STATS --
-
 local btnPvpStats = tControl.addButton("PvPStats", 0, 60, "Ability_Parry", MultiBot.tips.units.pvpstatsmaster).setEnable()
 
 local btnPvpWhisper = tControl.addButton("PvPStatsWhisper", 31, 60, "inv_Mask_04", MultiBot.tips.units.pvpstatstobot)
@@ -1464,67 +1273,6 @@ tInvite.addButton("Raid+40", 108, 0, "Interface\\AddOns\\MultiBot\\Icons\\invite
 	SendChatMessage(MultiBot.info.starting, "SAY")
 end
 
---tControl.addButton("Browse", 0, 90, "Interface\\AddOns\\MultiBot\\Icons\\browse.blp", MultiBot.tips.units.browse)
---.doLeft = function(pButton)
---	local tMaster = MultiBot.frames["MultiBar"].buttons["Units"]
---	local tFrom = tMaster.from + 10
---	local tTo = tMaster.to + 10
---
---	if(tMaster.filter ~= "none")
---	then tTable = MultiBot.index.classes[tMaster.roster][tMaster.filter]
---	else tTable = MultiBot.index[tMaster.roster]
---	end
---
---	local tUnits = tMaster.parent.frames["Units"]
---	local tButton = nil
---	local tFrame = nil
---	local tIndex = 0
---
---	if(tFrom > tMaster.limit) then
---		tFrom = 1
---		tTo = 10
---	end
---
---	if(tTo > tMaster.limit) then
---		tTo = tMaster.limit
---	end
---
---	for i = 1, tMaster.limit do
---		tFrame = tUnits.frames[tTable[i]]
---		tButton = tUnits.buttons[tTable[i]]
---
---		--[[if(tMaster.from <= i and tMaster.to >= i) then
---			if(tFrame ~= nil) then tFrame:Hide() end
---			tButton:Hide()
---		end]]--
---        if (tMaster.from <= i and tMaster.to >= i) then
---            if (tFrame ~= nil) then tFrame:Hide() end
---            if (tButton ~= nil) then tButton:Hide() end
---        end
---
---		if(tFrom <= i and tTo >= i) then
---			--if(tFrame ~= nil and tButton.state) then tFrame:Show() end 
---			--tButton:Show()
---            -- Afficher uniquement si le bouton existe
---            if (tButton ~= nil) then
---				tIndex = tIndex + 1
---                -- Montrer le frame si présent et si le bouton est actif
---                if (tFrame ~= nil and tButton.state) then
---                    tFrame:Show()
---                end
---                tButton:Show()
---            end
---		end
---	end
---
---	tMaster.from = tFrom
---	tMaster.to = tTo
---
---	tUnits.frames["Control"].setPoint(-2, (tUnits.size + 2) * tIndex)
---end
-
--- Fonction Browse corrigée
---tControl.addButton("Browse", 0, 90, "Interface\\AddOns\\MultiBot\\Icons\\browse.blp", MultiBot.tips.units.browse)
 tControl.addButton("Browse", 0, 150, "Interface\\AddOns\\MultiBot\\Icons\\browse.blp", MultiBot.tips.units.browse)
 .doLeft = function(pButton)
   local tMaster = MultiBot.frames.MultiBar.buttons.Units
@@ -2681,15 +2429,6 @@ contentAll:SetWidth(1)
 scrollAll:SetScrollChild(contentAll)
 tBotAllPopup.content = contentAll
 
--- Helper pour vider le contenu
--- function MultiBot.ClearAllContent()
---     for _, child in ipairs({ contentAll:GetChildren() }) do
---         child:Hide()
---         child:SetParent(nil)
---     end
---     if contentAll.text then contentAll.text:SetText("") end
--- end
-
 function MultiBot.ClearAllContent()
     -- 1) Frames (boutons, lignes, etc.)
     for _, child in ipairs({ contentAll:GetChildren() }) do
@@ -2833,7 +2572,6 @@ local function BuildAggregatedAllList()
         local icon = line:CreateTexture(nil, "ARTWORK")
         icon:SetTexture("Interface\\Icons\\inv_misc_note_02")
         icon:SetSize(20,20); icon:SetPoint("LEFT")
-        -- local link = ("|cffffff00|Hquest:%s:0|h[%s]|h|r"):format(id, data.name)
 		local locName = GetLocalizedQuestName(id)
         local link = ("|cff00ff00|Hquest:%s:0|h[%s]|h|r"):format(id, locName)
         local html = CreateFrame("SimpleHTML", nil, line)
@@ -3501,62 +3239,6 @@ MultiBot.itemus.now   = 1
 MultiBot.itemus:SetMovable(true)
 MultiBot.itemus:Hide()
 
--- ====== POPUP de quantité + Don à la cible (NOUVEAU) =========================
--- Utilisation : on ouvre le popup avec StaticPopup_Show("MULTIBOT_GIVE_ITEMUS", <itemId>, nil, { itemId=<id> })
--- Le destinataire est **la cible actuelle** (UnitName("target")). Si aucune cible joueur -> message d'erreur et annulation.
---[[StaticPopupDialogs["MULTIBOT_GIVE_ITEMUS"] = {
-  text = "Donner l'objet ID %s à la cible sélectionnée.\n\nQuantité :",
-  button1 = "OK",
-  button2 = "Annuler",
-  hasEditBox = true,
-  editBoxWidth = 80,
-  OnShow = function(self)
-    self.editBox:SetAutoFocus(true)
-    self.editBox:SetText("1")
-    self.editBox:HighlightText()
-  end,
-  OnAccept = function(self, data)
-    local count = tonumber(self.editBox:GetText()) or 1
-    if count < 1 then count = 1 end
-
-    -- Résolution de la cible : on exige un joueur ciblé (ton bot sélectionné).
-    local targetName = UnitIsPlayer("target") and UnitName("target") or nil
-    if not targetName then
-      if MultiBot.Print then
-        MultiBot.Print("|cffff4444Aucune cible joueur. Sélectionne le bot puis réessaie.|r")
-      else
-        DEFAULT_CHAT_FRAME:AddMessage("|cffff4444Aucune cible joueur. Sélectionne le bot puis réessaie.|r")
-      end
-      return
-    end
-
-    local itemId = data and data.itemId or nil
-    if not itemId then
-      if MultiBot.Print then
-        MultiBot.Print("|cffff4444Item ID introuvable.|r")
-      end
-      return
-    end
-
-    -- Commande GM côté AzerothCore (comme demandé) : ".add <itemId> <count> <playerName>"
-    -- Si ton core exige une autre forme (.additem, etc.), ajuste ici la chaîne :
-    local cmd = string.format(".add %s %d %s", tostring(itemId), count, targetName)
-    SendChatMessage(cmd, "SAY")
-  end,
-  timeout = 0,
-  whileDead = true,
-  hideOnEscape = true,
-  preferredIndex = 3,
-}
--- Helper : attache au bouton d’un item l’ouverture du popup
-function MultiBot.itemus.attachGiveOnClick(btn, itemId)
-  btn.itemId = itemId
-  btn.doLeft = function(pButton)
-    StaticPopup_Show("MULTIBOT_GIVE_ITEMUS", tostring(pButton.itemId), nil, { itemId = pButton.itemId })
-  end
-end--]]
--- ============================================================================
-
 -- Boutons: déplacer / pagination / fermer
 MultiBot.itemus.movButton("Move", -407, 850, 32, MultiBot.tips.move.itemus)
 
@@ -3711,441 +3393,6 @@ MultiBot.itemus.addButton("Type", -94, 694, "inv_misc_head_clockworkgnome_01", M
   MultiBot.itemus.type = MultiBot.IF(MultiBot.OnOffSwitch(pButton), "NPC", "PC")
   MultiBot.itemus.addItems(1)
 end
-
---[[
--- ITEMUS --
-
-MultiBot.itemus = MultiBot.newFrame(MultiBot, -860, -144, 32, 442, 884)
-MultiBot.itemus.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Inventory.blp")
-MultiBot.itemus.addText("Title", "Itemus", "CENTER", -57, 429, 13)
-MultiBot.itemus.addText("Pages", "0/0", "CENTER", -57, 409, 13)
-MultiBot.itemus.name = UnitName("Player")
-MultiBot.itemus.index = {}
-MultiBot.itemus.color = "cff9d9d9d"
-MultiBot.itemus.level = "L10"
-MultiBot.itemus.rare = "R00"
-MultiBot.itemus.slot = "S00"
-MultiBot.itemus.type = "PC"
-MultiBot.itemus.max = 1
-MultiBot.itemus.now = 1
-MultiBot.itemus:SetMovable(true)
-MultiBot.itemus:Hide()
-
-MultiBot.itemus.movButton("Move", -407, 850, 32, MultiBot.tips.move.itemus)
-
-MultiBot.itemus.wowButton("<", -319, 841, 15, 18, 13).doHide()
-.doLeft = function(pButton)
-	MultiBot.itemus.now = MultiBot.itemus.now - 1
-	MultiBot.itemus.addItems()
-end
-
-MultiBot.itemus.wowButton(">", -225, 841, 15, 18, 13).doHide()
-.doLeft = function(pButton)
-	MultiBot.itemus.now = MultiBot.itemus.now + 1
-	MultiBot.itemus.addItems()
-end
-
-MultiBot.itemus.wowButton("X", -126, 862, 15, 18, 13)
-.doLeft = function(pButton)
-	MultiBot.itemus:Hide()
-end
-
-local tFrame = MultiBot.itemus.addFrame("Items", -397, 807, 32)
-tFrame:Show()
-
--- ITEMUS:LEVEL --
-
-MultiBot.itemus.addButton("Level", -94, 806, "achievement_level_10", MultiBot.tips.itemus.level.master).setEnable()
-.doLeft = function(pButton)
-	MultiBot.ShowHideSwitch(pButton.parent.frames["Level"])
-end
-
-local tFrame = MultiBot.itemus.addFrame("Level", -61, 808, 28)
-tFrame:Hide()
-
-tFrame.addButton("L10", 0, 0, "achievement_level_10", MultiBot.tips.itemus.level.L10)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Level", pButton.texture)
-	MultiBot.itemus.level = "L10"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("L20", 30, 0, "achievement_level_20", MultiBot.tips.itemus.level.L20)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Level", pButton.texture)
-	MultiBot.itemus.level = "L20"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("L30", 60, 0, "achievement_level_30", MultiBot.tips.itemus.level.L30)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Level", pButton.texture)
-	MultiBot.itemus.level = "L30"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("L40", 90, 0, "achievement_level_40", MultiBot.tips.itemus.level.L40)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Level", pButton.texture)
-	MultiBot.itemus.level = "L40"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("L50", 120, 0, "achievement_level_50", MultiBot.tips.itemus.level.L50)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Level", pButton.texture)
-	MultiBot.itemus.level = "L50"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("L60", 150, 0, "achievement_level_60", MultiBot.tips.itemus.level.L60)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Level", pButton.texture)
-	MultiBot.itemus.level = "L60"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("L70", 180, 0, "achievement_level_70", MultiBot.tips.itemus.level.L70)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Level", pButton.texture)
-	MultiBot.itemus.level = "L70"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("L80", 210, 0, "achievement_level_80", MultiBot.tips.itemus.level.L80)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Level", pButton.texture)
-	MultiBot.itemus.level = "L80"
-	MultiBot.itemus.addItems(1)
-end
-
--- ITEMUS:RARE --
-
-MultiBot.itemus.addButton("Rare", -94, 768, "achievement_quests_completed_01", MultiBot.tips.itemus.rare.master)
-.doLeft = function(pButton)
-	MultiBot.ShowHideSwitch(pButton.parent.frames["Rare"])
-end
-
-local tFrame = MultiBot.itemus.addFrame("Rare", -61, 770)
-tFrame:Hide()
-
-tFrame.addButton("R00", 0, 0, "achievement_quests_completed_01", MultiBot.tips.itemus.rare.R00)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Rare", pButton.texture)
-	MultiBot.itemus.color = "cff9d9d9d"
-	MultiBot.itemus.rare = "R00"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("R01", 30, 0, "achievement_quests_completed_02", MultiBot.tips.itemus.rare.R01)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Rare", pButton.texture)
-	MultiBot.itemus.color = "cffffffff"
-	MultiBot.itemus.rare = "R01"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("R02", 60, 0, "achievement_quests_completed_03", MultiBot.tips.itemus.rare.R02)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Rare", pButton.texture)
-	MultiBot.itemus.color = "cff1eff00"
-	MultiBot.itemus.rare = "R02"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("R03", 90, 0, "achievement_quests_completed_04", MultiBot.tips.itemus.rare.R03)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Rare", pButton.texture)
-	MultiBot.itemus.color = "cff0070dd"
-	MultiBot.itemus.rare = "R03"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("R04", 120, 0, "achievement_quests_completed_05", MultiBot.tips.itemus.rare.R04)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Rare", pButton.texture)
-	MultiBot.itemus.color = "cffa335ee"
-	MultiBot.itemus.rare = "R04"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("R05", 150, 0, "achievement_quests_completed_06", MultiBot.tips.itemus.rare.R05)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Rare", pButton.texture)
-	MultiBot.itemus.color = "cffff8000"
-	MultiBot.itemus.rare = "R05"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("R06", 180, 0, "achievement_quests_completed_07", MultiBot.tips.itemus.rare.R06)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Rare", pButton.texture)
-	MultiBot.itemus.color = "cffff0000"
-	MultiBot.itemus.rare = "R06"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("R07", 210, 0, "achievement_quests_completed_08", MultiBot.tips.itemus.rare.R07)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Rare", pButton.texture)
-	MultiBot.itemus.color = "cffe6cc80"
-	MultiBot.itemus.rare = "R07"
-	MultiBot.itemus.addItems(1)
-end
-
--- ITEMUS:SLOT --
-
-MultiBot.itemus.addButton("Slot", -94, 731, "inv_drink_18", MultiBot.tips.itemus.slot.master)
-.doLeft = function(pButton)
-	MultiBot.ShowHideSwitch(pButton.parent.frames["Slot"])
-end
-
-local tFrame = MultiBot.itemus.addFrame("Slot", -61, 733)
-tFrame:Hide()
-
-tFrame.addButton("S00", 0, 0, "inv_drink_18", MultiBot.tips.itemus.slot.S00)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S00"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S01", 30, 0, "inv_misc_desecrated_platehelm", MultiBot.tips.itemus.slot.S01)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S01"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S02", 60, 0, "inv_jewelry_necklace_22", MultiBot.tips.itemus.slot.S02)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S02"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S03", 90, 0, "inv_misc_desecrated_plateshoulder", MultiBot.tips.itemus.slot.S03)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S03"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S04", 120, 0, "inv_shirt_grey_01", MultiBot.tips.itemus.slot.S04)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S04"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S05", 150, 0, "inv_misc_desecrated_platechest", MultiBot.tips.itemus.slot.S05)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S05"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S06", 180, 0, "inv_misc_desecrated_platebelt", MultiBot.tips.itemus.slot.S06)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S06"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S07", 210, 0, "inv_misc_desecrated_platepants", MultiBot.tips.itemus.slot.S07)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S07"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S08", 0, -30, "inv_misc_desecrated_plateboots", MultiBot.tips.itemus.slot.S08)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S08"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S09", 30, -30, "inv_misc_desecrated_platebracer", MultiBot.tips.itemus.slot.S09)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S09"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S10", 60, -30, "inv_misc_desecrated_plategloves", MultiBot.tips.itemus.slot.S10)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S10"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S11", 90, -30, "inv_jewelry_ring_19", MultiBot.tips.itemus.slot.S11)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S11"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S12", 120, -30, "inv_jewelry_ring_07", MultiBot.tips.itemus.slot.S12)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S12"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S13", 150, -30, "inv_sword_23", MultiBot.tips.itemus.slot.S13)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S13"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S14", 180, -30, "inv_shield_04", MultiBot.tips.itemus.slot.S14)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S14"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S15", 210, -30, "inv_weapon_bow_05", MultiBot.tips.itemus.slot.S15)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S15"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S16", 0, -60, "inv_misc_cape_20", MultiBot.tips.itemus.slot.S16)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S16"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S17", 30, -60, "inv_axe_14", MultiBot.tips.itemus.slot.S17)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S17"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S18", 60, -60, "inv_misc_bag_07_black", MultiBot.tips.itemus.slot.S18)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S18"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S19", 90, -60, "inv_shirt_guildtabard_01", MultiBot.tips.itemus.slot.S19)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S19"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S20", 120, -60, "inv_misc_desecrated_clothchest", MultiBot.tips.itemus.slot.S20)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S20"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S21", 150, -60, "inv_hammer_07", MultiBot.tips.itemus.slot.S21)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S21"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S22", 180, -60, "inv_sword_15", MultiBot.tips.itemus.slot.S22)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S22"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S23", 210, -60, "inv_misc_book_09", MultiBot.tips.itemus.slot.S23)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S23"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S24", 0, -90, "inv_misc_ammo_arrow_01", MultiBot.tips.itemus.slot.S24)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S24"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S25", 30, -90, "inv_throwingknife_02", MultiBot.tips.itemus.slot.S25)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S25"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S26", 60, -90, "inv_wand_07", MultiBot.tips.itemus.slot.S26)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S26"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S27", 90, -90, "inv_misc_quiver_07", MultiBot.tips.itemus.slot.S27)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S26"
-	MultiBot.itemus.addItems(1)
-end
-
-tFrame.addButton("S28", 120, -90, "inv_relics_idolofrejuvenation", MultiBot.tips.itemus.slot.S28)
-.doLeft = function(pButton)
-	MultiBot.Select(MultiBot.itemus, "Slot", pButton.texture)
-	MultiBot.itemus.slot = "S28"
-	MultiBot.itemus.addItems(1)
-end
-
--- ITEMUS:TYPE --
-
-MultiBot.itemus.addButton("Type", -94, 694, "inv_misc_head_clockworkgnome_01", MultiBot.tips.itemus.type).setDisable()
-.doLeft = function(pButton)
-	MultiBot.itemus.type = MultiBot.IF(MultiBot.OnOffSwitch(pButton), "NPC", "PC")
-	MultiBot.itemus.addItems(1)
-end]]--
-
--- ICONOS --
-
---[[MultiBot.iconos = MultiBot.newFrame(MultiBot, -860, -144, 32, 442, 884)
-MultiBot.iconos.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Iconos.blp")
-MultiBot.iconos.addText("Title", "Iconos", "CENTER", -57, 429, 13)
-MultiBot.iconos.addText("Pages", "0/0", "CENTER", -57, 409, 13)
-MultiBot.iconos.max = 1
-MultiBot.iconos.now = 1
-MultiBot.iconos:SetMovable(true)
-MultiBot.iconos:Hide()
-
-MultiBot.iconos.movButton("Move", -407, 850, 32, MultiBot.tips.move.iconos)
-
-MultiBot.iconos.wowButton("<", -319, 841, 15, 18, 13).doHide()
-.doLeft = function(pButton)
-	MultiBot.iconos.now = MultiBot.iconos.now - 1
-	MultiBot.iconos.addIcons()
-end
-
-MultiBot.iconos.wowButton(">", -225, 841, 15, 18, 13).doHide()
-.doLeft = function(pButton)
-	MultiBot.iconos.now = MultiBot.iconos.now + 1
-	MultiBot.iconos.addIcons()
-end
-
-MultiBot.iconos.wowButton("X", -126, 862, 15, 18, 13)
-.doLeft = function(pButton)
-	MultiBot.iconos:Hide()
-end
-
-local tFrame = MultiBot.iconos.addFrame("Icons", -397, 807, 32)
-tFrame:Show()]]--
 
 -- ICONOS REFACTOR --
 MultiBot.iconos = MultiBot.newFrame(MultiBot, -860, -144, 32, 442, 884)
@@ -4932,8 +4179,6 @@ function MultiBot.FillDefaultGlyphs()
         table.insert(names,
             (entry.type=="Major" and "|cffffff00" or "|cff00ff00") .. n .. "|r")
     end
-    --[[DEFAULT_CHAT_FRAME:AddMessage(
-        "|cff66ccff[MultiBot]|r Glyphs for "..botName.." : "..table.concat(names, ", "))]]--
 end
 
 -- Add a custom background to the Glyphs Frame (tTab)
@@ -5602,35 +4847,10 @@ end
     gApply:Show()
 end
 
---[[-- 6) Create the Apply button
-	gApply = MultiBot.talent.wowButton("Apply Glyphs", -474, 966, 100, 20, 12)
-	gApply:Hide()  -- Always hidden until a modification is made
-	gApply:SetScript("OnClick", function()
-    -- 1) Collect the 6 IDs (0 if slot is empty)
-    local ids = {}
-    for i = 1, 6 do
-        ids[i] = MultiBot.talent.frames["Tab4"].frames["Socket"..i].item or 0
-    end
-
-    -- 2) Local DEBUG message
-    local payload = "glyph equip "..table.concat(ids, " ")
-    DEFAULT_CHAT_FRAME:AddMessage(
-        ("|cff66ccff[DBG]|r %s  :  %s")
-        :format(MultiBot.talent.name or "?", payload)
-    )
-
-    -- 3) Send the new unique command to the bot
-    SendChatMessage(payload, "WHISPER", nil, MultiBot.talent.name)
-
-    -- 4) Hide the button again until the next modification
-    gApply:Hide()
-end)]]--
-
 -- 7) Prepare Tab4 for custom mode
 function MultiBot.talent.showCustomGlyphs()
     MultiBot.talent.texts["Points"]:Hide()
     for i=1,3 do MultiBot.talent.frames["Tab"..i]:Hide() end
-    -- local parentTab4 = MultiBot.talent.frames["Tab4"]
     parentTab4:Show()
 
     for i=1,6 do
@@ -5745,21 +4965,6 @@ end
 
 local tSelector = tRTSC.addFrame("Selector", 0, 2, 28)
 tSelector.selector = ""
-
--- Exécute l'action sur la sélection
---[[tSelector.doExecute = function(pButton, pAction)
-	if (pButton.parent.selector == "") then
-		return MultiBot.ActionToGroup(pAction)
-	end
-
-	local tGroups = MultiBot.doSplit(pButton.parent.selector, " ")
-	for _, tag in ipairs(tGroups) do
-		MultiBot.ActionToGroup(tag .. " " .. pAction)
-		pButton.parent.buttons[tag].setDisable()
-	end
-
-	pButton.parent.selector = ""
-end]]--
 
 -- Exécute l'action sur la sélection => Modifié pour La PR (commit 78116fe)
 tSelector.doExecute = function(pButton, pAction)
@@ -6075,7 +5280,6 @@ if not MultiBot.InitHunterQuick then
       row.mainBtn:SetFrameStrata("HIGH")
       row.mainBtn:RegisterForDrag("RightButton")
       row.mainBtn:SetScript("OnDragStart", function() self.frame:StartMoving() end)
-      -- row.mainBtn:SetScript("OnDragStop" , function() self.frame:StopMovingOrSizing() end)
       row.mainBtn:SetScript("OnDragStop", function()
         self.frame:StopMovingOrSizing()
         local p, _, rp, x, y = self.frame:GetPoint()
