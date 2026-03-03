@@ -488,6 +488,7 @@ local frFRValues = {
   ["tips.shaman.playbook.cure"] = "Soin|cffffffff\nActive la stratégie de soin.\nLe bot retirera les poisons, malédictions et maladies lorsque possible.|r\n\n|cffff0000Clic gauche pour activer ou désactiver le soin|r\n|cf9999999(Ordre d’exécution : Bot)|r",
   ["tips.shaman.dps.healerdps"] = "Healer-DPS|cffffffff\nActive la stratégie Healer-DPS.\nLe soigneur infligera des dégâts tout en continuant de se concentrer sur les soins.\nHealer-DPS, DPS-AOE, DPS-Assist et Tank-Assist sont mutuellement exclusifs.\nUne seule de ces stratégies peut être activée.|r\n\n|cffff0000Clic gauche pour activer ou désactiver Healer-DPS|r\n|cf9999999(Ordre d’exécution : Bot)|r",
   ["tips.shaman.tankAssist"] = "Assistance Tank|cffffffff\nCeci active les stratégies d'assistance Tank.\nDPS-AOE, Assistance DPS et Assistance Tank sont mutuellement exclusifs.\nSeule l'une de ces stratégies peut être activée.|r\n\n|cffff0000Clic gauche pour activer ou désactiver l'Assistance Tank|r\n|cff999999(Ordre d'exécution : Bot)|r",
+  ["tips.shaman.ownbutton"] = "Chamane: %s",
   ["tips.warlock.curses"] = "",
   ["tips.warlock.stones"] = "",
   ["tips.warlock.pets"] = "",

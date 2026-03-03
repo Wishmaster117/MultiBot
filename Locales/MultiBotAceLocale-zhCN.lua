@@ -488,6 +488,7 @@ local zhCNValues = {
   ["tips.shaman.playbook.cure"] = "净化|cffffffff\n启用净化策略。\n机器人会在可能的情况下移除中毒、诅咒和疾病效果。|r\n\n|cffff0000左键点击以启用或禁用净化|r\n|cf9999999(执行顺序: Bot)|r",
   ["tips.shaman.dps.healerdps"] = "治疗者-DPS|cffffffff\n启用治疗者-DPS策略。\n治疗者在专注于治疗的同时也会造成伤害。\n治疗者-DPS、DPS-AOE、DPS-协助和坦克-协助互斥。\n这些策略中只能激活一个。|r\n\n|cffff0000左键点击以启用或禁用治疗者-DPS|r\n|cf9999999(执行顺序: Bot)|r",
   ["tips.shaman.tankAssist"] = "坦克辅助|cffffffff\n启用坦克辅助策略。\nDPS范围攻击、DPS辅助和坦克辅助相互排斥。\n同一时间只能激活这些策略中的一种。|r\n\n|cffff0000左键点击启用或禁用坦克辅助|r\n|cf9999999(执行命令: 机器人)|r",
+  ["tips.shaman.ownbutton"] = "Shaman: %s",
   ["tips.warlock.buff.master"] = "增益控制|cffffffff\n此控制允许你选择、启用或禁用默认增益。|r\n\n|cffff0000左键点击以显示或隐藏选项|r\n|cff999999(执行命令: 系统)|r\n\n|cffff0000右键点击启用或禁用默认增益。|r\n|cff999999(执行命令: 机器人)|r",
   ["tips.warlock.buff.bhealth"] = "生命增益|cffffffff\n启用生命增益。|r\n\n|cffff0000左键点击启生命增益 |r\n|cff999999(执行命令: 机器人)|r",
   ["tips.warlock.buff.bmana"] = "法力增益|cffffffff\n启用法力增益。|r\n\n|cffff0000左键点击启用法力增益|r\n|cff999999(执行命令: 机器人)|r",

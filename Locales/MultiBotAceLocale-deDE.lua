@@ -486,6 +486,7 @@ local deDEValues = {
   ["tips.shaman.playbook.cure"] = "Heilen|cffffffff\nAktiviert die Heilungs-Strategie.\nDer Bot wird, wenn möglich, Gifte, Flüche und Krankheiten entfernen.|r\n\n|cffff0000Linksklick, um Heilen zu aktivieren oder zu deaktivieren|r\n|cf9999999(Ausführungsreihenfolge: Bot)|r",
   ["tips.shaman.dps.healerdps"] = "Heiler-DPS|cffffffff\nAktiviert die Heiler-DPS-Strategie.\nDer Heiler wird Schaden verursachen und sich gleichzeitig weiterhin auf das Heilen konzentrieren.\nHeiler-DPS, DPS-AOE, DPS-Assist und Tank-Assist schließen sich gegenseitig aus.\nNur eine dieser Strategien kann aktiviert sein.|r\n\n|cffff0000Linksklick, um Heiler-DPS zu aktivieren oder zu deaktivieren|r\n|cf9999999(Ausführungsreihenfolge: Bot)|r",
   ["tips.shaman.tankAssist"] = "Tank-Assist|cffffffff\nDiese Schaltfläche aktiviert die Tank-Assist-Strategie.\nDPS-AOE, DPS-Assist und Tank-Assist schließen sich gegenseitig aus.\nNur eine dieser Strategien kann zeitgleich aktiviert sein.|r\n\n|cffff0000Linksklicken um Tank-Assist ein- oder auszuschalten|r\n|cf9999999(Ausführreihenfolge: Bot)|r",
+  ["tips.shaman.ownbutton"] = "Shaman: %s",
   ["tips.warlock.curses"] = "",
   ["tips.warlock.stones"] = "",
   ["tips.warlock.pets"] = "",

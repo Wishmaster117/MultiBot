@@ -24,7 +24,8 @@
   - Replace legacy frame construction screen-by-screen with AceGUI containers/widgets while preserving behavior and slash/open flows.
 - **Milestone 9 (Localization and text pipeline):** In progress.
   - Core locale loader + per-locale payload files are integrated (`Core/MultiBotLocale.lua`, `Locales/MultiBotAceLocale-*.lua`).
-  - Incremental migration of UI/Core call sites to `MultiBot.L(...)` is ongoing (targeted PRs, behavior parity first).
+  - `Core/MultiBotInit.lua` migration sweep is completed for legacy `MultiBot.tips.*` runtime reads.
+  - Next targeted file for residual legacy tips reads: `Features/MultiBotRaidus.lua`
 - **Milestone 10 (Data model and table lifecycle hardening):** Planned.
   - Normalize runtime stores and remove ad-hoc table creation paths via centralized getters/validators.
 - **Milestone 11 (Scheduler/timers convergence):** Planned.

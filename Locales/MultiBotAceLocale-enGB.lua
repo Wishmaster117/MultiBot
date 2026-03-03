@@ -490,6 +490,7 @@ local enGBValues = {
   ["tips.shaman.playbook.cure"] = "Cure|cffffffff\nIt enables the Cure-Strategy.\nThe bot will remove poisons, curses and diseases when possible.|r\n\n|cffff0000Left-Click to enable or disable Cure|r\n|cf9999999(Executed by: Bot)|r",
   ["tips.shaman.dps.healerdps"] = "Healer-DPS|cffffffff\nIt enables the Healer-DPS-Strategy.\nThe healer will contribute damage while still focusing on healing.\nHealer-DPS, DPS-AOE, DPS-Assist and Tank-Assist are mutually exclusive.\nOnly one of these Strategies can be activated.|r\n\n|cffff0000Left-Click to enable or disable Healer-DPS|r\n|cf9999999(Executed by: Bot)|r",
   ["tips.shaman.tankAssist"] = "Tank Assist|cffffffff\nDPS AoE, DPS Assist, and Tank Assist are mutually exclusive.\nOnly one may be active at a time.|r\n\n|cffff0000Left-click to toggle Tank-Assist|r\n|cf9999999(Executed by: Bot)|r",
+  ["tips.shaman.ownbutton"] = "Shaman: %s",
   ["tips.warlock.curses"] = "",
   ["tips.warlock.stones"] = "",
   ["tips.warlock.pets"] = "",

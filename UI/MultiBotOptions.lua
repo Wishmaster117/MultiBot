@@ -5,12 +5,12 @@ local PANEL_NAME = "MultiBotOptionsPanel"
 
 local function round(x, step) step = step or 1; return math.floor(x/step + 0.5)*step end
 
-local function optL(key, fallback)
-  return MultiBot.L(key, fallback)
+local function optL(key)
+  return MultiBot.L(key)
 end
 
 local function secondsLabel(value)
-  local suffix = MultiBot.L("options.seconds_suffix", "s")
+  local suffix = MultiBot.L("options.seconds_suffix")
   return string.format("%.1f %s", value, suffix)
 end
 
@@ -93,7 +93,7 @@ function MultiBot.BuildOptionsPanel()
 
   -- parent = UIParent (pas InterfaceOptionsFramePanelContainer sur 3.3.5)
   local panel = CreateFrame("Frame", PANEL_NAME, UIParent)
-  panel.name = MultiBot.L("options.panel_name", "MultiBot")
+  panel.name = MultiBot.L("options.panel_name")
   panel:Hide()
 
   local scrollFrame = CreateFrame("ScrollFrame", PANEL_NAME.."ScrollFrame", panel, "UIPanelScrollFrameTemplate")
@@ -110,7 +110,7 @@ function MultiBot.BuildOptionsPanel()
 
     local title = self:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
     title:SetPoint("TOPLEFT", 16, -16)
-    title:SetText(optL("tips.sliders.frametitle", "MultiBot settings"))
+    title:SetText(optL("tips.sliders.frametitle"))
 
     -- SV minimap garanties côté options
     local minimapConfig = MultiBot.GetMinimapConfig and MultiBot.GetMinimapConfig() or { hide = false }
@@ -123,8 +123,8 @@ function MultiBot.BuildOptionsPanel()
     local chkMinimapHide = CreateFrame("CheckButton", "MultiBot_MinimapHideCheck",
       self, "InterfaceOptionsCheckButtonTemplate")
     chkMinimapHide:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -10)
-    _G[chkMinimapHide:GetName().."Text"]:SetText(optL("info.buttonoptionshide", "Hide minimap button"))
-    chkMinimapHide.tooltipText = optL("info.buttonoptionshidetooltip", "Hide or show the MultiBot minimap button")
+    _G[chkMinimapHide:GetName().."Text"]:SetText(optL("info.buttonoptionshide"))
+    chkMinimapHide.tooltipText = optL("info.buttonoptionshidetooltip")
 
       -- État initial
       chkMinimapHide:SetChecked(minimapConfig.hide and true or false)
@@ -151,7 +151,7 @@ function MultiBot.BuildOptionsPanel()
 
     local strataLabel = self:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     strataLabel:SetPoint("BOTTOMLEFT", strataDropDown, "TOPLEFT", 16, 3)
-    strataLabel:SetText(MultiBot.L("options.frame_strata", "Frame Strata"))
+    strataLabel:SetText(MultiBot.L("options.frame_strata"))
 
     -- Petite aide visuelle sous la case
     -- local hint = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
@@ -193,17 +193,17 @@ function MultiBot.BuildOptionsPanel()
 
     local sub = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
     sub:SetPoint("TOPLEFT", strataDropDown, "BOTTOMLEFT", 20, -12)
-    sub:SetText(optL("tips.sliders.actionsinter", "Action intervals"))
+    sub:SetText(optL("tips.sliders.actionsinter"))
 
     -- Sliders : on les crée puis on les ANCRE sous le sous-titre pour éviter tout chevauchement
-    self.s_stats  = makeSlider(self, "stats",  optL("tips.sliders.statsinter", "Stats refresh interval"),           5, 300, 1,   -40)
-    self.s_talent = makeSlider(self, "talent", optL("tips.sliders.talentsinter", "Talents refresh interval"),         1,  30, 0.5, -90)
-    self.s_invite = makeSlider(self, "invite", optL("tips.sliders.invitsinter", "Invite interval"), 1,  60, 1,   -140)
-    self.s_sort   = makeSlider(self, "sort",   optL("tips.sliders.sortinter", "Sort interval"), 0.2,10, 0.2, -190)
+    self.s_stats  = makeSlider(self, "stats",  optL("tips.sliders.statsinter"),           5, 300, 1,   -40)
+    self.s_talent = makeSlider(self, "talent", optL("tips.sliders.talentsinter"),         1,  30, 0.5, -90)
+    self.s_invite = makeSlider(self, "invite", optL("tips.sliders.invitsinter"), 1,  60, 1,   -140)
+    self.s_sort   = makeSlider(self, "sort",   optL("tips.sliders.sortinter"), 0.2,10, 0.2, -190)
 
     -- Throttle (NOUVEAU)
-    self.s_thr_rate  = makeThrottleSlider(self, "thr_rate",  optL("tips.sliders.messpersec", "Messages per second"), 1, 20, 1, 0)
-    self.s_thr_burst = makeThrottleSlider(self, "thr_burst", optL("tips.sliders.maxburst", "Max burst"),    1, 50, 1, 0)
+    self.s_thr_rate  = makeThrottleSlider(self, "thr_rate",  optL("tips.sliders.messpersec"), 1, 20, 1, 0)
+    self.s_thr_burst = makeThrottleSlider(self, "thr_burst", optL("tips.sliders.maxburst"),    1, 50, 1, 0)
 
     -- Ré-ancrage vertical
     self.s_stats:ClearAllPoints()
@@ -229,7 +229,7 @@ function MultiBot.BuildOptionsPanel()
     btn:SetSize(140, 22)
     btn:ClearAllPoints()
     btn:SetPoint("TOPLEFT", self.s_thr_burst, "BOTTOMLEFT", 0, -24)
-    btn:SetText(optL("tips.sliders.rstbutn", "Reset defaults"))
+    btn:SetText(optL("tips.sliders.rstbutn"))
     btn:SetScript("OnClick", function()
       -- Timers
       MultiBot.SetTimer("stats",  45)
