@@ -45,7 +45,21 @@ Initial inventory of user-facing hardcoded strings in `Core/`, `UI/`, and `Featu
 - Current status:
   - `Core/MultiBotInit.lua`: migrated.
   - `UI/MultiBotPVPUI.lua`: migrated.
-  - Remaining major target: `Features/MultiBotRaidus.lua`.
+  - `Features/MultiBotRaidus.lua`: migrated.
+  - `Core/MultiBotEvery.lua`: migrated.
+  - `Core/MultiBotEngine.lua`: migrated.
+  - `Core/MultiBotHandler.lua`: migrated for runtime tooltip string reads.
+  - `Strategies/MultiBotDruid.lua`: migrated.
+  - `Strategies/MultiBotPaladin.lua`: migrated.
+  - `Strategies/MultiBotMage.lua`: migrated.
+  - `Strategies/MultiBotWarlock.lua`: migrated.
+  - `Strategies/MultiBotDeathKnight.lua`: migrated.
+  - `Strategies/MultiBotHunter.lua`: migrated.
+  - `Strategies/MultiBotPriest.lua`: migrated.
+  - `Strategies/MultiBotRogue.lua`: migrated.
+  - `Strategies/MultiBotShaman.lua`: migrated.
+  - `Strategies/MultiBotWarrior.lua`: migrated.
+  
 
 
 ## Pipeline decisions in this kickoff
@@ -59,6 +73,6 @@ Initial inventory of user-facing hardcoded strings in `Core/`, `UI/`, and `Featu
 
 ## Next milestone-9 increments
 
-1. Remove duplicate inline fallback literals in `UI/MultiBotPVPUI.lua` now that stable locale keys are in place. *(completed in latest increment)*
-2. Continue migrating inline fallbacks in Core call sites (`Core/MultiBotInit.lua`, `Core/MultiBotThrottle.lua`) where locale keys are already stable.
+1. Migrate `Strategies/MultiBotPriest.lua` from `MultiBot.tips.*` reads to `MultiBot.L(...)` key lookups.
+2. Continue scanning `Core/UI/Features/Strategies` for new hardcoded user-facing strings introduced by incremental PRs.
 3. Expand key coverage locale-by-locale while keeping deterministic fallback behavior.

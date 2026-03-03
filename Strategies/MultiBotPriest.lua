@@ -1,5 +1,5 @@
 MultiBot.addPriest = function(pFrame, pCombat, pNormal)
-	pFrame.addButton("Heal", 0, 0, "spell_holy_aspiration", MultiBot.tips.priest.heal).setDisable()
+	pFrame.addButton("Heal", 0, 0, "spell_holy_aspiration", MultiBot.L("tips.priest.heal")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +heal,?", "co -heal,?", pButton.getName())) then
 			pButton.getButton("Shadow").setDisable()
@@ -9,14 +9,14 @@ MultiBot.addPriest = function(pFrame, pCombat, pNormal)
 
 	-- BUFF --
 
-	pFrame.addButton("Buff", -30, 0, "spell_holy_power", MultiBot.tips.priest.buff).setDisable()
+	pFrame.addButton("Buff", -30, 0, "spell_holy_power", MultiBot.L("tips.priest.buff")).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "co +buff,?", "co -buff,?", pButton.getName())
 	end
 
 	-- PLAYBOOK --
 
-	pFrame.addButton("Playbook", -60, 0, "inv_misc_book_06", MultiBot.tips.priest.playbook.master)
+	pFrame.addButton("Playbook", -60, 0, "inv_misc_book_06", MultiBot.L("tips.priest.playbook.master"))
 	.doLeft = function(pButton)
 		MultiBot.ShowHideSwitch(pButton.getFrame("Playbook"))
 	end
@@ -24,7 +24,7 @@ MultiBot.addPriest = function(pFrame, pCombat, pNormal)
 	local playbookFrame = pFrame.addFrame("Playbook", -62, 30)
     playbookFrame:Hide()
 
-    playbookFrame.addButton("ShadowDebuff", 0, 0, "spell_shadow_demonicempathy", MultiBot.tips.priest.playbook.shadowDebuff).setDisable()
+    playbookFrame.addButton("ShadowDebuff", 0, 0, "spell_shadow_demonicempathy", MultiBot.L("tips.priest.playbook.shadowDebuff")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +shadow debuff,?", "co -shadow debuff,?", pButton.getName())) then
 			pButton.getButton("DpsDebuff").setEnable()
@@ -33,12 +33,12 @@ MultiBot.addPriest = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	 playbookFrame.addButton("ShadowAoe", 0, 26, "spell_arcane_arcanetorrent", MultiBot.tips.priest.playbook.shadowAoe).setDisable()
+	 playbookFrame.addButton("ShadowAoe", 0, 26, "spell_arcane_arcanetorrent", MultiBot.L("tips.priest.playbook.shadowAoe")).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "co +shadow aoe,?", "co -shadow aoe,?", pButton.getName())
 	end
 
-	playbookFrame.addButton("Shadow", 0, 52, "spell_holy_devotion", MultiBot.tips.priest.playbook.shadow).setDisable()
+	playbookFrame.addButton("Shadow", 0, 52, "spell_holy_devotion", MultiBot.L("tips.priest.playbook.shadow")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +shadow,?", "co -shadow,?", pButton.getName())) then
 			pButton.getButton("Heal").setDisable()
@@ -49,7 +49,7 @@ MultiBot.addPriest = function(pFrame, pCombat, pNormal)
 	end
 
 	-- HOLY (PLAYBOOK) --
-	playbookFrame.addButton("HolyHeal", 0, 78, "spell_holy_guardianspirit", MultiBot.tips.priest.playbook.holyheal).setDisable()
+	playbookFrame.addButton("HolyHeal", 0, 78, "spell_holy_guardianspirit", MultiBot.L("tips.priest.playbook.holyheal")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +holy heal,?", "co -holy heal,?", pButton.getName())) then
 			pButton.getButton("Shadow").setDisable()
@@ -57,7 +57,7 @@ MultiBot.addPriest = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	playbookFrame.addButton("HolyDps", 0, 102, "spell_holy_holybolt", MultiBot.tips.priest.playbook.holydps).setDisable()
+	playbookFrame.addButton("HolyDps", 0, 102, "spell_holy_holybolt", MultiBot.L("tips.priest.playbook.holydps")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +holy dps,?", "co -holy dps,?", pButton.getName())) then
 			pButton.getButton("Heal").setDisable()
@@ -68,14 +68,14 @@ MultiBot.addPriest = function(pFrame, pCombat, pNormal)
 
    -- SHADOW RESISTANCE --
    -- (Expose 'rshadow' pour Shadow Protection)
-   playbookFrame.addButton("ShadowRes", 0, 128, "spell_shadow_antishadow", MultiBot.tips.priest.playbook.rshadow).setDisable()
+   playbookFrame.addButton("ShadowRes", 0, 128, "spell_shadow_antishadow", MultiBot.L("tips.priest.playbook.rshadow")).setDisable()
    .doLeft = function(pButton)
        MultiBot.OnOffActionToTarget(pButton, "co +rshadow,?", "co -rshadow,?", pButton.getName())
    end
 
 	-- DPS --
 
-	pFrame.addButton("DpsControl", -90, 0, "ability_warrior_challange", MultiBot.tips.priest.dps.master)
+	pFrame.addButton("DpsControl", -90, 0, "ability_warrior_challange", MultiBot.L("tips.priest.dps.master"))
 	.doLeft = function(pButton)
 		MultiBot.ShowHideSwitch(pButton.getFrame("DpsControl"))
 	end
@@ -83,7 +83,7 @@ MultiBot.addPriest = function(pFrame, pCombat, pNormal)
     local dpsControlFrame = pFrame.addFrame("DpsControl", -92, 30)
     dpsControlFrame:Hide()
 
-    dpsControlFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.tips.priest.dps.dpsAssist).setDisable()
+    dpsControlFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.L("tips.priest.dps.dpsAssist")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +healer dps,?", "co -healer dps,?", pButton.getName())) then
 			pButton.getButton("TankAssist").setDisable()
@@ -91,7 +91,7 @@ MultiBot.addPriest = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	dpsControlFrame.addButton("DpsDebuff", 0, 26, "spell_holy_restoration", MultiBot.tips.priest.dps.dpsDebuff).setDisable()
+	dpsControlFrame.addButton("DpsDebuff", 0, 26, "spell_holy_restoration", MultiBot.L("tips.priest.dps.dpsDebuff")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +shadow debuff,?", "co -shadow debuff,?", pButton.getName())) then
 			pButton.getButton("ShadowDebuff").setEnable()
@@ -100,7 +100,7 @@ MultiBot.addPriest = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	dpsControlFrame.addButton("DpsAoe", 0, 52, "spell_holy_surgeoflight", MultiBot.tips.priest.dps.dpsAoe).setDisable()
+	dpsControlFrame.addButton("DpsAoe", 0, 52, "spell_holy_surgeoflight", MultiBot.L("tips.priest.dps.dpsAoe")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps aoe,?", "co -dps aoe,?", pButton.getName())) then
 			pButton.getButton("TankAssist").setDisable()
@@ -108,7 +108,7 @@ MultiBot.addPriest = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	dpsControlFrame.addButton("Dps", 0, 78, "spell_holy_divinepurpose", MultiBot.tips.priest.dps.dps).setDisable()
+	dpsControlFrame.addButton("Dps", 0, 78, "spell_holy_divinepurpose", MultiBot.L("tips.priest.dps.dps")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +shadow,?", "co -shadow,?", pButton.getName())) then
 			pButton.getButton("Shadow").setEnable()
@@ -120,7 +120,7 @@ MultiBot.addPriest = function(pFrame, pCombat, pNormal)
 
 	-- ASSIST --
 
-	pFrame.addButton("TankAssist", -120, 0, "ability_warrior_innerrage", MultiBot.tips.priest.tankAssist).setDisable()
+	pFrame.addButton("TankAssist", -120, 0, "ability_warrior_innerrage", MultiBot.L("tips.priest.tankAssist")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +tank assist,?", "co -tank assist,?", pButton.getName())) then
 			pButton.getButton("DpsAssist").setDisable()

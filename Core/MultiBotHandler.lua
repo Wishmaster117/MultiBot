@@ -1207,7 +1207,7 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			local tTip = MultiBot.doReplace(MultiBot.doReplace(MultiBot.info.teleport, "MAP", tMap), "ZONE", tZone)
 
 			tPlayer.memory.goMap = tLocation[2]
-			tPlayer.memory.tip = MultiBot.doReplace(MultiBot.tips.game.memory, "ABOUT", tTip)
+			tPlayer.memory.tip = MultiBot.doReplace(MultiBot.L("tips.game.memory"), "ABOUT", tTip)
 			return
 		end
 

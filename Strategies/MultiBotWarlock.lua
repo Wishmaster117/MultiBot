@@ -52,7 +52,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
     -- BUFF — non supporté pour Warlock bouton placeholder désactivé
     local btnBuff = pFrame.addButton(
         "Buff", 0, 0, "spell_shadow_lifedrain02",
-        (MultiBot.tips.warlock.buff and MultiBot.tips.warlock.buff.master or "Buffs")
+         (MultiBot.L("tips.warlock.buff.master") ~= "tips.warlock.buff.master" and MultiBot.L("tips.warlock.buff.master") or "Buffs")
           .. "|n|cffff0000Not available for Warlock.|r"
     )
     btnBuff.setDisable()
@@ -115,7 +115,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 	-- STONES (Spellstone / Firestone) --
 	local btnStones = pFrame.addButton("StonesSelect", -150, 0,
 		"inv_misc_orb_05",
-		MultiBot.tips.warlock.stones.master)
+		MultiBot.L("tips.warlock.stones.master"))
 	btnStones._defaultIcon = "inv_misc_orb_05"
 
 	local fStones = pFrame.addFrame("Stones", -152, 30)
@@ -174,7 +174,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 	for i,v in ipairs(stoneList) do
 		local label, cmd, icon = unpack(v)
 		local b = fStones.addButton("Stone"..label, 0, (i-1)*26, icon,
-			MultiBot.tips.warlock.stones[label:lower()])
+			MultiBot.L("tips.warlock.stones." .. label:lower()))
 		stoneButtons[label] = b
 		_MB_setDesat(b, true)
 		b.doLeft  = function(pButton) ToggleStone(pButton, label, cmd) end
@@ -190,7 +190,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 	-- SOULSTONES (stratégies) --
 	local btnSoulstones = pFrame.addButton("SoulstonesSelect", -180, 0,
 		"inv_misc_orb_04",
-		MultiBot.tips.warlock.soulstones.masterbutton)
+		MultiBot.L("tips.warlock.soulstones.masterbutton"))
 	btnSoulstones._defaultIcon = "inv_misc_orb_04"
 
 	local fSoul = pFrame.addFrame("Soulstones", -182, 30)
@@ -254,7 +254,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 	for i,v in ipairs(ssList) do
 		local label, cmd, icon = unpack(v)
 		local b = fSoul.addButton("SS"..label, 0, (i-1)*26, icon,
-			MultiBot.tips.warlock.soulstones[label:lower()] or label)
+			MultiBot.L("tips.warlock.soulstones." .. label:lower()) or label)
 		ssButtons[label] = b
 		_MB_setDesat(b, true)
 		b.doLeft = function(pButton) ToggleSS(pButton, label, cmd) end
@@ -271,7 +271,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
     local btnPets = pFrame.addButton(
       "PetsSelect", -210, 0,
       "ability_druid_forceofnature",
-      MultiBot.tips.warlock.pets.master
+      MultiBot.L("tips.warlock.pets.master")
     )
     btnPets._defaultIcon = "ability_druid_forceofnature"
 
@@ -338,7 +338,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
     for i, v in ipairs(petList) do
       local label, cmd, icon = unpack(v)
       local b = fPets.addButton("Pet"..label, 0, (i-1)*26, icon,
-        MultiBot.tips.warlock.pets[label:lower()]
+        MultiBot.L("tips.warlock.pets." .. label:lower())
       )
       petButtons[label] = b
       _MB_setDesat(b, true)
@@ -362,7 +362,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 	-- COMBAT STRATEGIES --
 	-- DPS --
 
-	pFrame.addButton("DpsControl", -30, 0, "ability_warrior_challange", MultiBot.tips.warlock.dps.master)
+	pFrame.addButton("DpsControl", -30, 0, "ability_warrior_challange", MultiBot.L("tips.warlock.dps.master"))
 	.doLeft = function(pButton)
 		MultiBot.ShowHideSwitch(pButton.getFrame("DpsControl"))
 	end
@@ -370,7 +370,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 	local tFrame = pFrame.addFrame("DpsControl", -32, 30)
 	tFrame:Hide()
 
-	tFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.tips.warlock.dps.dpsAssist).setDisable()
+	tFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.L("tips.warlock.dps.dpsAssist")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps assist,?", "co -dps assist,?", pButton.getName())) then
 			pButton.getButton("TankAssist").setDisable()
@@ -378,12 +378,12 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	tFrame.addButton("DpsDebuff", 0, 26, "spell_holy_restoration", MultiBot.tips.warlock.dps.dpsDebuff).setDisable()
+	tFrame.addButton("DpsDebuff", 0, 26, "spell_holy_restoration", MultiBot.L("tips.warlock.dps.dpsDebuff")).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "co +dps debuff,?", "co -dps debuff,?", pButton.getName())
 	end
 
-	tFrame.addButton("DpsAoe", 0, 52, "spell_holy_surgeoflight", MultiBot.tips.warlock.dps.dpsAoe).setDisable()
+	tFrame.addButton("DpsAoe", 0, 52, "spell_holy_surgeoflight", MultiBot.L("tips.warlock.dps.dpsAoe")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps aoe,?", "co -dps aoe,?", pButton.getName())) then
 			pButton.getButton("TankAssist").setDisable()
@@ -391,7 +391,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	tFrame.addButton("Dps", 0, 78, "spell_holy_divinepurpose", MultiBot.tips.warlock.dps.dps).setDisable()
+	tFrame.addButton("Dps", 0, 78, "spell_holy_divinepurpose", MultiBot.L("tips.warlock.dps.dps")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps,?", "co -dps,?", pButton.getName())) then
 			pButton.getButton("Tank").setDisable()
@@ -401,7 +401,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
     -- META MELEE (Démonologie) --
     local btnMeta = tFrame.addButton(
       "MetaMelee", 0, 104, "Spell_Shadow_DemonForm",
-      (MultiBot.tips.warlock.dps and MultiBot.tips.warlock.dps.metamelee)
+      (MultiBot.L("tips.warlock.dps.metamelee") ~= "tips.warlock.dps.metamelee" and MultiBot.L("tips.warlock.dps.metamelee") or "Meta Melee")
     )
     btnMeta.setDisable()
 
@@ -411,7 +411,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 
 		-- ASSIST --
 
-	pFrame.addButton("TankAssist", -60, 0, "ability_warrior_innerrage", MultiBot.tips.warlock.tankAssist).setDisable()
+	pFrame.addButton("TankAssist", -60, 0, "ability_warrior_innerrage", MultiBot.L("tips.warlock.tankAssist")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +tank assist,?", "co -tank assist,?", pButton.getName())) then
 			pButton.getButton("DpsAssist").setDisable()
@@ -421,7 +421,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
 
 	-- TANK --
 
-	pFrame.addButton("Tank", -90, 0, "ability_warrior_shieldmastery", MultiBot.tips.warlock.tank).setDisable()
+	pFrame.addButton("Tank", -90, 0, "ability_warrior_shieldmastery", MultiBot.L("tips.warlock.tank")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +tank,?", "co -tank,?", pButton.getName())) then
 			pButton.getButton("Dps").setDisable()
@@ -432,7 +432,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
    local btnCurses = pFrame.addButton(
      "CursesSelect", -120, 0,
      "ability_warlock_avoidance",
-     MultiBot.tips.warlock.curses.master
+     MultiBot.L("tips.warlock.curses.master")
    )
    btnCurses._defaultIcon = "ability_warlock_avoidance"
 
@@ -480,7 +480,7 @@ MultiBot.addWarlock = function(pFrame, pCombat, pNormal)
    for i, v in ipairs(curseList) do
      local label, cmd, icon = unpack(v)
      local b = fCurses.addButton("Curse"..label, 0, (i-1)*26, icon,
-       MultiBot.tips.warlock.curses[label:lower()]
+       MultiBot.L("tips.warlock.curses." .. label:lower())
      )
      curseButtons[label] = b
 

@@ -259,7 +259,7 @@ end
 MultiBot.toTip = function(pClass, pLevel, pName)
 	local tTip = pClass .. " - "
 	if(pLevel ~= nil) then tTip = tTip .. pLevel .. " - " end
-	tTip = tTip .. pName .. MultiBot.tips.unit.button
+	tTip = tTip .. pName .. MultiBot.L("tips.unit.button")
 	tTip = MultiBot.doReplace(tTip, "NAME", pName)
 	tTip = MultiBot.doReplace(tTip, "NAME", pName)
 	tTip = MultiBot.doReplace(tTip, "NAME", pName)
@@ -1433,7 +1433,7 @@ MultiBot.addSelf = function(pClass, pName)
   local tClass = (MultiBot.toClass and MultiBot.toClass(pClass)) or (pClass or "Unknown")
   tClass = tClass or "Unknown"
   if not btn then
-    btn = units.addButton(pName, 0, 0, "inv_misc_head_clockworkgnome_01", MultiBot.tips.unit.selfbot)
+   btn = units.addButton(pName, 0, 0, "inv_misc_head_clockworkgnome_01", MultiBot.L("tips.unit.selfbot"))
   end
   -- Assurer la présence dans les index (sans doublons)
   MultiBot.index.classes.players[tClass] = MultiBot.index.classes.players[tClass] or {}
