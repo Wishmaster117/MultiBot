@@ -20,7 +20,18 @@
   - AceDB bootstrap/runtime migration is now complete for supported SavedVariables paths; one-way versioned legacy cutovers are in place with guarded legacy creation and post-migration cleanup to avoid stale duplicate persistence.
 - **Milestone 7 (Minimap/options integration):** Completed.
   - Minimap hide/angle, global frame strata, options timers/throttle, Spec dropdown positions, Hunter/Shaman quick-bar positions, Hunter pet stance state and Shaman totem choice state now run through AceDB-backed helpers with one-way versioned legacy cutover and guarded legacy fallback (no legacy table creation on pure read paths).
-- **Milestone 8 (AceGUI UI refactor):** Not started.
+- **Milestone 8 (AceGUI UI refactor):** Planned (next).
+  - Replace legacy frame construction screen-by-screen with AceGUI containers/widgets while preserving behavior and slash/open flows.
+- **Milestone 9 (Localization and text pipeline):** Planned.
+  - Consolidate user-facing strings into AceLocale tables and remove duplicated inline literals where feasible.
+- **Milestone 10 (Data model and table lifecycle hardening):** Planned.
+  - Normalize runtime stores and remove ad-hoc table creation paths via centralized getters/validators.
+- **Milestone 11 (Scheduler/timers convergence):** Planned.
+  - Route scattered timers/OnUpdate loops to a constrained scheduler strategy (AceTimer where appropriate, existing loops retained when safer).
+- **Milestone 12 (Observability, diagnostics and perf guardrails):** Planned.
+  - Add lightweight debug/perf toggles and migration diagnostics to validate behavior without chat spam.
+- **Milestone 13 (Release hardening and deprecation window close):** Planned.
+  - Close migration fallback window, document upgrade path, and freeze compatibility guarantees for release.
 
 ---
 
@@ -91,8 +102,61 @@
 2. Keep data/control flow equivalent for each migrated screen.
 3. Avoid big-bang rewrites.
 
+## Phase D — Full ACE3 expansion plan (post-M7)
+
+### D1. Milestone 8 — AceGUI UI refactor
+1. Pick one UI domain per PR (Options, Class, Quest, Raidus auxiliary panes, etc.).
+2. Keep slash commands and open/close behavior unchanged.
+3. Reuse existing persistence helpers (no duplicate save logic).
+
 **Exit criteria**
-- Screen-by-screen functional parity before moving forward.
+- Legacy frame templates are removed only for migrated screens.
+- Each migrated screen reaches behavior parity before moving to the next one.
+
+### D2. Milestone 9 — Localization and text pipeline
+1. Inventory all user-facing strings in `Core/`, `UI/`, `Features/`.
+2. Route strings through locale tables (AceLocale integration when feasible with current packaging).
+3. Preserve fallback locale behavior and avoid nil-text regressions.
+
+**Exit criteria**
+- New/edited UI text no longer ships as hardcoded literals outside locale tables.
+- Missing keys fail gracefully with deterministic fallback.
+
+### D3. Milestone 10 — Data model and table lifecycle hardening
+1. Centralize table accessors for high-churn stores (`profile.ui`, runtime bot stores, quick UI caches).
+2. Remove duplicate validators and one-off table bootstrap snippets.
+3. Enforce read-only accessors that do not create tables unless explicitly requested.
+
+**Exit criteria**
+- No uncontrolled table creation on read paths in targeted modules.
+- Store normalization helpers are reused across modules.
+
+### D4. Milestone 11 — Scheduler/timers convergence
+1. Inventory `OnUpdate`, elapsed counters, delayed whisper/refresh loops.
+2. Migrate safe candidates to a centralized scheduler strategy (AceTimer where applicable).
+3. Keep ultra-hot paths local if conversion adds risk/regression.
+
+**Exit criteria**
+- Timer responsibilities are documented and mapped to one owner per feature.
+- Duplicate periodic loops are reduced without behavior drift.
+
+### D5. Milestone 12 — Observability and performance guardrails
+1. Add structured debug toggles (off by default) for migration/state transitions.
+2. Add lightweight perf counters around roster refresh and high-frequency handlers.
+3. Gate diagnostics to avoid chat spam and runtime overhead in normal mode.
+
+**Exit criteria**
+- Debug instrumentation can be enabled per subsystem.
+- No measurable baseline degradation with diagnostics disabled.
+
+### D6. Milestone 13 — Release hardening and migration window close
+1. Define deprecation policy for remaining legacy fallback paths.
+2. Add final upgrade notes and rollback instructions.
+3. Freeze scope and run full pre-release checklist.
+
+**Exit criteria**
+- Fallback window closure is documented and predictable.
+- Release notes reflect final compatibility contract.
 
 ---
 
@@ -105,7 +169,12 @@
 5. Legacy -> AceDB one-way migration.
 6. Runtime switch to AceDB.
 7. Minimap/options persistence finalization.
-8. Optional per-screen AceGUI refactor.
+8. Milestone 8 (AceGUI screen-by-screen).
+9. Milestone 9 (localization pipeline).
+10. Milestone 10 (data model hardening).
+11. Milestone 11 (timer convergence).
+12. Milestone 12 (observability/perf guardrails).
+13. Milestone 13 (release hardening).
 
 ---
 

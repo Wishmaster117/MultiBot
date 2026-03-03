@@ -1,6 +1,7 @@
 # ACE3 Migration Checklist (Before/After Validation)
 
 Checklist for each migration PR to verify no user-facing regressions.
+> Milestones M1-M7 are tracked here. Post-M7 expansion work (M8+) is tracked in `docs/ace3-expansion-checklist.md`.
 
 ## Current Progress Snapshot
 
