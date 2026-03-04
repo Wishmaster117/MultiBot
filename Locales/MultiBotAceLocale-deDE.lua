@@ -668,6 +668,7 @@ local deDEValues = {
   ["ui.pvp.tab.placeholder"] = "|cffffff00Platzhalter‑Reiter|r",
   ["ui.pvp.prefix.team"] = "Team: ",
   ["ui.pvp.prefix.rating"] = "Wertung: ",
+  ["spec.list.title"] = "Specs",
 }
 
 register("deDE", deDEValues)

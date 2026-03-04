@@ -438,6 +438,11 @@ local function setSpecDropdownPosition(charKey, position)
     end
 end
 
+local function getSpecDropdownCharacterKey()
+    return (UnitName("player") or "Player") .. "-" .. (GetRealmName() or "")
+end
+
+
 --------------------------------------------------------------
 -- Whisper handler routed by central event dispatcher.
 --------------------------------------------------------------
@@ -516,183 +521,314 @@ function MultiBot.HandleSpecWhisper(msg, sender)
 end
 
 
+local function getAceGUI()
+    if type(LibStub) ~= "table" then
+        return nil
+    end
+
+    local ok, lib = pcall(LibStub.GetLibrary, LibStub, "AceGUI-3.0", true)
+    if ok and type(lib) == "table" and type(lib.Create) == "function" then
+        return lib
+    end
+
+    return nil
+end
+
+local function debugSpecPath(path)
+    if MultiBot and MultiBot.Debug and type(MultiBot.Debug.Once) == "function" then
+        MultiBot.Debug.Once("spec.dropdown.path", "MultiBot Spec: using " .. tostring(path) .. " path", "33ccff")
+    end
+end
+
 function Spec:HideDropdown()
+    if self.dropdownWidget and type(self.dropdownWidget.Release) == "function" then
+        self.dropdownWidget:Release()
+        self.dropdownWidget = nil
+    end
+
     if self.dropdown then
         self.dropdown:Hide()
         self.dropdown:SetParent(nil)
         self.dropdown = nil
     end
-    for _,b in ipairs(self.buttons) do b:Hide(); b:SetParent(nil) end
+
+    for _, b in ipairs(self.buttons) do
+        b:Hide()
+        b:SetParent(nil)
+    end
     wipe(self.buttons)
 end
 
-function Spec:BuildDropdown()
-    -- 0) Protection
-    if self.busy then return end
+local function ensureDropdownFrame(specObject, parentFrame, isEmbedded)
+    local frame = specObject.dropdown
+    if frame then
+        return frame
+    end
 
-    local p = self.pending
-    if not p or #p.specs == 0 then return end
+    frame = CreateFrame("Frame", nil, parentFrame or UIParent)
 
-local botKey  = short(p.bot):lower()   -- ← ajoute :lower()
-local current = Spec.currentBuild[botKey]
-
-    -- 1) Fenêtre conteneur
-    local df = self.dropdown
-    if not df then
-        df = CreateFrame("Frame", nil, UIParent)
-        if df.SetBackdrop then
-            df:SetBackdrop({
+    if isEmbedded then
+        frame:SetFrameStrata("TOOLTIP")
+        frame:SetFrameLevel((parentFrame and parentFrame:GetFrameLevel() or 1) + 5)
+        frame:SetAllPoints(parentFrame)
+    else
+        frame:SetFrameStrata("DIALOG")
+        if frame.SetBackdrop then
+            frame:SetBackdrop({
                 bgFile   = "Interface/Tooltips/UI-Tooltip-Background",
                 edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
                 tile     = true, tileSize = 16,
                 edgeSize = 16,
                 insets   = { left = 4, right = 4, top = 4, bottom = 4 },
             })
-            df:SetBackdropColor(0, 0, 0, 0.8)
+            frame:SetBackdropColor(0, 0, 0, 0.8)
         end
-        df:SetFrameStrata("DIALOG")
-        -- Rendre la liste de spé déplaçable et mémoriser la position (par personnage)
-        if not df._mb_movable_init then
-            df:SetMovable(true)
-            df:EnableMouse(true)
-            df:RegisterForDrag("LeftButton")
-            df:SetClampedToScreen(true)
-            df:SetScript("OnDragStart", df.StartMoving)
-            df:SetScript("OnDragStop", function(frame)
-                frame:StopMovingOrSizing()
-                -- Sauvegarde relative au centre de l'écran (par personnage)
-                local cx, cy = frame:GetCenter()
+		
+        if not frame._mb_movable_init then
+            frame:SetMovable(true)
+            frame:EnableMouse(true)
+            frame:RegisterForDrag("LeftButton")
+            frame:SetClampedToScreen(true)
+            frame:SetScript("OnDragStart", frame.StartMoving)
+            frame:SetScript("OnDragStop", function(activeFrame)
+                activeFrame:StopMovingOrSizing()
+                local cx, cy = activeFrame:GetCenter()
                 local ux, uy = UIParent:GetCenter()
                 local dx, dy = (cx - ux), (cy - uy)
-                local charKey = (UnitName("player") or "Player") .. "-" .. (GetRealmName() or "")
+                local charKey = getSpecDropdownCharacterKey()
                 setSpecDropdownPosition(charKey, { point = "CENTER", x = dx, y = dy })
             end)
-            df._mb_movable_init = true
+            frame._mb_movable_init = true
         end
-        self.dropdown = df
     end
-    df:ClearAllPoints()
-    -- Restaure la position mémorisée (par personnage) si elle existe
-    local restored = false
-    local charKey = (UnitName("player") or "Player") .. "-" .. (GetRealmName() or "")
-    local pos = getSpecDropdownPosition(charKey)
-    if type(pos) == "table" and pos.point then
-        df:SetPoint(pos.point, UIParent, pos.point, pos.x or 0, pos.y or 0)
-        restored = true
-    end
-    if not restored then
-        df:SetPoint("TOP", p.anchor, "BOTTOM", 0, -4)
+	
+    specObject.dropdown = frame
+    return frame
+end
+
+local function applyDropdownPosition(frame, anchor, isEmbedded)
+    if isEmbedded then
+        return
     end
 
-    -- 2) Boutons --------------------------------------------------------
-    local step, needed = 37, #p.specs
+    frame:ClearAllPoints()
+
+    local restored = false
+    local charKey = getSpecDropdownCharacterKey()
+    local pos = getSpecDropdownPosition(charKey)
+    if type(pos) == "table" and pos.point then
+        frame:SetPoint(pos.point, UIParent, pos.point, pos.x or 0, pos.y or 0)
+        restored = true
+    end
+
+    if not restored then
+        frame:SetPoint("TOP", anchor, "BOTTOM", 0, -4)
+    end
+end
+
+local function bindSpecSelection(button, spec, build, tip, bot, className, currentBuild)
+    if build == currentBuild then
+        button:SetAlpha(0.4)
+        local tex = button:GetNormalTexture()
+        if tex and tex.SetDesaturated then
+            tex:SetDesaturated(true)
+        end
+        button:SetScript("OnClick", nil)
+    else
+        button:SetAlpha(1)
+        button:SetScript("OnClick", function(_, btn)
+            if Spec.busy then
+                return
+            end
+            Spec.busy = true
+
+            SendChatMessage("stopcasting", "WHISPER", nil, bot)
+
+            local slot = (btn == "RightButton") and 2 or 1
+            SendChatMessage("talents switch " .. slot, "WHISPER", nil, bot)
+
+            TimerAfter(0.4, function()
+                SendChatMessage("talents spec " .. spec, "WHISPER", nil, bot)
+            end)
+
+            Spec.pendingRefresh = bot
+            Spec:HideDropdown()
+
+            TimerAfter(1.3, function()
+                if Spec.pendingRefresh and Spec.pendingRefresh == bot then
+                    local unit = MultiBot.toUnit(bot)
+
+                    if unit then
+                        if not MultiBot.talent:IsShown() then
+                            MultiBot.talent.name = bot
+                            MultiBot.talent.class = className
+                        end
+
+                        TimerAfter(0.6, function()
+                            MultiBot.auto.talent = true
+                            InspectUnit(unit)
+
+                            if InspectFrame then
+                                HideUIPanel(InspectFrame)
+                            end
+
+                            TimerAfter(0.1, function()
+                                if MultiBot.talent:IsShown() then
+                                    MultiBot.talent:Hide()
+                                end
+                            end)
+                        end)
+                    end
+
+                    Spec.pendingRefresh = nil
+                    Spec.busy = false
+                end
+            end)
+        end)
+    end
+
+    button:SetScript("OnEnter", function(activeButton)
+        GameTooltip:SetOwner(activeButton, "ANCHOR_RIGHT")
+        GameTooltip:SetText(tip, nil, nil, nil, nil, true)
+    end)
+    button:SetScript("OnLeave", GameTooltip_Hide)
+end
+
+function Spec:BuildDropdown()
+    if self.busy then
+        return
+    end
+
+    local pending = self.pending
+    if not pending or #pending.specs == 0 then
+        return
+    end
+
+    local botKey = short(pending.bot):lower()
+    local currentBuild = Spec.currentBuild[botKey]
+
+    local aceGUI = getAceGUI()
+    local dropdownFrame
+    local embeddedInWindow = false
+
+    if aceGUI then
+        local widget = aceGUI:Create("Window")
+        if widget and widget.frame and widget.content then
+            local title = "Set talents"
+            if MultiBot and type(MultiBot.L) == "function" then
+                local localized = MultiBot.L("spec.list.title", title)
+                if localized and localized ~= "" and localized ~= "spec.list.title" then
+                    title = localized
+                end
+            end
+
+            widget:SetTitle(title)
+            widget:SetWidth(92)
+            widget:SetHeight((#pending.specs * 37) + 40)
+            widget:EnableResize(false)
+            widget.frame:SetFrameStrata("TOOLTIP")
+
+            local function saveWindowPosition()
+                local cx, cy = widget.frame:GetCenter()
+                local ux, uy = UIParent:GetCenter()
+                if cx and cy and ux and uy then
+                    setSpecDropdownPosition(getSpecDropdownCharacterKey(), {
+                        point = "CENTER",
+                        x = cx - ux,
+                        y = cy - uy,
+                    })
+                end
+            end
+
+            if widget.title and type(widget.title.HookScript) == "function" then
+                widget.title:HookScript("OnMouseUp", saveWindowPosition)
+            end
+
+            widget:SetCallback("OnClose", function()
+                saveWindowPosition()
+                Spec:HideDropdown()
+            end)
+            self.dropdownWidget = widget
+
+            local frame = ensureDropdownFrame(self, widget.content, true)
+            frame:ClearAllPoints()
+            frame:SetPoint("TOPLEFT", widget.content, "TOPLEFT", 0, 0)
+            frame:SetPoint("BOTTOMRIGHT", widget.content, "BOTTOMRIGHT", 0, 0)
+
+            local pos = getSpecDropdownPosition(getSpecDropdownCharacterKey())
+            widget.frame:ClearAllPoints()
+            if type(pos) == "table" and pos.point then
+                widget.frame:SetPoint(pos.point, UIParent, pos.point, pos.x or 0, pos.y or 0)
+            else
+                widget.frame:SetPoint("TOP", pending.anchor, "BOTTOM", 0, -4)
+            end
+
+            dropdownFrame = frame
+            embeddedInWindow = true
+            debugSpecPath("AceGUI")
+        end
+    end
+    
+	if not dropdownFrame then
+        dropdownFrame = ensureDropdownFrame(self, UIParent, false)
+        debugSpecPath("legacy")
+    end
+
+    applyDropdownPosition(dropdownFrame, pending.anchor, embeddedInWindow)
+
+    local step = 37
+    local needed = #pending.specs
     while #self.buttons < needed do
-        local b = CreateFrame("Button", nil, df)
-        b:RegisterForClicks("AnyUp")
-        b:SetSize(32, 32)
-        b:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress")
-        b:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square")
-        b:SetFrameStrata("DIALOG")
-        table.insert(self.buttons, b)
+        local button = CreateFrame("Button", nil, dropdownFrame)
+        button:RegisterForClicks("AnyUp")
+        button:SetFrameLevel(dropdownFrame:GetFrameLevel() + 1)
+        button:SetSize(32, 32)
+        button:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress")
+        button:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square")
+        button:SetFrameStrata("TOOLTIP")
+        table.insert(self.buttons, button)
     end
 
     local alreadyMarked = false
-	for i, b in ipairs(self.buttons) do
-        if i <= needed then
-            local spec  = p.specs[i]      -- « Balance pve »
-            local build = p.builds[i]     -- « 58-0-13 »
+    for index, button in ipairs(self.buttons) do
+        if index <= needed then
+            local specName = pending.specs[index]
+            local build = pending.builds[index]
 
-            -- positionnement
-            b:ClearAllPoints()
-            if i == 1 then
-                b:SetPoint("TOP", df, "TOP", 0, -4)
+            button:ClearAllPoints()
+            if index == 1 then
+                button:SetPoint("TOP", dropdownFrame, "TOP", 0, -4)
             else
-                b:SetPoint("TOP", self.buttons[i-1], "BOTTOM", 0, -4)
+                button:SetPoint("TOP", self.buttons[index - 1], "BOTTOM", 0, -4)
             end
 
-            -- icône & tooltip
-            local mode   = spec:lower():find("pvp") and "pvp" or "pve"
-            local prefix = spec:match("^[^%s]+"):lower()
-            local canon  = specCanonical[prefix] or prefix:gsub("^%l", string.upper)
-            local class  = p.wrapper:getClass():gsub("^%l", string.upper)
-            local entry  = (((specIconMap[class] or {})[canon] or {})[mode]) or {}
-            local icon   = entry.icon or defaultIcon
-            local tip    = entry.tip  or spec
+            local mode = specName:lower():find("pvp") and "pvp" or "pve"
+            local prefix = (specName:match("^[^%s]+") or ""):lower()
+            local canonicalSpec = specCanonical[prefix] or prefix:gsub("^%l", string.upper)
+            local className = pending.wrapper:getClass():gsub("^%l", string.upper)
+            local entry = (((specIconMap[className] or {})[canonicalSpec] or {})[mode]) or {}
+            local icon = entry.icon or defaultIcon
+            local tip = entry.tip or specName
 
-            b:SetNormalTexture(icon)
-            b:SetDisabledTexture(icon)
-            b:Show()
+            button:SetNormalTexture(icon)
+            button:SetDisabledTexture(icon)
+            button:Show()
 
-            -- 3) CLIC -----------------------------------------------------
-            local bot = p.bot
-            if (not alreadyMarked) and build == current then
+            if (not alreadyMarked) and build == currentBuild then
                 alreadyMarked = true
-                b:SetAlpha(0.4)
-                local tex = b:GetNormalTexture()
-                if tex and tex.SetDesaturated then tex:SetDesaturated(true) end
-                b:SetScript("OnClick", nil)
+                bindSpecSelection(button, specName, build, tip, pending.bot, className, currentBuild)
             else
-                b:SetAlpha(1)
-                b:SetScript("OnClick", function(_, btn)
-                    if Spec.busy then return end
-                    Spec.busy = true
-
-                    -- a) stopcasting
-                    SendChatMessage("stopcasting", "WHISPER", nil, bot)
-
-                    -- b) switch talent-group (G = 1, D = 2)
-                    local slot = (btn == "RightButton") and 2 or 1
-                    SendChatMessage("talents switch " .. slot, "WHISPER", nil, bot)
-
-                    -- c) 0,4 s plus tard → talents spec <nom>
-                    TimerAfter(0.4, function()
-                        SendChatMessage("talents spec " .. spec, "WHISPER", nil, bot)
-                    end)
-
-                    -- d) attente du whisper ou timer-secours
-                    Spec.pendingRefresh = bot
-                    Spec:HideDropdown()
-
-                    -- timer-secours 1,3 s
-					TimerAfter(1.3, function()
-						if Spec.pendingRefresh and Spec.pendingRefresh == bot then
-							local unit      = MultiBot.toUnit(bot)
-							local className = p.wrapper:getClass()           -- "Druid", "Paladin", …
-
-							if unit then
-								if not MultiBot.talent:IsShown() then
-									MultiBot.talent.name  = bot
-									MultiBot.talent.class = className        -- déjà normalisé
-								end
-
-								TimerAfter(0.6, function()
-									MultiBot.auto.talent = true
-									InspectUnit(unit)
-
-									if InspectFrame then HideUIPanel(InspectFrame) end
-									TimerAfter(0.1, function()
-										if MultiBot.talent:IsShown() then MultiBot.talent:Hide() end
-									end)
-								end)
-							end
-							Spec.pendingRefresh = nil
-							Spec.busy           = false
-						end
-					end)
-                end)
+                bindSpecSelection(button, specName, build, tip, pending.bot, className, nil)
             end
-
-            b:SetScript("OnEnter", function(button)
-                GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-                GameTooltip:SetText(tip, nil, nil, nil, nil, true)
-            end)
-            b:SetScript("OnLeave", GameTooltip_Hide)
         else
-            b:Hide()
+            button:Hide()
         end
     end
 
-    df:SetWidth(40)
-    df:SetHeight(needed * step)
-    df:Show()
+    dropdownFrame:SetWidth(40)
+    dropdownFrame:SetHeight(needed * step)
+    if self.dropdownWidget and type(self.dropdownWidget.SetHeight) == "function" then
+        self.dropdownWidget:SetHeight((needed * step) + 40)
+    end
+    dropdownFrame:Show()
 end

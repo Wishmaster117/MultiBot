@@ -669,6 +669,7 @@ local esESValues = {
   ["ui.pvp.tab.placeholder"] = "|cffffff00Pestaña de marcador|r",
   ["ui.pvp.prefix.team"] = "Equipo: ",
   ["ui.pvp.prefix.rating"] = "Índice: ",
+  ["spec.list.title"] = "Specs",
 }
 
 register("esES", esESValues)

@@ -21,9 +21,9 @@
 - **Milestone 7 (Minimap/options integration):** Completed.
   - Minimap hide/angle, global frame strata, options timers/throttle, Spec dropdown positions, Hunter/Shaman quick-bar positions, Hunter pet stance state and Shaman totem choice state now run through AceDB-backed helpers with one-way versioned legacy cutover and guarded legacy fallback (no legacy table creation on pure read paths).
 - **Milestone 8 (AceGUI UI refactor):** In progress.
-- **Milestone 8 (AceGUI UI refactor):** In progress.
   - `UI/MultiBotOptions.lua` panel content has been migrated to AceGUI widgets while preserving category registration and slash/open flows.
   - `UI/MultiBotPVPUI.lua` migration slice is completed for the targeted controls (bot selector dropdown + tab group with localized fallback compatibility).
+  - `UI/MultiBotSpecUI.lua` migration slice is completed for the spec popup/inspect helper controls (AceGUI window path finalized: close-cross UX, layering fix, compact size, and position persistence on AceDB path).
   - Remaining screens continue screen-by-screen.
  - **Milestone 9 (Localization and text pipeline):** Completed.
   - Core locale loader + per-locale payload files are integrated (`Core/MultiBotLocale.lua`, `Locales/MultiBotAceLocale-*.lua`).

@@ -660,6 +660,7 @@ local koKRValues = {
   ["ui.pvp.tab.placeholder"] = "|cffffff00자리 표시용 탭|r",
   ["ui.pvp.prefix.team"] = "팀: ",
   ["ui.pvp.prefix.rating"] = "평점: ",
+  ["spec.list.title"] = "Specs",
 }
 
 register("koKR", koKRValues)

@@ -671,6 +671,7 @@ local enUSValues = {
   ["ui.pvp.tab.placeholder"] = "|cffffff00Placeholder Tab|r",
   ["ui.pvp.prefix.team"] = "Team: ",
   ["ui.pvp.prefix.rating"] = "Rating: ",
+  ["spec.list.title"] = "Specs",
 }
 
 register("enUS", enUSValues, true)

@@ -668,6 +668,7 @@ local frFRValues = {
   ["ui.pvp.tab.placeholder"] = "|cffffff00Dummy tab (placeholder)|r",
   ["ui.pvp.prefix.team"] = "Team: ",
   ["ui.pvp.prefix.rating"] = "Rating: ",
+  ["spec.list.title"] = "Spés",
 }
 
 register("frFR", frFRValues)

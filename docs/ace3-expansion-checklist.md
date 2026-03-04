@@ -19,6 +19,7 @@ Checklist for the full addon-wide ACE3 expansion after M7 completion.
 - [x] Options panel content migrated to AceGUI widgets (`UI/MultiBotOptions.lua`) while keeping InterfaceOptions category + slash entrypoint behavior.
 - [x] Temporary shared migration debug helper introduced (`Core/MultiBotDebug.lua`) to avoid duplicated diagnostics across files.
 - [x] PVP window migration slice completed for targeted controls (`UI/MultiBotPVPUI.lua`: bot selector dropdown + tab group, with localized fallback).
+- [x] Spec window/inspect helper migration slice completed and finalized (`UI/MultiBotSpecUI.lua`): Ace window close-cross UX, layering/clickability fix, compact height, and position persistence via existing `specDropdownPositions` store.
 - [ ] Preserve slash entry points and open/close behavior.
 - [ ] Keep persisted state routed through existing AceDB helpers.
 - [ ] Validate visual/interaction parity per migrated screen.

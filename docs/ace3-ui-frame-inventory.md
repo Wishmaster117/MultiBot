@@ -25,7 +25,7 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   File: `UI/MultiBotPVPUI.lua`.  
   References: lines `11`, `98`, `201`.
 
-- [ ] **Spec window / inspect helpers** (`df` popup and related frame/button controls).  
+- [x] **Spec window / inspect helpers** (`df` popup and related frame/button controls) migrated and finalized with AceGUI window path (close-cross UX), corrected layering/clickability, compacted frame height, and preserved legacy icon-button inspect-refresh behavior.
   File: `UI/MultiBotSpecUI.lua`.  
   References: lines `542`, `590` (plus timer/utility frames at `231`, `294`).
 
