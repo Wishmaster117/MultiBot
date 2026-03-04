@@ -320,90 +320,40 @@ Screens:
 
 Port Multibot to ACE 3
 
-## ACE3 migration roadmap
+# MultiBot ACE3 Migration Roadmap
 
-This addon is currently a classic Lua addon (manual frame/event architecture).
-The ACE3 migration will be done incrementally to avoid regressions.
+## Current Status Snapshot
 
-### Milestone 1 - Baseline and safety net
-1. Creation of a dedicated branch (`ace3-migration`).
-2. Record current behavior (slash commands, minimap button, major windows, bot command actions).
-3. Add a short migration checklist file (`docs/ace3-migration-checklist.md`) with "works before/after" items.
-
-Exit criteria:
-- Addon loads with no Lua errors before any ACE3 code is introduced.
-
-### Milestone 2 - Add ACE3 libraries without changing behavior
-1. Add required libs (AceAddon-3.0, AceEvent-3.0, AceConsole-3.0, AceDB-3.0, optional AceGUI-3.0, LibDBIcon-1.0).
-2. Update `MultiBot.toc` to load libs and keep existing files working.
-3. Introduce a minimal addon object (e.g. `MultiBot = LibStub("AceAddon-3.0"):NewAddon(...)`).
-
-Exit criteria:
-- Addon still behaves exactly the same.
-- No duplicate initialization paths.
-
-### Milestone 3 - Initialization lifecycle migration
-1. Move startup logic from `Core/MultiBotInit.lua` into `OnInitialize` and `OnEnable`.
-2. Keep old init helpers but call them from ACE3 lifecycle methods.
-3. Ensure events are registered once (avoid duplicate handlers).
-
-Exit criteria:
-- UI and commands initialize once per login/reload.
-
-### Milestone 4 - Command system migration
-1. Replace/manual-wrap slash command registration with `AceConsole-3.0` (`RegisterChatCommand`).
-2. Keep existing aliases (`/multibot`, `/mbot`, `/mb`).
-3. Route command handlers to existing logic functions (no duplicate business logic).
-
-Exit criteria:
-- Existing command behavior unchanged.
-
-### Milestone 5 - Event bus migration
-1. Migrate event registration to `AceEvent-3.0` (`RegisterEvent`).
-2. Keep current event handlers and adapt signatures only where required.
-3. Validate frequently fired events for performance (no extra allocations in hot paths).
-
-Exit criteria:
-- No event spam regressions.
-- No duplicated event callbacks.
-
-### Milestone 6 - SavedVariables migration (AceDB)
-1. Map `Core/MultiBotConfig.lua` data into an AceDB schema.
-2. Provide defaults and one-way migration from legacy keys.
-3. Keep backward compatibility for existing users.
-
-Exit criteria:
-- Existing user settings survive migration.
-- Fresh installs use AceDB defaults.
-
-### Milestone 7 - Minimap/options integration
-1. Keep current UI first; only integrate config access patterns.
-2. Optionally add LibDBIcon integration for minimap behavior.
-3. Defer large UI rewrites (AceGUI) until core migration is stable.
-
-Exit criteria:
-- Minimap toggle and options remain functional.
-
-### Milestone 8 - Optional UI refactor (last)
-1. Refactor one screen at a time to AceGUI.
-2. Preserve existing data/control flow from `UI/*.lua`.
-3. Avoid big-bang rewrites.
-
-Exit criteria:
-- Each migrated screen is functionally equivalent before moving to the next.
-
-### Milestone 9 - Regression pass and release
-1. Run a full in-game test matrix (group controls, individual bot controls, inventory actions, filters, talent/spec windows, PVP UI).
-2. Clean dead code paths and keep one canonical helper per responsibility.
-3. Publish migration notes for users.
-
-Exit criteria:
-- Stable behavior on target 3.3.5 clients.
-- No known blocker regressions.
-
-### Execution order (small PRs)
-1. PR#1: libs + minimal addon bootstrap.
-2. PR#2: lifecycle + commands.
-3. PR#3: events + AceDB migration.
-4. PR#4: minimap/options integration.
-5. PR#5: optional UI refactors.
+- **Milestone 1 (Baseline / safety net):** In progress.
+  - Baseline behavior is mostly known through manual validation.
+  - Migration checklist is tracked in `docs/ace3-migration-checklist.md` and must be updated per PR.
+- **Milestone 2 (Add ACE3 libs):** Completed.
+  - ACE3 libraries are loaded in `MultiBot.toc`.
+- **Milestone 3 (Initialization lifecycle):** Mostly completed, hardening pending.
+  - `OnInitialize` and `OnEnable` are in place.
+  - Legacy frame-based startup/event code still exists in a few places.
+- **Milestone 4 (Command system):** Completed.
+  - Central alias registration is used for core commands via `RegisterCoreCommandsOnce` in lifecycle init.
+  - Runtime command invocation paths are centralized through `RunRegisteredCommand` (slash + minimap click + helper dispatch).
+- **Milestone 5 (Event bus migration):** Completed.
+  - Dispatcher architecture drives core/quick-bar/UI whisper flows.
+  - Legacy `CreateFrame + RegisterEvent + SetScript` listener blocks have been removed from addon runtime paths.
+- **Milestone 6 (SavedVariables -> AceDB):** Completed.
+  - AceDB bootstrap/runtime migration is now complete for supported SavedVariables paths; one-way versioned legacy cutovers are in place with guarded legacy creation and post-migration cleanup to avoid stale duplicate persistence.
+- **Milestone 7 (Minimap/options integration):** Completed.
+  - Minimap hide/angle, global frame strata, options timers/throttle, Spec dropdown positions, Hunter/Shaman quick-bar positions, Hunter pet stance state and Shaman totem choice state now run through AceDB-backed helpers with one-way versioned legacy cutover and guarded legacy fallback (no legacy table creation on pure read paths).
+- **Milestone 8 (AceGUI UI refactor):** In progress.
+  - `UI/MultiBotOptions.lua` panel content has been migrated to AceGUI widgets while preserving category registration and slash/open flows; remaining screens continue screen-by-screen.
+ - **Milestone 9 (Localization and text pipeline):** Completed.
+  - Core locale loader + per-locale payload files are integrated (`Core/MultiBotLocale.lua`, `Locales/MultiBotAceLocale-*.lua`).
+  - `Core/MultiBotInit.lua`, `Features/MultiBotRaidus.lua`, `Core/MultiBotEvery.lua`, `Core/MultiBotEngine.lua`, `Core/MultiBotHandler.lua`, `Strategies/MultiBotDruid.lua`, `Strategies/MultiBotPaladin.lua`, `Strategies/MultiBotMage.lua`, `Strategies/MultiBotWarlock.lua`, `Strategies/MultiBotPriest.lua`, `Strategies/MultiBotShaman.lua`, `Strategies/MultiBotHunter.lua`, `Strategies/MultiBotRogue.lua`, `Strategies/MultiBotDeathKnight.lua`, and `Strategies/MultiBotWarrior.lua` migration sweeps are completed for legacy `MultiBot.tips.*` runtime reads.
+  - `Core/MultiBot.lua` bootstrap `MultiBot.tips` initialization lines were validated/documented as intentional non-runtime-tooltip compatibility paths.
+  - Remaining UI literal cleanup is completed for Milestone 9 scope (GM shortcut labels, Raidus group title formatting, shared UI defaults for page/title labels) while preserving technical/protocol identifiers (e.g. internal "Inventory" button/event keys).
+- **Milestone 10 (Data model and table lifecycle hardening):** Planned.
+  - Normalize runtime stores and remove ad-hoc table creation paths via centralized getters/validators.
+- **Milestone 11 (Scheduler/timers convergence):** Planned.
+  - Route scattered timers/OnUpdate loops to a constrained scheduler strategy (AceTimer where appropriate, existing loops retained when safer).
+- **Milestone 12 (Observability, diagnostics and perf guardrails):** Planned.
+  - Add lightweight debug/perf toggles and migration diagnostics to validate behavior without chat spam.
+- **Milestone 13 (Release hardening and deprecation window close):** Planned.
+  - Close migration fallback window, document upgrade path, and freeze compatibility guarantees for release.
