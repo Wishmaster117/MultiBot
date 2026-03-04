@@ -21,7 +21,10 @@
 - **Milestone 7 (Minimap/options integration):** Completed.
   - Minimap hide/angle, global frame strata, options timers/throttle, Spec dropdown positions, Hunter/Shaman quick-bar positions, Hunter pet stance state and Shaman totem choice state now run through AceDB-backed helpers with one-way versioned legacy cutover and guarded legacy fallback (no legacy table creation on pure read paths).
 - **Milestone 8 (AceGUI UI refactor):** In progress.
-  - `UI/MultiBotOptions.lua` panel content has been migrated to AceGUI widgets while preserving category registration and slash/open flows; remaining screens continue screen-by-screen.
+- **Milestone 8 (AceGUI UI refactor):** In progress.
+  - `UI/MultiBotOptions.lua` panel content has been migrated to AceGUI widgets while preserving category registration and slash/open flows.
+  - `UI/MultiBotPVPUI.lua` migration slice is completed for the targeted controls (bot selector dropdown + tab group with localized fallback compatibility).
+  - Remaining screens continue screen-by-screen.
  - **Milestone 9 (Localization and text pipeline):** Completed.
   - Core locale loader + per-locale payload files are integrated (`Core/MultiBotLocale.lua`, `Locales/MultiBotAceLocale-*.lua`).
   - `Core/MultiBotInit.lua`, `Features/MultiBotRaidus.lua`, `Core/MultiBotEvery.lua`, `Core/MultiBotEngine.lua`, `Core/MultiBotHandler.lua`, `Strategies/MultiBotDruid.lua`, `Strategies/MultiBotPaladin.lua`, `Strategies/MultiBotMage.lua`, `Strategies/MultiBotWarlock.lua`, `Strategies/MultiBotPriest.lua`, `Strategies/MultiBotShaman.lua`, `Strategies/MultiBotHunter.lua`, `Strategies/MultiBotRogue.lua`, `Strategies/MultiBotDeathKnight.lua`, and `Strategies/MultiBotWarrior.lua` migration sweeps are completed for legacy `MultiBot.tips.*` runtime reads.

@@ -83,7 +83,7 @@ local function makeThrottleSlider(parent, key, label, minV, maxV, step, y)
   local function getValue()
     if key == "thr_rate" then return MultiBot.GetThrottleRate() else return MultiBot.GetThrottleBurst() end
   end
- 
+
   local function setValue(v)
     if key == "thr_rate" then MultiBot.SetThrottleRate(v) else MultiBot.SetThrottleBurst(v) end
   end
