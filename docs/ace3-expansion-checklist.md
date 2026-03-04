@@ -21,10 +21,10 @@ Checklist for the full addon-wide ACE3 expansion after M7 completion.
 
 ## Milestone 9 — Localization and text pipeline
 
-- [ ] Inventory hardcoded user-facing strings in Core/UI/Features.
-- [ ] Move strings into locale tables (AceLocale strategy) where feasible.
-- [ ] Add deterministic fallback for missing locale keys.
-- [ ] Remove duplicate literals once locale keys are stable.
+- [x] Inventory hardcoded user-facing strings in Core/UI/Features.
+- [x] Move strings into locale tables (AceLocale strategy) where feasible.
+- [x] Add deterministic fallback for missing locale keys.
+- [ ] Remove duplicate literals once locale keys are stable. *(ongoing incremental cleanup by file)*
 
 ## Milestone 10 — Data model and table lifecycle hardening
 

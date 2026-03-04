@@ -34,7 +34,7 @@ globals = {
 	"AceGUIEditBoxInsertLink", "tconcat", "loadstring", "assert", "rawset", "rawget", "IsLoggedIn", "hash_SlashCmdList", "GetCurrentRegion", "GetCurrentRegionName", "InterfaceOptionsFramePanelContainer",
     "GameFontNormal", "_G", "SetDesaturation", "WOW_PROJECT_ID", "WOW_PROJECT_MAINLINE", "ColorPickerFrame", "fixstrata", "UIDropDownMenu_HandleGlobalMouseEvent", "EventRegistry", "BackdropTemplateMixin",
 	"TooltipBackdropTemplateMixin", "NORMAL_FONT_COLOR", "HIGHLIGHT_FONT_COLOR", "GameTooltip_SetDefaultAnchor", "ChatFrame1", "UISpecialFrames", "GetMouseFocus", "ShowUIPanel", "tremove", "min", "max",
-	"GetMinimapShape", "GetMinimapShape", "PanelTemplates_TabResize", "GetGuildRosterShowOffline", "SetGuildRosterShowOffline", "IsInGuild", "GetGuildInfo", "SetGuildRosterShowOffline"
+	"GetMinimapShape", "GetMinimapShape", "PanelTemplates_TabResize", "GetGuildRosterShowOffline", "SetGuildRosterShowOffline", "IsInGuild", "GetGuildInfo", "SetGuildRosterShowOffline", "PLAYER"
 }
 
 read_globals = {
@@ -64,4 +64,4 @@ allow_defined_top = false
 self = true
 
 -- Limite de longueur de ligne
-max_line_length = 500
+max_line_length = 900

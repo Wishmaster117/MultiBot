@@ -1,3 +1,7 @@
+local function shortLabel(key, fallback)
+	return MultiBot.L("info.shorts." .. key, fallback)
+end
+
 MultiBot.addStats = function(pFrame, pIndex, pX, pY, pSize, pWidth, pHeight)
 	local tFrame = pFrame.addFrame(pIndex, pX, pY, pSize, pWidth, pHeight)
 	local tAddon = tFrame.addFrame("Addon", -2, 46, 48)
@@ -76,19 +80,19 @@ MultiBot.addStats = function(pFrame, pIndex, pX, pY, pSize, pWidth, pHeight)
 
 			statsFrame.texts["Name"]:SetText(pName)
 			statsFrame.texts["Level"]:SetText(pLevel)
-			statsFrame.texts["Values"]:SetText("Player")
+			statsFrame.texts["Values"]:SetText(PLAYER)
 
 			if pLevel == 80 then
 				addonFrame.texts["Percent"]:SetText(
 					statsFrame.setProgress(statsFrame, tMana)
 					.. "%\n"
-					.. MultiBot.info.shorts.mp
+					.. shortLabel("mp", "MP")
 				)
 			else
 				addonFrame.texts["Percent"]:SetText(
 					statsFrame.setProgress(statsFrame, tXP)
 					.. "%\n"
-					.. MultiBot.info.shorts.xp
+					.. shortLabel("xp", "XP")
 				)
 			end
 
@@ -100,7 +104,7 @@ MultiBot.addStats = function(pFrame, pIndex, pX, pY, pSize, pWidth, pHeight)
 		local tMoney = "|cffffdd55" .. tStats[1] .. "|r, "
 		local tBag = MultiBot.IF(
 			tChina,
-			MultiBot.doReplace(tStats[2], "Bag", MultiBot.info.shorts.bag),
+			MultiBot.doReplace(tStats[2], "Bag", shortLabel("bag", "Bag")),
 			tStats[2]
 		)
 
@@ -121,7 +125,7 @@ MultiBot.addStats = function(pFrame, pIndex, pX, pY, pSize, pWidth, pHeight)
 			addonFrame.texts["Percent"]:SetText(
 				statsFrame.setProgress(statsFrame, tQuality)
 				.. "%\n"
-				.. MultiBot.info.shorts.dur
+				.. shortLabel("dur", "Dur")
 			)
 		else
 			local xpString = MultiBot.doSplit(tStats[4], "|")[2]
@@ -130,7 +134,7 @@ MultiBot.addStats = function(pFrame, pIndex, pX, pY, pSize, pWidth, pHeight)
 			addonFrame.texts["Percent"]:SetText(
 				statsFrame.setProgress(statsFrame, tXP)
 				.. "%\n"
-				.. MultiBot.info.shorts.xp
+				.. shortLabel("xp", "XP")
 			)
 		end
 

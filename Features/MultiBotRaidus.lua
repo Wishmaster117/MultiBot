@@ -177,7 +177,7 @@ local function serializeRaidusLayoutFromFrames()
     return table.concat(serializedGroups, ";")
 end
 
-MultiBot.raidus.movButton("Move", -780, 790, 90, MultiBot.tips.move.raidus)
+MultiBot.raidus.movButton("Move", -780, 790, 90, MultiBot.L("tips.move.raidus"))
 
 MultiBot.raidus.wowButton("x", -13, 841, 16, 20, 12)
 .doLeft = function(pButton)
@@ -396,7 +396,7 @@ MultiBot.raidus.wowButton("Load", -762, 360, 80, 20, 12)
 .doLeft = function(pButton)
 	local layoutData = getRaidusLayoutValue(MultiBot.raidus.save)
 	if(layoutData == nil or layoutData == "") then
-		SendChatMessage(MultiBot.info.nothing, "SAY")
+		SendChatMessage(MultiBot.L("info.nothing"), "SAY")
 		return
 	end
 
@@ -430,7 +430,7 @@ UIDropDownMenu_Initialize(slotDropDown, function(self, level)
 end)
 
 local slotButton = MultiBot.raidus.wowButton("Slot", -682, 360, 80, 20, 12)
-slotButton.tip = MultiBot.tips.raidus.slot
+slotButton.tip = MultiBot.L("tips.raidus.slot")
 slotButton:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOP")
 	GameTooltip:SetText(self.tip or "", 1, 1, 1, true)
@@ -460,7 +460,7 @@ local btnScore = MultiBot.raidus.wowButton("Score", sortBaseX, sortY, scoreWidth
 btnScore.setEnable()
 btnScore:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_TOP")
-    GameTooltip:SetText(MultiBot.tips.raidus.score, 1, 1, 1, true)
+    GameTooltip:SetText(MultiBot.L("tips.raidus.score"), 1, 1, 1, true)
 end)
 btnScore:SetScript("OnLeave", function()
     GameTooltip:Hide()
@@ -491,7 +491,7 @@ local btnLevel = MultiBot.raidus.wowButton(
 btnLevel.setDisable()
 btnLevel:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_TOP")
-    GameTooltip:SetText(MultiBot.tips.raidus.level, 1, 1, 1, true)
+    GameTooltip:SetText(MultiBot.L("tips.raidus.level"), 1, 1, 1, true)
 end)
 btnLevel:SetScript("OnLeave", function()
     GameTooltip:Hide()
@@ -522,7 +522,7 @@ local btnClass = MultiBot.raidus.wowButton(
 btnClass.setDisable()
 btnClass:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_TOP")
-    GameTooltip:SetText(MultiBot.tips.raidus.class, 1, 1, 1, true)
+    GameTooltip:SetText(MultiBot.L("tips.raidus.class"), 1, 1, 1, true)
 end)
 btnClass:SetScript("OnLeave", function()
     GameTooltip:Hide()
@@ -611,7 +611,7 @@ end
 
 local function startRaidusApplyInviteOrSort(inviteCount)
     if inviteCount > 0 then
-        SendChatMessage(MultiBot.info.starting, "SAY")
+        SendChatMessage(MultiBot.L("info.starting"), "SAY")
         MultiBot.timer.invite.roster = "raidus"
         MultiBot.timer.invite.needs = inviteCount
         MultiBot.timer.invite.index = 1
@@ -650,7 +650,7 @@ local btnAuto = MultiBot.raidus.wowButton("Auto", -431, 360, 80, 20, 12)
 
 btnAuto:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_TOP")
-    GameTooltip:SetText(MultiBot.tips.raidus.autobalance, 1, 1, 1, true)
+    GameTooltip:SetText(MultiBot.L("tips.raidus.autobalance"), 1, 1, 1, true)
 end)
 
 btnAuto:SetScript("OnLeave", function()
@@ -1214,7 +1214,7 @@ MultiBot.raidus.autoBalanceRaid = function(mode)
     local botCount = #bots
 
     if botCount == 0 then
-        SendChatMessage("Auto balance raid : aucun bot sélectionné.", "SAY")
+        SendChatMessage("Auto balance raid : No bots selectd", "SAY")
         return
     end
 

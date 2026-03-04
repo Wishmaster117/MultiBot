@@ -1,7 +1,7 @@
 -- Confirmation popup for Autogear
 if not StaticPopupDialogs["MULTIBOT_AUTOGEAR_CONFIRM"] then
   StaticPopupDialogs["MULTIBOT_AUTOGEAR_CONFIRM"] = {
-    text = MultiBot.tips.every.autogearpopup,
+    text = MultiBot.L("tips.every.autogearpopup"),
     button1 = ACCEPT,
     button2 = CANCEL,
     OnAccept = function(self, data)
@@ -24,7 +24,7 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
     tMisc:Hide()
 
     -- Bouton parent « Misc »
-    local btnMisc = pFrame.addButton("Misc",  64,  0, "inv_misc_enggizmos_swissarmy", MultiBot.tips.every.misc)
+    local btnMisc = pFrame.addButton("Misc",  64,  0, "inv_misc_enggizmos_swissarmy", MultiBot.L("tips.every.misc"))
     btnMisc.doLeft = function(self)
        if tMisc:IsShown() then
           tMisc:Hide()
@@ -38,18 +38,18 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
     local y, dy = 0, 28
     -- Buttons inside the "Misc" sub-frame
 	for _, data in ipairs{
-		{ "Wipe", "Achievement_Halloween_Ghost_01", MultiBot.tips.every.wipe, function(b)
+		{ "Wipe", "Achievement_Halloween_Ghost_01", MultiBot.L("tips.every.wipe"), function(b)
 		    MultiBot.ActionToTarget("wipe", b.getName())
           end
 		},
-		{ "Autogear", "inv_misc_enggizmos_30", MultiBot.tips.every.autogear, function(b)
+		{ "Autogear", "inv_misc_enggizmos_30", MultiBot.L("tips.every.autogear"), function(b)
             StaticPopup_Show("MULTIBOT_AUTOGEAR_CONFIRM", b.getName(), nil, { target = b.getName() })
           end
         },
         -- NEW: Favorite toggle (per-character)
-        -- { "Favorite",   "Interface\\RaidFrame\\ReadyCheck-Ready",  MultiBot.tips.every.favorite, function(b)
+        -- { "Favorite",   "Interface\\RaidFrame\\ReadyCheck-Ready",  MultiBot.L("tips.every.favorite"), function(b)
         -- Favorite toggle (per-character) - étoile
-        { "Favorite",   STAR_TEX,  MultiBot.tips.every.favorite, function(b)
+        { "Favorite",   STAR_TEX,  MultiBot.L("tips.every.favorite"), function(b)
             local name = b.getName()
             MultiBot.ToggleFavorite(name)
             local tex = b.icon
@@ -72,7 +72,7 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
             end
           end
         },
-		{ "Maintenance", "Achievement_Halloween_Smiley_01", MultiBot.tips.every.maintenance, function(b)
+		{ "Maintenance", "Achievement_Halloween_Smiley_01", MultiBot.L("tips.every.maintenance"), function(b)
             SendChatMessage("maintenance", "WHISPER", nil, b.getName())
         end
         },
@@ -102,36 +102,36 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
     end
     -- MENU MISC END-----------------------------------------
 
-	pFrame.addButton("Summon", 94, 0, "ability_hunter_beastcall", MultiBot.tips.every.summon)
+	pFrame.addButton("Summon", 94, 0, "ability_hunter_beastcall", MultiBot.L("tips.every.summon"))
 	.doLeft = function(pButton)
 		MultiBot.ActionToTarget("summon", pButton.getName())
 	end
 
-	pFrame.addButton("Uninvite", 124, 0, "inv_misc_grouplooking", MultiBot.tips.every.uninvite).doShow()
+	pFrame.addButton("Uninvite", 124, 0, "inv_misc_grouplooking", MultiBot.L("tips.every.uninvite")).doShow()
 	.doLeft = function(pButton)
 		MultiBot.doSlash("/uninvite", pButton.getName())
 		pButton.getButton("Invite").doShow()
 		pButton.doHide()
 	end
 
-	pFrame.addButton("Invite", 124, 0, "inv_misc_groupneedmore", MultiBot.tips.every.invite).doHide()
+	pFrame.addButton("Invite", 124, 0, "inv_misc_groupneedmore", MultiBot.L("tips.every.invite")).doHide()
 	.doLeft = function(pButton)
 		MultiBot.doSlash("/invite", pButton.getName())
 		pButton.getButton("Uninvite").doShow()
 		pButton.doHide()
 	end
 
-	pFrame.addButton("Food", 154, 0, "inv_drink_24_sealwhey", MultiBot.tips.every.food).setDisable()
+	pFrame.addButton("Food", 154, 0, "inv_drink_24_sealwhey", MultiBot.L("tips.every.food")).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "nc +food,?", "nc -food,?", pButton.getName())
 	end
 
-	pFrame.addButton("Loot", 184, 0, "inv_misc_coin_16", MultiBot.tips.every.loot).setDisable()
+	pFrame.addButton("Loot", 184, 0, "inv_misc_coin_16", MultiBot.L("tips.every.loot")).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "nc +loot,?", "nc -loot,?", pButton.getName())
 	end
 
-	pFrame.addButton("Gather", 214, 0, "trade_mining", MultiBot.tips.every.gather).setDisable()
+	pFrame.addButton("Gather", 214, 0, "trade_mining", MultiBot.L("tips.every.gather")).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "nc +gather,?", "nc -gather,?", pButton.getName())
 	end
@@ -139,7 +139,7 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 	-- Selfbot is not allowed to use these Tools --
 	if(pFrame.getName() == UnitName("player")) then return end
 
-	pFrame.addButton("Inventory", 244, 0, "inv_misc_bag_08", MultiBot.tips.every.inventory).setDisable()
+	pFrame.addButton("Inventory", 244, 0, "inv_misc_bag_08", MultiBot.L("tips.every.inventory")).setDisable()
 	.doLeft = function(pButton)
 		if(pButton.state) then
 			MultiBot.inventory:Hide()
@@ -159,7 +159,7 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	pFrame.addButton("Spellbook", 274, 0, "inv_misc_book_09", MultiBot.tips.every.spellbook).setDisable()
+	pFrame.addButton("Spellbook", 274, 0, "inv_misc_book_09", MultiBot.L("tips.every.spellbook")).setDisable()
 	.doLeft = function(pButton)
 		if(pButton.state) then
 			MultiBot.spellbook:Hide()
@@ -179,15 +179,15 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	pFrame.addButton("Talent", 304, 0, "ability_marksmanship", MultiBot.tips.every.talent).setDisable()
+	pFrame.addButton("Talent", 304, 0, "ability_marksmanship", MultiBot.L("tips.every.talent")).setDisable()
 	.doLeft = function(pButton)
 		if(pButton.state) then
 			pButton.setDisable()
 			MultiBot.talent:Hide()
 		elseif(UnitLevel(MultiBot.toUnit(pButton.getName())) < 10) then
-			SendChatMessage(MultiBot.info.talent.Level, "SAY")
+			SendChatMessage(MultiBot.L("info.talent.Level"), "SAY")
 		elseif(CheckInteractDistance(MultiBot.toUnit(pButton.getName()), 1) == nil) then
-			SendChatMessage(MultiBot.info.talent.OutOfRange, "SAY")
+			SendChatMessage(MultiBot.L("info.talent.OutOfRange"), "SAY")
 		else
 			MultiBot.talent:Hide()
 			MultiBot.talent.doClear()
@@ -210,7 +210,7 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 
 	-- BOUTON SETTALENTS : toggle affichage de la barre des specs
     local btn = pFrame
-        .addButton("SetTalents", 334, 0, "inv_sword_22", MultiBot.tips.every.settalent)
+        .addButton("SetTalents", 334, 0, "inv_sword_22", MultiBot.L("tips.every.settalent"))
     -- état initial : toujours désactivé (zen, pas de barre affichée au load)
     btn:setDisable()
 

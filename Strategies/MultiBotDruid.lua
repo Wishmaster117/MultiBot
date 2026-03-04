@@ -1,5 +1,5 @@
 MultiBot.addDruid = function(pFrame, pCombat, pNormal)
-	pFrame.addButton("Heal", 0, 0, "spell_holy_aspiration", MultiBot.tips.druid.heal).setDisable()
+	pFrame.addButton("Heal", 0, 0, "spell_holy_aspiration", MultiBot.L("tips.druid.heal")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +heal,?", "co -heal,?", pButton.getName())) then
 			pButton.getButton("Caster").setDisable()
@@ -13,14 +13,14 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 
 	-- BUFF --
 
-	pFrame.addButton("Buff", -30, 0, "spell_holy_power", MultiBot.tips.druid.buff).setDisable()
+	pFrame.addButton("Buff", -30, 0, "spell_holy_power", MultiBot.L("tips.druid.buff")).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "nc +buff,?", "nc -buff,?", pButton.getName())
 	end
 
 	-- PLAYBOOK --
 
-	pFrame.addButton("Playbook", -60, 0, "inv_misc_book_06", MultiBot.tips.druid.playbook.master)
+	pFrame.addButton("Playbook", -60, 0, "inv_misc_book_06", MultiBot.L("tips.druid.playbook.master"))
 	.doLeft = function(pButton)
 		MultiBot.ShowHideSwitch(pButton.getFrame("Playbook"))
 	end
@@ -28,7 +28,7 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 	local tFrame = pFrame.addFrame("Playbook", -62, 30)
 	tFrame:Hide()
 
-	tFrame.addButton("CasterDebuff", 0, 0, "ability_druid_cower", MultiBot.tips.druid.playbook.casterDebuff).setDisable()
+	tFrame.addButton("CasterDebuff", 0, 0, "ability_druid_cower", MultiBot.L("tips.druid.playbook.casterDebuff")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +caster debuff,?", "co -caster debuff,?", pButton.getName())) then
 			pButton.getButton("DpsDebuff").setEnable()
@@ -37,12 +37,12 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	tFrame.addButton("CasterAoe", 0, 26, "spell_arcane_starfire", MultiBot.tips.druid.playbook.casterAoe).setDisable()
+	tFrame.addButton("CasterAoe", 0, 26, "spell_arcane_starfire", MultiBot.L("tips.druid.playbook.casterAoe")).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "co +caster aoe,?", "co -caster aoe,?", pButton.getName())
 	end
 
-	tFrame.addButton("Caster", 0, 52, "spell_nature_starfall", MultiBot.tips.druid.playbook.caster).setDisable()
+	tFrame.addButton("Caster", 0, 52, "spell_nature_starfall", MultiBot.L("tips.druid.playbook.caster")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +caster,?", "co -caster,?", pButton.getName())) then
 			pButton.getButton("Heal").setDisable()
@@ -53,12 +53,12 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	tFrame.addButton("CatAoe", 0, 78, "ability_druid_bash", MultiBot.tips.druid.playbook.catAoe).setDisable()
+	tFrame.addButton("CatAoe", 0, 78, "ability_druid_bash", MultiBot.L("tips.druid.playbook.catAoe")).setDisable()
 	.doLeft = function(pButton)
 		MultiBot.OnOffActionToTarget(pButton, "co +cat aoe,?", "co -cat aoe,?", pButton.getName())
 	end
 
-	tFrame.addButton("Cat", 0, 104, "ability_druid_catform", MultiBot.tips.druid.playbook.cat).setDisable()
+	tFrame.addButton("Cat", 0, 104, "ability_druid_catform", MultiBot.L("tips.druid.playbook.cat")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +cat,?", "co -cat,?", pButton.getName())) then
 			pButton.getButton("Caster").setDisable()
@@ -71,7 +71,7 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	tFrame.addButton("Bear", 0, 130, "ability_racial_bearform", MultiBot.tips.druid.playbook.bear).setDisable()
+	tFrame.addButton("Bear", 0, 130, "ability_racial_bearform", MultiBot.L("tips.druid.playbook.bear")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +bear,?", "co -bear,?", pButton.getName())) then
 			pButton.getButton("Caster").setDisable()
@@ -85,7 +85,7 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 	end
 
    -- Missin MELEE --
-   tFrame.addButton("Melee", 0, 156, "ability_parry", MultiBot.tips.druid.playbook.melee).setDisable()
+   tFrame.addButton("Melee", 0, 156, "ability_parry", MultiBot.L("tips.druid.playbook.melee")).setDisable()
    .doLeft = function(pButton)
      if(MultiBot.OnOffActionToTarget(pButton, "co +melee,?", "co -melee,?", pButton.getName())) then
        pButton.getButton("Caster").setDisable()
@@ -95,7 +95,7 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 
 	-- DPS --
 
-	pFrame.addButton("DpsControl", -90, 0, "ability_warrior_challange", MultiBot.tips.druid.dps.master)
+	pFrame.addButton("DpsControl", -90, 0, "ability_warrior_challange", MultiBot.L("tips.druid.dps.master"))
 	.doLeft = function(pButton)
 		MultiBot.ShowHideSwitch(pButton.getFrame("DpsControl"))
 	end
@@ -103,7 +103,7 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 	local tDpsFrame = pFrame.addFrame("DpsControl", -92, 30)
 	tDpsFrame:Hide()
 
-	tDpsFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.tips.druid.dps.dpsAssist).setDisable()
+	tDpsFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.L("tips.druid.dps.dpsAssist")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps assist,?", "co -dps assist,?", pButton.getName())) then
 			pButton.getButton("TankAssist").setDisable()
@@ -111,7 +111,7 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	tDpsFrame.addButton("DpsDebuff", 0, 26, "spell_holy_restoration", MultiBot.tips.druid.dps.dpsDebuff).setDisable()
+	tDpsFrame.addButton("DpsDebuff", 0, 26, "spell_holy_restoration", MultiBot.L("tips.druid.dps.dpsDebuff")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +caster debuff,?", "co -caster debuff,?", pButton.getName())) then
 			pButton.getButton("CasterDebuff").setEnable()
@@ -120,7 +120,7 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	tDpsFrame.addButton("DpsAoe", 0, 52, "spell_holy_surgeoflight", MultiBot.tips.druid.dps.dpsAoe).setDisable()
+	tDpsFrame.addButton("DpsAoe", 0, 52, "spell_holy_surgeoflight", MultiBot.L("tips.druid.dps.dpsAoe")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps aoe,?", "co -dps aoe,?", pButton.getName())) then
 			pButton.getButton("TankAssist").setDisable()
@@ -129,7 +129,7 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 	end
 
     -- Missing HEALER DPS --
-	tDpsFrame.addButton("HealerDps", 0, 130, "INV_Alchemy_Elixir_02", MultiBot.tips.druid.dps.healerdps).setDisable()
+	tDpsFrame.addButton("HealerDps", 0, 130, "INV_Alchemy_Elixir_02", MultiBot.L("tips.druid.dps.healerdps")).setDisable()
     .doLeft = function(pButton)
       if(MultiBot.OnOffActionToTarget(pButton, "co +healer dps,?", "co -healer dps,?", pButton.getName())) then
         pButton.getButton("Dps").setDisable()
@@ -138,7 +138,7 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
       end
     end
 
-	tDpsFrame.addButton("Dps", 0, 78, "spell_holy_divinepurpose", MultiBot.tips.druid.dps.dps).setDisable()
+	tDpsFrame.addButton("Dps", 0, 78, "spell_holy_divinepurpose", MultiBot.L("tips.druid.dps.dps")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +cat,?", "co -cat,?", pButton.getName())) then
 			pButton.getButton("Caster").setDisable()
@@ -151,7 +151,7 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 	end
 
     -- OFF-HEAL --
-	tDpsFrame.addButton("OffHeal", 0, 104, "spell_nature_healingtouch", MultiBot.tips.druid.dps.offheal).setDisable()
+	tDpsFrame.addButton("OffHeal", 0, 104, "spell_nature_healingtouch", MultiBot.L("tips.druid.dps.offheal")).setDisable()
         .doLeft = function(pButton)
             if (MultiBot.OnOffActionToTarget(
                     pButton, "co +offheal,?", "co -offheal,?",
@@ -165,7 +165,7 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 
 	-- ASSIST --
 
-	pFrame.addButton("TankAssist", -120, 0, "ability_warrior_innerrage", MultiBot.tips.druid.tankAssist).setDisable()
+	pFrame.addButton("TankAssist", -120, 0, "ability_warrior_innerrage", MultiBot.L("tips.druid.tankAssist")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +tank assist,?", "co -tank assist,?", pButton.getName())) then
 			pButton.getButton("DpsAssist").setDisable()
@@ -175,7 +175,7 @@ MultiBot.addDruid = function(pFrame, pCombat, pNormal)
 
 	-- TANK --
 
-	pFrame.addButton("Tank", -150, 0, "ability_warrior_shieldmastery", MultiBot.tips.druid.tank).setDisable()
+	pFrame.addButton("Tank", -150, 0, "ability_warrior_shieldmastery", MultiBot.L("tips.druid.tank")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +tank,?", "co -tank,?", pButton.getName())) then
 			pButton.getButton("Caster").setDisable()

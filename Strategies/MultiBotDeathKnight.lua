@@ -1,5 +1,5 @@
 MultiBot.addDeathKnight = function(pFrame, pCombat, pNormal)
-	local tButton = pFrame.addButton("Presence", 0, 0, "spell_deathknight_bloodpresence", MultiBot.tips.deathknight.presence.master).setDisable()
+	local tButton = pFrame.addButton("Presence", 0, 0, "spell_deathknight_bloodpresence", MultiBot.L("tips.deathknight.presence.master")).setDisable()
 	tButton.doLeft = function(pButton)
 		MultiBot.ShowHideSwitch(pButton.getFrame("Presence"))
 	end
@@ -7,7 +7,7 @@ MultiBot.addDeathKnight = function(pFrame, pCombat, pNormal)
 	local tFrame = pFrame.addFrame("Presence", -2, 30)
 	tFrame:Hide()
 
-	tFrame.addButton("Unholy", 0, 0, "spell_deathknight_unholypresence", MultiBot.tips.deathknight.presence.unholy)
+	tFrame.addButton("Unholy", 0, 0, "spell_deathknight_unholypresence", MultiBot.L("tips.deathknight.presence.unholy"))
 	.doLeft = function(pButton)
 		MultiBot.SelectToTarget(pButton.get(), "Presence", pButton.texture, "co +unholy,?", pButton.getName())
 		pButton.getButton("Presence").doRight = function()
@@ -15,7 +15,7 @@ MultiBot.addDeathKnight = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	tFrame.addButton("Frost", 0, 26, "spell_deathknight_frostpresence", MultiBot.tips.deathknight.presence.frost)
+	tFrame.addButton("Frost", 0, 26, "spell_deathknight_frostpresence", MultiBot.L("tips.deathknight.presence.frost"))
 	.doLeft = function(pButton)
 		MultiBot.SelectToTarget(pButton.get(), "Presence", pButton.texture, "co +frost,?", pButton.getName())
 		pButton.getButton("Presence").doRight = function()
@@ -23,7 +23,7 @@ MultiBot.addDeathKnight = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	tFrame.addButton("Blood", 0, 52, "spell_deathknight_bloodpresence", MultiBot.tips.deathknight.presence.blood)
+	tFrame.addButton("Blood", 0, 52, "spell_deathknight_bloodpresence", MultiBot.L("tips.deathknight.presence.blood"))
 	.doLeft = function(pButton)
 		MultiBot.SelectToTarget(pButton.get(), "Presence", pButton.texture, "co +blood,?", pButton.getName())
 		pButton.getButton("Presence").doRight = function()
@@ -49,7 +49,7 @@ MultiBot.addDeathKnight = function(pFrame, pCombat, pNormal)
 
 	-- DPS --
 
-	pFrame.addButton("DpsControl", -30, 0, "ability_warrior_challange", MultiBot.tips.deathknight.dps.master)
+	pFrame.addButton("DpsControl", -30, 0, "ability_warrior_challange", MultiBot.L("tips.deathknight.dps.master"))
 	.doLeft = function(pButton)
 		MultiBot.ShowHideSwitch(pButton.getFrame("DpsControl"))
 	end
@@ -57,7 +57,7 @@ MultiBot.addDeathKnight = function(pFrame, pCombat, pNormal)
 	local tDpsFrame = pFrame.addFrame("DpsControl", -32, 30)
 	tDpsFrame:Hide()
 
-	tDpsFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.tips.deathknight.dps.dpsAssist).setDisable()
+	tDpsFrame.addButton("DpsAssist", 0, 0, "spell_holy_heroism", MultiBot.L("tips.deathknight.dps.dpsAssist")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps assist,?", "co -dps assist,?", pButton.getName())) then
 			pButton.getButton("TankAssist").setDisable()
@@ -65,7 +65,7 @@ MultiBot.addDeathKnight = function(pFrame, pCombat, pNormal)
 		end
 	end
 
-	tDpsFrame.addButton("DpsAoe", 0, 26, "spell_holy_surgeoflight", MultiBot.tips.deathknight.dps.dpsAoe).setDisable()
+	tDpsFrame.addButton("DpsAoe", 0, 26, "spell_holy_surgeoflight", MultiBot.L("tips.deathknight.dps.dpsAoe")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +dps aoe,?", "co -dps aoe,?", pButton.getName())) then
 			pButton.getButton("TankAssist").setDisable()
@@ -75,7 +75,7 @@ MultiBot.addDeathKnight = function(pFrame, pCombat, pNormal)
 
     -- missing CLASS AOE (Frost/Unholy) --
 
-	tDpsFrame.addButton("FrostAoe", 0, 52, "spell_frost_frostbolt02", "Frost Aoe").setDisable()
+	tDpsFrame.addButton("FrostAoe", 0, 52, "spell_frost_frostbolt02", MultiBot.L("tips.deathknight.dps.frostAoe")).setDisable() -- Variable a créér
     .doLeft = function(pButton)
         if(MultiBot.OnOffActionToTarget(pButton, "co +frost aoe,?", "co -frost aoe,?", pButton.getName())) then
             pButton.getButton("DpsAoe").setDisable()
@@ -83,7 +83,7 @@ MultiBot.addDeathKnight = function(pFrame, pCombat, pNormal)
         end
     end
 
-	tDpsFrame.addButton("UnholyAoe", 0, 78, "spell_fire_felflamering", "Unholy Aoe").setDisable()
+	tDpsFrame.addButton("UnholyAoe", 0, 78, "spell_fire_felflamering", MultiBot.L("tips.deathknight.dps.unholyAoe")).setDisable() -- Variable à créer
     .doLeft = function(pButton)
         if(MultiBot.OnOffActionToTarget(pButton, "co +unholy aoe,?", "co -unholy aoe,?", pButton.getName())) then
             pButton.getButton("DpsAoe").setDisable()
@@ -93,7 +93,7 @@ MultiBot.addDeathKnight = function(pFrame, pCombat, pNormal)
 
 	-- ASSIST --
 
-	pFrame.addButton("TankAssist", -60, 0, "ability_warrior_innerrage", MultiBot.tips.deathknight.tankAssist).setDisable()
+	pFrame.addButton("TankAssist", -60, 0, "ability_warrior_innerrage", MultiBot.L("tips.deathknight.tankAssist")).setDisable()
 	.doLeft = function(pButton)
 		if(MultiBot.OnOffActionToTarget(pButton, "co +tank assist,?", "co -tank assist,?", pButton.getName())) then
 			pButton.getButton("DpsAssist").setDisable()

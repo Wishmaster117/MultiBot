@@ -26,17 +26,19 @@ Libs\LibDropdown-1.0\LibDropdown-1.0.lua
 
 Core\MultiBot.lua
 Core\MultiBotConfig.lua
+Core\MultiBotLocale.lua
 UI\MultiBotOptions.lua
 Core\MultiBotThrottle.lua
 
-Locales\MultiBotLanguage-deDE.lua
-Locales\MultiBotLanguage-enGB.lua
-Locales\MultiBotLanguage-enUS.lua
-Locales\MultiBotLanguage-frFR.lua
-Locales\MultiBotLanguage-zhCN.lua
-Locales\MultiBotLanguage-koKR.lua
-Locales\MultiBotLanguage-ruRU.lua
-Locales\MultiBotLanguage-esES.lua
+Locales\MultiBotAceLocale.lua
+Locales\MultiBotAceLocale-enUS.lua
+Locales\MultiBotAceLocale-frFR.lua
+Locales\MultiBotAceLocale-esES.lua
+Locales\MultiBotAceLocale-deDE.lua
+Locales\MultiBotAceLocale-enGB.lua
+Locales\MultiBotAceLocale-ruRU.lua
+Locales\MultiBotAceLocale-zhCN.lua
+Locales\MultiBotAceLocale-koKR.lua
 Data\HunterPetFamily.lua
 Data\HunterPetList_1.lua
 Data\HunterPetList_2.lua

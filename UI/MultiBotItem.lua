@@ -1,3 +1,7 @@
+local function itemL(key, fallback)
+	return MultiBot.L("info." .. key, fallback)
+end
+
 MultiBot.addItem = function(pFrame, pInfo)
 	local tInfo = MultiBot.doSplit(pInfo, "|")
 	local tID = MultiBot.doSplit(tInfo[3], ":")[2]
@@ -28,17 +32,17 @@ MultiBot.addItem = function(pFrame, pInfo)
         local botName = MultiBot.inventory.name
 
 		if(tAction == "") then
-			SendChatMessage(MultiBot.info.action, "SAY")
+			SendChatMessage(itemL("action", "Choose an action first"), "SAY")
 			return
 		end
 
         if(tAction == "s" and MultiBot.isTarget()) then
 			if(pButton.item.id == "6948") then
-				return SendChatMessage(MultiBot.info.itemsellalert, "SAY")
+				return SendChatMessage(itemL("itemsellalert", "You cannot sell this item"), "SAY")
 			end
 
 			if(MultiBot.isInside(pButton.item.info or "", "%f[%a][Kk]ey%f[%A]")) then
-                return SendChatMessage(MultiBot.info.keydestroyalert, "SAY")
+                return SendChatMessage(itemL("keydestroyalert", "You cannot destroy a key"), "SAY")
 			end
 
 			-- Envoi de la commande "s [item]" au bot dont l’inventaire est ouvert
@@ -68,7 +72,7 @@ MultiBot.addItem = function(pFrame, pInfo)
 			if needsConfirm then
 				if not StaticPopupDialogs["MULTIBOT_CONFIRM_DESTROY"] then
 					StaticPopupDialogs["MULTIBOT_CONFIRM_DESTROY"] = {
-						text = MultiBot.info.itemdestroyalert,
+						text = itemL("itemdestroyalert", "Are you sure you want to destroy this item?"),
 						button1 = OKAY,
 						button2 = CANCEL,
 						timeout = 0,
