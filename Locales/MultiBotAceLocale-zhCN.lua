@@ -251,6 +251,7 @@ local zhCNValues = {
   ["tips.quests.gobselectall"] = "全选",
   ["tips.quests.gobsfound"] = "找到的游戏对象",
   ["tips.quests.gobpromptname"] = "游戏对象名称",
+  ["tips.quests.gobnosearchdata"] = "No search data captured.",
   ["tips.group.group"] = "队伍动作选择器\n|cffffffff打开包含以下队伍动作的子菜单：\n喝水、释放灵魂、复活。|r\n\n|cffff0000左键点击以展开。|r",
   ["tips.drink.group"] = "团队饮水\n|cffffffff使用此按钮命令团队饮水。\n执行命令时显示命令的接收者。|r\n\n|cffff0000左键单击执行团队饮水|r\n|cff999999(执行命令: 团队, 队伍)|r",
   ["tips.release.group"] = "团队释放\n|cffffffff使用此按钮，死亡的机器人将释放其灵魂到下一个墓地。\n执行命令时显示命令的接收者。|r\n\n|cffff0000左键单击执行团队释放|r\n|cff999999(执行命令: 团队, 队伍)|r",

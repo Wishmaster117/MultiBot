@@ -37,7 +37,7 @@ function MultiBot.HandleOnUpdate(pElapsed)
 		end
 
 		if(MultiBot.isMember(tTable[MultiBot.timer.invite.index]) == false) then
-			SendChatMessage(MultiBot.doReplace(MultiBot.info.inviting, "NAME", tTable[MultiBot.timer.invite.index]), "SAY")
+			SendChatMessage(MultiBot.doReplace(MultiBot.L("info.inviting"), "NAME", tTable[MultiBot.timer.invite.index]), "SAY")
 			SendChatMessage(".playerbot bot add " .. tTable[MultiBot.timer.invite.index], "SAY")
 			MultiBot.timer.invite.needs = MultiBot.timer.invite.needs - 1
 		end
@@ -1204,7 +1204,7 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			local tLocation = MultiBot.doSplit(arg1, " ")
 			local tZone = string.sub(tLocation[6], 2, string.len(tLocation[6]) - 1)
 			local tMap = string.sub(tLocation[3], 2, string.len(tLocation[3]) - 1)
-			local tTip = MultiBot.doReplace(MultiBot.doReplace(MultiBot.info.teleport, "MAP", tMap), "ZONE", tZone)
+			local tTip = MultiBot.doReplace(MultiBot.doReplace(MultiBot.L("info.teleport"), "MAP", tMap), "ZONE", tZone)
 
 			tPlayer.memory.goMap = tLocation[2]
 			tPlayer.memory.tip = MultiBot.doReplace(MultiBot.L("tips.game.memory"), "ABOUT", tTip)
@@ -1490,7 +1490,7 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			local tItems = MultiBot.inventory.frames["Items"]
 			for key, value in pairs(tItems.buttons) do value:Hide() end
 			for key in pairs(tItems.buttons) do tItems.buttons[key] = nil end
-			MultiBot.inventory.setText("Title", MultiBot.doReplace(MultiBot.info.inventory, "NAME", arg2))
+			MultiBot.inventory.setText("Title", MultiBot.doReplace(MultiBot.L("info.inventory"), "NAME", arg2))
 			MultiBot.inventory.name = arg2
 			tItems.index = 0
 			tButton.waitFor = "ITEM"
@@ -1517,7 +1517,7 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			local tOverlay = MultiBot.spellbook.frames["Overlay"]
 			local tSpellbook = MultiBot.spellbook
 			for key in pairs(tSpellbook.spells) do tSpellbook.spells[key] = nil end
-			tOverlay.setText("Title", MultiBot.doReplace(MultiBot.info.spellbook, "NAME", arg2))
+			tOverlay.setText("Title", MultiBot.doReplace(MultiBot.L("info.spellbook"), "NAME", arg2))
 			tSpellbook.name = arg2
 			tSpellbook.index = 0
 			tSpellbook.from = 1

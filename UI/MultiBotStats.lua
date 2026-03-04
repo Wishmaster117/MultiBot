@@ -80,7 +80,7 @@ MultiBot.addStats = function(pFrame, pIndex, pX, pY, pSize, pWidth, pHeight)
 
 			statsFrame.texts["Name"]:SetText(pName)
 			statsFrame.texts["Level"]:SetText(pLevel)
-			statsFrame.texts["Values"]:SetText("Player")
+			statsFrame.texts["Values"]:SetText(PLAYER)
 
 			if pLevel == 80 then
 				addonFrame.texts["Percent"]:SetText(

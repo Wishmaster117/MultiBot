@@ -251,6 +251,7 @@ local esESValues = {
   ["tips.quests.gobselectall"] = "Seleccionar todo",
   ["tips.quests.gobsfound"] = "Objetos del juego encontrados",
   ["tips.quests.gobpromptname"] = "Nombre del objeto del juego",
+  ["tips.quests.gobnosearchdata"] = "No search data captured.",
   ["tips.group.group"] = "Selector de acciones de grupo\n|cffffffffAbre un submenú con las siguientes acciones de grupo:\nBeber, Liberar, Revivir.|r\n\n|cffff0000Clic izquierdo para expandir.|r",
   ["tips.drink.group"] = "Group-Drink\n|cffffffffCon este botón ordenas al grupo que beba.\nEl orden de ejecución muestra quién recibirá los comandos.|r\n\n|cffff0000Clic izquierdo para ejecutar beber en grupo|r\n|cff999999(Orden de ejecución: Banda, Grupo)|r",
   ["tips.release.group"] = "Group-Release\n|cffffffffCon este botón, los bots muertos liberarán sus fantasmas al cementerio más cercano.\nEl orden de ejecución muestra quién recibirá los comandos.|r\n\n|cffff0000Clic izquierdo para liberar al grupo|r\n|cff999999(Orden de ejecución: Banda, Grupo)|r",

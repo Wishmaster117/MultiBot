@@ -75,7 +75,7 @@ MultiBot.addDeathKnight = function(pFrame, pCombat, pNormal)
 
     -- missing CLASS AOE (Frost/Unholy) --
 
-	tDpsFrame.addButton("FrostAoe", 0, 52, "spell_frost_frostbolt02", "Frost Aoe").setDisable()
+	tDpsFrame.addButton("FrostAoe", 0, 52, "spell_frost_frostbolt02", MultiBot.L("tips.deathknight.dps.frostAoe")).setDisable() -- Variable a créér
     .doLeft = function(pButton)
         if(MultiBot.OnOffActionToTarget(pButton, "co +frost aoe,?", "co -frost aoe,?", pButton.getName())) then
             pButton.getButton("DpsAoe").setDisable()
@@ -83,7 +83,7 @@ MultiBot.addDeathKnight = function(pFrame, pCombat, pNormal)
         end
     end
 
-	tDpsFrame.addButton("UnholyAoe", 0, 78, "spell_fire_felflamering", "Unholy Aoe").setDisable()
+	tDpsFrame.addButton("UnholyAoe", 0, 78, "spell_fire_felflamering", MultiBot.L("tips.deathknight.dps.unholyAoe")).setDisable() -- Variable à créer
     .doLeft = function(pButton)
         if(MultiBot.OnOffActionToTarget(pButton, "co +unholy aoe,?", "co -unholy aoe,?", pButton.getName())) then
             pButton.getButton("DpsAoe").setDisable()

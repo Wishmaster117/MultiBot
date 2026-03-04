@@ -251,6 +251,7 @@ local deDEValues = {
   ["tips.quests.gobselectall"] = "Alle auswählen",
   ["tips.quests.gobsfound"] = "Gefundene GameObjects",
   ["tips.quests.gobpromptname"] = "GameObject Name",
+  ["tips.quests.gobnosearchdata"] = "No search data captured.",
   ["tips.group.group"] = "Gruppenaktionen-Auswahl\n|cffffffffÖffnet ein Untermenü mit den folgenden Gruppenaktionen:\nTrinken, Freilassen, Wiederbeleben.|r\n\n|cffff0000Linksklick zum Erweitern.|r",
   ["tips.drink.group"] = "Group-Drink\n|cffffffffMit diesem Kommando befiehlt man der Gruppe etwas zu trinken.\nDie Ausführreihenfolge zeigt die Empfänger des Befehls.|r\n\n|cffff0000Linksklicken um Group-Drink auszuführen|r\n|cff999999(Ausführreihenfolge: Raid, Party)|r",
   ["tips.release.group"] = "Group-Release\n|cffffffffMit diesem Kommando geben die toten Bots ihre Geister auf den nächsten Friedhof frei.\nDie Ausführreihenfolge zeigt die Empfänger des Befehls.|r\n\n|cffff0000Linksklicken um Group-Release auszuführen|r\n|cff999999(Ausführreihenfolge: Raid, Party)|r",

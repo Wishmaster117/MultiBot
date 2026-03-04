@@ -41,7 +41,7 @@ MultiBot.doSlash = function(pCommand, pArguments)
 		end
 	end
 
-	SendChatMessage(MultiBot.info.command, "SAY")
+	SendChatMessage(MultiBot.L("info.command"), "SAY")
 	return false
 end
 
@@ -62,7 +62,7 @@ MultiBot.doDotWithTarget = function(pCommand, oArguments)
 		return true
 	end
 
-	SendChatMessage(MultiBot.info.target, "SAY")
+	SendChatMessage(MultiBot.L("info.target"), "SAY")
 	return false
 end
 
@@ -178,7 +178,7 @@ MultiBot.isTarget = function()
 		return true
 	end
 
-	SendChatMessage(MultiBot.info.target, "SAY")
+	SendChatMessage(MultiBot.L("info.target"), "SAY")
 	return false
 end
 
@@ -327,7 +327,7 @@ MultiBot.RaidPool = function(pUnit, oWho)
 	tTabs[3] = tonumber(tTabs[3]) or 0
 
 	local tTabIndex = MultiBot.IF(tTabs[3] > tTabs[2] and tTabs[3] > tTabs[1], 3, MultiBot.IF(tTabs[2] > tTabs[3] and tTabs[2] > tTabs[1], 2, 1))
-	local tSpecial = MultiBot.CLEAR(MultiBot.info.talent[MultiBot.toClass(tClass) .. tTabIndex], 1)
+	local tSpecial = MultiBot.CLEAR(MultiBot.L("info.talent." .. MultiBot.toClass(tClass) .. tTabIndex), 1)
 
 	if(tLocalClass == nil) then tLocalClass = tClass end
 	if(tLocalRace == nil) then tLocalRace = tRace end
@@ -420,10 +420,10 @@ MultiBot.SpellToMacro = function(pName, pSpell, pTexture)
 	local _, tAmount = GetNumMacros()
 
 	if(pSpell == nil or pSpell == 0) then
-		return SendChatMessage(MultiBot.info.spell, "SAY")
+		return SendChatMessage(MultiBot.L("info.spell"), "SAY")
 	end
 	if(tAmount == 18) then
-		return SendChatMessage(MultiBot.info.macro, "SAY")
+		return SendChatMessage(MultiBot.L("info.macro"), "SAY")
 	end
 
 	local tMacro = string.sub(pName, 1, 14) .. tAmount
@@ -450,7 +450,7 @@ MultiBot.ActionToTarget = function(pAction, oTarget)
 		return true
 	end
 
-	SendChatMessage(MultiBot.info.target, "SAY")
+	SendChatMessage(MultiBot.L("info.target"), "SAY")
 	return false
 end
 
@@ -472,7 +472,7 @@ MultiBot.ActionToTargetOrGroup = function(pAction)
 		return true
 	end
 
-	SendChatMessage(MultiBot.info.neither, "SAY")
+	SendChatMessage(MultiBot.L("info.neither"), "SAY")
 	return false
 end
 
@@ -487,7 +487,7 @@ MultiBot.ActionToGroup = function(pAction)
 		return true
 	end
 
-	SendChatMessage(MultiBot.info.group, "SAY")
+	SendChatMessage(MultiBot.L("info.group"), "SAY")
 	return false
 end
 

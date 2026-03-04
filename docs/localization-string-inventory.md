@@ -53,13 +53,8 @@ Initial inventory of user-facing hardcoded strings in `Core/`, `UI/`, and `Featu
   - `Strategies/MultiBotPaladin.lua`: migrated.
   - `Strategies/MultiBotMage.lua`: migrated.
   - `Strategies/MultiBotWarlock.lua`: migrated.
-  - `Strategies/MultiBotDeathKnight.lua`: migrated.
-  - `Strategies/MultiBotHunter.lua`: migrated.
-  - `Strategies/MultiBotPriest.lua`: migrated.
-  - `Strategies/MultiBotRogue.lua`: migrated.
-  - `Strategies/MultiBotShaman.lua`: migrated.
-  - `Strategies/MultiBotWarrior.lua`: migrated.
-  
+  - Remaining major targets in `Strategies/`: none (completed).
+  - `Core/MultiBot.lua` remaining `MultiBot.tips` matches are intentional bootstrap lines (`MultiBot.tips = {}` and `MultiBot.tips.spec = ...`), not user-facing runtime tooltip reads.
 
 
 ## Pipeline decisions in this kickoff
@@ -73,6 +68,23 @@ Initial inventory of user-facing hardcoded strings in `Core/`, `UI/`, and `Featu
 
 ## Next milestone-9 increments
 
-1. Migrate `Strategies/MultiBotPriest.lua` from `MultiBot.tips.*` reads to `MultiBot.L(...)` key lookups.
-2. Continue scanning `Core/UI/Features/Strategies` for new hardcoded user-facing strings introduced by incremental PRs.
-3. Expand key coverage locale-by-locale while keeping deterministic fallback behavior.
+1. Continue scanning `Core/UI/Features/Strategies` for any newly introduced user-facing hardcoded strings in incremental PRs.
+2. Expand key coverage locale-by-locale while keeping deterministic fallback behavior.
+3. Keep class-specific AoE labels routed through locale keys (e.g. `tips.deathknight.dps.frostAoe` / `tips.deathknight.dps.unholyAoe`) instead of inline literals.
+4. Keep generic prompt defaults localized/client-localized (e.g. `OKAY` and `MultiBot.info.hunterpeteditentervalue`) instead of inline literals in prompt builders.
+5. Use client-localized global constants for Blizzard UI nouns when available (e.g. `SPELLBOOK` instead of inline `"Spellbook"`).
+6. Use client-localized role nouns when available (e.g. `PLAYER` instead of inline `"Player"` in stats widgets).
+7. Use client-localized status constants when available (e.g. `LOADING` instead of inline loading labels).
+8. Route quest-search empty-state text through locale keys (e.g. `tips.quests.gobnosearchdata`) instead of inline literals.
+
+ ## Milestone 9 final status
+ - Milestone 9 is now considered complete for the current localization scope.
+ - Runtime user-facing reads previously using `MultiBot.tips.*` and `MultiBot.info.*` ... migrated to `MultiBot.L(...)`.
+ - Final UI literal pass completed ...
+ - Intentional non-migrated literals are limited to technical/protocol identifiers ...
+
+ ## Post-Milestone 9 maintenance
+ 1. Continue scanning ...
+ 2. Expand key coverage ...
+ 3. Keep using client-localized Blizzard globals ...
+ 4. Keep technical/protocol identifiers unchanged unless the protocol itself is migrated.

@@ -1228,6 +1228,9 @@ MultiBot.index.favorites = {}
 MultiBot.spells = {}
 MultiBot.frames = {}
 MultiBot.units = {}
+
+-- Legacy compatibility bootstrap: this container remains for non-localized runtime metadata
+-- and is intentionally not used for user-facing tooltip text lookups anymore.
 MultiBot.tips = {}
 MultiBot.tips.spec = MultiBot.tips.spec or {}
 

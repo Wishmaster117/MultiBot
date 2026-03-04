@@ -250,6 +250,7 @@ local koKRValues = {
   ["tips.quests.gobselectall"] = "전체 선택",
   ["tips.quests.gobsfound"] = "찾은 게임 오브젝트",
   ["tips.quests.gobpromptname"] = "게임 오브젝트 이름",
+  ["tips.quests.gobnosearchdata"] = "No search data captured.",
   ["tips.group.group"] = "그룹 행동 선택기\n|cffffffff다음 그룹 행동이 포함된 하위 메뉴를 엽니다:\n음료 마시기, 영혼 풀기, 부활.|r\n\n|cffff0000왼쪽 클릭: 펼치기.|r",
   ["tips.drink.group"] = "팀 식수\n|cffffffff이 버튼을 사용하면 팀원들에게 물을 마시라고 명령할 수 있습니다.\n명령이 실행될 때 수신자를 표시합니다.|r\n\n|cffff0000팀 식수 실행을 위해 왼쪽 클릭|r\n|cff999999(명령어 실행: team, team)|r",
   ["tips.release.group"] = "팀 릴리스\n|cffffffff이 버튼을 누르면, 죽은 로봇이 영혼을 다음 묘지로 방출합니다.\n명령이 실행될 때 수신자를 표시합니다.|r\n\n|cffff0000팀 릴리스를 실행하려면 왼쪽 클릭|r\n|cff999999(명령어 실행: team, team)|r",

@@ -253,6 +253,7 @@ local enGBValues = {
   ["tips.quests.gobselectall"] = "Select All",
   ["tips.quests.gobsfound"] = "Game Objects Found",
   ["tips.quests.gobpromptname"] = "Game Object Name",
+  ["tips.quests.gobnosearchdata"] = "No search data captured.",
   ["tips.group.group"] = "Group Actions Selector\n|cffffffffThis opens a submenu with the following group actions:\nDrink, Release, Revive.|r\n\n|cffff0000Left-click to expand.|r",
   ["tips.drink.group"] = "Group Drink\n|cffffffffOrders the Group to drink/eat.\n|cffff0000Left-click to activate|r\n|cff999999(Executed by: Raid, Party)|r",
   ["tips.release.group"] = "Group Release\n|cffffffffReleases the spirits of all dead Bots to the nearest Graveyard.\n|cffff0000Left-click to activate|r\n|cff999999(Executed by: Raid, Party)|r",

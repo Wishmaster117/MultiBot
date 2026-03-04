@@ -251,6 +251,7 @@ local frFRValues = {
   ["tips.quests.gobselectall"] = "Tout sélectionner",
   ["tips.quests.gobsfound"] = "Objets du Jeu trouvés",
   ["tips.quests.gobpromptname"] = "Nom de l'objet du jeu",
+  ["tips.quests.gobnosearchdata"] = "Aucune donnée Capturée.",
   ["tips.group.group"] = "Sélecteur d’actions de groupe\n|cffffffffOuvre un sous-menu avec les actions de groupe suivantes :\nBoire, Libérer, Ranimer.|r\n\n|cffff0000Clic gauche pour développer.|r",
   ["tips.drink.group"] = "Boire en Groupe\n|cffffffffCe bouton ordonne au groupe de boire.\nL'Ordre d'exécution montre le destinataire des commandes.|r\n\n|cffff0000Clic gauche pour exécuter Boire en Groupe|r\n|cff999999(Ordre d'exécution : Raid, Groupe)|r",
   ["tips.release.group"] = "Libération de Groupe\n|cffffffffCe bouton permettra aux Bots morts de libérer leurs fantômes vers le prochain cimetière.\nL'Ordre d'exécution montre le destinataire des commandes.|r\n\n|cffff0000Clic gauche pour exécuter Libération de Groupe|r\n|cff999999(Ordre d'exécution : Raid, Groupe)|r",

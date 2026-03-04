@@ -396,7 +396,7 @@ MultiBot.raidus.wowButton("Load", -762, 360, 80, 20, 12)
 .doLeft = function(pButton)
 	local layoutData = getRaidusLayoutValue(MultiBot.raidus.save)
 	if(layoutData == nil or layoutData == "") then
-		SendChatMessage(MultiBot.info.nothing, "SAY")
+		SendChatMessage(MultiBot.L("info.nothing"), "SAY")
 		return
 	end
 
@@ -611,7 +611,7 @@ end
 
 local function startRaidusApplyInviteOrSort(inviteCount)
     if inviteCount > 0 then
-        SendChatMessage(MultiBot.info.starting, "SAY")
+        SendChatMessage(MultiBot.L("info.starting"), "SAY")
         MultiBot.timer.invite.roster = "raidus"
         MultiBot.timer.invite.needs = inviteCount
         MultiBot.timer.invite.index = 1
