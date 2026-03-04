@@ -15,7 +15,8 @@ Checklist for the full addon-wide ACE3 expansion after M7 completion.
 
 - [ ] Inventory all legacy frame-based screens and map migration order.
 - [ ] Migrate one screen at a time to AceGUI containers/widgets.
-- [ ] Preserve slash entry points and open/close behavior.
+- [x] Options panel content migrated to AceGUI widgets (`UI/MultiBotOptions.lua`) while keeping InterfaceOptions category + slash entrypoint behavior.
+- [x] Temporary shared migration debug helper introduced (`Core/MultiBotDebug.lua`) to avoid duplicated diagnostics across files.
 - [ ] Keep persisted state routed through existing AceDB helpers.
 - [ ] Validate visual/interaction parity per migrated screen.
 
