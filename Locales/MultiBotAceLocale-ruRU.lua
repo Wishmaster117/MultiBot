@@ -670,6 +670,8 @@ local ruRUValues = {
   ["ui.pvp.prefix.team"] = "Команда: ",
   ["ui.pvp.prefix.rating"] = "Рейтинг: ",
   ["spec.list.title"] = "Specs",
+  ["info.managegroups"] = "Управление группами",
+  ["info.avalaiblebots"] = "Доступные боты",
 }
 
 register("ruRU", ruRUValues)

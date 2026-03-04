@@ -669,6 +669,8 @@ local deDEValues = {
   ["ui.pvp.prefix.team"] = "Team: ",
   ["ui.pvp.prefix.rating"] = "Wertung: ",
   ["spec.list.title"] = "Specs",
+  ["info.managegroups"] = "Gruppenverwaltung",
+  ["info.avalaiblebots"] = "Verfügbare Bots",
 }
 
 register("deDE", deDEValues)

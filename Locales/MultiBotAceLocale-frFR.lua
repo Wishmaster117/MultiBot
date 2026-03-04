@@ -669,6 +669,8 @@ local frFRValues = {
   ["ui.pvp.prefix.team"] = "Team: ",
   ["ui.pvp.prefix.rating"] = "Rating: ",
   ["spec.list.title"] = "Spés",
+  ["info.managegroups"] = "Gestion des Groupes",
+  ["info.avalaiblebots"] = "Bots Disponibles",
 }
 
 register("frFR", frFRValues)

@@ -214,19 +214,63 @@ if not raidusUsesAceWindow then
 end
 
 local RAIDUS_GROUP_SHIFT_X = -30
+local RAIDUS_GROUP_PANEL_X = -180 + RAIDUS_GROUP_SHIFT_X
+local RAIDUS_GROUP_PANEL_Y = 360
+local RAIDUS_GROUP_PANEL_WIDTH = 665
+local RAIDUS_GROUP_PANEL_HEIGHT = 490
+local RAIDUS_POOL_PANEL_X = -18
+local RAIDUS_POOL_PANEL_Y = 360
+local RAIDUS_POOL_PANEL_WIDTH = 165
+local RAIDUS_POOL_PANEL_HEIGHT = 490
+
+local RAIDUS_GROUP_SLOT_WIDTH = 160
+
+local RAIDUS_SLOT_TEXTURE_INSET_X = 4
+local RAIDUS_SLOT_TEXTURE_INSET_Y = 0
+
+local function applyRaidusSlotTextureInset(slotFrame)
+    if not slotFrame or not slotFrame.texture then
+        return
+    end
+
+    slotFrame.texture:ClearAllPoints()
+    slotFrame.texture:SetPoint("TOPLEFT", slotFrame, "TOPLEFT", RAIDUS_SLOT_TEXTURE_INSET_X, -RAIDUS_SLOT_TEXTURE_INSET_Y)
+    slotFrame.texture:SetPoint("BOTTOMRIGHT", slotFrame, "BOTTOMRIGHT", -RAIDUS_SLOT_TEXTURE_INSET_X, RAIDUS_SLOT_TEXTURE_INSET_Y)
+end
 
 local function formatRaidusBadgeLabel(text)
     return "|cffd4af37[|r " .. tostring(text or "") .. " |cffd4af37]|r"
 end
 
-MultiBot.raidus.addFrame("Group8", -185 + RAIDUS_GROUP_SHIFT_X, 364, 28, 160, 240)
-MultiBot.raidus.addFrame("Group7", -350 + RAIDUS_GROUP_SHIFT_X, 364, 28, 160, 240)
-MultiBot.raidus.addFrame("Group6", -515 + RAIDUS_GROUP_SHIFT_X, 364, 28, 160, 240)
-MultiBot.raidus.addFrame("Group5", -680 + RAIDUS_GROUP_SHIFT_X, 364, 28, 160, 240)
-MultiBot.raidus.addFrame("Group4", -185 + RAIDUS_GROUP_SHIFT_X, 604, 28, 160, 240)
-MultiBot.raidus.addFrame("Group3", -350 + RAIDUS_GROUP_SHIFT_X, 604, 28, 160, 240)
-MultiBot.raidus.addFrame("Group2", -515 + RAIDUS_GROUP_SHIFT_X, 604, 28, 160, 240)
-MultiBot.raidus.addFrame("Group1", -680 + RAIDUS_GROUP_SHIFT_X, 604, 28, 160, 240)
+local function ApplyRaidusGroupCardChrome(groupFrame, groupIndex)
+    if not groupFrame or groupFrame._cardStyled or not groupFrame.SetBackdrop then
+        return
+    end
+
+    local topRow = groupIndex <= 4
+    local bgAlpha = topRow and 0.20 or 0.16
+
+    groupFrame:SetBackdrop({
+        bgFile = "Interface\\Buttons\\WHITE8X8",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true,
+        tileSize = 8,
+        edgeSize = 8,
+        insets = { left = 2, right = 2, top = 2, bottom = 2 },
+    })
+    groupFrame:SetBackdropColor(0, 0, 0, bgAlpha)
+    groupFrame:SetBackdropBorderColor(0.78, 0.62, 0.18, 0.42)
+    groupFrame._cardStyled = true
+end
+
+MultiBot.raidus.addFrame("Group8", -185 + RAIDUS_GROUP_SHIFT_X, 364, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addFrame("Group7", -350 + RAIDUS_GROUP_SHIFT_X, 364, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addFrame("Group6", -515 + RAIDUS_GROUP_SHIFT_X, 364, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addFrame("Group5", -680 + RAIDUS_GROUP_SHIFT_X, 364, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addFrame("Group4", -185 + RAIDUS_GROUP_SHIFT_X, 604, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addFrame("Group3", -350 + RAIDUS_GROUP_SHIFT_X, 604, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addFrame("Group2", -515 + RAIDUS_GROUP_SHIFT_X, 604, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addFrame("Group1", -680 + RAIDUS_GROUP_SHIFT_X, 604, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
 MultiBot.raidus.addText("RaidScore", formatRaidusBadgeLabel("|cffffcc00RaidScore|r" ..  " : 0"), "BOTTOMLEFT", 376, 364, 12)
 
 local function CreateRaidusGoldOutline(x, y, width, height)
@@ -252,12 +296,87 @@ local function CreateRaidusGoldOutline(x, y, width, height)
     return outline
 end
 
-CreateRaidusGoldOutline(-180 + RAIDUS_GROUP_SHIFT_X, 360, 665, 490)
-CreateRaidusGoldOutline(-18, 360, 165, 490)
+local function CreateRaidusPanelChrome(panelKey, x, y, width, height, title)
+    local panel = CreateFrame("Frame", nil, MultiBot.raidus)
+    panel:SetPoint("BOTTOMRIGHT", x, y)
+    panel:SetSize(width, height)
+    panel:EnableMouse(false)
+    panel:SetFrameLevel(MultiBot.raidus:GetFrameLevel())
+
+    if panel.SetBackdrop then
+        panel:SetBackdrop({
+            bgFile = "Interface\\Buttons\\WHITE8X8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            tile = true,
+            tileSize = 8,
+            edgeSize = 10,
+            insets = { left = 2, right = 2, top = 2, bottom = 2 },
+        })
+        local isGroupsPanel = panelKey == "GroupsPanel"
+        panel:SetBackdropColor(0, 0, 0, isGroupsPanel and 0.28 or 0.16)
+        panel:SetBackdropBorderColor(isGroupsPanel and 0.44 or 0.30, isGroupsPanel and 0.34 or 0.22, isGroupsPanel and 0.10 or 0.08, isGroupsPanel and 0.62 or 0.42)
+    end
+
+    panel.texts = panel.texts or {}
+    panel.texts["Title"] = panel:CreateFontString(nil, "ARTWORK")
+    panel.texts["Title"]:SetFont("Fonts\\ARIALN.ttf", 16, "PLAIN")
+    panel.texts["Title"]:SetPoint("BOTTOM", panel, "TOP", 0, 8)
+    panel.texts["Title"]:SetText("|cffffcc00" .. title .. "|r")
+    panel.texts["Title"]:Show()
+    return panel
+end
+
+local raidusManageGroupsLabel = MultiBot.L("info.managegroups")
+local raidusAvailableBotsLabel = MultiBot.L("info.avalaiblebots")
+
+CreateRaidusPanelChrome("GroupsPanel", RAIDUS_GROUP_PANEL_X, RAIDUS_GROUP_PANEL_Y, RAIDUS_GROUP_PANEL_WIDTH, RAIDUS_GROUP_PANEL_HEIGHT, raidusManageGroupsLabel)
+CreateRaidusPanelChrome("PoolPanel", RAIDUS_POOL_PANEL_X, RAIDUS_POOL_PANEL_Y, RAIDUS_POOL_PANEL_WIDTH, RAIDUS_POOL_PANEL_HEIGHT, raidusAvailableBotsLabel)
+CreateRaidusGoldOutline(RAIDUS_GROUP_PANEL_X, RAIDUS_GROUP_PANEL_Y, RAIDUS_GROUP_PANEL_WIDTH, RAIDUS_GROUP_PANEL_HEIGHT)
+CreateRaidusGoldOutline(RAIDUS_POOL_PANEL_X, RAIDUS_POOL_PANEL_Y, RAIDUS_POOL_PANEL_WIDTH, RAIDUS_POOL_PANEL_HEIGHT)
 
 local RAIDUS_GROUP_COUNT = 8
 local RAIDUS_GROUP_SLOT_COUNT = 5
 local RAIDUS_POOL_PAGE_SIZE = 11
+
+local RAIDUS_CLASS_SLOT_COLORS = {
+	DeathKnight = { 0.77, 0.12, 0.23, 0.35 },
+	Druid       = { 1.00, 0.49, 0.04, 0.35 },
+	Hunter      = { 0.67, 0.83, 0.45, 0.35 },
+	Mage        = { 0.41, 0.80, 0.94, 0.35 },
+	Paladin     = { 0.96, 0.55, 0.73, 0.35 },
+	Priest      = { 1.00, 1.00, 1.00, 0.35 },
+	Rogue       = { 1.00, 0.96, 0.41, 0.35 },
+	Shaman      = { 0.00, 0.44, 0.87, 0.35 },
+	Warlock     = { 0.58, 0.51, 0.79, 0.35 },
+	Warrior     = { 0.78, 0.61, 0.43, 0.35 },
+}
+
+local function getRaidusSlotColor(slotFrame)
+	if not slotFrame or not slotFrame.bot or not slotFrame.bot.class then
+		return nil
+	end
+
+	local className = MultiBot.toClass(slotFrame.bot.class)
+	return RAIDUS_CLASS_SLOT_COLORS[className]
+end
+
+local function applyRaidusSlotTexture(slotFrame, useClassColor)
+	if not slotFrame or not slotFrame.texture then
+		return
+	end
+
+	if useClassColor then
+		local color = getRaidusSlotColor(slotFrame)
+		if color then
+			slotFrame.texture:SetTexture(MultiBot.SafeTexturePath("Interface\\Buttons\\WHITE8X8"))
+			slotFrame.texture:SetVertexColor(color[1], color[2], color[3], color[4])
+			return
+		end
+	end
+
+	slotFrame.texture:SetTexture(MultiBot.SafeTexturePath("Interface\\AddOns\\MultiBot\\Textures\\grey.blp"))
+	slotFrame.texture:SetVertexColor(1, 1, 1, 1)
+end
 
 MultiBot.raidus.save = ""
 MultiBot.raidus.from = 1
@@ -796,10 +915,13 @@ end
 
 -- Update pool visibility according to current Raidus page window.
 local function refreshRaidusPoolPageVisibility()
-	local poolFrames = MultiBot.raidus.frames["Pool"].frames
+	local poolFrame = MultiBot.raidus.frames["Pool"]
+	local poolFrames = poolFrame.frames
 	for slotIndex = 1, MultiBot.raidus.slots, 1 do
 		local poolSlot = poolFrames["Slot" .. slotIndex]
-		if(slotIndex >= MultiBot.raidus.from and slotIndex <= MultiBot.raidus.to) then poolSlot:Show() else poolSlot:Hide() end
+		if poolSlot and poolSlot.parent == poolFrame then
+			if(slotIndex >= MultiBot.raidus.from and slotIndex <= MultiBot.raidus.to) then poolSlot:Show() else poolSlot:Hide() end
+		end
 	end
 end
 
@@ -941,6 +1063,7 @@ MultiBot.raidus.setRaidus = function()
 
 		local tFrame = tPool.addFrame("Slot" .. tSlot, 0, tY, 28, 160, 36)
 		tFrame.addTexture("Interface\\AddOns\\MultiBot\\Textures\\grey.blp")
+		applyRaidusSlotTextureInset(tFrame)
 		tFrame:SetResizable(false)
 		tFrame:SetMovable(true)
 		tFrame.class = MultiBot.toClass(tBot.class)
@@ -1064,6 +1187,7 @@ MultiBot.raidus.setRaidus = function()
 	for i = tSlot % RAIDUS_POOL_PAGE_SIZE, RAIDUS_POOL_PAGE_SIZE, 1 do
 		local tFrame = tPool.addFrame("Slot" .. tSlot, 0, tY, 28, 160, 36)
 		tFrame.addTexture("Interface\\AddOns\\MultiBot\\Textures\\grey.blp")
+		applyRaidusSlotTextureInset(tFrame)
 		tFrame.slot = "Slot" .. tSlot
 		if(tSlot > RAIDUS_POOL_PAGE_SIZE) then tFrame:Hide() else tFrame:Show() end
 		tSlot = tSlot + 1
@@ -1076,13 +1200,15 @@ MultiBot.raidus.setRaidus = function()
 		local tGroup = MultiBot.raidus.frames["Group" .. i]
 		local groupY = 182
 
+		ApplyRaidusGroupCardChrome(tGroup, i)
 		tGroup.addText("Title", formatRaidusBadgeLabel("|cffffcc00Group" .. i .. "|r : 0"), "BOTTOM", 0, 223, 12)
 		tGroup.group = "Group" .. i
 		tGroup.score = 0
 
 		for j = 1, RAIDUS_GROUP_SLOT_COUNT, 1 do
-			local tFrame = tGroup.addFrame("Slot" .. j, 0, groupY, 28, 160, 36)
+			local tFrame = tGroup.addFrame("Slot" .. j, 0, groupY, 28, RAIDUS_GROUP_SLOT_WIDTH, 36)
 			tFrame.addTexture("Interface\\AddOns\\MultiBot\\Textures\\grey.blp")
+			applyRaidusSlotTextureInset(tFrame)
 			tFrame.slot = "Slot" .. j
 			groupY = groupY - 40
 		end
@@ -1250,7 +1376,12 @@ MultiBot.raidus.doRaidScore = function()
 	end
 
 	tScore = MultiBot.IF(tSize > 0, math.floor(tScore / tSize), 0)
-	MultiBot.raidus.setText("RaidScore: ", formatRaidusBadgeLabel("RaidScore: " .. tScore))
+	local raidScoreLabel = formatRaidusBadgeLabel("RaidScore: " .. tScore)
+	if MultiBot.raidus.texts and MultiBot.raidus.texts["RaidScore"] then
+		MultiBot.raidus.setText("RaidScore", raidScoreLabel)
+	else
+		MultiBot.raidus.addText("RaidScore", raidScoreLabel, "BOTTOMLEFT", 376, 364, 12)
+	end
 end
 
 MultiBot.raidus.doDrop = function(pObject, pParent, pX, pY, pWidth, pHeight, pSlot)
@@ -1265,6 +1396,7 @@ MultiBot.raidus.doDrop = function(pObject, pParent, pX, pY, pWidth, pHeight, pSl
 	pObject.slot = pSlot
 	pObject.x = pX
 	pObject.y = pY
+    applyRaidusSlotTexture(pObject, pParent and pParent.group ~= nil)
 	MultiBot.raidus.doGroupScore(pParent)
 	MultiBot.raidus.doRaidScore()
 end

@@ -672,6 +672,8 @@ local enGBValues = {
   ["ui.pvp.prefix.team"] = "Team: ",
   ["ui.pvp.prefix.rating"] = "Rating: ",
   ["spec.list.title"] = "Specs",
+  ["info.managegroups"] = "Group Management",
+  ["info.avalaiblebots"] = "Available Bots",
 }
 
 register("enGB", enGBValues)

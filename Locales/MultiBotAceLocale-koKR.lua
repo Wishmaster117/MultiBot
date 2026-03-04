@@ -661,6 +661,8 @@ local koKRValues = {
   ["ui.pvp.prefix.team"] = "팀: ",
   ["ui.pvp.prefix.rating"] = "평점: ",
   ["spec.list.title"] = "Specs",
+  ["info.managegroups"] = "그룹 관리",
+  ["info.avalaiblebots"] = "사용 가능한 봇",
 }
 
 register("koKR", koKRValues)

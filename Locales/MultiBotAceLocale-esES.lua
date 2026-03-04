@@ -670,6 +670,8 @@ local esESValues = {
   ["ui.pvp.prefix.team"] = "Equipo: ",
   ["ui.pvp.prefix.rating"] = "Índice: ",
   ["spec.list.title"] = "Specs",
+  ["info.managegroups"] = "Gestión de Grupos",
+  ["info.avalaiblebots"] = "Bots Disponibles",
 }
 
 register("esES", esESValues)
