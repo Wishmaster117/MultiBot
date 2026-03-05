@@ -29,6 +29,10 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   File: `UI/MultiBotSpecUI.lua`.  
   References: lines `542`, `590` (plus timer/utility frames at `231`, `294`).
 
+- [x] **Raidus management window** (`MultiBot.raidus`) finalized for the M8 slice with AceGUI host window path + legacy fallback, close-button state synchronization, visual polish, and drag/drop feedback integration.
+  File: `Features/MultiBotRaidus.lua`.
+  References: lines `119`, `164`, `599`, `1372`.
+  
 - [ ] **Quest summary popup** (`MB_QuestPopup`) and dynamic rows/html content.  
   File: `Core/MultiBotInit.lua`.  
   References: lines `1760`, `1787`, `1845`.
@@ -61,9 +65,9 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
 
 ## 3) Embedded controls inside existing screens (likely migrate with owning screen)
 
-- [ ] **Raidus slot dropdown control** inside Raidus UI.  
-  File: `Features/MultiBotRaidus.lua`.  
-  Reference: line `415`.
+- [x] **Raidus slot/group controls** inside Raidus UI finalized in the Raidus migration slice.
+  File: `Features/MultiBotRaidus.lua`.
+  References: lines `415`, `945`, `989`, `1021`.
 
 - [ ] **Quest/localization tooltip frame** (`MB_LocalizeQuestTooltip`) if moved with quest UI cleanup.  
   File: `Core/MultiBotInit.lua`.  

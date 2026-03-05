@@ -120,6 +120,32 @@ MultiBot.raidus = MultiBot.newFrame(MultiBot, -340, -126, 32, 884, 884)
 MultiBot.raidus:SetMovable(true)
 MultiBot.raidus:Hide()
 
+local function syncRaidusMainButtonState(isVisible)
+    local mainFrame = MultiBot.frames and MultiBot.frames["MultiBar"] and MultiBot.frames["MultiBar"].frames and MultiBot.frames["MultiBar"].frames["Main"]
+    local raidusButton = mainFrame and mainFrame.buttons and mainFrame.buttons["Raidus"]
+    if not raidusButton then
+        return
+    end
+
+    if isVisible then
+        if raidusButton.setEnable then
+            raidusButton.setEnable()
+        end
+    else
+        if raidusButton.setDisable then
+            raidusButton.setDisable()
+        end
+    end
+end
+
+MultiBot.raidus:HookScript("OnShow", function()
+    syncRaidusMainButtonState(true)
+end)
+
+MultiBot.raidus:HookScript("OnHide", function()
+    syncRaidusMainButtonState(false)
+end)
+
 local raidusUsesAceWindow = false
 
 local function getRaidusAceGUI()
@@ -262,7 +288,7 @@ local function ApplyRaidusGroupCardChrome(groupFrame, groupIndex)
     end
 
     local topRow = groupIndex <= 4
-    local bgAlpha = topRow and 0.20 or 0.16
+    local bgAlpha = topRow and 0.30 or 0.26
 
     groupFrame:SetBackdrop({
         bgFile = "Interface\\Buttons\\WHITE8X8",
@@ -327,7 +353,7 @@ local function CreateRaidusPanelChrome(panelKey, x, y, width, height, title)
             insets = { left = 2, right = 2, top = 2, bottom = 2 },
         })
         local isGroupsPanel = panelKey == "GroupsPanel"
-        panel:SetBackdropColor(0, 0, 0, isGroupsPanel and 0.28 or 0.16)
+        panel:SetBackdropColor(0, 0, 0, isGroupsPanel and 0.40 or 0.30)
         panel:SetBackdropBorderColor(isGroupsPanel and 0.44 or 0.30, isGroupsPanel and 0.34 or 0.22, isGroupsPanel and 0.10 or 0.08, isGroupsPanel and 0.62 or 0.42)
     end
 
@@ -451,6 +477,81 @@ local function setRaidusSlotRoleBorder(slotFrame, role, alpha)
     border.bottom:SetVertexColor(r, g, b, a)
     border.left:SetVertexColor(r, g, b, a)
     border.right:SetVertexColor(r, g, b, a)
+end
+
+local RAIDUS_DROP_ANIM_DURATION = 0.12
+local RAIDUS_FEEDBACK_DURATION = 1.4
+local RAIDUS_FEEDBACK_ANCHOR = "TOPLEFT"
+local RAIDUS_FEEDBACK_OFFSET_X = 26
+local RAIDUS_FEEDBACK_OFFSET_Y = 14
+
+local raidusFeedbackTimer = CreateFrame("Frame")
+raidusFeedbackTimer:Hide()
+raidusFeedbackTimer.remaining = 0
+raidusFeedbackTimer:SetScript("OnUpdate", function(self, elapsed)
+    self.remaining = self.remaining - elapsed
+    if self.remaining > 0 then
+        return
+    end
+
+    local feedbackText = MultiBot.raidus and MultiBot.raidus.texts and MultiBot.raidus.texts["DropFeedback"]
+    if feedbackText then
+        feedbackText:SetText("")
+        feedbackText:Hide()
+    end
+
+    self:Hide()
+end)
+
+local function showRaidusDropFeedback(message)
+    if not MultiBot.raidus then
+        return
+    end
+
+    local text = tostring(message or "")
+    if text == "" then
+        return
+    end
+
+    if MultiBot.raidus.texts and MultiBot.raidus.texts["DropFeedback"] then
+        MultiBot.raidus.setText("DropFeedback", "|cffb8b8b8" .. text .. "|r")
+        MultiBot.raidus.texts["DropFeedback"]:Show()
+    else
+        MultiBot.raidus.addText("DropFeedback", "|cffb8b8b8" .. text .. "|r", RAIDUS_FEEDBACK_ANCHOR, RAIDUS_FEEDBACK_OFFSET_X, RAIDUS_FEEDBACK_OFFSET_Y, 15)
+    end
+
+    raidusFeedbackTimer.remaining = RAIDUS_FEEDBACK_DURATION
+    raidusFeedbackTimer:Show()
+end
+
+local function playRaidusDropPulse(slotFrame)
+    if not slotFrame then
+        return
+    end
+
+    local driver = slotFrame._dropPulseDriver
+    if not driver then
+        driver = CreateFrame("Frame", nil, slotFrame)
+        driver:SetAllPoints(slotFrame)
+        slotFrame._dropPulseDriver = driver
+    end
+
+    driver.elapsed = 0
+    driver:Show()
+    driver:SetScript("OnUpdate", function(self, elapsed)
+        self.elapsed = self.elapsed + elapsed
+        local progress = self.elapsed / RAIDUS_DROP_ANIM_DURATION
+
+        if progress >= 1 then
+            slotFrame:SetScale(1)
+            self:SetScript("OnUpdate", nil)
+            self:Hide()
+            return
+        end
+
+        local pulse = (progress < 0.5) and (progress * 2) or ((1 - progress) * 2)
+        slotFrame:SetScale(1 + (0.03 * pulse))
+    end)
 end
 
 local function getRaidusSlotColor(slotFrame)
@@ -1308,6 +1409,9 @@ MultiBot.raidus.setRaidus = function()
                     local dropSlot = tDrag.slot
                     local tX       = tDrag.x
                     local dropY    = tDrag.y
+                    local targetGroup = tDrop.parent and tDrop.parent.group
+                    local targetSlot = tDrop.slot
+                    local swappedName = tDrop.name
 
                     MultiBot.raidus.doDrop(
                         tDrag,
@@ -1327,6 +1431,15 @@ MultiBot.raidus.setRaidus = function()
                         tHeight,
                         dropSlot
                     )
+
+                    playRaidusDropPulse(tDrag)
+                    if targetGroup then
+                        if swappedName and swappedName ~= "" and swappedName ~= tDrag.name then
+                            showRaidusDropFeedback("Echange avec " .. swappedName .. " -> " .. targetGroup .. " / " .. targetSlot)
+                        else
+                            showRaidusDropFeedback("Ajoute dans " .. targetGroup .. " / " .. targetSlot)
+                        end
+                    end
                 else
                     pButton.parent:ClearAllPoints()
                     pButton.parent:SetPoint(pButton.parent.align, pButton.parent.x, pButton.parent.y)
