@@ -21,6 +21,9 @@ Checklist for the full addon-wide ACE3 expansion after M7 completion.
 - [x] PVP window migration slice completed for targeted controls (`UI/MultiBotPVPUI.lua`: bot selector dropdown + tab group, with localized fallback).
 - [x] Spec window/inspect helper migration slice completed and finalized (`UI/MultiBotSpecUI.lua`): Ace window close-cross UX, layering/clickability fix, compact height, and position persistence via existing `specDropdownPositions` store.
 - [x] Raidus migration/polish slice completed and finalized (`Features/MultiBotRaidus.lua`): Ace host window path + fallback, close-state sync with main button, score badges, drop feedback animation, and interactive contrast polish.
+- [x] Universal prompt migration slice completed (`Core/MultiBotInit.lua`: `MBUniversalPrompt`) with AceGUI window/edit/button path and no legacy frame fallback.
+- [x] Universal prompt migration slice completed (`Core/MultiBotInit.lua`: `MBUniversalPrompt`) with AceGUI window/edit/button path and no legacy frame fallback.
+- [x] GameObject popup/copy migration slice completed (`Core/MultiBotInit.lua`: `MB_GameObjPopup` + `MB_GameObjCopyBox`) with AceGUI windows/widgets path and no legacy frame fallback.
 - [ ] Preserve slash entry points and open/close behavior.
 - [ ] Keep persisted state routed through existing AceDB helpers.
 - [ ] Validate visual/interaction parity per migrated screen.

@@ -2737,217 +2737,254 @@ local function createPopupCloseButton(parent)
     return close
 end
 
+local getUniversalPromptAceGUI
+
 local function ensureGameObjectPopupFrame()
     if MultiBot.GameObjPopup then
         return MultiBot.GameObjPopup
     end
 
-    local popup = CreateFrame("Frame", "MB_GameObjPopup", UIParent)
-    popup:SetSize(340, 340)
-    popup:SetPoint("CENTER")
-    applyDialogBackdrop(popup)
-    popup:EnableMouse(true)
-    popup:SetMovable(true)
-    popup:RegisterForDrag("LeftButton")
-    popup:SetScript("OnDragStart", popup.StartMoving)
-    popup:SetScript("OnDragStop",  popup.StopMovingOrSizing)
+    local aceGUI = getUniversalPromptAceGUI and getUniversalPromptAceGUI()
+    if not aceGUI then
+        UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MB_GameObjPopup", 1, 0.2, 0.2, 1)
+        return nil
+    end
 
-    createPopupCloseButton(popup)
+    local window = aceGUI:Create("Window")
+    if not window then
+        return nil
+    end
 
-    local title = popup:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-    title:SetPoint("TOP", 0, -10)
-    title:SetText(MultiBot.L("tips.quests.gobsfound"))
+    window:SetTitle(MultiBot.L("tips.quests.gobsfound"))
+    window:SetWidth(420)
+    window:SetHeight(380)
+    window:EnableResize(false)
+    window:SetLayout("Flow")
+    window.frame:SetFrameStrata("DIALOG")
 
-    local scrollFrame = CreateFrame("ScrollFrame", "MB_GameObjScroll", popup, "UIPanelScrollFrameTemplate")
-    scrollFrame:SetPoint("TOPLEFT", 14, -38)
-    scrollFrame:SetPoint("BOTTOMRIGHT", -30, 14)
+    local scroll = aceGUI:Create("ScrollFrame")
+    scroll:SetFullWidth(true)
+    scroll:SetHeight(300)
+    scroll:SetLayout("List")
+    window:AddChild(scroll)
 
-    local content = CreateFrame("Frame", nil, scrollFrame)
-    content:SetWidth(1)
-    scrollFrame:SetScrollChild(content)
-
-    popup.content = content
-    popup.scrollFrame = scrollFrame
-
-    local copyBtn = CreateFrame("Button", nil, popup, "UIPanelButtonTemplate")
-    copyBtn:SetSize(120, 20)
-    copyBtn:SetPoint("BOTTOMRIGHT", -40, 12)
+    local copyBtn = aceGUI:Create("Button")
     copyBtn:SetText(MultiBot.L("tips.quests.gobselectall"))
-    copyBtn:SetScript("OnClick", function()
+    copyBtn:SetWidth(150)
+    copyBtn:SetCallback("OnClick", function()
         MultiBot.ShowGameObjectCopyBox()
     end)
-    popup.copyBtn = copyBtn
+    window:AddChild(copyBtn)
 
-    MultiBot.GameObjPopup = popup
-    return popup
+    MultiBot.GameObjPopup = {
+        window = window,
+        scroll = scroll,
+        copyBtn = copyBtn,
+    }
+
+    return MultiBot.GameObjPopup
 end
 
 local function ensureGameObjectCopyBoxFrame()
     if MultiBot.GameObjCopyBox then
         return MultiBot.GameObjCopyBox
     end
-    local box = CreateFrame("Frame", "MB_GameObjCopyBox", UIParent)
-    box:SetSize(380, 240)
-    box:SetPoint("CENTER")
-    applyDialogBackdrop(box)
 
-    local close = createPopupCloseButton(box)
-    close:SetScript("OnClick", function()
-        box:Hide()
-    end)
+    local aceGUI = getUniversalPromptAceGUI and getUniversalPromptAceGUI()
+    if not aceGUI then
+        UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MB_GameObjCopyBox", 1, 0.2, 0.2, 1)
+        return nil
+    end
 
-    local label = box:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-    label:SetPoint("TOP", 0, -10)
-    label:SetText(MultiBot.L("tips.quests.gobctrlctocopy"))
+    local window = aceGUI:Create("Window")
+    if not window then
+        return nil
+    end
 
-    local edit = CreateFrame("EditBox", nil, box)
-    edit:SetFontObject("ChatFontNormal")
-    edit:SetWidth(340)
-    edit:SetHeight(180)
-    edit:SetMultiLine(true)
-    edit:SetAutoFocus(true)
-    edit:EnableMouse(true)
-    edit:SetPoint("TOP", 0, -40)
-    edit:SetScript("OnEscapePressed", function()
-        box:Hide()
-    end)
-    edit:SetScript("OnEditFocusGained", function(self)
-        self:HighlightText()
-    end)
+    window:SetTitle(MultiBot.L("tips.quests.gobctrlctocopy"))
+    window:SetWidth(420)
+    window:SetHeight(300)
+    window:EnableResize(false)
+    window:SetLayout("Fill")
+    window.frame:SetFrameStrata("DIALOG")
 
-    box.edit = edit
-    MultiBot.GameObjCopyBox = box
-    return box
+    local editor = aceGUI:Create("MultiLineEditBox")
+    editor:SetLabel("")
+    editor:SetNumLines(14)
+    editor:DisableButton(true)
+    window:AddChild(editor)
+
+    MultiBot.GameObjCopyBox = {
+        window = window,
+        editor = editor,
+    }
+
+    return MultiBot.GameObjCopyBox
 end
 
 function MultiBot.ShowGameObjectPopup()
 
     local popup = ensureGameObjectPopupFrame()
-    if popup:IsShown() then
-        popup:Hide()
+    if not popup then
+        return
+    end
+
+    if popup.window:IsShown() then
+        popup.window:Hide()
     end
 
     -- Clear previous popup lines.
-    local content = popup.content
-    clearFrameChildren(content)
+    popup.scroll:ReleaseChildren()
 
     -- Render captured lines grouped by bot
-    local y = -4
+    local aceGUI = getUniversalPromptAceGUI and getUniversalPromptAceGUI()
+    if not aceGUI then
+        UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MB_GameObjPopup", 1, 0.2, 0.2, 1)
+        return
+    end
+
     local bots = collectSortedGameObjectBots()
 
     for _, bot in ipairs(bots) do
         local lines = getGameObjectEntries(bot) or {}
-        -- Bot title
-        local botLine = content:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-        botLine:SetPoint("TOPLEFT", 8, y)
+        local botLine = aceGUI:Create("Label")
+        botLine:SetFullWidth(true)
         botLine:SetText("Bot: |cff80ff80" .. bot .. "|r")
-        y = y - 18
+        popup.scroll:AddChild(botLine)
 
-        -- Grouped section output: headers are highlighted, entries are indented.
         for _, txt in ipairs(lines) do
-            local line = content:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+            local line = aceGUI:Create("Label")
+            line:SetFullWidth(true)
             local isSectionHeader = isDashedSectionHeader(txt)
-            line:SetPoint("TOPLEFT", isSectionHeader and 12 or 24, y)
             if isSectionHeader then
                 line:SetText("|cffffff66" .. txt .. "|r")
             else
-                line:SetText(txt)
+                line:SetText("   " .. txt)
             end
-            y = y - 16
+            popup.scroll:AddChild(line)
         end
-        y = y - 8
+
+        local spacer = aceGUI:Create("Label")
+        spacer:SetFullWidth(true)
+        spacer:SetText(" ")
+        popup.scroll:AddChild(spacer)
     end
 
     if #bots == 0 then
-        local noData = content:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-        noData:SetPoint("TOPLEFT", 8, y)
+        local noData = aceGUI:Create("Label")
+        noData:SetFullWidth(true)
         noData:SetText(MultiBot.L("tips.quests.gobnosearchdata"))
-        y = y - 16
+        popup.scroll:AddChild(noData)
     end
 
-    content:SetHeight(-y + 4)
-    popup.scrollFrame:SetVerticalScroll(0)
-    popup:Show()
+    popup.window:Show()
 end
 
 function MultiBot.ShowGameObjectCopyBox()
     -- Close main popup if already visible
-    if MultiBot.GameObjPopup and MultiBot.GameObjPopup:IsShown() then
-        MultiBot.GameObjPopup:Hide()
+    if MultiBot.GameObjPopup and MultiBot.GameObjPopup.window and MultiBot.GameObjPopup.window:IsShown() then
+        MultiBot.GameObjPopup.window:Hide()
     end
 
     local box = ensureGameObjectCopyBoxFrame()
+    if not box then
+        return
+    end
 
     -- Build copy text from sorted game-object entries.
     local bots = collectSortedGameObjectBots()
     local text = buildGameObjectCopyText(bots)
 
-    box.edit:SetText(text)
-    box.edit:HighlightText()
-    box:Show()
+    box.editor:SetText(text)
+    box.window:Show()
+
+    local editBox = box.editor and box.editor.editBox
+    if editBox and editBox.SetFocus then
+        editBox:SetFocus()
+    end
+    if editBox and editBox.HighlightText then
+        editBox:HighlightText()
+    end
 end
 		
 local PROMPT
+local PROMPT_WINDOW_WIDTH = 280
+local PROMPT_WINDOW_HEIGHT = 108
+local PROMPT_OK_BUTTON_WIDTH = 100
+getUniversalPromptAceGUI = function()
+    if type(LibStub) ~= "table" then
+        return nil
+    end
+
+    local ok, aceGUI = pcall(LibStub.GetLibrary, LibStub, "AceGUI-3.0", true)
+    if ok and type(aceGUI) == "table" and type(aceGUI.Create) == "function" then
+        return aceGUI
+    end
+
+    return nil
+end
+
 function ShowPrompt(title, onOk, defaultText)
+    local aceGUI = getUniversalPromptAceGUI()
+    if not aceGUI then
+        UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MBUniversalPrompt", 1, 0.2, 0.2, 1)
+        return
+    end
+
     if not PROMPT then
-        PROMPT = CreateFrame("Frame", "MBUniversalPrompt", UIParent)
-        PROMPT:SetSize(260, 90)
-        PROMPT:SetPoint("CENTER")
-        PROMPT:SetBackdrop({
-            bgFile="Interface\\DialogFrame\\UI-DialogBox-Background",
-            edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
-            tile=true, tileSize=32, edgeSize=16,
-            insets={left=4, right=4, top=4, bottom=4}
-        })
-        PROMPT:SetBackdropColor(0,0,0,0.9)
-        PROMPT:SetFrameStrata("DIALOG")
-        PROMPT:SetMovable(true)
-        PROMPT:EnableMouse(true)
-        PROMPT:RegisterForDrag("LeftButton")
-        PROMPT:SetScript("OnDragStart", PROMPT.StartMoving)
-        PROMPT:SetScript("OnDragStop",  PROMPT.StopMovingOrSizing)
+        local window = aceGUI:Create("Window")
+        if not window then
+            return
+        end
 
-        local btnClose = CreateFrame("Button", nil, PROMPT, "UIPanelCloseButton")
-        btnClose:SetPoint("TOPRIGHT", -5, -5)
-        btnClose:SetScript("OnClick", function() PROMPT:Hide() end)
+        window:SetTitle(title or "Enter Value")
+        window:SetWidth(PROMPT_WINDOW_WIDTH)
+        window:SetHeight(PROMPT_WINDOW_HEIGHT)
+        window:EnableResize(false)
+        window:SetLayout("Flow")
+        window.frame:SetFrameStrata("DIALOG")
 
-        local e = CreateFrame("EditBox", nil, PROMPT, "InputBoxTemplate")
-        e:SetAutoFocus(true)
-        e:SetSize(200, 20)
-        e:SetTextColor(1,1,1)
-        e:SetPoint("TOP", 0, -30)
-        PROMPT.EditBox = e
-        e:SetScript("OnEscapePressed", function(self) PROMPT:Hide() end)
+        local edit = aceGUI:Create("EditBox")
+        edit:SetLabel("")
+        edit:SetFullWidth(true)
+        window:AddChild(edit)
 
-        local ok = CreateFrame("Button", nil, PROMPT, "UIPanelButtonTemplate")
-        ok:SetSize(60, 20)
-        ok:SetPoint("BOTTOM", 0, 10)
-        ok:SetText(OKAY)
-        PROMPT.OkBtn = ok
+        local okButton = aceGUI:Create("Button")
+        okButton:SetText(OKAY)
+        okButton:SetWidth(PROMPT_OK_BUTTON_WIDTH)
+        window:AddChild(okButton)
+
+        PROMPT = {
+            window = window,
+            edit = edit,
+            okButton = okButton,
+        }
     end
 
-    if not PROMPT.Title then
-        PROMPT.Title = PROMPT:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-        PROMPT.Title:SetPoint("TOP", 0, -10)
+    PROMPT.window:SetTitle(title or "Enter Value")
+    PROMPT.window:Show()
+    PROMPT.edit:SetText(defaultText or "")
+    local promptEditBox = PROMPT.edit and PROMPT.edit.editbox
+    if promptEditBox and promptEditBox.SetFocus then
+        promptEditBox:SetFocus()
     end
 
-    PROMPT.Title:SetText(title or "Enter Value")
-    PROMPT:Show()
-    PROMPT.EditBox:SetText(defaultText or "")
-    PROMPT.EditBox:SetFocus()
-
-    PROMPT.OkBtn:SetScript("OnClick", function()
-        local text = PROMPT.EditBox:GetText()
-        if text and text~="" then
+    PROMPT.okButton:SetCallback("OnClick", function()
+        local text = PROMPT.edit:GetText()
+        if text and text ~= "" then
             onOk(text)
         else
             UIErrorsFrame:AddMessage(MultiBot.L("tips.quests.gobsnameerror"), 1, 0.2, 0.2, 1)
             return
         end
-        PROMPT:Hide()
+
+        PROMPT.window:Hide()
     end)
-    PROMPT.EditBox:SetScript("OnEnterPressed", function(self)
-        PROMPT.OkBtn:Click()
+    PROMPT.edit:SetCallback("OnEnterPressed", function()
+        local button = PROMPT.okButton and PROMPT.okButton.button
+        if button and button.Click then
+            button:Click()
+        end
     end)
 end
 

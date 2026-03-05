@@ -583,7 +583,7 @@ local function ensureDropdownFrame(specObject, parentFrame, isEmbedded)
             })
             frame:SetBackdropColor(0, 0, 0, 0.8)
         end
-		
+
         if not frame._mb_movable_init then
             frame:SetMovable(true)
             frame:EnableMouse(true)
@@ -601,7 +601,7 @@ local function ensureDropdownFrame(specObject, parentFrame, isEmbedded)
             frame._mb_movable_init = true
         end
     end
-	
+
     specObject.dropdown = frame
     return frame
 end
@@ -768,7 +768,7 @@ function Spec:BuildDropdown()
             debugSpecPath("AceGUI")
         end
     end
-    
+
 	if not dropdownFrame then
         dropdownFrame = ensureDropdownFrame(self, UIParent, false)
         debugSpecPath("legacy")

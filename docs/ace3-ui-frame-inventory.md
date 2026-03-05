@@ -49,11 +49,11 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   File: `Core/MultiBotInit.lua`.  
   References: lines `2387`, `2416`, `2467`.
 
-- [ ] **GameObject popup/copy box** (`MB_GameObjPopup`, `MB_GameObjCopyBox`).  
+- [x] **GameObject popup/copy box** (`MB_GameObjPopup`, `MB_GameObjCopyBox`) migrated to AceGUI windows/widgets path (no legacy frame fallback).  
   File: `Core/MultiBotInit.lua`.  
-  References: lines `2745`, `2789`.
+  References: lines `2745`, `2789`
 
-- [ ] **Universal prompt dialog** (`MBUniversalPrompt`).  
+- [x] **Universal prompt dialog** (`MBUniversalPrompt`) migrated to AceGUI window+widgets path (no legacy frame fallback).  
   File: `Core/MultiBotInit.lua`.  
   References: line `2893`.
 

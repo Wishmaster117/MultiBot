@@ -1555,7 +1555,7 @@ MultiBot.raidus.getRaidTarget = function()
 	end)
 
 	if(tBots) then return SendChatMessage("There is no Bot in the Raid", "SAY") end
-	if(tUser) then return SendChatMessage("I must be in the Raid!", "SAY") end
+	if(tUser) then return SendChatMessage("Place me in a Raidus raid group slot before clicking Apply.", "SAY") end
 	return tRaidByIndex, tRaidByName
 end
 
