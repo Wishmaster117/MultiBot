@@ -33,21 +33,21 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   File: `Features/MultiBotRaidus.lua`.
   References: lines `119`, `164`, `599`, `1372`.
   
-- [ ] **Quest summary popup** (`MB_QuestPopup`) and dynamic rows/html content.  
+- [x] **Quest summary popup** (`MB_QuestPopup`) migrated to AceGUI host window path (no legacy frame fallback) while preserving dynamic rows/html content rendering.  
   File: `Core/MultiBotInit.lua`.  
   References: lines `1760`, `1787`, `1845`.
 
-- [ ] **Bot quest popup** (`MB_BotQuestPopup`) and dynamic quest rows/html content.  
+- [x] **Bot quest popup** (`MB_BotQuestPopup`) migrated to AceGUI host window path (no legacy frame fallback) while preserving dynamic quest rows/html content rendering.  
   File: `Core/MultiBotInit.lua`.  
   References: lines `1942`, `1966`, `1995`.
 
-- [ ] **Bot quest complete popup** (`MB_BotQuestCompPopup`) and dynamic rows/html content.  
+- [x] **Bot quest complete popup** (`MB_BotQuestCompPopup`) migrated to AceGUI host window path (no legacy frame fallback) while preserving dynamic rows/html content rendering.  
   File: `Core/MultiBotInit.lua`.  
   References: lines `2161`, `2185`, `2215`.
 
-- [ ] **Bot quest all popup** (`MB_BotQuestAllPopup`) and dynamic rows/html content.  
+- [x] **Bot quest all popup** (`MB_BotQuestAllPopup`) migrated to AceGUI host window path (no legacy frame fallback) while preserving dynamic rows/html content rendering.  
   File: `Core/MultiBotInit.lua`.  
-  References: lines `2387`, `2416`, `2467`.
+  References: lines `2387`, `2416`, `2467`
 
 - [x] **GameObject popup/copy box** (`MB_GameObjPopup`, `MB_GameObjCopyBox`) migrated to AceGUI windows/widgets path (no legacy frame fallback).  
   File: `Core/MultiBotInit.lua`.  

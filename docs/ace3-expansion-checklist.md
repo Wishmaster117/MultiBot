@@ -24,6 +24,7 @@ Checklist for the full addon-wide ACE3 expansion after M7 completion.
 - [x] Universal prompt migration slice completed (`Core/MultiBotInit.lua`: `MBUniversalPrompt`) with AceGUI window/edit/button path and no legacy frame fallback.
 - [x] Universal prompt migration slice completed (`Core/MultiBotInit.lua`: `MBUniversalPrompt`) with AceGUI window/edit/button path and no legacy frame fallback.
 - [x] GameObject popup/copy migration slice completed (`Core/MultiBotInit.lua`: `MB_GameObjPopup` + `MB_GameObjCopyBox`) with AceGUI windows/widgets path and no legacy frame fallback.
+- [x] Quest popup family migration slice completed (`Core/MultiBotInit.lua`: `MB_QuestPopup`, `MB_BotQuestPopup`, `MB_BotQuestCompPopup`, `MB_BotQuestAllPopup`) with AceGUI host windows and no legacy frame fallback.
 - [ ] Preserve slash entry points and open/close behavior.
 - [ ] Keep persisted state routed through existing AceDB helpers.
 - [ ] Validate visual/interaction parity per migrated screen.

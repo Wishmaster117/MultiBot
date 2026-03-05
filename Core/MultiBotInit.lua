@@ -1740,6 +1740,60 @@ local function GetLocalizedQuestName(questID)
 end
 -- END HIDDEN TOOLTIP --
 
+local function getUniversalPromptAceGUI()
+    if type(LibStub) ~= "table" then
+        return nil
+    end
+
+    local ok, aceGUI = pcall(LibStub.GetLibrary, LibStub, "AceGUI-3.0", true)
+    if ok and type(aceGUI) == "table" and type(aceGUI.Create) == "function" then
+        return aceGUI
+    end
+
+    return nil
+end
+
+MultiBot.GetAceGUI = MultiBot.GetAceGUI or getUniversalPromptAceGUI
+
+local function createAceQuestPopupHost(title, width, height, missingDepMessage)
+    local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())
+    if not aceGUI then
+        UIErrorsFrame:AddMessage(missingDepMessage or "AceGUI-3.0 is required", 1, 0.2, 0.2, 1)
+        return nil
+    end
+
+    local window = aceGUI:Create("Window")
+    if not window then
+        return nil
+    end
+
+    window:SetTitle(title or "")
+    window:SetWidth(width)
+    window:SetHeight(height)
+    window:EnableResize(false)
+    window:SetLayout("Fill")
+    window.frame:SetFrameStrata("DIALOG")
+    window:Hide()
+
+    local host = CreateFrame("Frame", nil, window.content)
+    host:SetAllPoints(window.content)
+    host.window = window
+
+    host.Show = function(self)
+        self.window:Show()
+    end
+
+    host.Hide = function(self)
+        self.window:Hide()
+    end
+
+    host.IsShown = function(self)
+        return self.window and self.window.frame and self.window.frame:IsShown()
+    end
+
+    return host
+end
+
 -- MAIN BUTTON --
 local tButton = tRight.addButton("Quests Menu", 0, 0,
                                  "achievement_quests_completed_06",
@@ -1757,36 +1811,13 @@ tQuestMenu.addButton("AcceptAll", 0, 30,
 -- END BUTTON Accept * --
 
 -- POP-UP Frame for Quests --
-local tQuests = CreateFrame("Frame", "MB_QuestPopup", UIParent)
-tQuests:SetSize(370, 460)
-tQuests:SetPoint("CENTER")
-tQuests:SetFrameStrata("DIALOG")
-tQuests:SetBackdrop({
-    bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background",
-    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-    tile     = true, tileSize = 32, edgeSize = 16,
-    insets   = { left = 4, right = 4, top = 4, bottom = 4 }
-})
-tQuests:EnableMouse(true)
-tQuests:SetMovable(true)
-tQuests:RegisterForDrag("LeftButton")
-tQuests:SetScript("OnDragStart", tQuests.StartMoving)
-tQuests:SetScript("OnDragStop",  tQuests.StopMovingOrSizing)
-tQuests:Hide()
-
--- bouton X
-local close = CreateFrame("Button", nil, tQuests, "UIPanelCloseButton")
-close:SetPoint("TOPRIGHT", -2, -2)
-
--- barre de titre
-local title = tQuests:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-title:SetPoint("TOP", 0, -10)
-title:SetText(QUEST_LOG)
+local tQuests = createAceQuestPopupHost(QUEST_LOG, 390, 470, "AceGUI-3.0 is required for MB_QuestPopup")
+assert(tQuests, "AceGUI-3.0 is required for MB_QuestPopup")
 
 -- ScrollFrame + ScrollBar
 local scrollFrame = CreateFrame("ScrollFrame", "MB_QuestScroll", tQuests, "UIPanelScrollFrameTemplate")
-scrollFrame:SetPoint("TOPLEFT", 14, -38)
-scrollFrame:SetPoint("BOTTOMRIGHT", -30, 14)
+scrollFrame:SetPoint("TOPLEFT", 10, -8)
+scrollFrame:SetPoint("BOTTOMRIGHT", -26, 8)
 
 local content = CreateFrame("Frame", nil, scrollFrame)
 content:SetWidth(1)              -- largeur auto
@@ -1939,33 +1970,12 @@ end
 MultiBot.BotQuestsIncompleted = {}  -- [botName] = { [questID]=questName, ... }
 
 -- Popup Liste des quêtes du bot
-local tBotPopup = CreateFrame("Frame", "MB_BotQuestPopup", UIParent)
-tBotPopup:SetSize(360, 400)
-tBotPopup:SetPoint("CENTER")
-tBotPopup:SetFrameStrata("DIALOG")
-tBotPopup:SetBackdrop({
-    bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background",
-    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-    tile     = true, tileSize = 32, edgeSize = 16,
-    insets   = { left = 4, right = 4, top = 4, bottom = 4 }
-})
-tBotPopup:EnableMouse(true)
-tBotPopup:SetMovable(true)
-tBotPopup:RegisterForDrag("LeftButton")
-tBotPopup:SetScript("OnDragStart", tBotPopup.StartMoving)
-tBotPopup:SetScript("OnDragStop",  tBotPopup.StopMovingOrSizing)
-tBotPopup:Hide()
-
-local closeBtn = CreateFrame("Button", nil, tBotPopup, "UIPanelCloseButton")
-closeBtn:SetPoint("TOPRIGHT", -2, -2)
-
-local header = tBotPopup:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-header:SetPoint("TOP", 0, -10)
-header:SetText(MultiBot.L("tips.quests.incomplist"))
+local tBotPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.incomplist"), 380, 420, "AceGUI-3.0 is required for MB_BotQuestPopup")
+assert(tBotPopup, "AceGUI-3.0 is required for MB_BotQuestPopup")
 
 local scroll = CreateFrame("ScrollFrame", "MB_BotQuestScroll", tBotPopup, "UIPanelScrollFrameTemplate")
-scroll:SetPoint("TOPLEFT", 14, -38)
-scroll:SetPoint("BOTTOMRIGHT", -30, 14)
+scroll:SetPoint("TOPLEFT", 10, -8)
+scroll:SetPoint("BOTTOMRIGHT", -26, 8)
 
 local contentBot = CreateFrame("Frame", nil, scroll)
 contentBot:SetWidth(1)
@@ -2158,33 +2168,12 @@ tRight.buttons["BotQuestsIncompWhisper"] = btnWhisper
 MultiBot.BotQuestsCompleted = {}  -- [botName] = { [questID]=questName, ... }
 
 -- 2) Pop-up Liste des quêtes terminées du bot
-local tBotCompPopup = CreateFrame("Frame", "MB_BotQuestCompPopup", UIParent)
-tBotCompPopup:SetSize(360, 400)
-tBotCompPopup:SetPoint("CENTER")
-tBotCompPopup:SetFrameStrata("DIALOG")
-tBotCompPopup:SetBackdrop({
-    bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background",
-    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-    tile     = true, tileSize = 32, edgeSize = 16,
-    insets   = { left = 4, right = 4, top = 4, bottom = 4 }
-})
-tBotCompPopup:EnableMouse(true)
-tBotCompPopup:SetMovable(true)
-tBotCompPopup:RegisterForDrag("LeftButton")
-tBotCompPopup:SetScript("OnDragStart", tBotCompPopup.StartMoving)
-tBotCompPopup:SetScript("OnDragStop",  tBotCompPopup.StopMovingOrSizing)
-tBotCompPopup:Hide()
-
-local closeBtn2 = CreateFrame("Button", nil, tBotCompPopup, "UIPanelCloseButton")
-closeBtn2:SetPoint("TOPRIGHT", -2, -2)
-
-local header2 = tBotCompPopup:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-header2:SetPoint("TOP", 0, -10)
-header2:SetText(MultiBot.L("tips.quests.complist"))
+local tBotCompPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.complist"), 380, 420, "AceGUI-3.0 is required for MB_BotQuestCompPopup")
+assert(tBotCompPopup, "AceGUI-3.0 is required for MB_BotQuestCompPopup")
 
 local scroll2 = CreateFrame("ScrollFrame", "MB_BotQuestCompScroll", tBotCompPopup, "UIPanelScrollFrameTemplate")
-scroll2:SetPoint("TOPLEFT", 14, -38)
-scroll2:SetPoint("BOTTOMRIGHT", -30, 14)
+scroll2:SetPoint("TOPLEFT", 10, -8)
+scroll2:SetPoint("BOTTOMRIGHT", -26, 8)
 
 local contentComp = CreateFrame("Frame", nil, scroll2)
 contentComp:SetWidth(1)
@@ -2384,38 +2373,16 @@ tRight.buttons["BotQuestsTalk"] = btnTalk
 -- BUTTON QUESTS ALL --
 
 -- POPUP Quests All
-local tBotAllPopup = CreateFrame("Frame", "MB_BotQuestAllPopup", UIParent)
-tBotAllPopup:SetSize(400, 440)
-tBotAllPopup:SetPoint("CENTER")
-tBotAllPopup:SetFrameStrata("DIALOG")
-tBotAllPopup:SetBackdrop({
-    bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background",
-    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-    tile     = true, tileSize = 32, edgeSize = 16,
-    insets   = { left = 4, right = 4, top = 4, bottom = 4 }
-})
-tBotAllPopup:EnableMouse(true)
-tBotAllPopup:SetMovable(true)
-tBotAllPopup:RegisterForDrag("LeftButton")
-tBotAllPopup:SetScript("OnDragStart", tBotAllPopup.StartMoving)
-tBotAllPopup:SetScript("OnDragStop",  tBotAllPopup.StopMovingOrSizing)
-tBotAllPopup:Hide()
+local tBotAllPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.alllist"), 420, 460, "AceGUI-3.0 is required for MB_BotQuestAllPopup")
+assert(tBotAllPopup, "AceGUI-3.0 is required for MB_BotQuestAllPopup")
 
 -- On expose immédiatement pour qu'il existe dans SendAll
 MultiBot.tBotAllPopup = tBotAllPopup
 
--- bouton X
-local closeBtnAll = CreateFrame("Button", nil, tBotAllPopup, "UIPanelCloseButton")
-closeBtnAll:SetPoint("TOPRIGHT", -2, -2)
-
-local headerAll = tBotAllPopup:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-headerAll:SetPoint("TOP", 0, -10)
-headerAll:SetText(MultiBot.L("tips.quests.alllist"))
-
 -- ScrollFrame
 local scrollAll = CreateFrame("ScrollFrame", "MB_BotQuestAllScroll", tBotAllPopup, "UIPanelScrollFrameTemplate")
-scrollAll:SetPoint("TOPLEFT", 12, -38)
-scrollAll:SetPoint("BOTTOMRIGHT", -30, 14)
+scrollAll:SetPoint("TOPLEFT", 10, -8)
+scrollAll:SetPoint("BOTTOMRIGHT", -26, 8)
 
 local contentAll = CreateFrame("Frame", nil, scrollAll)
 contentAll:SetWidth(1)
@@ -2744,7 +2711,7 @@ local function ensureGameObjectPopupFrame()
         return MultiBot.GameObjPopup
     end
 
-    local aceGUI = getUniversalPromptAceGUI and getUniversalPromptAceGUI()
+    local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())
     if not aceGUI then
         UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MB_GameObjPopup", 1, 0.2, 0.2, 1)
         return nil
@@ -2790,7 +2757,7 @@ local function ensureGameObjectCopyBoxFrame()
         return MultiBot.GameObjCopyBox
     end
 
-    local aceGUI = getUniversalPromptAceGUI and getUniversalPromptAceGUI()
+    local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())()
     if not aceGUI then
         UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MB_GameObjCopyBox", 1, 0.2, 0.2, 1)
         return nil
@@ -2837,7 +2804,7 @@ function MultiBot.ShowGameObjectPopup()
     popup.scroll:ReleaseChildren()
 
     -- Render captured lines grouped by bot
-    local aceGUI = getUniversalPromptAceGUI and getUniversalPromptAceGUI()
+    local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())
     if not aceGUI then
         UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MB_GameObjPopup", 1, 0.2, 0.2, 1)
         return
@@ -2911,21 +2878,9 @@ local PROMPT
 local PROMPT_WINDOW_WIDTH = 280
 local PROMPT_WINDOW_HEIGHT = 108
 local PROMPT_OK_BUTTON_WIDTH = 100
-getUniversalPromptAceGUI = function()
-    if type(LibStub) ~= "table" then
-        return nil
-    end
-
-    local ok, aceGUI = pcall(LibStub.GetLibrary, LibStub, "AceGUI-3.0", true)
-    if ok and type(aceGUI) == "table" and type(aceGUI.Create) == "function" then
-        return aceGUI
-    end
-
-    return nil
-end
 
 function ShowPrompt(title, onOk, defaultText)
-    local aceGUI = getUniversalPromptAceGUI()
+    local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())
     if not aceGUI then
         UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MBUniversalPrompt", 1, 0.2, 0.2, 1)
         return
