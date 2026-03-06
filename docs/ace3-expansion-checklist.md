@@ -26,6 +26,7 @@ Checklist for the full addon-wide ACE3 expansion after M7 completion.
 - [x] GameObject popup/copy migration slice completed (`Core/MultiBotInit.lua`: `MB_GameObjPopup` + `MB_GameObjCopyBox`) with AceGUI windows/widgets path and no legacy frame fallback.
 - [x] Quest popup family migration slice completed (`Core/MultiBotInit.lua`: `MB_QuestPopup`, `MB_BotQuestPopup`, `MB_BotQuestCompPopup`, `MB_BotQuestAllPopup`) with AceGUI host windows and no legacy frame fallback.
 - [x] Hunter prompt/search/family migration slice completed (`Core/MultiBotInit.lua`: `MBHunterPrompt`, `MBHunterPetSearch`, `MBHunterPetFamily`) with AceGUI prompt/host windows and retained preview model support.
+- [x] Hidden tooltip utility cleanup completed (`Core/MultiBotInit.lua`): `MB_LocalizeQuestTooltip` and `MBHiddenTip` now reuse a shared hidden-tooltip helper and remain native by design.
 - [ ] Preserve slash entry points and open/close behavior.
 - [ ] Keep persisted state routed through existing AceDB helpers.
 - [ ] Validate visual/interaction parity per migrated screen.

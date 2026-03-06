@@ -1726,15 +1726,24 @@ MultiBot._buildingAllQuests = false
 MultiBot._blockOtherQuests = false
 -- MultiBot.BotQuestsAll       = MultiBot.BotQuestsAll or {}
 
--- HIDDEN TOOLTIP TO CATCH LOC --
-local LocalizeQuestTooltip = CreateFrame("GameTooltip", "MB_LocalizeQuestTooltip", UIParent, "GameTooltipTemplate")
-LocalizeQuestTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+-- HIDDEN TOOLTIP HELPERS --
+local function ensureHiddenTooltip(name, parent)
+    local tooltip = _G[name]
+    if not tooltip then
+        tooltip = CreateFrame("GameTooltip", name, parent or UIParent, "GameTooltipTemplate")
+        tooltip:SetOwner(parent or UIParent, "ANCHOR_NONE")
+    end
+
+    return tooltip
+end
+
+local LocalizeQuestTooltip = ensureHiddenTooltip("MB_LocalizeQuestTooltip", UIParent)
 
 local function GetLocalizedQuestName(questID)
     LocalizeQuestTooltip:ClearLines()
-    -- construit une hyperlink quest:<ID>
+    -- builds hyperlink quest:<ID>
     LocalizeQuestTooltip:SetHyperlink("quest:"..questID)
-    -- lit la première ligne du tooltip
+    -- reads first tooltip line
     local textObj = _G["MB_LocalizeQuestTooltipTextLeft1"]
     return (textObj and textObj:GetText()) or tostring(questID)
 end
@@ -4690,8 +4699,7 @@ local glyphTip
 -- 2) Detect Major / Minor glyph via tooltip
 local function GetGlyphItemType(itemID)
     if not glyphTip then
-        glyphTip = CreateFrame("GameTooltip","MBHiddenTip",nil,"GameTooltipTemplate")
-        glyphTip:SetOwner(UIParent,"ANCHOR_NONE")
+        glyphTip = ensureHiddenTooltip("MBHiddenTip", UIParent)
     end
     glyphTip:ClearLines()
     glyphTip:SetHyperlink("item:"..itemID..":0:0:0:0:0:0:0")

@@ -69,11 +69,11 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   File: `Features/MultiBotRaidus.lua`.
   References: lines `415`, `945`, `989`, `1021`.
 
-- [ ] **Quest/localization tooltip frame** (`MB_LocalizeQuestTooltip`) if moved with quest UI cleanup.  
+- [-] **Quest/localization tooltip frame** (`MB_LocalizeQuestTooltip`) kept as native tooltip; creation is now centralized via hidden-tooltip helper.  
   File: `Core/MultiBotInit.lua`.  
   Reference: line `1730`.
 
-- [ ] **Hidden glyph tooltip** (`MBHiddenTip`) used by glyph interactions.  
+- [-] **Hidden glyph tooltip** (`MBHiddenTip`) kept as native tooltip; now reuses the same hidden-tooltip helper.   
   File: `Core/MultiBotInit.lua`.  
   Reference: line `4701`.
 
