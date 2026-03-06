@@ -5492,87 +5492,29 @@ if not MultiBot.InitHunterQuick then
     end
 
     function MBH:ShowPrompt(fmt, targetName, title)
-      local P = self.PROMPT
-      if not P then
-        P = CreateFrame("Frame", "MBHunterPrompt", UIParent)
-        self.PROMPT = P
-        P:SetSize(260, 90)
-        P:SetPoint("CENTER")
-        P:SetBackdrop({
-          bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
-          edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
-          tile=true, tileSize=16, edgeSize=16,
-          insets={left=4,right=4,top=4,bottom=4}
-        })
-        P:SetBackdropColor(0,0,0,0.9)
-        P:SetFrameStrata("DIALOG")
-        P:SetMovable(true); P:EnableMouse(true)
-        P:RegisterForDrag("LeftButton")
-        P:SetScript("OnDragStart", P.StartMoving)
-        P:SetScript("OnDragStop" , P.StopMovingOrSizing)
-        local btnClose = CreateFrame("Button", nil, P, "UIPanelCloseButton")
-        btnClose:SetPoint("TOPRIGHT", -5, -5)
-        btnClose:SetScript("OnClick", function() P:Hide() end)
-        local e = CreateFrame("EditBox", nil, P, "InputBoxTemplate")
-        e:SetAutoFocus(true); e:SetSize(200,20); e:SetTextColor(1,1,1)
-        e:SetPoint("TOP", 0, -30)
-        e:SetScript("OnEscapePressed", function() P:Hide() end)
-        P.EditBox = e
-        local ok = CreateFrame("Button", nil, P, "UIPanelButtonTemplate")
-        ok:SetSize(60,20); ok:SetPoint("BOTTOM",0,10); ok:SetText(OKAY)
-        P.OkBtn = ok
-        P.Title = P:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-        P.Title:SetPoint("TOP", 0, -10)
-      end
-      P.Title:SetText(title or MultiBot.L("info.hunterpeteditentervalue"))
-      P:Show()
-      P.EditBox:SetText(MultiBot.L("info.hunterpetentersomething"))
-      P.EditBox:SetFocus()
-      P.OkBtn:SetScript("OnClick", function()
-        local text = P.EditBox:GetText()
-        if text and text~="" and targetName then
+      ShowPrompt(title or MultiBot.L("info.hunterpeteditentervalue"), function(text)
+        if text and text ~= "" and targetName then
           local cmd = string.format(fmt, text)
           SendChatMessage(cmd, "WHISPER", nil, targetName)
         end
-        P:Hide()
-      end)
+      end, MultiBot.L("info.hunterpetentersomething"))
     end
 
     function MBH:EnsureSearchFrame()
       if self.SEARCH_FRAME then return end
-      local f = CreateFrame("Frame", "MBHunterPetSearch", UIParent)
+      local f = createAceQuestPopupHost(MultiBot.L("info.hunterpetcreaturelist"), 360, 360, "AceGUI-3.0 is required for MBHunterPetSearch")
+      assert(f, "AceGUI-3.0 is required for MBHunterPetSearch")
       self.SEARCH_FRAME = f
-
-      local title = f:CreateFontString(nil,"ARTWORK","GameFontNormalLarge")
-      title:SetPoint("TOP",0,-10)
-      title:SetText(MultiBot.L("info.hunterpetcreaturelist"))
-
-      f:SetSize(340,340)
-      f:SetPoint("CENTER")
-      f:SetBackdrop({
-        bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
-        edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
-        tile=true, tileSize=16, edgeSize=16,
-        insets={left=4,right=4,top=4,bottom=4}
-      })
-      f:SetBackdropColor(0,0,0,0.9)
-      f:SetMovable(true); f:EnableMouse(true)
-      f:RegisterForDrag("LeftButton")
-      f:SetScript("OnDragStart", f.StartMoving)
-      f:SetScript("OnDragStop" , f.StopMovingOrSizing)
-      CreateFrame("Button", nil, f, "UIPanelCloseButton"):SetPoint("TOPRIGHT",-5,-5)
 
       local e = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
       e:SetAutoFocus(true)
       e:SetSize(200,20)
-      e:SetPoint("TOP", title, "BOTTOM", 0, -8)
+      e:SetPoint("TOP", 0, -14)
       f.EditBox = e
 
       local PREVIEW_WIDTH, PREVIEW_HEIGHT = 180, 260
-      local BLANK_MODEL   = "Interface\\Buttons\\WHITE8x8"
       local PREVIEW_MODEL_SCALE = 0.6
       local PREVIEW_FACING = -math.pi/12
-      local PREVIEW_X_OFFSET, PREVIEW_Y_OFFSET = 100, 20
       local CURRENT_ENTRY = nil
 
       local function GetPreviewFrame()
@@ -5591,23 +5533,43 @@ if not MultiBot.InitHunterQuick then
         p:SetScript("OnDragStart", p.StartMoving)
         p:SetScript("OnDragStop" , p.StopMovingOrSizing)
         CreateFrame("Button",nil,p,"UIPanelCloseButton"):SetPoint("TOPRIGHT",-5,-5)
+        -- Keep a stable default anchor; do not re-anchor on every preview click.
+        p:ClearAllPoints()
+        p:SetPoint("LEFT", UIParent, "CENTER", 180, 20)
         return p
       end
 
-      local function LoadCreatureToPreview(entryId)
+      local function HidePreviewFrame()
+        if MBHunterPetPreview and MBHunterPetPreview:IsShown() then
+          MBHunterPetPreview:Hide()
+        end
+        CURRENT_ENTRY = nil
+      end
+
+      if f.window and f.window.frame and f.window.frame.HookScript then
+        f.window.frame:HookScript("OnHide", HidePreviewFrame)
+      end
+
+      local function LoadCreatureToPreview(entryId, displayId)
         local pv = GetPreviewFrame()
         if pv:IsShown() and CURRENT_ENTRY==entryId then pv:Hide(); CURRENT_ENTRY=nil; return end
         CURRENT_ENTRY = entryId
-        local cx,cy = GetCursorPosition(); local scale = UIParent:GetEffectiveScale()
-        pv:ClearAllPoints()
-        pv:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",
-          cx/scale+PREVIEW_X_OFFSET, cy/scale+PREVIEW_Y_OFFSET)
-        pv:SetUnit("none"); pv:ClearModel(); pv:SetModel(BLANK_MODEL); pv:Show()
+
+        pv:SetUnit("none")
+        pv:ClearModel()
+        pv:Show()
         pv:SetScript("OnUpdate", function(self)
           self:SetScript("OnUpdate",nil)
           self:SetModelScale(PREVIEW_MODEL_SCALE)
           self:SetFacing(PREVIEW_FACING)
-          self:SetCreature(entryId)
+
+          -- Prefer direct display ID to avoid cache-dependent creature preview resolution on 3.3.5 clients.
+          local displayNum = tonumber(displayId)
+          if displayNum and displayNum > 0 and type(self.SetDisplayInfo) == "function" then
+            self:SetDisplayInfo(displayNum)
+          else
+            self:SetCreature(entryId)
+          end
         end)
       end
 
@@ -5616,7 +5578,7 @@ if not MultiBot.InitHunterQuick then
       local RESULTS = {}
 
       local sf = CreateFrame("ScrollFrame","MBHunterPetScroll",f,"UIPanelScrollFrameTemplate")
-      sf:SetPoint("TOPLEFT",10,-60)
+      sf:SetPoint("TOPLEFT",10,-42)
       sf:SetPoint("BOTTOMRIGHT",-30,10)
       local content = CreateFrame("Frame",nil,sf) ; content:SetSize(1,1)
       sf:SetScrollChild(content)
@@ -5680,7 +5642,7 @@ if not MultiBot.InitHunterQuick then
             end)
 
             row.previewBtn:SetScript("OnClick", function()
-              LoadCreatureToPreview(data.id)
+              LoadCreatureToPreview(data.id, data.display)
             end)
 
             row:Show()
@@ -5719,31 +5681,12 @@ if not MultiBot.InitHunterQuick then
     function MBH:ShowFamilyFrame(targetName)
       local ff = self.FAMILY_FRAME
       if not ff then
-        ff = CreateFrame("Frame", "MBHunterPetFamily", UIParent)
+        ff = createAceQuestPopupHost(MultiBot.L("info.hunterpetrandomfamily"), 260, 340, "AceGUI-3.0 is required for MBHunterPetFamily")
+        assert(ff, "AceGUI-3.0 is required for MBHunterPetFamily")
         self.FAMILY_FRAME = ff
-        ff:SetSize(220, 300)
-        ff:SetPoint("CENTER")
-        ff:SetBackdrop({
-          bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
-          edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
-          tile=true, tileSize=16, edgeSize=16,
-          insets={left=4, right=4, top=4, bottom=4}
-        })
-        ff:SetBackdropColor(0,0,0,0.9)
-        ff:EnableMouse(true); ff:SetMovable(true)
-        ff:RegisterForDrag("LeftButton")
-        ff:SetScript("OnDragStart", ff.StartMoving)
-        ff:SetScript("OnDragStop" , ff.StopMovingOrSizing)
-
-        local title = ff:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-        title:SetPoint("TOP", 0, -10)
-        title:SetText(MultiBot.L("info.hunterpetrandomfamily"))
-
-        local close = CreateFrame("Button", nil, ff, "UIPanelCloseButton")
-        close:SetPoint("TOPRIGHT", -5, -5)
 
         local sf = CreateFrame("ScrollFrame", "MBHunterFamilyScroll", ff, "UIPanelScrollFrameTemplate")
-        sf:SetPoint("TOPLEFT", 8, -40)
+        sf:SetPoint("TOPLEFT", 8, -10)
         sf:SetPoint("BOTTOMRIGHT", -28, 8)
         local LIST_W = 320
         local content = CreateFrame("Frame", nil, sf)

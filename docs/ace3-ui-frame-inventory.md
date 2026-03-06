@@ -57,7 +57,7 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   File: `Core/MultiBotInit.lua`.  
   References: line `2893`.
 
-- [ ] **Hunter prompt/search/family windows** (`MBHunterPrompt`, `MBHunterPetSearch`, `MBHunterPetFamily`) + preview model.  
+- [x] **Hunter prompt/search/family windows** (`MBHunterPrompt`, `MBHunterPetSearch`, `MBHunterPetFamily`) migrated to AceGUI host/prompt paths (no legacy frame fallback for prompt/search/family hosts; preview model retained).  
   File: `Core/MultiBotInit.lua`.  
   References: lines `5505`, `5551`, `5730`, `5588`.
 
