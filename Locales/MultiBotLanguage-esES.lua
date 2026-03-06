@@ -107,6 +107,21 @@ if GetLocale() == "esES" then
 
 	MultiBot.info.wait = "Ya invité a miembros, por favor espere hasta que termine."
 
+	MultiBot.info.creator.title = "Creador de bots AddClass"
+	MultiBot.info.creator.classlabel = "Clase:"
+	MultiBot.info.creator.genderlabel = "Género"
+	MultiBot.info.creator.speclabel = "Especialización"
+	MultiBot.info.creator.selectclass = "Selecciona una clase"
+	MultiBot.info.creator.selectgender = "Selecciona un género"
+	MultiBot.info.creator.selectspec = "Selecciona una especialización"
+	MultiBot.info.creator.specRandom = "Aleatorio"
+	MultiBot.info.creator.create = "Crear"
+	MultiBot.info.creator.inspect = "Inspeccionar"
+	MultiBot.info.creator.init = "Auto-Init"
+	MultiBot.info.creator.genderMale = "Masculino"
+	MultiBot.info.creator.genderFemale = "Femenino"
+	MultiBot.info.creator.genderRandom = "Aleatorio"
+
 	MultiBot.info.starting = "Comenzando a invitar miembros."
 
 	MultiBot.info.stats = "Las estadísticas automáticas son para fiestas, no para redadas."
@@ -515,70 +530,35 @@ if GetLocale() == "esES" then
 
 	MultiBot.tips.creator.warrior = "Crear-Guerrero\n|cffffffff"
 		.. "Este botón creará un bot Guerrero.|r\n\n"
-		.. "|cffff0000Clic izquierdo para elegir el género de tu Guerrero.|r\n"
-		.. "|cff999999(Orden de ejecución: Sistema)|r"
 
 	MultiBot.tips.creator.warlock = "Crear-Brujo\n|cffffffff"
 		.. "Este botón creará un bot Brujo.|r\n\n"
-		.. "|cffff0000Clic izquierdo para elegir el género de tu Brujo.|r\n"
-		.. "|cff999999(Orden de ejecución: Sistema)|r"
 
 	MultiBot.tips.creator.shaman = "Crear-Chamán\n|cffffffff"
 		.. "Este botón creará un bot Chamán.|r\n\n"
-		.. "|cffff0000Clic izquierdo para elegir el género de tu Chamán.|r\n"
-		.. "|cff999999(Orden de ejecución: Sistema)|r"
 
 	MultiBot.tips.creator.rogue = "Crear-Pícaro\n|cffffffff"
 		.. "Este botón creará un bot Pícaro.|r\n\n"
-		.. "|cffff0000Clic izquierdo para elegir el género de tu Pícaro.|r\n"
-		.. "|cff999999(Orden de ejecución: Sistema)|r"
 
 	MultiBot.tips.creator.priest = "Crear-Sacerdote\n|cffffffff"
 		.. "Este botón creará un bot Sacerdote.|r\n\n"
-		.. "|cffff0000Clic izquierdo para elegir el género de tu Sacerdote.|r\n"
-		.. "|cff999999(Orden de ejecución: Sistema)|r"
 
 	MultiBot.tips.creator.paladin = "Crear-Paladín\n|cffffffff"
 		.. "Este botón creará un bot Paladín.|r\n\n"
-		.. "|cffff0000Clic izquierdo para elegir el género de tu Paladín|r\n"
-		.. "|cff999999(Orden de ejecución: Sistema)|r"
 
 	MultiBot.tips.creator.mage = "Crear-Mago\n|cffffffff"
 		.. "Este botón creará un bot Mago.|r\n\n"
-		.. "|cffff0000Clic izquierdo para elegir el género de tu Mago.|r\n"
-		.. "|cff999999(Orden de ejecución: Sistema)|r"
 
 	MultiBot.tips.creator.hunter = "Crear-Cazador\n|cffffffff"
 		.. "Este botón creará un bot Cazador.|r\n\n"
-		.. "|cffff0000Clic izquierdo para elegir el género de tu Cazador.|r\n"
-		.. "|cff999999(Orden de ejecución: Sistema)|r"
 
 	MultiBot.tips.creator.druid = "Crear-Druida\n|cffffffff"
 		.. "Este botón creará un bot Druida.|r\n\n"
-		.. "|cffff0000Clic izquierdo para elegir el género de tu Druida.|r\n"
-		.. "|cff999999(Orden de ejecución: Sistema)|r"
 
 	MultiBot.tips.creator.deathknight = "Crear-Caballero de la Muerte\n|cffffffff"
 		.. "Este botón creará un bot Caballero de la Muerte.|r\n\n"
-		.. "|cffff0000Clic izquierdo para elegir el género de tu Caballero de la Muerte.|r\n"
-		.. "|cff999999(Orden de ejecución: Sistema)|r"
 
 	MultiBot.tips.creator.notarget = "No tengo un objetivo."
-
-	MultiBot.tips.creator.gendermale = "Crea un compañero masculino.\n|cffffffff"
-		.. "Fuerte, valiente y siempre listo para la batalla... o una jarra.|r\n\n"
-		.. "|cffff0000Clic izquierdo para crear|r\n"
-		.. "|cff999999(Orden de ejecución: Sistema)|r"
-
-	MultiBot.tips.creator.genderfemale = "Crea un compañero femenino.\n|cffffffff"
-		.. "Elegante, feroz y nunca debe subestimarse.|r\n\n"
-		.. "|cffff0000Clic izquierdo para crear|r\n"
-		.. "|cff999999(Orden de ejecución: Sistema)|r"
-
-	MultiBot.tips.creator.genderrandom = "Crea un bot con género aleatorio.\n|cffffffff"
-		.. "¡El destino lo decidirá!|r\n\n"
-		.. "|cffff0000Clic izquierdo para crear|r\n"
-		.. "|cff999999(Orden de ejecución: Sistema)|r"
 
 	MultiBot.tips.creator.inspect = "Inspect-Target\n|cffffffff" -- Línea que se mantiene en inglés
 		.. "Este botón abrirá la ventana de inspección de tu objetivo.|r\n\n"

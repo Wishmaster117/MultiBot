@@ -540,151 +540,322 @@ tBeast.addButton("Call", 0, 120, "ability_hunter_beastcall", MultiBot.tips.beast
 	MultiBot.ActionToTargetOrGroup("cast 883")
 end
 
---  CREATOR refactored --
-local GENDER_BUTTONS = {
-  { label = "Male",     gender = "male",    icon = "Interface\\Icons\\INV_Misc_Toy_02",        tip = MultiBot.tips.creator.gendermale      },
-  { label = "Femelle",  gender = "female",  icon = "Interface\\Icons\\INV_Misc_Toy_04",        tip = MultiBot.tips.creator.genderfemale    },
-  { label = "Aléatoire",gender = nil,       icon = "Interface\\Buttons\\UI-GroupLoot-Dice-Up", tip = MultiBot.tips.creator.genderrandom    },
+--  CREATOR WINDOW --
+local CREATOR_CLASSES = {
+  { name = "Warrior",     icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_warrior.blp",     cmd = "warrior", tip = MultiBot.tips.creator.warrior     },
+  { name = "Warlock",     icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_warlock.blp",     cmd = "warlock", tip = MultiBot.tips.creator.warlock     },
+  { name = "Shaman",      icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_shaman.blp",      cmd = "shaman",  tip = MultiBot.tips.creator.shaman      },
+  { name = "Rogue",       icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_rogue.blp",       cmd = "rogue",   tip = MultiBot.tips.creator.rogue       },
+  { name = "Priest",      icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_priest.blp",      cmd = "priest",  tip = MultiBot.tips.creator.priest      },
+  { name = "Paladin",     icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_paladin.blp",     cmd = "paladin", tip = MultiBot.tips.creator.paladin     },
+  { name = "Mage",        icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_mage.blp",        cmd = "mage",    tip = MultiBot.tips.creator.mage        },
+  { name = "Hunter",      icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_hunter.blp",      cmd = "hunter",  tip = MultiBot.tips.creator.hunter      },
+  { name = "Druid",       icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_druid.blp",       cmd = "druid",   tip = MultiBot.tips.creator.druid       },
+  { name = "DeathKnight", icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_deathknight.blp", cmd = "dk",      tip = MultiBot.tips.creator.deathknight },
 }
 
-local CLASS_BUTTONS = {
-  { name = "Warrior",     y =   0, icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_warrior.blp",     cmd = "warrior"     },
-  { name = "Warlock",     y =  30, icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_warlock.blp",     cmd = "warlock"     },
-  { name = "Shaman",      y =  60, icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_shaman.blp",      cmd = "shaman"      },
-  { name = "Rogue",       y =  90, icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_rogue.blp",       cmd = "rogue"       },
-  { name = "Priest",      y = 120, icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_priest.blp",      cmd = "priest"      },
-  { name = "Paladin",     y = 150, icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_paladin.blp",     cmd = "paladin"     },
-  { name = "Mage",        y = 180, icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_mage.blp",        cmd = "mage"        },
-  { name = "Hunter",      y = 210, icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_hunter.blp",      cmd = "hunter"      },
-  { name = "Druid",       y = 240, icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_druid.blp",       cmd = "druid"       },
-  { name = "DeathKnight", y = 270, icon = "Interface\\AddOns\\MultiBot\\Icons\\addclass_deathknight.blp", cmd = "dk"          }
+local CREATOR_SPECS = {
+  warrior = {
+    { value = "arms",       label = MultiBot.info.talent.Warrior1 },
+    { value = "fury",       label = MultiBot.info.talent.Warrior2 },
+    { value = "protection", label = MultiBot.info.talent.Warrior3 },
+  },
+  paladin = {
+    { value = "holy",        label = MultiBot.info.talent.Paladin1 },
+    { value = "protection",  label = MultiBot.info.talent.Paladin2 },
+    { value = "retribution", label = MultiBot.info.talent.Paladin3 },
+  },
+  hunter = {
+    { value = "beast mastery", label = MultiBot.info.talent.Hunter1 },
+    { value = "marksmanship",  label = MultiBot.info.talent.Hunter2 },
+    { value = "survival",      label = MultiBot.info.talent.Hunter3 },
+  },
+  rogue = {
+    { value = "assasination", label = MultiBot.info.talent.Rogue1 },
+    { value = "combat",       label = MultiBot.info.talent.Rogue2 },
+    { value = "subtlety",     label = MultiBot.info.talent.Rogue3 },
+  },
+  priest = {
+    { value = "discipline", label = MultiBot.info.talent.Priest1 },
+    { value = "holy",       label = MultiBot.info.talent.Priest2 },
+    { value = "shadow",     label = MultiBot.info.talent.Priest3 },
+  },
+  dk = {
+    { value = "blood",  label = MultiBot.info.talent.DeathKnight1 },
+    { value = "frost",  label = MultiBot.info.talent.DeathKnight2 },
+    { value = "unholy", label = MultiBot.info.talent.DeathKnight3 },
+  },
+  shaman = {
+    { value = "elemental",    label = MultiBot.info.talent.Shaman1 },
+    { value = "enhancement",  label = MultiBot.info.talent.Shaman2 },
+    { value = "restoration",  label = MultiBot.info.talent.Shaman3 },
+  },
+  mage = {
+    { value = "arcane", label = MultiBot.info.talent.Mage1 },
+    { value = "fire",   label = MultiBot.info.talent.Mage2 },
+    { value = "frost",  label = MultiBot.info.talent.Mage3 },
+  },
+  warlock = {
+    { value = "affliction",  label = MultiBot.info.talent.Warlock1 },
+    { value = "demonology",  label = MultiBot.info.talent.Warlock2 },
+    { value = "destruction", label = MultiBot.info.talent.Warlock3 },
+  },
+  druid = {
+    { value = "balance",      label = MultiBot.info.talent.Druid1 },
+    { value = "feral combat", label = MultiBot.info.talent.Druid2 },
+    { value = "restoration",  label = MultiBot.info.talent.Druid3 },
+  },
 }
 
-local function AddClassButton(frame, info)
-  -- 1. Main class button
-  local classBtn = frame.addButton(info.name, 0, info.y, info.icon,
-                                   MultiBot.tips.creator[string.lower(info.name)])
+local function CreateCreatorWindow()
+  if MultiBot.creatorWindow then return end
 
-  -- 2. Sub buttons (Male / Female / Random)
-  classBtn.genderButtons = {}
-  local xOffset = 30
-  local step    = 30
-
-  for idx, g in ipairs(GENDER_BUTTONS) do
-    local gBtn = frame.addButton(g.label,
-                                 xOffset + (idx-1)*step,
-                                 info.y,
-                                 g.icon,
-                                 g.tip)
-
-    gBtn:Hide()                         -- hided at start
-
-    gBtn.doLeft = function()
-      MultiBot.AddClassToTarget(info.cmd, g.gender)   -- Send command
+  local frame = CreateFrame("Frame", "MultiBotCreatorWindow", UIParent)
+  frame:SetSize(480, 360)
+  frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+  frame:SetFrameStrata("DIALOG")
+  frame:SetBackdrop({
+    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+    tile = true,
+    tileSize = 32,
+    edgeSize = 32,
+    insets = { left = 8, right = 8, top = 8, bottom = 8 },
+  })
+  frame:SetMovable(true)
+  frame:EnableMouse(true)
+  frame:RegisterForDrag("LeftButton")
+  frame:SetScript("OnDragStart", frame.StartMoving)
+  frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
+  frame:SetScript("OnHide", function()
+    local tFrames = MultiBot.frames
+    local tMain = tFrames and tFrames["MultiBar"] and tFrames["MultiBar"].frames and tFrames["MultiBar"].frames["Main"]
+    local tButton = tMain and tMain.buttons and tMain.buttons["Creator"]
+    if tButton and tButton.state then
+      tButton.setDisable()
     end
+  end)
+  frame:Hide()
 
-    table.insert(classBtn.genderButtons, gBtn)
+  local closeButton = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
+  closeButton:SetPoint("TOPRIGHT", -5, -5)
+
+  local title = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
+  title:SetPoint("TOP", 0, -16)
+  title:SetText(MultiBot.info.creator.title)
+
+  local classLabel = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+  classLabel:SetPoint("TOPLEFT", 24, -40)
+  classLabel:SetText(MultiBot.info.creator.classlabel)
+
+  local classValue = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+  classValue:SetPoint("TOPLEFT", classLabel, "BOTTOMLEFT", 0, -6)
+  classValue:SetText(MultiBot.info.creator.selectclass)
+
+  local genderLabel = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+  genderLabel:SetPoint("TOPLEFT", 230, -40)
+  genderLabel:SetText(MultiBot.info.creator.genderlabel)
+  genderLabel:Hide()
+
+local genderDropdown = CreateFrame("Frame", "MultiBotCreatorGenderDropDown", frame, "UIDropDownMenuTemplate")
+genderDropdown:SetPoint("TOPLEFT", genderLabel, "BOTTOMLEFT", -16, -6)
+UIDropDownMenu_SetWidth(genderDropdown, 160)
+UIDropDownMenu_SetText(genderDropdown, MultiBot.info.creator.selectgender)
+genderDropdown:Hide()
+
+local specLabel = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+specLabel:SetPoint("TOPLEFT", 230, -120)
+specLabel:SetText(MultiBot.info.creator.speclabel)
+specLabel:Hide()
+
+local specDropdown = CreateFrame("Frame", "MultiBotCreatorSpecDropDown", frame, "UIDropDownMenuTemplate")
+specDropdown:SetPoint("TOPLEFT", specLabel, "BOTTOMLEFT", -16, -6)
+UIDropDownMenu_SetWidth(specDropdown, 160)
+UIDropDownMenu_SetText(specDropdown, MultiBot.info.creator.selectspec)
+specDropdown:Hide()
+
+  local selected = {
+    className = nil,
+    classCmd = nil,
+    gender = nil,
+    spec = nil,
+    specRandom = false,
+  }
+
+  local function ResetSelections()
+    selected.gender = nil
+    selected.spec = nil
+    selected.specRandom = false
+    UIDropDownMenu_SetText(genderDropdown, MultiBot.info.creator.selectgender)
+    UIDropDownMenu_SetText(specDropdown, MultiBot.info.creator.selectspec)
+    specLabel:Hide()
+    specDropdown:Hide()
   end
 
-  -- 3. When we click in class button => toggle the 3 gender buttons
-  classBtn.doLeft = function(btn)
-    local show = not btn.genderButtons[1]:IsShown()
-
-    -- Hide those of the other class to keep display clean
-    for _, other in ipairs(frame.buttons or {}) do
-      if other ~= btn and other.genderButtons then
-        for _, b in ipairs(other.genderButtons) do b:Hide() end
+  local function UpdateSpecDropdown()
+    local specs = CREATOR_SPECS[selected.classCmd] or {}
+    UIDropDownMenu_Initialize(specDropdown, function(self, level)
+      local randomInfo = UIDropDownMenu_CreateInfo()
+      randomInfo.text = MultiBot.info.creator.specRandom
+      randomInfo.func = function()
+        selected.spec = nil
+        selected.specRandom = true
+        UIDropDownMenu_SetText(specDropdown, MultiBot.info.creator.specRandom)
       end
-    end
-
-    -- Display / hide buttons from the clicked class
-    for _, b in ipairs(btn.genderButtons) do
-      if show then b:Show() else b:Hide() end
-    end
-  end
-
-  -- We keep main buttons for the global toggle
-  frame.buttons = frame.buttons or {}
-  table.insert(frame.buttons, classBtn)
-end
-
---  Creator
-tLeft.addButton("Creator", -0, 0, "inv_helmet_145a", MultiBot.tips.creator.master)
-  .doLeft = function(btn)
-    MultiBot.ShowHideSwitch(btn.parent.frames["Creator"])
-    MultiBot.frames["MultiBar"].frames["Units"]:Hide()
-  end
-
-local tCreator = tLeft.addFrame("Creator", -2, 34)
-tCreator:Hide()
--- hook OnHide to clos sub buttons
-tCreator:HookScript("OnHide", function(self)
-  -- self.buttons content all main buttons
-  if self.buttons then
-    for _, btn in ipairs(self.buttons) do
-      if btn.genderButtons then
-        for _, gBtn in ipairs(btn.genderButtons) do gBtn:Hide() end
+      UIDropDownMenu_AddButton(randomInfo, level)
+      for _, spec in ipairs(specs) do
+        local info = UIDropDownMenu_CreateInfo()
+        info.text = spec.label
+        info.func = function()
+          selected.spec = spec.value
+          selected.specRandom = false
+          UIDropDownMenu_SetText(specDropdown, spec.label)
+        end
+        UIDropDownMenu_AddButton(info, level)
       end
-    end
+    end)
+    UIDropDownMenu_SetText(specDropdown, MultiBot.info.creator.selectspec)
   end
-end)
 
-for _, data in ipairs(CLASS_BUTTONS) do
-  AddClassButton(tCreator, data)
-end
+  local genderOptions = {
+    { value = "male",   label = MultiBot.info.creator.genderMale   },
+    { value = "female", label = MultiBot.info.creator.genderFemale },
+    { value = nil,      label = MultiBot.info.creator.genderRandom },
+  }
 
---  Inspect
-tCreator.addButton("Inspect", 0, 300, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", MultiBot.tips.creator.inspect)
-  .doLeft = function()
+  UIDropDownMenu_Initialize(genderDropdown, function(self, level)
+    for _, option in ipairs(genderOptions) do
+      local info = UIDropDownMenu_CreateInfo()
+      info.text = option.label
+      info.func = function()
+        selected.gender = option.value
+        selected.spec = nil
+        selected.specRandom = false
+        UIDropDownMenu_SetText(genderDropdown, option.label)
+        UpdateSpecDropdown()
+        specLabel:Show()
+        specDropdown:Show()
+      end
+      UIDropDownMenu_AddButton(info, level)
+    end
+    end)
+
+  local createButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+  createButton:SetPoint("TOPLEFT", 230, -210)
+  createButton:SetSize(140, 24)
+  createButton:SetText(MultiBot.info.creator.create)
+  createButton:SetScript("OnClick", function()
+    if not selected.classCmd or (not selected.spec and not selected.specRandom) then
+      return
+    end
+    MultiBot.AddClassToTarget(selected.classCmd, selected.gender, selected.spec)
+  end)
+
+  local inspectButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+  inspectButton:SetPoint("TOPLEFT", 230, -250)
+  inspectButton:SetSize(140, 24)
+  inspectButton:SetText(MultiBot.info.creator.inspect)
+  inspectButton:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:SetText(MultiBot.tips.creator.inspect, nil, nil, nil, nil, true)
+    GameTooltip:Show()
+  end)
+  inspectButton:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+  end)
+  inspectButton:SetScript("OnClick", function()
     if UnitExists("target") and UnitIsPlayer("target") then
       InspectUnit("target")
     else
       SendChatMessage(MultiBot.tips.creator.notarget, "SAY")
     end
-  end
-
--- Button Init
-local tButton = tCreator.addButton("Init", 0, 330, "inv_misc_enggizmos_27", MultiBot.tips.creator.init)
-
-tButton.doRight = function()
-  local function Iterate(unitPrefix, num)
-    for i = 1, num do
-      local name = UnitName(unitPrefix .. i)
-      if name and name ~= UnitName("player") then
-        if MultiBot.isRoster("players", name) then
-          SendChatMessage(MultiBot.doReplace(MultiBot.info.player, "NAME", name), "SAY")
-        elseif MultiBot.isRoster("members", name) then
-          SendChatMessage(MultiBot.doReplace(MultiBot.info.member, "NAME", name), "SAY")
-        else
-          MultiBot.InitAuto(name)
-        end
+  end)
+  
+  local initButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+  initButton:SetPoint("TOPLEFT", 230, -284)
+  initButton:SetSize(140, 24)
+  initButton:SetText(MultiBot.info.creator.init)
+  initButton:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:SetText(MultiBot.tips.creator.init, nil, nil, nil, nil, true)
+    GameTooltip:Show()
+  end)
+  initButton:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+  end)
+  initButton:SetScript("OnClick", function()
+    if UnitExists("target") and UnitIsPlayer("target") then
+      local name = UnitName("target")
+      if MultiBot.isRoster("players", name) then
+        SendChatMessage(MultiBot.info.players, "SAY")
+      elseif MultiBot.isRoster("members", name) then
+        SendChatMessage(MultiBot.info.members, "SAY")
+      else
+        MultiBot.InitAuto(name)
       end
-    end
-  end
-
-  if IsInRaid() then
-    Iterate("raid", GetNumGroupMembers())
-  elseif IsInGroup() then
-    Iterate("party", GetNumSubgroupMembers())
-  else
-    SendChatMessage(MultiBot.info.group, "SAY")
-  end
-end
-
-tButton.doLeft = function()
-  if UnitExists("target") and UnitIsPlayer("target") then
-    local name = UnitName("target")
-    if MultiBot.isRoster("players", name) then
-      SendChatMessage(MultiBot.info.players, "SAY")
-    elseif MultiBot.isRoster("members", name) then
-      SendChatMessage(MultiBot.info.members, "SAY")
     else
-      MultiBot.InitAuto(name)
+      SendChatMessage(MultiBot.info.target, "SAY")
     end
+  end)
+
+  local classButtons = {}
+  local columns = 2
+  local buttonSize = 32
+  local startX = 24
+  local startY = -90
+  local padding = 12
+
+  for index, data in ipairs(CREATOR_CLASSES) do
+    local col = (index - 1) % columns
+    local row = math.floor((index - 1) / columns)
+    local btn = CreateFrame("Button", nil, frame)
+    btn:SetSize(buttonSize, buttonSize)
+    btn:SetPoint("TOPLEFT", startX + col * (buttonSize + padding), startY - row * (buttonSize + padding))
+    btn.icon = btn:CreateTexture(nil, "BACKGROUND")
+    btn.icon:SetAllPoints(btn)
+    btn.icon:SetTexture(data.icon)
+    btn.highlight = btn:CreateTexture(nil, "ARTWORK")
+    btn.highlight:SetAllPoints(btn)
+    btn.highlight:SetTexture("Interface\\Buttons\\ButtonHilight-Square")
+    btn.highlight:SetBlendMode("ADD")
+    btn.highlight:Hide()
+    btn:SetScript("OnEnter", function(self)
+      GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+      GameTooltip:SetText(data.tip, nil, nil, nil, nil, true)
+      GameTooltip:Show()
+    end)
+    btn:SetScript("OnLeave", function()
+      GameTooltip:Hide()
+    end)
+    btn:SetScript("OnClick", function()
+      for _, other in ipairs(classButtons) do
+        other.highlight:Hide()
+      end
+      btn.highlight:Show()
+      selected.className = data.name
+      selected.classCmd = data.cmd
+      classValue:SetText(MultiBot.GetClassDisplay(data.name))
+      genderLabel:Show()
+      genderDropdown:Show()
+      ResetSelections()
+    end)
+    table.insert(classButtons, btn)
+  end
+
+  MultiBot.creatorWindow = frame
+end
+
+--  Creator
+local creatorButton = tLeft.addButton("Creator", -0, 0, "inv_helmet_145a", MultiBot.tips.creator.master)
+creatorButton.doLeft = function()
+  CreateCreatorWindow()
+  if MultiBot.creatorWindow:IsShown() then
+    MultiBot.creatorWindow:Hide()
   else
-    SendChatMessage(MultiBot.info.target, "SAY")
+    MultiBot.creatorWindow:Show()
   end
 end
+creatorButton:Hide()
 
 -- UNITS --
 
@@ -1678,33 +1849,18 @@ end
 tMain.addButton("Creator", 0, 136, "inv_helmet_145a", MultiBot.tips.main.creator).setDisable()
 .doLeft = function(pButton)
 	if(MultiBot.OnOffSwitch(pButton)) then
-		MultiBot.doRepos("Tanker", -34)
-		MultiBot.doRepos("Attack", -34)
-		MultiBot.doRepos("Mode", -34)
-		MultiBot.doRepos("Stay", -34)
-		MultiBot.doRepos("Follow", -34)
-		MultiBot.doRepos("ExpandStay", -34)
-		MultiBot.doRepos("ExpandFollow", -34)
-		MultiBot.doRepos("Flee", -34)
-		MultiBot.doRepos("Format", -34)
-		MultiBot.doRepos("Beast", -34)
-		MultiBot.frames["MultiBar"].frames["Left"].frames["Creator"]:Hide()
-		MultiBot.frames["MultiBar"].frames["Left"].buttons["Creator"]:Show()
+		CreateCreatorWindow()
+		if MultiBot.creatorWindow:IsShown() then
+			MultiBot.creatorWindow:Hide()
+		else
+			MultiBot.creatorWindow:Show()
+		end
 	else
-		MultiBot.doRepos("Tanker", 34)
-		MultiBot.doRepos("Attack", 34)
-		MultiBot.doRepos("Mode", 34)
-		MultiBot.doRepos("Stay", 34)
-		MultiBot.doRepos("Follow", 34)
-		MultiBot.doRepos("ExpandStay", 34)
-		MultiBot.doRepos("ExpandFollow", 34)
-		MultiBot.doRepos("Flee", 34)
-		MultiBot.doRepos("Format", 34)
-		MultiBot.doRepos("Beast", 34)
-		MultiBot.frames["MultiBar"].frames["Left"].frames["Creator"]:Hide()
-		MultiBot.frames["MultiBar"].frames["Left"].buttons["Creator"]:Hide()
+		if MultiBot.creatorWindow and MultiBot.creatorWindow:IsShown() then
+			MultiBot.creatorWindow:Hide()
+		end
 	end
-end
+end	
 
 tMain.addButton("Beast", 0, 170, "ability_mount_swiftredwindrider", MultiBot.tips.main.beast).setDisable()
 .doLeft = function(pButton)
