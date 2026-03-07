@@ -1764,10 +1764,93 @@ end
 
 MultiBot.GetAceGUI = MultiBot.GetAceGUI or getUniversalPromptAceGUI
 
-local function createAceQuestPopupHost(title, width, height, missingDepMessage)
+local function resolveAceGUI(missingDepMessage)
     local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())
+    if not aceGUI and missingDepMessage then
+        UIErrorsFrame:AddMessage(missingDepMessage, 1, 0.2, 0.2, 1)
+    end
+
+    return aceGUI
+end
+
+local function setAceWindowCloseToHide(window)
+    if window and window.SetCallback then
+        window:SetCallback("OnClose", function(widget)
+            widget:Hide()
+        end)
+    end
+end
+
+local _aceEscapeIndex = 0
+local function registerAceWindowEscapeClose(window, namePrefix)
+    if not window or not window.frame or type(UISpecialFrames) ~= "table" then
+        return
+    end
+
+    if window.__mbEscapeName then
+        return
+    end
+
+    _aceEscapeIndex = _aceEscapeIndex + 1
+    local safePrefix = tostring(namePrefix or "Popup"):gsub("[^%w_]", "")
+    local frameName = string.format("MultiBotAce%s_%d", safePrefix, _aceEscapeIndex)
+
+    window.__mbEscapeName = frameName
+    _G[frameName] = window.frame
+
+    for _, existing in ipairs(UISpecialFrames) do
+        if existing == frameName then
+            return
+        end
+    end
+
+    table.insert(UISpecialFrames, frameName)
+end
+
+local function getUiProfileStore()
+    local profile = MultiBot.db and MultiBot.db.profile
+    if not profile then
+        return nil
+    end
+
+    profile.ui = profile.ui or {}
+    return profile.ui
+end
+
+local function bindAceWindowPosition(window, persistenceKey)
+    if not window or not window.frame or not persistenceKey then
+        return
+    end
+
+    local uiStore = getUiProfileStore()
+    if not uiStore then
+        return
+    end
+
+    uiStore.popupPositions = uiStore.popupPositions or {}
+    local positions = uiStore.popupPositions
+    local saved = positions[persistenceKey]
+    if saved and saved.point then
+        window.frame:ClearAllPoints()
+        window.frame:SetPoint(saved.point, UIParent, saved.point, saved.x or 0, saved.y or 0)
+    end
+
+    if window.__mbPositionHooked then
+        return
+    end
+
+    window.__mbPositionHooked = true
+    window.frame:HookScript("OnDragStop", function(frame)
+        local point, _, _, x, y = frame:GetPoint(1)
+        if point then
+            positions[persistenceKey] = { point = point, x = x or 0, y = y or 0 }
+        end
+    end)
+end
+
+local function createAceQuestPopupHost(title, width, height, missingDepMessage, persistenceKey)
+    local aceGUI = resolveAceGUI(missingDepMessage or "AceGUI-3.0 is required")
     if not aceGUI then
-        UIErrorsFrame:AddMessage(missingDepMessage or "AceGUI-3.0 is required", 1, 0.2, 0.2, 1)
         return nil
     end
 
@@ -1782,6 +1865,9 @@ local function createAceQuestPopupHost(title, width, height, missingDepMessage)
     window:EnableResize(false)
     window:SetLayout("Fill")
     window.frame:SetFrameStrata("DIALOG")
+    setAceWindowCloseToHide(window)
+    registerAceWindowEscapeClose(window, "QuestHost")
+    bindAceWindowPosition(window, persistenceKey)
     window:Hide()
 
     local host = CreateFrame("Frame", nil, window.content)
@@ -1820,7 +1906,7 @@ tQuestMenu.addButton("AcceptAll", 0, 30,
 -- END BUTTON Accept * --
 
 -- POP-UP Frame for Quests --
-local tQuests = createAceQuestPopupHost(QUEST_LOG, 390, 470, "AceGUI-3.0 is required for MB_QuestPopup")
+local tQuests = createAceQuestPopupHost(QUEST_LOG, 390, 470, "AceGUI-3.0 is required for MB_QuestPopup", "quest_popup")
 assert(tQuests, "AceGUI-3.0 is required for MB_QuestPopup")
 
 -- ScrollFrame + ScrollBar
@@ -1979,7 +2065,7 @@ end
 MultiBot.BotQuestsIncompleted = {}  -- [botName] = { [questID]=questName, ... }
 
 -- Popup Liste des quêtes du bot
-local tBotPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.incomplist"), 380, 420, "AceGUI-3.0 is required for MB_BotQuestPopup")
+local tBotPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.incomplist"), 380, 420, "AceGUI-3.0 is required for MB_BotQuestPopup", "bot_quest_popup")
 assert(tBotPopup, "AceGUI-3.0 is required for MB_BotQuestPopup")
 
 local scroll = CreateFrame("ScrollFrame", "MB_BotQuestScroll", tBotPopup, "UIPanelScrollFrameTemplate")
@@ -2177,7 +2263,7 @@ tRight.buttons["BotQuestsIncompWhisper"] = btnWhisper
 MultiBot.BotQuestsCompleted = {}  -- [botName] = { [questID]=questName, ... }
 
 -- 2) Pop-up Liste des quêtes terminées du bot
-local tBotCompPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.complist"), 380, 420, "AceGUI-3.0 is required for MB_BotQuestCompPopup")
+local tBotCompPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.complist"), 380, 420, "AceGUI-3.0 is required for MB_BotQuestCompPopup", "bot_quest_comp_popup")
 assert(tBotCompPopup, "AceGUI-3.0 is required for MB_BotQuestCompPopup")
 
 local scroll2 = CreateFrame("ScrollFrame", "MB_BotQuestCompScroll", tBotCompPopup, "UIPanelScrollFrameTemplate")
@@ -2382,7 +2468,7 @@ tRight.buttons["BotQuestsTalk"] = btnTalk
 -- BUTTON QUESTS ALL --
 
 -- POPUP Quests All
-local tBotAllPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.alllist"), 420, 460, "AceGUI-3.0 is required for MB_BotQuestAllPopup")
+local tBotAllPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.alllist"), 420, 460, "AceGUI-3.0 is required for MB_BotQuestAllPopup", "bot_quest_all_popup")
 assert(tBotAllPopup, "AceGUI-3.0 is required for MB_BotQuestAllPopup")
 
 -- On expose immédiatement pour qu'il existe dans SendAll
@@ -2720,9 +2806,8 @@ local function ensureGameObjectPopupFrame()
         return MultiBot.GameObjPopup
     end
 
-    local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())
+    local aceGUI = resolveAceGUI("AceGUI-3.0 is required for MB_GameObjPopup")
     if not aceGUI then
-        UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MB_GameObjPopup", 1, 0.2, 0.2, 1)
         return nil
     end
 
@@ -2737,6 +2822,9 @@ local function ensureGameObjectPopupFrame()
     window:EnableResize(false)
     window:SetLayout("Flow")
     window.frame:SetFrameStrata("DIALOG")
+    setAceWindowCloseToHide(window)
+    registerAceWindowEscapeClose(window, "GameObjPopup")
+    bindAceWindowPosition(window, "gameobject_popup")
 
     local scroll = aceGUI:Create("ScrollFrame")
     scroll:SetFullWidth(true)
@@ -2766,9 +2854,8 @@ local function ensureGameObjectCopyBoxFrame()
         return MultiBot.GameObjCopyBox
     end
 
-    local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())()
+    local aceGUI = resolveAceGUI("AceGUI-3.0 is required for MB_GameObjCopyBox")
     if not aceGUI then
-        UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MB_GameObjCopyBox", 1, 0.2, 0.2, 1)
         return nil
     end
 
@@ -2783,6 +2870,9 @@ local function ensureGameObjectCopyBoxFrame()
     window:EnableResize(false)
     window:SetLayout("Fill")
     window.frame:SetFrameStrata("DIALOG")
+    setAceWindowCloseToHide(window)
+    registerAceWindowEscapeClose(window, "GameObjCopy")
+    bindAceWindowPosition(window, "gameobject_copy")
 
     local editor = aceGUI:Create("MultiLineEditBox")
     editor:SetLabel("")
@@ -2813,9 +2903,8 @@ function MultiBot.ShowGameObjectPopup()
     popup.scroll:ReleaseChildren()
 
     -- Render captured lines grouped by bot
-    local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())
+    local aceGUI = resolveAceGUI("AceGUI-3.0 is required for MB_GameObjPopup")
     if not aceGUI then
-        UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MB_GameObjPopup", 1, 0.2, 0.2, 1)
         return
     end
 
@@ -2889,9 +2978,8 @@ local PROMPT_WINDOW_HEIGHT = 108
 local PROMPT_OK_BUTTON_WIDTH = 100
 
 function ShowPrompt(title, onOk, defaultText)
-    local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())
+    local aceGUI = resolveAceGUI("AceGUI-3.0 is required for MBUniversalPrompt")
     if not aceGUI then
-        UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MBUniversalPrompt", 1, 0.2, 0.2, 1)
         return
     end
 
@@ -2907,6 +2995,9 @@ function ShowPrompt(title, onOk, defaultText)
         window:EnableResize(false)
         window:SetLayout("Flow")
         window.frame:SetFrameStrata("DIALOG")
+        setAceWindowCloseToHide(window)
+        registerAceWindowEscapeClose(window, "UniversalPrompt")
+        bindAceWindowPosition(window, "universal_prompt")
 
         local edit = aceGUI:Create("EditBox")
         edit:SetLabel("")
@@ -3977,6 +4068,241 @@ MultiBot.talent:Hide()
 
 MultiBot.talent.movButton("Move", -960, 960, 64, MultiBot.L("tips.move.talent"))
 
+local function attachTalentGlyphFrameToHost(hostFrame)
+    if not hostFrame or not MultiBot.talent then
+        return
+    end
+
+    MultiBot.talent:SetParent(hostFrame)
+    MultiBot.talent:ClearAllPoints()
+    MultiBot.talent:SetPoint("TOPLEFT", hostFrame, "TOPLEFT", 0, 0)
+end
+
+local function detachTalentLegacyFrameContent(hostFrame)
+    if not hostFrame or not MultiBot.talent or MultiBot.talent.__aceDetached then
+        return
+    end
+
+    if MultiBot.talent.texture then
+        MultiBot.talent.texture:Hide()
+    end
+
+    local moveButton = MultiBot.talent.buttons and MultiBot.talent.buttons["Move"]
+    if moveButton then
+        moveButton:Hide()
+    end
+
+    for _, frameName in ipairs({ "Tab1", "Tab2", "Tab3", "Tab4" }) do
+        local child = MultiBot.talent.frames and MultiBot.talent.frames[frameName]
+        if child and child.SetParent then
+            child:SetParent(hostFrame)
+        end
+    end
+
+    for _, textName in ipairs({ "Points" }) do
+        local region = MultiBot.talent.texts and MultiBot.talent.texts[textName]
+        if region and region.SetParent then
+            region:SetParent(hostFrame)
+        end
+    end
+
+
+    if MultiBot.talent.texts and MultiBot.talent.texts["Title"] then
+        MultiBot.talent.texts["Title"]:Hide()
+    end
+    local applyBtn = MultiBot.talent.buttons and MultiBot.talent.buttons[MultiBot.L("info.talent.Apply")]
+    if applyBtn and applyBtn.SetParent then
+        applyBtn:SetParent(hostFrame)
+    end
+
+    local copyBtnLegacy = MultiBot.talent.buttons and MultiBot.talent.buttons[MultiBot.L("info.talent.Copy")]
+    if copyBtnLegacy and copyBtnLegacy.SetParent then
+        copyBtnLegacy:SetParent(hostFrame)
+    end
+
+    local legacyClose = MultiBot.talent.buttons and MultiBot.talent.buttons["X"]
+    if legacyClose then
+        legacyClose:Hide()
+    end
+
+    MultiBot.talent.__aceDetached = true
+end
+
+local function ensureTalentGlyphAceHost()
+    if MultiBot.talentAceHost then
+        return MultiBot.talentAceHost
+    end
+
+    local aceGUI = resolveAceGUI("AceGUI-3.0 is required for MB_TalentGlyphHost")
+    if not aceGUI then
+        return nil
+    end
+
+    local window = aceGUI:Create("Window")
+    if not window then
+        return nil
+    end
+
+    window:SetTitle("Talents & Glyphs")
+    -- Slice 2 host: keep WoW-like compact footprint while exposing Ace3 tabs.
+    window:SetWidth(760)
+    window:SetHeight(720)
+    window:EnableResize(false)
+    window:SetLayout("Fill")
+    window.frame:SetFrameStrata("DIALOG")
+    registerAceWindowEscapeClose(window, "TalentGlyphHost")
+    bindAceWindowPosition(window, "talent_glyph_host")
+    window:SetCallback("OnClose", function()
+        if MultiBot.talent and MultiBot.talent.Hide then
+            MultiBot.talent:Hide()
+        else
+            window:Hide()
+        end
+    end)
+
+    local host = CreateFrame("Frame", nil, window.content)
+    host:SetPoint("TOPLEFT", window.content, "TOPLEFT", 0, 0)
+    host:SetPoint("TOPRIGHT", window.content, "TOPRIGHT", 0, 0)
+    host:SetPoint("BOTTOM", window.content, "BOTTOM", 0, 38)
+    if host.SetClipsChildren then
+        host:SetClipsChildren(true)
+    end
+
+    local tabBar = aceGUI:Create("SimpleGroup")
+    tabBar:SetFullWidth(true)
+    tabBar:SetLayout("Flow")
+    window:AddChild(tabBar)
+
+    -- Keep legacy tab widgets hidden: Ace3 controls are the visible tab control.
+    local function hideLegacyTalentTabChrome()
+        for _, frameName in ipairs({ "Tab5", "Tab6", "Tab7", "Tab8" }) do
+            local legacyTab = MultiBot.talent.frames and MultiBot.talent.frames[frameName]
+            if legacyTab then
+                legacyTab:Hide()
+            end
+        end
+    end
+
+    local legacyTabButtons = {
+        talents = MultiBot.talent.frames and MultiBot.talent.frames["Tab5"] and MultiBot.talent.frames["Tab5"].buttons and MultiBot.talent.frames["Tab5"].buttons["Talents"],
+        glyphs = MultiBot.talent.frames and MultiBot.talent.frames["Tab6"] and MultiBot.talent.frames["Tab6"].buttons and MultiBot.talent.frames["Tab6"].buttons["Glyphs"],
+        custom_talents = MultiBot.talent.frames and MultiBot.talent.frames["Tab7"] and MultiBot.talent.frames["Tab7"].buttons and MultiBot.talent.frames["Tab7"].buttons["Custom Talents"],
+        custom_glyphs = MultiBot.talent.frames and MultiBot.talent.frames["Tab8"] and MultiBot.talent.frames["Tab8"].buttons and MultiBot.talent.frames["Tab8"].buttons["Custom Glyphs"],
+    }
+
+    local tabButtons = {}
+    local tabDefs = {
+        { value = "talents", text = "Talents" },
+        { value = "glyphs", text = "Glyphs" },
+        { value = "custom_talents", text = "Custom Talents" },
+        { value = "custom_glyphs", text = "Custom Glyphs" },
+    }
+
+    local function getTalentHostTitle(value)
+        local botName = MultiBot.talent and MultiBot.talent.name or "NAME"
+        if value == "glyphs" then
+            return MultiBot.L("info.glyphsglyphsfor") .. " " .. botName
+        elseif value == "custom_talents" then
+            return MultiBot.L("info.talentscustomtalentsfor") .. " " .. botName
+        elseif value == "custom_glyphs" then
+            return MultiBot.L("info.glyphscustomglyphsfor") .. " " .. botName
+        end
+
+        return MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", botName)
+    end
+
+    local function markSelectedTab(active)
+        for key, widget in pairs(tabButtons) do
+            if widget and widget.SetDisabled then
+                widget:SetDisabled(key == active)
+            end
+        end
+    end
+
+    local function activateLegacyTab(value)
+        local button = legacyTabButtons[value]
+        if button and button.doLeft then
+            button.doLeft(button)
+        end
+
+        hideLegacyTalentTabChrome()
+        if MultiBot.talent.texts and MultiBot.talent.texts["Title"] then
+            MultiBot.talent.texts["Title"]:Hide()
+        end
+        window:SetTitle(getTalentHostTitle(value) or "Talents & Glyphs")
+        markSelectedTab(value)
+    end
+
+    for _, tab in ipairs(tabDefs) do
+        local btn = aceGUI:Create("Button")
+        btn:SetText(tab.text)
+        btn:SetWidth(155)
+        btn:SetCallback("OnClick", function()
+            activateLegacyTab(tab.value)
+        end)
+        tabBar:AddChild(btn)
+        tabButtons[tab.value] = btn
+    end
+
+    attachTalentGlyphFrameToHost(host)
+    detachTalentLegacyFrameContent(host)
+    hideLegacyTalentTabChrome()
+    activateLegacyTab("talents")
+
+    MultiBot.talentAceHost = {
+        window = window,
+        tabBar = tabBar,
+        host = host,
+    }
+
+    return MultiBot.talentAceHost
+end
+
+do
+    local originalHide = MultiBot.talent.Hide
+    local originalIsShown = MultiBot.talent.IsShown
+
+    MultiBot.talent.Show = function(self)
+        local host = ensureTalentGlyphAceHost()
+        if host and host.host then
+            attachTalentGlyphFrameToHost(host.host)
+            detachTalentLegacyFrameContent(host.host)
+        end
+        if host and host.window then
+            host.window:Show()
+        end
+
+        -- Keep legacy container hidden; Ace host owns visibility in slice 3.
+        if originalHide then
+            originalHide(self)
+        end
+        return self
+    end
+
+    MultiBot.talent.Hide = function(self)
+        if MultiBot.talentAceHost and MultiBot.talentAceHost.window then
+            MultiBot.talentAceHost.window:Hide()
+        end
+
+        if originalHide then
+            return originalHide(self)
+        end
+        return self
+    end
+
+    MultiBot.talent.IsShown = function(self)
+        if MultiBot.talentAceHost and MultiBot.talentAceHost.window and MultiBot.talentAceHost.window.frame then
+            return MultiBot.talentAceHost.window.frame:IsShown()
+        end
+
+        if originalIsShown then
+            return originalIsShown(self)
+        end
+
+        return false
+    end
+end
+
 MultiBot.talent.wowButton(MultiBot.L("info.talent.Apply"), -474, 966, 100, 20, 12).doHide()
 .doLeft = function(pButton)
 	local tValues = ""
@@ -4268,11 +4594,57 @@ tGlyph.type = "Major"
 
 tGlyph.addFrame("Overlay", -12, 12, 96) .setLevel(9).doHide()
 
+local bottomTabY = 84
+
+local function addTalentBottomTab(frameKey, buttonLabel, xOffset)
+	local tabFrame = MultiBot.talent.addFrame(frameKey, xOffset, bottomTabY, 28, 96, 24)
+	tabFrame.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_Tab.blp")
+	tabFrame.buttons = tabFrame.buttons or {}
+
+	local tabButton = CreateFrame("Button", nil, tabFrame)
+	tabButton:SetPoint("CENTER", -2, 6)
+	tabButton:SetSize(92, 17)
+	tabButton:SetFrameLevel(tabFrame:GetFrameLevel() + 1)
+	tabButton:RegisterForClicks("LeftButtonDown", "RightButtonDown")
+	tabButton:EnableMouse(true)
+	tabButton.parent = tabFrame
+	tabButton.state = true
+
+	tabButton.text = tabButton:CreateFontString(nil, "ARTWORK")
+	tabButton.text:SetFont("Fonts\\ARIALN.ttf", 11, "OUTLINE")
+	tabButton.text:SetPoint("CENTER", 0, 0)
+	tabButton.text:SetText("|cffffcc00" .. buttonLabel .. "|r")
+	tabButton.text:Show()
+
+	tabButton.doHide = function()
+		tabButton:Hide()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(tabButton.parent) end
+		return tabButton
+	end
+
+	tabButton.doShow = function()
+		tabButton:Show()
+		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(tabButton.parent) end
+		return tabButton
+	end
+
+	tabButton:SetScript("OnLeave", function()
+		tabButton.text:SetPoint("CENTER", 0, 0)
+	end)
+
+	tabButton:SetScript("OnClick", function(_, mouseButton)
+		tabButton.text:SetPoint("CENTER", -1, -1)
+		if(mouseButton == "RightButton" and tabButton.doRight) then tabButton.doRight(tabButton) end
+		if(mouseButton == "LeftButton" and tabButton.doLeft) then tabButton.doLeft(tabButton) end
+	end)
+
+	tabFrame.buttons[buttonLabel] = tabButton
+	return tabButton
+end
+
 -- TAB TALENTS --
-local tTab = MultiBot.talent.addFrame("Tab5", -900, 461, 28, 96, 24)
-tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_Tab.blp")
-tTab.wowButton("Talents", -2, 6, 92, 17, 11)
-.doLeft = function(pButton)
+local talentsTabBtn = addTalentBottomTab("Tab5", "Talents", -740)
+talentsTabBtn.doLeft = function(pButton)
 	if gApply then gApply:Hide() end
     -- Update UI
     MultiBot.talent.setText("Title", MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", MultiBot.talent.name))
@@ -4285,11 +4657,8 @@ tTab.wowButton("Talents", -2, 6, 92, 17, 11)
 end
 
 -- TAB GLYPHS --
-local tTab = MultiBot.talent.addFrame("Tab6", -800, 461, 28, 96, 24)
-tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_Tab.blp")
-tTab.wowButton("Glyphs", -2, 6, 92, 17, 11)
-
-.doLeft = function(pButton)
+local glyphsTabBtn = addTalentBottomTab("Tab6", "Glyphs", -640)
+glyphsTabBtn.doLeft = function(pButton)
 	if gApply then gApply:Hide() end
     -- UI
     MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.glyphsglyphsfor") .. " |r" .. (MultiBot.talent.name or "?"))
@@ -4581,9 +4950,7 @@ end
 Add a custom tab to talents windows to make custom builds (Tab7)
 ]]--
 
-local tTab = MultiBot.talent.addFrame("Tab7", -700, 461, 28, 96, 24)
-tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_Tab.blp")
-local tBtn = tTab.wowButton("Custom Talents", -2, 6, 92, 17, 11)
+local tBtn = addTalentBottomTab("Tab7", "Custom Talents", -540)
 
 -- 1) FONCTION to INITIALIZE CUSTOM TAB
 function MultiBot.talent.setTalentsCustom()
@@ -4689,9 +5056,7 @@ end
 Add a new tab to use custom Glyphs (Tab8)
 ]]--
 
-local gTab = MultiBot.talent.addFrame("Tab8", -600, 461, 28, 96, 24)
-gTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_Tab.blp")
-local gBtn = gTab.wowButton("Custom Glyphs", -2, 6, 92, 17, 11)
+local gBtn = addTalentBottomTab("Tab8", "Custom Glyphs", -440)
 
 -- 1) Cache for tooltips
 local glyphTip
@@ -5510,7 +5875,7 @@ if not MultiBot.InitHunterQuick then
 
     function MBH:EnsureSearchFrame()
       if self.SEARCH_FRAME then return end
-      local f = createAceQuestPopupHost(MultiBot.L("info.hunterpetcreaturelist"), 360, 360, "AceGUI-3.0 is required for MBHunterPetSearch")
+      local f = createAceQuestPopupHost(MultiBot.L("info.hunterpetcreaturelist"), 360, 360, "AceGUI-3.0 is required for MBHunterPetSearch", "hunter_pet_search")
       assert(f, "AceGUI-3.0 is required for MBHunterPetSearch")
       self.SEARCH_FRAME = f
 
@@ -5689,7 +6054,7 @@ if not MultiBot.InitHunterQuick then
     function MBH:ShowFamilyFrame(targetName)
       local ff = self.FAMILY_FRAME
       if not ff then
-        ff = createAceQuestPopupHost(MultiBot.L("info.hunterpetrandomfamily"), 260, 340, "AceGUI-3.0 is required for MBHunterPetFamily")
+        ff = createAceQuestPopupHost(MultiBot.L("info.hunterpetrandomfamily"), 260, 340, "AceGUI-3.0 is required for MBHunterPetFamily", "hunter_pet_family")
         assert(ff, "AceGUI-3.0 is required for MBHunterPetFamily")
         self.FAMILY_FRAME = ff
 
