@@ -4068,6 +4068,98 @@ MultiBot.talent:Hide()
 
 MultiBot.talent.movButton("Move", -960, 960, 64, MultiBot.L("tips.move.talent"))
 
+local TALENT_LEGACY_CANVAS_WIDTH = 1024
+local TALENT_LEGACY_CANVAS_HEIGHT = 1024
+local TALENT_HOST_DEFAULT_WIDTH = 620
+local TALENT_HOST_DEFAULT_HEIGHT = 570
+
+local function getTalentHostFrame(hostFrame)
+    if hostFrame then
+        return hostFrame
+    end
+
+    if MultiBot.talentAceHost and MultiBot.talentAceHost.host then
+        return MultiBot.talentAceHost.host
+    end
+
+    return nil
+end
+
+local function getTalentHostDimensions(hostFrame)
+    local host = getTalentHostFrame(hostFrame)
+    if not host then
+        return 0, 0
+    end
+
+    local width = 0
+    local height = 0
+
+    local okW, valueW = pcall(function()
+        return host:GetWidth()
+    end)
+    if okW and valueW then
+        width = valueW
+    end
+
+    local okH, valueH = pcall(function()
+        return host:GetHeight()
+    end)
+    if okH and valueH then
+        height = valueH
+    end
+
+    if width <= 0 then
+        width = TALENT_HOST_DEFAULT_WIDTH
+    end
+
+    if height <= 0 then
+        height = TALENT_HOST_DEFAULT_HEIGHT
+    end
+
+    return width, height
+end
+
+local function getTalentBottomTabX(xOffset, hostFrame)
+    local host = getTalentHostFrame(hostFrame)
+    if not host then
+        return xOffset
+    end
+
+    local hostWidth = select(1, getTalentHostDimensions(host))
+    local legacyXOffset = math.floor((TALENT_LEGACY_CANVAS_WIDTH - hostWidth) / 2)
+    return xOffset + legacyXOffset
+end
+
+local function getTalentBottomTabY(hostFrame)
+    local host = getTalentHostFrame(hostFrame)
+    if not host then
+        return 84
+    end
+
+    local hostHeight = select(2, getTalentHostDimensions(host))
+    local legacyYOffset = math.floor((TALENT_LEGACY_CANVAS_HEIGHT - hostHeight) / 2)
+    return 84 + legacyYOffset - 5
+end
+
+local function debugTalentTabPlacement(tag, hostFrame)
+    if not DEFAULT_CHAT_FRAME then
+        return
+    end
+
+    local host = getTalentHostFrame(hostFrame)
+    local hostWidth, hostHeight = getTalentHostDimensions(host)
+    local yOffset = getTalentBottomTabY(host)
+    DEFAULT_CHAT_FRAME:AddMessage(string.format("|cff66ccff[MB][TalentDebug]|r %s host=(%.1f x %.1f) tabY=%d", tostring(tag or "state"), hostWidth, hostHeight, yOffset))
+
+    for _, frameName in ipairs({ "Tab5", "Tab6", "Tab7", "Tab8" }) do
+        local tabFrame = MultiBot.talent.frames and MultiBot.talent.frames[frameName]
+        if tabFrame and tabFrame.GetCenter then
+            local x, y = tabFrame:GetCenter()
+            DEFAULT_CHAT_FRAME:AddMessage(string.format("|cff66ccff[MB][TalentDebug]|r %s center=(%.1f, %.1f) strata=%s level=%d", frameName, x or 0, y or 0, tostring(tabFrame:GetFrameStrata()), tabFrame:GetFrameLevel() or 0))
+        end
+    end
+end
+
 local function attachTalentGlyphFrameToHost(hostFrame)
     if not hostFrame or not MultiBot.talent then
         return
@@ -4092,7 +4184,7 @@ local function detachTalentLegacyFrameContent(hostFrame)
         moveButton:Hide()
     end
 
-    for _, frameName in ipairs({ "Tab1", "Tab2", "Tab3", "Tab4" }) do
+    for _, frameName in ipairs({ "Tab1", "Tab2", "Tab3", "Tab4", "Tab5", "Tab6", "Tab7", "Tab8" }) do
         local child = MultiBot.talent.frames and MultiBot.talent.frames[frameName]
         if child and child.SetParent then
             child:SetParent(hostFrame)
@@ -4144,9 +4236,9 @@ local function ensureTalentGlyphAceHost()
     end
 
     window:SetTitle("Talents & Glyphs")
-    -- Slice 2 host: keep WoW-like compact footprint while exposing Ace3 tabs.
-    window:SetWidth(760)
-    window:SetHeight(720)
+    -- Compact host: sized to fit the 3 talent trees and bottom tabs.
+    window:SetWidth(620)
+    window:SetHeight(570)
     window:EnableResize(false)
     window:SetLayout("Fill")
     window.frame:SetFrameStrata("DIALOG")
@@ -4163,22 +4255,33 @@ local function ensureTalentGlyphAceHost()
     local host = CreateFrame("Frame", nil, window.content)
     host:SetPoint("TOPLEFT", window.content, "TOPLEFT", 0, 0)
     host:SetPoint("TOPRIGHT", window.content, "TOPRIGHT", 0, 0)
-    host:SetPoint("BOTTOM", window.content, "BOTTOM", 0, 38)
+    host:SetPoint("BOTTOM", window.content, "BOTTOM", 0, 0)
     if host.SetClipsChildren then
-        host:SetClipsChildren(true)
+        host:SetClipsChildren(false)
     end
 
-    local tabBar = aceGUI:Create("SimpleGroup")
-    tabBar:SetFullWidth(true)
-    tabBar:SetLayout("Flow")
-    window:AddChild(tabBar)
-
-    -- Keep legacy tab widgets hidden: Ace3 controls are the visible tab control.
-    local function hideLegacyTalentTabChrome()
+    local function showLegacyTalentTabChrome()
+        local hostStrata = host:GetFrameStrata() or "DIALOG"
+        local hostLevel = host:GetFrameLevel() or 0
         for _, frameName in ipairs({ "Tab5", "Tab6", "Tab7", "Tab8" }) do
             local legacyTab = MultiBot.talent.frames and MultiBot.talent.frames[frameName]
-            if legacyTab then
-                legacyTab:Hide()
+            if legacyTab and legacyTab.SetPoint and legacyTab.ClearAllPoints then
+                local owner = legacyTab:GetParent()
+                legacyTab:ClearAllPoints()
+                local xOffset = legacyTab.mbXOffset or 0
+                legacyTab:SetPoint("BOTTOMRIGHT", owner, "BOTTOMRIGHT", getTalentBottomTabX(xOffset, host), getTalentBottomTabY(host))
+                legacyTab:SetFrameStrata(hostStrata)
+                legacyTab:SetFrameLevel(hostLevel + 2)
+                legacyTab:Show()
+            end
+
+            local buttonSet = legacyTab and legacyTab.buttons
+            if buttonSet then
+                for _, button in pairs(buttonSet) do
+                    if button and button.Show then
+                        button:Show()
+                    end
+                end
             end
         end
     end
@@ -4188,14 +4291,6 @@ local function ensureTalentGlyphAceHost()
         glyphs = MultiBot.talent.frames and MultiBot.talent.frames["Tab6"] and MultiBot.talent.frames["Tab6"].buttons and MultiBot.talent.frames["Tab6"].buttons["Glyphs"],
         custom_talents = MultiBot.talent.frames and MultiBot.talent.frames["Tab7"] and MultiBot.talent.frames["Tab7"].buttons and MultiBot.talent.frames["Tab7"].buttons["Custom Talents"],
         custom_glyphs = MultiBot.talent.frames and MultiBot.talent.frames["Tab8"] and MultiBot.talent.frames["Tab8"].buttons and MultiBot.talent.frames["Tab8"].buttons["Custom Glyphs"],
-    }
-
-    local tabButtons = {}
-    local tabDefs = {
-        { value = "talents", text = "Talents" },
-        { value = "glyphs", text = "Glyphs" },
-        { value = "custom_talents", text = "Custom Talents" },
-        { value = "custom_glyphs", text = "Custom Glyphs" },
     }
 
     local function getTalentHostTitle(value)
@@ -4211,47 +4306,27 @@ local function ensureTalentGlyphAceHost()
         return MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", botName)
     end
 
-    local function markSelectedTab(active)
-        for key, widget in pairs(tabButtons) do
-            if widget and widget.SetDisabled then
-                widget:SetDisabled(key == active)
-            end
-        end
-    end
-
     local function activateLegacyTab(value)
         local button = legacyTabButtons[value]
         if button and button.doLeft then
             button.doLeft(button)
         end
 
-        hideLegacyTalentTabChrome()
+        showLegacyTalentTabChrome()
         if MultiBot.talent.texts and MultiBot.talent.texts["Title"] then
             MultiBot.talent.texts["Title"]:Hide()
         end
         window:SetTitle(getTalentHostTitle(value) or "Talents & Glyphs")
-        markSelectedTab(value)
-    end
-
-    for _, tab in ipairs(tabDefs) do
-        local btn = aceGUI:Create("Button")
-        btn:SetText(tab.text)
-        btn:SetWidth(155)
-        btn:SetCallback("OnClick", function()
-            activateLegacyTab(tab.value)
-        end)
-        tabBar:AddChild(btn)
-        tabButtons[tab.value] = btn
+        debugTalentTabPlacement("activate:" .. tostring(value))
     end
 
     attachTalentGlyphFrameToHost(host)
     detachTalentLegacyFrameContent(host)
-    hideLegacyTalentTabChrome()
+    showLegacyTalentTabChrome()
     activateLegacyTab("talents")
-
+	
     MultiBot.talentAceHost = {
         window = window,
-        tabBar = tabBar,
         host = host,
     }
 
@@ -4594,10 +4669,19 @@ tGlyph.type = "Major"
 
 tGlyph.addFrame("Overlay", -12, 12, 96) .setLevel(9).doHide()
 
-local bottomTabY = 84
+getTalentBottomTabY = function()
+    if MultiBot.talentAceHost and MultiBot.talentAceHost.host and MultiBot.talentAceHost.host.GetHeight then
+        local hostHeight = MultiBot.talentAceHost.host:GetHeight() or 570
+        local legacyYOffset = math.floor((1024 - hostHeight) / 2)
+        return 84 + legacyYOffset - 5
+    end
+
+    return 84
+end
 
 local function addTalentBottomTab(frameKey, buttonLabel, xOffset)
-	local tabFrame = MultiBot.talent.addFrame(frameKey, xOffset, bottomTabY, 28, 96, 24)
+	local tabFrame = MultiBot.talent.addFrame(frameKey, xOffset, getTalentBottomTabY(), 28, 96, 24)
+	tabFrame.mbXOffset = xOffset
 	tabFrame.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_Tab.blp")
 	tabFrame.buttons = tabFrame.buttons or {}
 
