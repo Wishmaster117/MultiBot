@@ -4068,6 +4068,7 @@ MultiBot.talent:Hide()
 
 MultiBot.talent.movButton("Move", -960, 960, 64, MultiBot.L("tips.move.talent"))
 
+local tabTextures = {}
 local TALENT_LEGACY_CANVAS_WIDTH = 1024
 local TALENT_LEGACY_CANVAS_HEIGHT = 1024
 local TALENT_HOST_DEFAULT_WIDTH = 620
@@ -4139,25 +4140,6 @@ local function getTalentBottomTabY(hostFrame)
     local hostHeight = select(2, getTalentHostDimensions(host))
     local legacyYOffset = math.floor((TALENT_LEGACY_CANVAS_HEIGHT - hostHeight) / 2)
     return 84 + legacyYOffset - 5
-end
-
-local function debugTalentTabPlacement(tag, hostFrame)
-    if not DEFAULT_CHAT_FRAME then
-        return
-    end
-
-    local host = getTalentHostFrame(hostFrame)
-    local hostWidth, hostHeight = getTalentHostDimensions(host)
-    local yOffset = getTalentBottomTabY(host)
-    DEFAULT_CHAT_FRAME:AddMessage(string.format("|cff66ccff[MB][TalentDebug]|r %s host=(%.1f x %.1f) tabY=%d", tostring(tag or "state"), hostWidth, hostHeight, yOffset))
-
-    for _, frameName in ipairs({ "Tab5", "Tab6", "Tab7", "Tab8" }) do
-        local tabFrame = MultiBot.talent.frames and MultiBot.talent.frames[frameName]
-        if tabFrame and tabFrame.GetCenter then
-            local x, y = tabFrame:GetCenter()
-            DEFAULT_CHAT_FRAME:AddMessage(string.format("|cff66ccff[MB][TalentDebug]|r %s center=(%.1f, %.1f) strata=%s level=%d", frameName, x or 0, y or 0, tostring(tabFrame:GetFrameStrata()), tabFrame:GetFrameLevel() or 0))
-        end
-    end
 end
 
 local function attachTalentGlyphFrameToHost(hostFrame)
@@ -4317,13 +4299,35 @@ local function ensureTalentGlyphAceHost()
             MultiBot.talent.texts["Title"]:Hide()
         end
         window:SetTitle(getTalentHostTitle(value) or "Talents & Glyphs")
-        debugTalentTabPlacement("activate:" .. tostring(value))
     end
 
     attachTalentGlyphFrameToHost(host)
     detachTalentLegacyFrameContent(host)
     showLegacyTalentTabChrome()
     activateLegacyTab("talents")
+
+    -- Onglet Talents actif par défaut
+    local t = tabTextures["Tab5"]
+    if t then
+        t.left:SetVertexColor(1, 0.82, 0, 1)
+        t.mid:SetVertexColor(1, 0.82, 0, 1)
+        t.right:SetVertexColor(1, 0.82, 0, 1)
+        if t.btn and t.btn.text then
+            t.btn.text:SetText("|cffffcc00Talents|r")
+        end
+    end
+    -- Autres onglets en gris par défaut
+    for _, key in ipairs({"Tab6","Tab7","Tab8"}) do
+        local f = tabTextures[key]
+        if f then
+            f.left:SetVertexColor(0.5, 0.5, 0.5, 1)
+            f.mid:SetVertexColor(0.5, 0.5, 0.5, 1)
+            f.right:SetVertexColor(0.5, 0.5, 0.5, 1)
+            if f.btn and f.btn.text and f.btn.label then
+                f.btn.text:SetText("|cffaaaaaa" .. f.btn.label .. "|r")
+            end
+        end
+    end
 	
     MultiBot.talentAceHost = {
         window = window,
@@ -4673,61 +4677,115 @@ getTalentBottomTabY = function()
     if MultiBot.talentAceHost and MultiBot.talentAceHost.host and MultiBot.talentAceHost.host.GetHeight then
         local hostHeight = MultiBot.talentAceHost.host:GetHeight() or 570
         local legacyYOffset = math.floor((1024 - hostHeight) / 2)
-        return 84 + legacyYOffset - 5
+        return -35 + legacyYOffset - 5
     end
 
-    return 84
+    return -35
 end
 
 local function addTalentBottomTab(frameKey, buttonLabel, xOffset)
-	local tabFrame = MultiBot.talent.addFrame(frameKey, xOffset, getTalentBottomTabY(), 28, 96, 24)
-	tabFrame.mbXOffset = xOffset
-	tabFrame.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_Tab.blp")
-	tabFrame.buttons = tabFrame.buttons or {}
+    local tabFrame = MultiBot.talent.addFrame(frameKey, xOffset, getTalentBottomTabY(), 28, 96, 24)
+    tabFrame.mbXOffset = xOffset
+    tabFrame.buttons = tabFrame.buttons or {}
 
-	local tabButton = CreateFrame("Button", nil, tabFrame)
-	tabButton:SetPoint("CENTER", -2, 6)
-	tabButton:SetSize(92, 17)
-	tabButton:SetFrameLevel(tabFrame:GetFrameLevel() + 1)
-	tabButton:RegisterForClicks("LeftButtonDown", "RightButtonDown")
-	tabButton:EnableMouse(true)
-	tabButton.parent = tabFrame
-	tabButton.state = true
+    -- Textures onglet chat natif 3.3.5a
+    local bgLeft = tabFrame:CreateTexture(nil, "BACKGROUND")
+    bgLeft:SetTexture("Interface\\ChatFrame\\ChatFrameTab-BGLeft")
+    bgLeft:SetTexCoord(0, 1, 1, 0)  -- flip vertical
+    bgLeft:SetWidth(16)
+    bgLeft:SetHeight(32)
+    bgLeft:SetPoint("BOTTOMLEFT", tabFrame, "BOTTOMLEFT", 0, -4)
 
-	tabButton.text = tabButton:CreateFontString(nil, "ARTWORK")
-	tabButton.text:SetFont("Fonts\\ARIALN.ttf", 11, "OUTLINE")
-	tabButton.text:SetPoint("CENTER", 0, 0)
-	tabButton.text:SetText("|cffffcc00" .. buttonLabel .. "|r")
-	tabButton.text:Show()
+    local bgMid = tabFrame:CreateTexture(nil, "BACKGROUND")
+    bgMid:SetTexture("Interface\\ChatFrame\\ChatFrameTab-BGMid")
+    bgMid:SetTexCoord(0, 1, 1, 0)  -- flip vertical
+    bgMid:SetHeight(32)
+    bgMid:SetPoint("BOTTOMLEFT", tabFrame, "BOTTOMLEFT", 16, -4)
+    bgMid:SetPoint("BOTTOMRIGHT", tabFrame, "BOTTOMRIGHT", -16, -4)
 
-	tabButton.doHide = function()
-		tabButton:Hide()
-		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(tabButton.parent) end
-		return tabButton
-	end
+    local bgRight = tabFrame:CreateTexture(nil, "BACKGROUND")
+    bgRight:SetTexture("Interface\\ChatFrame\\ChatFrameTab-BGRight")
+    bgRight:SetTexCoord(0, 1, 1, 0)  -- flip vertical
+    bgRight:SetWidth(16)
+    bgRight:SetHeight(32)
+    bgRight:SetPoint("BOTTOMRIGHT", tabFrame, "BOTTOMRIGHT", 0, -4)
 
-	tabButton.doShow = function()
-		tabButton:Show()
-		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(tabButton.parent) end
-		return tabButton
-	end
+    tabFrame.texLeft  = bgLeft
+    tabFrame.texMid   = bgMid
+    tabFrame.texRight = bgRight
 
-	tabButton:SetScript("OnLeave", function()
-		tabButton.text:SetPoint("CENTER", 0, 0)
-	end)
+    local tabButton = CreateFrame("Button", "MBTab_"..frameKey, tabFrame)
+    tabButton:SetPoint("BOTTOMLEFT", tabFrame, "BOTTOMLEFT", 0, -4)
+    tabButton:SetSize(96, 32)
+    tabButton:SetFrameLevel(tabFrame:GetFrameLevel() + 1)
+    tabButton:RegisterForClicks("LeftButtonDown", "RightButtonDown")
+    tabButton:EnableMouse(true)
+    tabButton.parent = tabFrame
+    tabButton.state  = true
 
-	tabButton:SetScript("OnClick", function(_, mouseButton)
-		tabButton.text:SetPoint("CENTER", -1, -1)
-		if(mouseButton == "RightButton" and tabButton.doRight) then tabButton.doRight(tabButton) end
-		if(mouseButton == "LeftButton" and tabButton.doLeft) then tabButton.doLeft(tabButton) end
-	end)
+    tabButton.text = tabButton:CreateFontString(nil, "ARTWORK")
+    tabButton.text:SetFont("Fonts\\ARIALN.ttf", 11, "OUTLINE")
+    tabButton.text:SetPoint("CENTER", 0, 8)
+    tabButton.text:SetText("|cffffcc00" .. buttonLabel .. "|r")
+    tabButton.text:Show()
 
-	tabFrame.buttons[buttonLabel] = tabButton
-	return tabButton
+    tabButton.doHide = function()
+        tabButton:Hide()
+        if MultiBot.RequestClickBlockerUpdate then MultiBot.RequestClickBlockerUpdate(tabFrame) end
+        return tabButton
+    end
+
+    tabButton.doShow = function()
+        tabButton:Show()
+        if MultiBot.RequestClickBlockerUpdate then MultiBot.RequestClickBlockerUpdate(tabFrame) end
+        return tabButton
+    end
+
+    tabButton:SetScript("OnLeave", function()
+        tabButton.text:SetPoint("CENTER", 0, 8)
+    end)
+
+-- ✅ Assigne les textures AVANT le SetScript
+    tabTextures[frameKey] = { left = bgLeft, mid = bgMid, right = bgRight, btn = tabButton }
+
+    tabButton:SetScript("OnClick", function(_, mouseButton)
+        tabButton.text:SetPoint("CENTER", -1, 7)
+
+        -- Tous les onglets en gris
+        for _, key in ipairs({"Tab5","Tab6","Tab7","Tab8"}) do
+            local t = tabTextures[key]
+            if t then
+                t.left:SetVertexColor(0.5, 0.5, 0.5, 1)
+                t.mid:SetVertexColor(0.5, 0.5, 0.5, 1)
+                t.right:SetVertexColor(0.5, 0.5, 0.5, 1)
+                if t.btn and t.btn.text and t.btn.label then
+                    t.btn.text:SetText("|cffaaaaaa" .. t.btn.label .. "|r")
+                end
+            end
+        end
+
+        -- Onglet actif en doré
+        local cur = tabTextures[frameKey]
+        if cur then
+            cur.left:SetVertexColor(1, 0.82, 0, 1)
+            cur.mid:SetVertexColor(1, 0.82, 0, 1)
+            cur.right:SetVertexColor(1, 0.82, 0, 1)
+        end
+        tabButton.text:SetText("|cffffcc00" .. buttonLabel .. "|r")
+
+        if mouseButton == "RightButton" and tabButton.doRight then tabButton.doRight(tabButton) end
+        if mouseButton == "LeftButton"  and tabButton.doLeft  then tabButton.doLeft(tabButton)  end
+    end)
+
+    -- Stocke le label pour pouvoir le remettre
+    tabButton.label = buttonLabel
+	
+    --tabFrame.buttons[buttonLabel] = tabButton
+    return tabButton
 end
 
 -- TAB TALENTS --
-local talentsTabBtn = addTalentBottomTab("Tab5", "Talents", -740)
+local talentsTabBtn = addTalentBottomTab("Tab5", "Talents", -715)
 talentsTabBtn.doLeft = function(pButton)
 	if gApply then gApply:Hide() end
     -- Update UI
@@ -4741,7 +4799,7 @@ talentsTabBtn.doLeft = function(pButton)
 end
 
 -- TAB GLYPHS --
-local glyphsTabBtn = addTalentBottomTab("Tab6", "Glyphs", -640)
+local glyphsTabBtn = addTalentBottomTab("Tab6", "Glyphs", -615)
 glyphsTabBtn.doLeft = function(pButton)
 	if gApply then gApply:Hide() end
     -- UI
@@ -5034,7 +5092,7 @@ end
 Add a custom tab to talents windows to make custom builds (Tab7)
 ]]--
 
-local tBtn = addTalentBottomTab("Tab7", "Custom Talents", -540)
+local tBtn = addTalentBottomTab("Tab7", "Custom Talents", -515)
 
 -- 1) FONCTION to INITIALIZE CUSTOM TAB
 function MultiBot.talent.setTalentsCustom()
@@ -5140,7 +5198,7 @@ end
 Add a new tab to use custom Glyphs (Tab8)
 ]]--
 
-local gBtn = addTalentBottomTab("Tab8", "Custom Glyphs", -440)
+local gBtn = addTalentBottomTab("Tab8", "Custom Glyphs", -415)
 
 -- 1) Cache for tooltips
 local glyphTip
