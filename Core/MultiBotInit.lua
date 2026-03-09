@@ -5267,6 +5267,19 @@ local function ClearGlyphSocket(socketFrame)
 	end
 end
 
+local function EnsureGlyphIconButtonBackground(btn, socketType, parent)
+    if btn.bg then
+        return
+    end
+
+    btn.bg = btn:CreateTexture(nil, "BACKGROUND")
+    btn.bg:SetAllPoints(parent)
+    local texSlot = (socketType == "Minor") and
+                    "Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp" or
+                    "Interface\\Spellbook\\UI-Glyph-Slot-Major.blp"
+    btn.bg:SetTexture(MultiBot.SafeTexturePath(texSlot))
+end
+
 -- 5) Shared drag/click handler
 local function CG_OnReceiveDrag(self)
     local typ, itemID = GetCursorInfo()
@@ -5391,12 +5404,7 @@ function MultiBot.talent.showCustomGlyphs()
             if not btn then
                 btn = CreateFrame("Button", nil, s)
                 btn:SetAllPoints(s)
-                btn.bg = btn:CreateTexture(nil, "BACKGROUND")
-                btn.bg:SetAllPoints(s)
-                local texSlot = (s.type == "Minor") and
-                                 "Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp" or
-                                 "Interface\\Spellbook\\UI-Glyph-Slot-Major.blp"
-                btn.bg:SetTexture(MultiBot.SafeTexturePath(texSlot))
+                EnsureGlyphIconButtonBackground(btn, s.type, s)
                 local ic = btn:CreateTexture(nil, "ARTWORK")
                 ic:SetPoint("CENTER", btn, "CENTER", -9, 8)
                 ic:SetSize(s:GetWidth()*0.66, s:GetHeight()*0.66)
@@ -5405,14 +5413,7 @@ function MultiBot.talent.showCustomGlyphs()
                 s.frames.IconBtn = btn
             end
 
-			if not btn.bg then
-				btn.bg = btn:CreateTexture(nil, "BACKGROUND")
-				btn.bg:SetAllPoints(s)
-				local texSlot = (s.type == "Minor") and
-								"Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp" or
-								"Interface\\Spellbook\\UI-Glyph-Slot-Major.blp"
-				btn.bg:SetTexture(MultiBot.SafeTexturePath(texSlot))
-			end
+            EnsureGlyphIconButtonBackground(btn, s.type, s)
 
             btn.bg:Show()
             btn.icon:SetTexture(nil)
