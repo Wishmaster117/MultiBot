@@ -4166,7 +4166,7 @@ local function detachTalentLegacyFrameContent(hostFrame)
         moveButton:Hide()
     end
 
-    for _, frameName in ipairs({ "Tab1", "Tab2", "Tab3", "Tab4", "Tab5", "Tab6", "Tab7", "Tab8" }) do
+    for _, frameName in ipairs({ "Tab1", "Tab2", "Tab3", "Tab4", "Tab5", "Tab6", "Tab7", "Tab8", "Tab9" }) do
         local child = MultiBot.talent.frames and MultiBot.talent.frames[frameName]
         if child and child.SetParent then
             child:SetParent(hostFrame)
@@ -4179,7 +4179,6 @@ local function detachTalentLegacyFrameContent(hostFrame)
             region:SetParent(hostFrame)
         end
     end
-
 
     if MultiBot.talent.texts and MultiBot.talent.texts["Title"] then
         MultiBot.talent.texts["Title"]:Hide()
@@ -4218,7 +4217,6 @@ local function ensureTalentGlyphAceHost()
     end
 
     window:SetTitle("Talents & Glyphs")
-    -- Compact host: sized to fit the 3 talent trees and bottom tabs.
     window:SetWidth(620)
     window:SetHeight(570)
     window:EnableResize(false)
@@ -4245,7 +4243,7 @@ local function ensureTalentGlyphAceHost()
     local function showLegacyTalentTabChrome()
         local hostStrata = host:GetFrameStrata() or "DIALOG"
         local hostLevel = host:GetFrameLevel() or 0
-        for _, frameName in ipairs({ "Tab5", "Tab6", "Tab7", "Tab8" }) do
+        for _, frameName in ipairs({ "Tab5", "Tab6", "Tab7", "Tab8", "Tab9" }) do
             local legacyTab = MultiBot.talent.frames and MultiBot.talent.frames[frameName]
             if legacyTab and legacyTab.SetPoint and legacyTab.ClearAllPoints then
                 local owner = legacyTab:GetParent()
@@ -4284,7 +4282,6 @@ local function ensureTalentGlyphAceHost()
         elseif value == "custom_glyphs" then
             return MultiBot.L("info.glyphscustomglyphsfor") .. " " .. botName
         end
-
         return MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", botName)
     end
 
@@ -4316,6 +4313,17 @@ local function ensureTalentGlyphAceHost()
             t.btn.text:SetText("|cffffcc00Talents|r")
         end
     end
+	
+    local t9 = tabTextures["Tab9"]
+    if t9 then
+        t9.left:SetVertexColor(1, 0.82, 0, 1)
+        t9.mid:SetVertexColor(1, 0.82, 0, 1)
+        t9.right:SetVertexColor(1, 0.82, 0, 1)
+        if t9.btn and t9.btn.text then
+            t9.btn.text:SetText("|cffffcc00Copy|r")
+        end
+    end
+	
     -- Autres onglets en gris par défaut
     for _, key in ipairs({"Tab6","Tab7","Tab8"}) do
         local f = tabTextures[key]
@@ -4328,7 +4336,7 @@ local function ensureTalentGlyphAceHost()
             end
         end
     end
-	
+
     MultiBot.talentAceHost = {
         window = window,
         host = host,
@@ -4351,7 +4359,6 @@ do
             host.window:Show()
         end
 
-        -- Keep legacy container hidden; Ace host owns visibility in slice 3.
         if originalHide then
             originalHide(self)
         end
@@ -4404,6 +4411,7 @@ local tApply = MultiBot.talent.buttons[ MultiBot.L("info.talent.Apply") ]
 
 MultiBot.talent.wowButton(MultiBot.L("info.talent.Copy"), -854, 966, 100, 20, 12)
 local copyBtn = MultiBot.talent.buttons[MultiBot.L("info.talent.Copy")]
+copyBtn:Hide()  -- caché définitivement, remplacé par Tab9
 
 copyBtn.doLeft = function(pButton)
 	local tName = UnitName("target")
@@ -4437,26 +4445,33 @@ MultiBot.talent.wowButton("X", -470, 992, 17, 20, 13)
 	tButton.doLeft(tButton)
 end
 
-local tTab = MultiBot.talent.addFrame("Tab1", -830, 518, 28, 170, 408)
-tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\White.blp")
-tTab.addText("Title", MB_TAB_TITLE_DEFAULT, "CENTER", 0, 214, 13)
-tTab.arrows = {}
-tTab.value = 0
-tTab.id = 1
+-- Tab1, Tab2, Tab3 dans des blocs do...end pour libérer les locals
+do
+    local tTab = MultiBot.talent.addFrame("Tab1", -830, 518, 28, 170, 408)
+    tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\White.blp")
+    tTab.addText("Title", MB_TAB_TITLE_DEFAULT, "CENTER", 0, 214, 13)
+    tTab.arrows = {}
+    tTab.value = 0
+    tTab.id = 1
+end
 
-local tTab = MultiBot.talent.addFrame("Tab2", -656, 518, 28, 170, 408)
-tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\White.blp")
-tTab.addText("Title", MB_TAB_TITLE_DEFAULT, "CENTER", 0, 214, 13)
-tTab.arrows = {}
-tTab.value = 0
-tTab.id = 2
+do
+    local tTab = MultiBot.talent.addFrame("Tab2", -656, 518, 28, 170, 408)
+    tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\White.blp")
+    tTab.addText("Title", MB_TAB_TITLE_DEFAULT, "CENTER", 0, 214, 13)
+    tTab.arrows = {}
+    tTab.value = 0
+    tTab.id = 2
+end
 
-local tTab = MultiBot.talent.addFrame("Tab3", -482, 518, 28, 170, 408)
-tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\White.blp")
-tTab.addText("Title", MB_TAB_TITLE_DEFAULT, "CENTER", 0, 214, 13)
-tTab.arrows = {}
-tTab.value = 0
-tTab.id = 3
+do
+    local tTab = MultiBot.talent.addFrame("Tab3", -482, 518, 28, 170, 408)
+    tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\White.blp")
+    tTab.addText("Title", MB_TAB_TITLE_DEFAULT, "CENTER", 0, 214, 13)
+    tTab.arrows = {}
+    tTab.value = 0
+    tTab.id = 3
+end
 
 -- ACTUAL GLYPHES START --
 
@@ -4468,12 +4483,10 @@ local function ShowGlyphTooltip(self)
     if not id then return end
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 
-    -- 1) try like a spell
     if GameTooltip:SetSpellByID(id) then
         return
     end
 
-    -- 2) try like a item
     GameTooltip:SetHyperlink("item:"..id..":0:0:0:0:0:0:0")
 end
 
@@ -4486,30 +4499,24 @@ function MultiBot.FillDefaultGlyphs()
     local unit    = MultiBot.toUnit(botName)
     if not unit then return end
 
-    -- rec is the table received from the handler, in the following format
-    -- { [1]={id=…,type=…}, …, [6]={…} }
     local rec = MultiBot.receivedGlyphs and MultiBot.receivedGlyphs[botName]
     if not rec then
         DEFAULT_CHAT_FRAME:AddMessage("|cff00ff00[MultiBot]|r Waiting for glyphs…")
         return
     end
 
-    -- Derive the class key to access glyphDB
     local _, classFile = UnitClass(unit)
     local classKey = (classFile == "DEATHKNIGHT" and "DeathKnight")
                    or (classFile:sub(1,1) .. classFile:sub(2):lower())
     local glyphDB = MultiBot.data.talent.glyphs[classKey] or {}
 
-    -- Loop through each slot i = 1..6
     for i, entry in ipairs(rec) do
         local id, typ = entry.id, entry.type
         local f = MultiBot.talent.frames["Tab4"].frames["Socket"..i]
         if f and f.frames then
-            -- 1) Glow
             f.type, f.item = typ, id
             f.frames.Glow:Show()
 
-            -- 2) Rune
             local raw = glyphDB[typ] and glyphDB[typ][id] or ""
             local _, runeIdx = strsplit(",%s*", raw)
             runeIdx = runeIdx or "1"
@@ -4520,10 +4527,8 @@ function MultiBot.FillDefaultGlyphs()
                 runeTex:SetTexture(MultiBot.SafeTexturePath("Interface\\Spellbook\\UI-Glyph-Rune"..runeIdx))
             end
 
-            -- 3) Icon + Tooltip
             local tex = GetSpellTexture(id)
                      or select(10, GetItemInfo(id))
-                     -- or "Interface\\Icons\\INV_Misc_QuestionMark"
 					 or "Interface\\AddOns\\MultiBot\\Textures\\UI-GlyphFrame-Glow.blp"
             local btn = f.frames.IconBtn
             if not btn then
@@ -4532,16 +4537,13 @@ function MultiBot.FillDefaultGlyphs()
                 btn:SetScript("OnEnter", ShowGlyphTooltip)
                 btn:SetScript("OnLeave", HideGlyphTooltip)
 
-                -- Creating the texture
                 local icon = btn:CreateTexture(nil, "ARTWORK")
                 icon:ClearAllPoints()
                 icon:SetPoint("CENTER", btn, "CENTER", -9, 8)
 
-                -- resizing
                 local factor = (typ == "Major") and 0.64 or 0.66
                 icon:SetSize(f:GetWidth() * factor, f:GetHeight() * factor)
 
-                -- croping
                 local crop = (typ == "Major") and 0.14 or 0.20
                 icon:SetTexCoord(crop, 1 - crop, crop, 1 - crop)
 
@@ -4549,12 +4551,10 @@ function MultiBot.FillDefaultGlyphs()
                 f.frames.IconBtn = btn
             end
 
-            -- Update icon
             btn.glyphID = id
             btn.icon:SetTexture(MultiBot.SafeTexturePath(tex))
             btn:Show()
 
-            -- Overlay circle
             local ov = f.frames.Overlay
             if ov and not ov.texture then
                 ov.texture = ov:CreateTexture(nil, "BORDER")
@@ -4569,31 +4569,32 @@ function MultiBot.FillDefaultGlyphs()
         end
     end
 
-    -- Chat display (optional)
     local names = {}
     for _, entry in ipairs(rec) do
-        local n = select(1, GetItemInfo(entry.id))   -- name of object (glyphe)
-              or GetSpellInfo(entry.id)              -- fallback if no objecy
+        local n = select(1, GetItemInfo(entry.id))
+              or GetSpellInfo(entry.id)
               or ("ID "..entry.id)
         table.insert(names,
             (entry.type=="Major" and "|cffffff00" or "|cff00ff00") .. n .. "|r")
     end
 end
 
--- Add a custom background to the Glyphs Frame (tTab)
-local tTab = MultiBot.talent.addFrame("Tab4", -513, 518, 28, 456, 430) -- offset x, offset y, strata level, widht, height
-tTab.addFrame("Glow", 0, 0, 28, 456, 430).setAlpha(0.5).doHide()-- .addTexture("Interface/Spellbook/Talent_Glyphs_Glow.blp")
-tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Background-GlyphFrame.blp")
-tTab:Hide()
+-- Tab4 dans un bloc do...end
+do
+    local tTab = MultiBot.talent.addFrame("Tab4", -513, 518, 28, 456, 430)
+    tTab.addFrame("Glow", 0, 0, 28, 456, 430).setAlpha(0.5).doHide()
+    tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Background-GlyphFrame.blp")
+    tTab:Hide()
+end
 
-local parentTab4 = MultiBot.talent.frames["Tab4"]   -- alias
+local parentTab4 = MultiBot.talent.frames["Tab4"]
 
--- Bouton “Apply Glyphs” – créé **une seule fois** :
+-- Bouton "Apply Glyphs"
 gApply = parentTab4.wowButton("Apply Glyphs", 0, 0, 100, 20, 12)
 gApply:ClearAllPoints()
 gApply:SetPoint("TOPRIGHT", parentTab4, "TOPRIGHT", -20, -20)
 gApply:SetFrameLevel(parentTab4:GetFrameLevel() + 10)
-gApply:Hide()          -- invisible till no modif
+gApply:Hide()
 gApply:SetScript("OnClick", function()
     local ids = {}
     for i = 1, 6 do
@@ -4606,72 +4607,61 @@ gApply:SetScript("OnClick", function()
     gApply:Hide()
 end)
 
--- GLYPH:SOCKET1 --
+-- Sockets dans des blocs do...end pour libérer les locals
+do
+    local tGlyph = parentTab4.addFrame("Socket1", -176.5, 310, 102)
+    tGlyph.addFrame("Glow",   0,  0, 102).setLevel(7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Slot-Major.blp")
+    tGlyph.addFrame("Rune", -29, 29,  44).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
+    tGlyph.frames = tGlyph.frames or {}
+    tGlyph.type = "Major"
+    tGlyph.item = 0
+    tGlyph.addFrame("Overlay", -12, 12, 96).setLevel(9).doHide()
+end
 
--- Level 15
-local tGlyph = tTab.addFrame("Socket1", -176.5, 310, 102) -- 1st socket at the top: Major (offset x, offset y, frame size)
-tGlyph.addFrame("Glow",   0,  0, 102).setLevel(7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Slot-Major.blp")
-tGlyph.addFrame("Rune", -29, 29,  44).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
-tGlyph.frames = tGlyph.frames or {}
-tGlyph.type = "Major"
-tGlyph.item = 0
+do
+    local tGlyph = parentTab4.addFrame("Socket2", -187, 18.5, 82)
+    tGlyph.addFrame("Glow",   0,  0, 82).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp")
+    tGlyph.addFrame("Rune", -25, 25, 32).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
+    tGlyph.frames = tGlyph.frames or {}
+    tGlyph.type = "Minor"
+    tGlyph.addFrame("Overlay", -9, 9, 80).setLevel(9).doHide()
+end
 
-tGlyph.addFrame("Overlay", -12, 12, 96).setLevel(9).doHide()
+do
+    local tGlyph = parentTab4.addFrame("Socket3", -18.5, 50.5, 102)
+    tGlyph.addFrame("Glow",   0,  0, 102).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Major.blp")
+    tGlyph.addFrame("Rune", -29, 29,  44).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
+    tGlyph.frames = tGlyph.frames or {}
+    tGlyph.type = "Major"
+    tGlyph.addFrame("Overlay", -12, 12, 96).setLevel(9).doHide()
+end
 
--- GLYPH:SOCKET2 --
+do
+    local tGlyph = parentTab4.addFrame("Socket4", -302.5, 218, 82)
+    tGlyph.addFrame("Glow",   0,  0, 82).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp")
+    tGlyph.addFrame("Rune", -25, 25, 32).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
+    tGlyph.frames = tGlyph.frames or {}
+    tGlyph.type = "Minor"
+    tGlyph.addFrame("Overlay", -9, 9, 80).setLevel(9).doHide()
+end
 
--- Level 15
-local tGlyph = tTab.addFrame("Socket2", -187, 18.5, 82) -- Minor socket at the very bottom: Minor
-tGlyph.addFrame("Glow",   0,  0, 82).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp")
-tGlyph.addFrame("Rune", -25, 25, 32).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
-tGlyph.frames = tGlyph.frames or {}
-tGlyph.type = "Minor"
+do
+    local tGlyph = parentTab4.addFrame("Socket5", -72.5, 218, 82)
+    tGlyph.addFrame("Glow",   0,  0, 82).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp")
+    tGlyph.addFrame("Rune", -25, 25, 32).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
+    tGlyph.frames = tGlyph.frames or {}
+    tGlyph.type = "Minor"
+    tGlyph.addFrame("Overlay", -9, 9, 80).setLevel(9).doHide()
+end
 
-tGlyph.addFrame("Overlay", -9, 9, 80).setLevel(9).doHide()
-
--- GLYPH:SOCKET3 --
-
--- Level 30
-local tGlyph = tTab.addFrame("Socket3", -18.5, 50.5, 102) -- Bottom-right socket: Major
-tGlyph.addFrame("Glow",   0,  0, 102).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Major.blp")
-tGlyph.addFrame("Rune", -29, 29,  44).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
-tGlyph.frames = tGlyph.frames or {}
-tGlyph.type = "Major"
-
-tGlyph.addFrame("Overlay", -12, 12, 96) .setLevel(9).doHide()
-
--- GLYPH:SOCKET4 --
-
--- Level 50
-local tGlyph = tTab.addFrame("Socket4", -302.5, 218, 82) -- Top-left socket: Minor
-tGlyph.addFrame("Glow",   0,  0, 82).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp")
-tGlyph.addFrame("Rune", -25, 25, 32).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
-tGlyph.frames = tGlyph.frames or {}
-tGlyph.type = "Minor"
-
-tGlyph.addFrame("Overlay", -9, 9, 80).setLevel(9).doHide()
-
--- GLYPH:SOCKET5 --
-
--- Level 70
-local tGlyph = tTab.addFrame("Socket5", -72.5, 218, 82) -- Top-right socket: Minor
-tGlyph.addFrame("Glow",   0,  0, 82).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp")
-tGlyph.addFrame("Rune", -25, 25, 32).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
-tGlyph.frames = tGlyph.frames or {}
-tGlyph.type = "Minor"
-
-tGlyph.addFrame("Overlay", -9, 9, 80).setLevel(9).doHide()
-
--- GLYPH:SOCKET6 --
-
--- Level 80
-local tGlyph = tTab.addFrame("Socket6", -336, 50.5, 102) -- Bottom-left socket: Major
-tGlyph.addFrame("Glow",   0,  0, 102).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Major.blp")
-tGlyph.addFrame("Rune", -29, 29,  44).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
-tGlyph.frames = tGlyph.frames or {}
-tGlyph.type = "Major"
-
-tGlyph.addFrame("Overlay", -12, 12, 96) .setLevel(9).doHide()
+do
+    local tGlyph = parentTab4.addFrame("Socket6", -336, 50.5, 102)
+    tGlyph.addFrame("Glow",   0,  0, 102).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Major.blp")
+    tGlyph.addFrame("Rune", -29, 29,  44).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
+    tGlyph.frames = tGlyph.frames or {}
+    tGlyph.type = "Major"
+    tGlyph.addFrame("Overlay", -12, 12, 96).setLevel(9).doHide()
+end
 
 getTalentBottomTabY = function()
     if MultiBot.talentAceHost and MultiBot.talentAceHost.host and MultiBot.talentAceHost.host.GetHeight then
@@ -4688,24 +4678,23 @@ local function addTalentBottomTab(frameKey, buttonLabel, xOffset)
     tabFrame.mbXOffset = xOffset
     tabFrame.buttons = tabFrame.buttons or {}
 
-    -- Textures onglet chat natif 3.3.5a
     local bgLeft = tabFrame:CreateTexture(nil, "BACKGROUND")
     bgLeft:SetTexture("Interface\\ChatFrame\\ChatFrameTab-BGLeft")
-    bgLeft:SetTexCoord(0, 1, 1, 0)  -- flip vertical
+    bgLeft:SetTexCoord(0, 1, 1, 0)
     bgLeft:SetWidth(16)
     bgLeft:SetHeight(32)
     bgLeft:SetPoint("BOTTOMLEFT", tabFrame, "BOTTOMLEFT", 0, -4)
 
     local bgMid = tabFrame:CreateTexture(nil, "BACKGROUND")
     bgMid:SetTexture("Interface\\ChatFrame\\ChatFrameTab-BGMid")
-    bgMid:SetTexCoord(0, 1, 1, 0)  -- flip vertical
+    bgMid:SetTexCoord(0, 1, 1, 0)
     bgMid:SetHeight(32)
     bgMid:SetPoint("BOTTOMLEFT", tabFrame, "BOTTOMLEFT", 16, -4)
     bgMid:SetPoint("BOTTOMRIGHT", tabFrame, "BOTTOMRIGHT", -16, -4)
 
     local bgRight = tabFrame:CreateTexture(nil, "BACKGROUND")
     bgRight:SetTexture("Interface\\ChatFrame\\ChatFrameTab-BGRight")
-    bgRight:SetTexCoord(0, 1, 1, 0)  -- flip vertical
+    bgRight:SetTexCoord(0, 1, 1, 0)
     bgRight:SetWidth(16)
     bgRight:SetHeight(32)
     bgRight:SetPoint("BOTTOMRIGHT", tabFrame, "BOTTOMRIGHT", 0, -4)
@@ -4727,6 +4716,7 @@ local function addTalentBottomTab(frameKey, buttonLabel, xOffset)
     tabButton.text:SetFont("Fonts\\ARIALN.ttf", 11, "OUTLINE")
     tabButton.text:SetPoint("CENTER", 0, 8)
     tabButton.text:SetText("|cffffcc00" .. buttonLabel .. "|r")
+
     tabButton.text:Show()
 
     tabButton.doHide = function()
@@ -4745,14 +4735,12 @@ local function addTalentBottomTab(frameKey, buttonLabel, xOffset)
         tabButton.text:SetPoint("CENTER", 0, 8)
     end)
 
--- ✅ Assigne les textures AVANT le SetScript
     tabTextures[frameKey] = { left = bgLeft, mid = bgMid, right = bgRight, btn = tabButton }
 
     tabButton:SetScript("OnClick", function(_, mouseButton)
         tabButton.text:SetPoint("CENTER", -1, 7)
 
-        -- Tous les onglets en gris
-        for _, key in ipairs({"Tab5","Tab6","Tab7","Tab8"}) do
+        for _, key in ipairs({"Tab5","Tab6","Tab7","Tab8","Tab9"}) do
             local t = tabTextures[key]
             if t then
                 t.left:SetVertexColor(0.5, 0.5, 0.5, 1)
@@ -4764,7 +4752,6 @@ local function addTalentBottomTab(frameKey, buttonLabel, xOffset)
             end
         end
 
-        -- Onglet actif en doré
         local cur = tabTextures[frameKey]
         if cur then
             cur.left:SetVertexColor(1, 0.82, 0, 1)
@@ -4777,10 +4764,7 @@ local function addTalentBottomTab(frameKey, buttonLabel, xOffset)
         if mouseButton == "LeftButton"  and tabButton.doLeft  then tabButton.doLeft(tabButton)  end
     end)
 
-    -- Stocke le label pour pouvoir le remettre
     tabButton.label = buttonLabel
-	
-    --tabFrame.buttons[buttonLabel] = tabButton
     return tabButton
 end
 
@@ -4788,28 +4772,36 @@ end
 local talentsTabBtn = addTalentBottomTab("Tab5", "Talents", -715)
 talentsTabBtn.doLeft = function(pButton)
 	if gApply then gApply:Hide() end
-    -- Update UI
     MultiBot.talent.setText("Title", MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", MultiBot.talent.name))
     MultiBot.talent.texts["Points"]:Show()
     MultiBot.talent.frames["Tab1"]:Show()
     MultiBot.talent.frames["Tab2"]:Show()
     MultiBot.talent.frames["Tab3"]:Show()
     MultiBot.talent.frames["Tab4"]:Hide()
-	copyBtn:doShow()
+    if MultiBot.talent.frames["Tab9"] then MultiBot.talent.frames["Tab9"]:Show() end
+    -- Remet Tab9 en doré car le OnClick l'a grisé
+    local t9 = tabTextures["Tab9"]
+    if t9 then
+        t9.left:SetVertexColor(1, 0.82, 0, 1)
+        t9.mid:SetVertexColor(1, 0.82, 0, 1)
+        t9.right:SetVertexColor(1, 0.82, 0, 1)
+        if t9.btn and t9.btn.text then
+            t9.btn.text:SetText("|cffffcc00Copy|r")
+        end
+    end
 end
 
 -- TAB GLYPHS --
 local glyphsTabBtn = addTalentBottomTab("Tab6", "Glyphs", -615)
 glyphsTabBtn.doLeft = function(pButton)
 	if gApply then gApply:Hide() end
-    -- UI
     MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.glyphsglyphsfor") .. " |r" .. (MultiBot.talent.name or "?"))
     MultiBot.talent.texts["Points"]:Hide()
     MultiBot.talent.frames["Tab1"]:Hide()
     MultiBot.talent.frames["Tab2"]:Hide()
     MultiBot.talent.frames["Tab3"]:Hide()
     MultiBot.talent.frames["Tab4"]:Show()
-	copyBtn:doHide()
+    if MultiBot.talent.frames["Tab9"] then MultiBot.talent.frames["Tab9"]:Hide() end
     local botName = MultiBot.talent.name
     MultiBot.awaitGlyphs = botName
     SendChatMessage("glyphs", "WHISPER", nil, botName)
@@ -4844,7 +4836,7 @@ end
 
 MultiBot.talent.addTalent = function(pTab, pID, pNeeds, pValue, pMax, piX, piY, pTexture, pTips)
 	local tTalent = pTab.addButton(pID, piX * pTab.grid.icons.size - pTab.grid.icons.x, pTab.grid.icons.y - piY * pTab.grid.icons.size, pTexture, pTips[pValue + 1])
-    tTalent:RegisterForClicks("LeftButtonUp", "RightButtonUp") 	-- Added for custom talents accept right and left click
+    tTalent:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	tTalent.points = piY * 5 - 5
 	tTalent.needs = pNeeds
 	tTalent.value = pValue
@@ -4891,29 +4883,23 @@ MultiBot.talent.addTalent = function(pTab, pID, pNeeds, pValue, pMax, piX, piY, 
 		MultiBot.talent.doState()
 	end
 
-	-- Add right click to remove custom Points
-	-- Right click : –1 point
 	tTalent.doRight = function(pButton)
-		if pButton.value == 0 then return end          -- Nothing to remove
+		if pButton.value == 0 then return end
 
-		local tTab   = pButton.parent                  -- Tab (tree)
-		local tValue = tTab.frames[pButton.id]         -- Text 1/5
+		local tTab   = pButton.parent
+		local tValue = tTab.frames[pButton.id]
 
-		-- Restore the global point
 		MultiBot.talent.points = MultiBot.talent.points + 1
 		MultiBot.talent.setText("Points",
 			MultiBot.L("info.talent.Points") .. MultiBot.talent.points)
 
-		-- -- Update this talent + the tab
 		pButton.value = pButton.value - 1
 		pButton.tip   = pButton.tips[pButton.value + 1]
 		tTab.value    = tTab.value  - 1
-		-- Updates the title at the top of the tree
 		tTab.setText("Title",
 			MultiBot.L("info.talent." .. pButton.getClass() .. tTab.id) ..
 			" (" .. tTab.value .. ")")
 
-		-- Color based on rank
 		local c = (pButton.value == 0)      and "|cffffffff"
 			or (pButton.value < pButton.max) and "|cff4db24d"
 			or "|cffffcc00"
@@ -4925,14 +4911,11 @@ MultiBot.talent.addTalent = function(pTab, pID, pNeeds, pValue, pMax, piX, piY, 
 			tValue:Show()
 		end
 
-		-- -- Re-evaluate the state of all buttons/arrows
 		MultiBot.talent.doState()
-
-		-- -- Re-display the "Apply" button (modified build)
 		MultiBot.talent.buttons[MultiBot.L("info.talent.Apply")].doShow()
 	end
-		tTalent:SetFrameLevel(8)
-		return tTalent
+	tTalent:SetFrameLevel(8)
+	return tTalent
 end
 
 MultiBot.talent.addValue = function(pTab, pID, piX, piY, pRank, pMax)
@@ -4946,7 +4929,6 @@ MultiBot.talent.addValue = function(pTab, pID, piX, piY, pRank, pMax)
 end
 
 MultiBot.talent.setTalents = function()
-    -- 1) Check datas
     local tClass = MultiBot.data.talent.talents[ MultiBot.talent.class ]
     if not tClass then
         print("|cffff0000[MultiBot] No build found for class "
@@ -4963,13 +4945,11 @@ MultiBot.talent.setTalents = function()
 
 	local activeGroup = GetActiveTalentGroup(true) or 1
 
-    -- No talents loaded yet ? we retry in 0,1 s
     if not GetTalentInfo(1, 1, true) then
         TimerAfter(0.1, MultiBot.talent.setTalents)
         return
     end
 
-    -- 2) Frame update
     MultiBot.talent.points = tonumber(GetUnspentTalentPoints(true))
     MultiBot.talent.setText("Points",
        MultiBot.L("info.talent.Points") .. MultiBot.talent.points)
@@ -4985,7 +4965,6 @@ MultiBot.talent.setTalents = function()
                         tMarker .. ".blp")
         tTab.value, tTab.id = 0, i
 
-        -- arrows
         for j = 1, #tArrow[i] do
             local tData = MultiBot.doSplit(tArrow[i][j], ", ")
             local tNeed = tonumber(tData[1])
@@ -4993,12 +4972,9 @@ MultiBot.talent.setTalents = function()
                                  tTab, j, tNeed, tData[2], tData[3], tData[4])
         end
 
-        -- talents
         for j = 1, #tClass[i] do
             local link = GetTalentLink(i,j,true,nil,activeGroup)
-
             local tTale = MultiBot.doSplit(MultiBot.doSplit(link, "|")[3], ":")[2]
-
             local iName, iIcon, iTier, iColumn, iRank = GetTalentInfo(i, j, true, nil, activeGroup)
 
             if not iName then
@@ -5032,7 +5008,6 @@ MultiBot.talent.setTalents = function()
             MultiBot.L("info.talent." .. tMarker) .. " (" .. tTab.value .. ")")
     end
 
-    -- 3) Final display
     MultiBot.talent.doState()
 	MultiBot.talent:Show()
 	MultiBot.auto.talent = false
@@ -5094,18 +5069,14 @@ Add a custom tab to talents windows to make custom builds (Tab7)
 
 local tBtn = addTalentBottomTab("Tab7", "Custom Talents", -515)
 
--- 1) FONCTION to INITIALIZE CUSTOM TAB
 function MultiBot.talent.setTalentsCustom()
-    -- Protection if data from Talents still not.
     if not GetTalentInfo(1, 1, true) then
         TimerAfter(0.05, MultiBot.talent.setTalentsCustom)
         return
     end
-    -- 0) visual Reset
     MultiBot.talent.doClear()
     MultiBot.talent.custom = true
 
-    -- 1) Load existing datas class/arrows
     local tClass = MultiBot.data.talent.talents[ MultiBot.talent.class ]
     local tArrow = MultiBot.data.talent.arrows[  MultiBot.talent.class ]
     if not (tClass and tArrow) then
@@ -5113,7 +5084,6 @@ function MultiBot.talent.setTalentsCustom()
         return
     end
 
-    -- 2) Available points (level - 9)
     local unit  = MultiBot.toUnit(MultiBot.talent.name)
     local level = UnitLevel(unit) or 80
     MultiBot.talent.points = math.max(level - 9, 0)
@@ -5121,21 +5091,18 @@ function MultiBot.talent.setTalentsCustom()
     MultiBot.talent.setText("Points",   MultiBot.L("info.talent.Points") .. MultiBot.talent.points)
 	MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.talentscustomtalentsfor") .. " |r" .. (MultiBot.talent.name or "?"))
 
-    -- 3) Construction of the 3 empty trees
     for i = 1, 3 do
         local marker = MultiBot.talent.class .. i
         local pTab   = MultiBot.talent.setGrid( MultiBot.talent.frames["Tab"..i] )
         pTab.setTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_"..marker..".blp")
         pTab.value, pTab.id = 0, i
 
-        -- arrows/requireds
         for j = 1, #tArrow[i] do
             local d = MultiBot.doSplit(tArrow[i][j], ", ")
             local need = tonumber(d[1])
             pTab.arrows[j] = MultiBot.talent.addArrow(pTab, j, need, d[2], d[3], d[4])
         end
 
-        -- talents (rank 0 everywhere)
         for j = 1, #tClass[i] do
             local data = MultiBot.doSplit(tClass[i][j], ", ")
             local max  = #data - 4
@@ -5156,24 +5123,21 @@ function MultiBot.talent.setTalentsCustom()
         pTab.setText("Title", MultiBot.L("info.talent." .. marker) .. " (0)")
     end
 
-    -- 4) Ajustement final + affichage
     MultiBot.talent.texts["Points"]:Show()
     MultiBot.talent.frames["Tab1"]:Show()
     MultiBot.talent.frames["Tab2"]:Show()
     MultiBot.talent.frames["Tab3"]:Show()
-    MultiBot.talent.frames["Tab4"]:Hide()   -- glyphs
+    MultiBot.talent.frames["Tab4"]:Hide()
 	if gApply then gApply:Hide() end
-	copyBtn:doHide()
     MultiBot.talent.doState()
     MultiBot.talent:Show()
 end
 
--- CALLBACK OF BUTTON (CUSTOM TAB)
 tBtn.doLeft = function(btn)
     MultiBot.talent.setTalentsCustom()
+    if MultiBot.talent.frames["Tab9"] then MultiBot.talent.frames["Tab9"]:Hide() end
 end
 
--- RETURN FROM CUSTOM TO TALENTS
 local tabTalentsBtn = MultiBot.talent.frames["Tab5"]
                      and MultiBot.talent.frames["Tab5"].buttons
                      and MultiBot.talent.frames["Tab5"].buttons["Talents"]
@@ -5182,7 +5146,7 @@ if tabTalentsBtn then
     tabTalentsBtn.doLeft = function(btn)
         if MultiBot.talent.custom then
             MultiBot.talent.custom = false
-            MultiBot.talent.setTalents()   -- Rebuild the actual spec tree
+            MultiBot.talent.setTalents()
             if oldTalentsClick then
                 oldTalentsClick(btn)
             end
@@ -5192,7 +5156,7 @@ if tabTalentsBtn then
     end
 end
 
--- END TAB CUSTOM TAMENTS --
+-- END TAB CUSTOM TALENTS --
 
 --[[
 Add a new tab to use custom Glyphs (Tab8)
@@ -5200,10 +5164,8 @@ Add a new tab to use custom Glyphs (Tab8)
 
 local gBtn = addTalentBottomTab("Tab8", "Custom Glyphs", -415)
 
--- 1) Cache for tooltips
 local glyphTip
 
--- 2) Detect Major / Minor glyph via tooltip
 local function GetGlyphItemType(itemID)
     if not glyphTip then
         glyphTip = ensureHiddenTooltip("MBHiddenTip", UIParent)
@@ -5219,7 +5181,6 @@ local function GetGlyphItemType(itemID)
     return nil
 end
 
--- 3) Build the itemID→classKey table once
 function MultiBot.BuildGlyphClassTable()
     if MultiBot.__glyphClass then return end
     if not MultiBot.data or not MultiBot.data.talent or not MultiBot.data.talent.glyphs then return end
@@ -5234,7 +5195,6 @@ function MultiBot.BuildGlyphClassTable()
     end
 end
 
--- Send true if a least a glyph socket are filled
 local function HasPendingGlyph()
     for i = 1, 6 do
         if parentTab4.frames["Socket"..i].item ~= 0 then
@@ -5244,18 +5204,16 @@ local function HasPendingGlyph()
     return false
 end
 
--- 4) Oups i drag the wrong glyph
 local function ClearGlyphSocket(socketFrame)
-    socketFrame.item = 0          -- plus d’ID enregistré
+    socketFrame.item = 0
 
-    -- partie visuelle
     if socketFrame.frames.Rune  then socketFrame.frames.Rune:Hide()  end
     if socketFrame.frames.IconBtn then
         local btn = socketFrame.frames.IconBtn
         if btn.icon then btn.icon:SetTexture(nil) end
         if btn.bg   then btn.bg:Show()            end
         btn.glyphID = nil
-        btn:Show()          -- on laisse le bouton visible pour un futur drop
+        btn:Show()
     end
 
     if gApply then
@@ -5268,10 +5226,7 @@ local function ClearGlyphSocket(socketFrame)
 end
 
 local function EnsureGlyphIconButtonBackground(btn, socketType, parent)
-    if btn.bg then
-        return
-    end
-
+    if btn.bg then return end
     btn.bg = btn:CreateTexture(nil, "BACKGROUND")
     btn.bg:SetAllPoints(parent)
     local texSlot = (socketType == "Minor") and
@@ -5280,7 +5235,6 @@ local function EnsureGlyphIconButtonBackground(btn, socketType, parent)
     btn.bg:SetTexture(MultiBot.SafeTexturePath(texSlot))
 end
 
--- 5) Shared drag/click handler
 local function CG_OnReceiveDrag(self)
     local typ, itemID = GetCursorInfo()
     if typ ~= "item" then return end
@@ -5290,19 +5244,16 @@ local function CG_OnReceiveDrag(self)
     end
     local socket = self:GetParent()
 
-	-- Reject drop if required level is not reached
-local botUnit = MultiBot.toUnit(MultiBot.talent.name)
-local lvl     = UnitLevel(botUnit or "player")
-
-local idx = socket:GetID()
-
-if idx == 0 then
-    idx = tonumber(socket:GetName():match("Socket(%d+)"))
-end
-if lvl < socketReq[idx] then
-    UIErrorsFrame:AddMessage(MultiBot.L("info.glyphssocketnotunlocked"),1,0.3,0.3,1)
-    return
-end
+	local botUnit = MultiBot.toUnit(MultiBot.talent.name)
+	local lvl     = UnitLevel(botUnit or "player")
+	local idx = socket:GetID()
+	if idx == 0 then
+	    idx = tonumber(socket:GetName():match("Socket(%d+)"))
+	end
+	if lvl < socketReq[idx] then
+	    UIErrorsFrame:AddMessage(MultiBot.L("info.glyphssocketnotunlocked"),1,0.3,0.3,1)
+	    return
+	end
 
     local unit   = MultiBot.toUnit(MultiBot.talent.name)
     local _, cf  = UnitClass(unit or "player")
@@ -5351,7 +5302,6 @@ end
         (r.texture or r):SetTexture(MultiBot.SafeTexturePath("Interface\\Spellbook\\UI-Glyph-Rune-"..runeIdx))
         r:Show()
     end
-    -- local tex = select(10, GetItemInfo(itemID)) or GetSpellTexture(itemID) or "Interface\\Icons\\INV_Misc_QuestionMark"
 	local tex = select(10, GetItemInfo(itemID)) or GetSpellTexture(itemID) or "Interface\\AddOns\\MultiBot\\Textures\\UI-GlyphFrame-Glow.blp"
     self.icon:SetTexture(MultiBot.SafeTexturePath(tex))
     self.glyphID = itemID
@@ -5360,7 +5310,6 @@ end
     gApply:Show()
 end
 
--- 7) Prepare Tab4 for custom mode
 function MultiBot.talent.showCustomGlyphs()
     MultiBot.talent.texts["Points"]:Hide()
     for i=1,3 do MultiBot.talent.frames["Tab"..i]:Hide() end
@@ -5369,12 +5318,10 @@ function MultiBot.talent.showCustomGlyphs()
     for i=1,6 do
         local s = parentTab4.frames["Socket"..i]
         if s then
-		    s:SetID(i) -- Add an ID to the socket
-		    -- Check the bot's level
+		    s:SetID(i)
             local botUnit  = MultiBot.toUnit(MultiBot.talent.name)
 			local lvl      = UnitLevel(botUnit or "player")
-			local unlocked = lvl >= socketReq[i] -- Ajout pour test
-			-- Ensure the Overlay already has its "empty circle" texture
+			local unlocked = lvl >= socketReq[i]
 			local ov = s.frames.Overlay
 			if ov and not ov.texture then
 				ov.texture = ov:CreateTexture(nil, "BORDER")
@@ -5386,7 +5333,6 @@ function MultiBot.talent.showCustomGlyphs()
 							or  "gliph_mineur_layout.blp"))
 			end
 
-        -- If the slot is not yet available, hide everything
         if not unlocked then
             if s.frames.Glow    then s.frames.Glow:Hide()    end
             if s.frames.Overlay then s.frames.Overlay:Hide() end
@@ -5427,7 +5373,6 @@ function MultiBot.talent.showCustomGlyphs()
             btn:SetScript("OnLeave", HideGlyphTooltip)
             btn:SetScript("OnReceiveDrag", CG_OnReceiveDrag)
 			btn:SetScript("OnClick", CG_OnReceiveDrag)
-			-- Yesss i can remove the wrong glyph!
 			btn:SetScript("OnMouseUp", function(self, button)
 				if button == "RightButton" then
 					ClearGlyphSocket(self:GetParent())
@@ -5438,15 +5383,59 @@ function MultiBot.talent.showCustomGlyphs()
     end
 end
     gApply:Hide()
-	if copyBtn then copyBtn:doHide() end
 	if tApply then tApply:Hide() end
     MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.glyphscustomglyphsfor") .. " |r" .. (MultiBot.talent.name or "?"))
 end
 
--- 8) Assignation du clic onglet
 gBtn.doLeft = MultiBot.talent.showCustomGlyphs
-
+if MultiBot.talent.frames["Tab9"] then MultiBot.talent.frames["Tab9"]:Hide() end
 -- EN TAB CUSTOM GLYPHS --
+
+--[[
+Tab9 : Copy — remplace l'ancien bouton Copie
+]]--
+
+local copyTabBtn = addTalentBottomTab("Tab9", "Copy", -315)
+copyTabBtn.doLeft = function(pButton)
+    if copyBtn and copyBtn.doLeft then
+        copyBtn.doLeft(copyBtn)
+    end
+
+    -- Animation pulse du texte
+    local btn = tabTextures["Tab9"] and tabTextures["Tab9"].btn
+    if btn and btn.text then
+        local flashes = 0
+        local function pulse()
+            if flashes >= 6 then
+                btn.text:SetText("|cffaaaaaa Copy|r")
+                return
+            end
+            if flashes % 2 == 0 then
+                btn.text:SetText("|cffffffff Copy|r")
+            else
+                btn.text:SetText("|cffff4444 Copy|r")
+            end
+            flashes = flashes + 1
+            TimerAfter(0.15, pulse)
+        end
+        pulse()
+    end
+
+    -- Remet Tab5 actif
+    local t = tabTextures["Tab5"]
+    if t then
+        t.left:SetVertexColor(1, 0.82, 0, 1)
+        t.mid:SetVertexColor(1, 0.82, 0, 1)
+        t.right:SetVertexColor(1, 0.82, 0, 1)
+        if t.btn and t.btn.text then t.btn.text:SetText("|cffffcc00Talents|r") end
+    end
+    local c = tabTextures["Tab9"]
+    if c then
+        c.left:SetVertexColor(0.5, 0.5, 0.5, 1)
+        c.mid:SetVertexColor(0.5, 0.5, 0.5, 1)
+        c.right:SetVertexColor(0.5, 0.5, 0.5, 1)
+    end
+end
 
 -- RTSC --
 
