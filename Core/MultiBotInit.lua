@@ -4057,7 +4057,7 @@ tFrame.addFrame("Inspector", -137, 26, 16)
 	InspectUnit(pButton.getName())
 end
 
--- TALENT --
+-- TALENT -- (TODO refactor Glyphs frame to ACE3)
 
 MultiBot.talent = MultiBot.newFrame(MultiBot, -104, -276, 28, 1024, 1024)
 MultiBot.talent.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent.blp")
@@ -4070,6 +4070,19 @@ MultiBot.talent.movButton("Move", -960, 960, 64, MultiBot.L("tips.move.talent"))
 
 local tabTextures = {}
 local applyTabBtn
+
+local function setBottomTabVisibility(frameKey, visible)
+    local frame = MultiBot.talent.frames and MultiBot.talent.frames[frameKey]
+    if not frame then
+        return
+    end
+
+    if visible then
+        frame:Show()
+    else
+        frame:Hide()
+    end
+end
 
 local function hasCustomTalentSelection()
     for i = 1, 3 do
@@ -4779,10 +4792,9 @@ end
 
 -- TAB TALENTS --
 local talentsTabBtn = addTalentBottomTab("Tab5", "Talents", -715)
-talentsTabBtn.doLeft = function(pButton)
-	if MultiBot.talent.custom then
-		MultiBot.talent.custom = false
-		MultiBot.talent.setTalents()
+talentsTabBtn.doLeft = function()
+	if MultiBot.talent and MultiBot.talent.__activeTab == "custom_talents" then
+ 		MultiBot.talent.setTalents()
 	end
 	MultiBot.talent.__activeTab = "talents"
     MultiBot.talent.setText("Title", MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", MultiBot.talent.name))
@@ -4791,7 +4803,7 @@ talentsTabBtn.doLeft = function(pButton)
     MultiBot.talent.frames["Tab2"]:Show()
     MultiBot.talent.frames["Tab3"]:Show()
     MultiBot.talent.frames["Tab4"]:Hide()
-    if MultiBot.talent.frames["Tab9"] then MultiBot.talent.frames["Tab9"]:Show() end
+    setBottomTabVisibility("Tab9", true)
     -- Remet Tab9 en doré car le OnClick l'a grisé
 	    local t9 = tabTextures["Tab9"]
 	    if t9 then
@@ -4807,7 +4819,7 @@ end
 
 -- TAB GLYPHS --
 local glyphsTabBtn = addTalentBottomTab("Tab6", "Glyphs", -615)
-glyphsTabBtn.doLeft = function(pButton)
+glyphsTabBtn.doLeft = function()
 	MultiBot.talent.__activeTab = "glyphs"
     MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.glyphsglyphsfor") .. " |r" .. (MultiBot.talent.name or "?"))
     MultiBot.talent.texts["Points"]:Hide()
@@ -4815,7 +4827,7 @@ glyphsTabBtn.doLeft = function(pButton)
     MultiBot.talent.frames["Tab2"]:Hide()
     MultiBot.talent.frames["Tab3"]:Hide()
     MultiBot.talent.frames["Tab4"]:Show()
-    if MultiBot.talent.frames["Tab9"] then MultiBot.talent.frames["Tab9"]:Hide() end
+    setBottomTabVisibility("Tab9", false)
     local botName = MultiBot.talent.name
 	    MultiBot.awaitGlyphs = botName
 	    SendChatMessage("glyphs", "WHISPER", nil, botName)
@@ -5090,7 +5102,6 @@ function MultiBot.talent.setTalentsCustom()
         return
     end
     MultiBot.talent.doClear()
-    MultiBot.talent.custom = true
 
     local tClass = MultiBot.data.talent.talents[ MultiBot.talent.class ]
     local tArrow = MultiBot.data.talent.arrows[  MultiBot.talent.class ]
@@ -5143,15 +5154,15 @@ function MultiBot.talent.setTalentsCustom()
     MultiBot.talent.frames["Tab2"]:Show()
     MultiBot.talent.frames["Tab3"]:Show()
 	MultiBot.talent.frames["Tab4"]:Hide()
+	setBottomTabVisibility("Tab9", false)
 	MultiBot.talent.__activeTab = "custom_talents"
 	refreshApplyTabVisibility()
     MultiBot.talent.doState()
     MultiBot.talent:Show()
 end
 
-tBtn.doLeft = function(btn)
+tBtn.doLeft = function()
     MultiBot.talent.setTalentsCustom()
-    if MultiBot.talent.frames["Tab9"] then MultiBot.talent.frames["Tab9"]:Hide() end
 end
 
 -- END TAB CUSTOM TALENTS --
@@ -5364,22 +5375,22 @@ function MultiBot.talent.showCustomGlyphs()
 			end)
             s.item = 0
         end
-	    end
-	end
-	refreshApplyTabVisibility()
-	MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.glyphscustomglyphsfor") .. " |r" .. (MultiBot.talent.name or "?"))
+		    end
+		end
+	    setBottomTabVisibility("Tab9", false)
+		refreshApplyTabVisibility()
+		MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.glyphscustomglyphsfor") .. " |r" .. (MultiBot.talent.name or "?"))
 end
 
 gBtn.doLeft = MultiBot.talent.showCustomGlyphs
-if MultiBot.talent.frames["Tab9"] then MultiBot.talent.frames["Tab9"]:Hide() end
 -- EN TAB CUSTOM GLYPHS --
 
 --[[
-Tab9 : Copy — remplace l'ancien bouton Copie
+Tab9 : Copy talents
 ]]--
 
 local copyTabBtn = addTalentBottomTab("Tab9", MultiBot.L("info.talent.Copy"), -315)
-copyTabBtn.doLeft = function(pButton)
+copyTabBtn.doLeft = function()
     copyCustomTalentsToTarget()
 
     -- Animation pulse du texte
@@ -5418,6 +5429,9 @@ copyTabBtn.doLeft = function(pButton)
     end
 end
 
+--[[
+Tab10 : Apply Button
+]]--
 local applyTab = addTalentBottomTab("Tab10", MultiBot.L("info.talent.Apply"), -215)
 applyTabBtn = applyTab
 applyTabBtn.doHide()
