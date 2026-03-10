@@ -4070,8 +4070,28 @@ MultiBot.talent.movButton("Move", -960, 960, 64, MultiBot.L("tips.move.talent"))
 
 local tabTextures = {}
 local applyTabBtn
-local COPY_TAB_KEY = "Tab9"
-local APPLY_TAB_KEY = "Tab10"
+MultiBot.TalentTabKeys = MultiBot.TalentTabKeys or { COPY = "Tab9", APPLY = "Tab10" }
+MultiBot.TalentTabColors = MultiBot.TalentTabColors or { ACTIVE = { 1, 0.82, 0, 1 }, INACTIVE = { 0.5, 0.5, 0.5, 1 } }
+
+local function setBottomTabVisualState(tabKey, isActive, labelOverride)
+    local tab = tabTextures[tabKey]
+    if not tab then
+        return
+    end
+
+    local color = isActive and MultiBot.TalentTabColors.ACTIVE or MultiBot.TalentTabColors.INACTIVE
+    tab.left:SetVertexColor(color[1], color[2], color[3], color[4])
+    tab.mid:SetVertexColor(color[1], color[2], color[3], color[4])
+    tab.right:SetVertexColor(color[1], color[2], color[3], color[4])
+
+    if tab.btn and tab.btn.text then
+        local label = labelOverride or tab.btn.label
+        if label then
+            local textColor = isActive and "|cffffcc00" or "|cffaaaaaa"
+            tab.btn.text:SetText(textColor .. label .. "|r")
+        end
+    end
+end
 
 local function setBottomTabVisibility(frameKey, visible)
     local frame = MultiBot.talent.frames and MultiBot.talent.frames[frameKey]
@@ -4129,16 +4149,7 @@ local function refreshApplyTabVisibility()
         or (isCustomGlyphs and hasCustomGlyphSelection())
     if shouldShow then
         applyTabBtn.doShow()
-
-        local t = tabTextures[APPLY_TAB_KEY]
-        if t then
-            t.left:SetVertexColor(1, 0.82, 0, 1)
-            t.mid:SetVertexColor(1, 0.82, 0, 1)
-            t.right:SetVertexColor(1, 0.82, 0, 1)
-            if t.btn and t.btn.text then
-                t.btn.text:SetText("|cffffcc00" ..MultiBot.L("info.talent.Apply").. "|r")
-            end
-        end
+        setBottomTabVisualState(MultiBot.TalentTabKeys.APPLY, true, "Apply")
     else
         applyTabBtn.doHide()
     end
@@ -4805,18 +4816,9 @@ talentsTabBtn.doLeft = function()
     MultiBot.talent.frames["Tab2"]:Show()
     MultiBot.talent.frames["Tab3"]:Show()
     MultiBot.talent.frames["Tab4"]:Hide()
-    setBottomTabVisibility(COPY_TAB_KEY, true)
-    -- Remet Tab9 en doré car le OnClick l'a grisé
-	    local t9 = tabTextures[COPY_TAB_KEY]
-	    if t9 then
-	        t9.left:SetVertexColor(1, 0.82, 0, 1)
-	        t9.mid:SetVertexColor(1, 0.82, 0, 1)
-	        t9.right:SetVertexColor(1, 0.82, 0, 1)
-	        if t9.btn and t9.btn.text then
-	            t9.btn.text:SetText("|cffffcc00"..MultiBot.L("info.talent.Copy").."|r")
-	        end
-	    end
-	    if applyTabBtn then applyTabBtn.doHide() end
+    setBottomTabVisibility(MultiBot.TalentTabKeys.COPY, true)
+    setBottomTabVisualState(MultiBot.TalentTabKeys.COPY, true, MultiBot.L("info.talent.Copy"))
+    if applyTabBtn then applyTabBtn.doHide() end
 end
 
 -- TAB GLYPHS --
@@ -4829,7 +4831,7 @@ glyphsTabBtn.doLeft = function()
     MultiBot.talent.frames["Tab2"]:Hide()
     MultiBot.talent.frames["Tab3"]:Hide()
     MultiBot.talent.frames["Tab4"]:Show()
-    setBottomTabVisibility(COPY_TAB_KEY, false)
+    setBottomTabVisibility(MultiBot.TalentTabKeys.COPY, false)
     local botName = MultiBot.talent.name
 	    MultiBot.awaitGlyphs = botName
 	    SendChatMessage("glyphs", "WHISPER", nil, botName)
@@ -5156,7 +5158,7 @@ function MultiBot.talent.setTalentsCustom()
     MultiBot.talent.frames["Tab2"]:Show()
     MultiBot.talent.frames["Tab3"]:Show()
 	MultiBot.talent.frames["Tab4"]:Hide()
-	setBottomTabVisibility(COPY_TAB_KEY, false)
+	setBottomTabVisibility(MultiBot.TalentTabKeys.COPY, false)
 	MultiBot.talent.__activeTab = "custom_talents"
 	refreshApplyTabVisibility()
     MultiBot.talent.doState()
@@ -5312,23 +5314,19 @@ function MultiBot.talent.showCustomGlyphs()
     for i=1,3 do MultiBot.talent.frames["Tab"..i]:Hide() end
     parentTab4:Show()
 
-    for i=1,6 do
-        local s = parentTab4.frames["Socket"..i]
-        if s then
-		    s:SetID(i)
-            local botUnit  = MultiBot.toUnit(MultiBot.talent.name)
-			local lvl      = UnitLevel(botUnit or "player")
-			local unlocked = lvl >= socketReq[i]
-			local ov = s.frames.Overlay
-			if ov and not ov.texture then
-				ov.texture = ov:CreateTexture(nil, "BORDER")
-				ov.texture:SetAllPoints(ov)
-				local base = "Interface\\AddOns\\MultiBot\\Textures\\"
-				ov.texture:SetTexture(
-					base .. (s.type == "Major"
-							and "gliph_majeur_layout.blp"
-							or  "gliph_mineur_layout.blp"))
-			end
+    for i = 1, 6 do
+        local s = parentTab4.frames["Socket" .. i]
+            s:SetID(i)
+            local botUnit = MultiBot.toUnit(MultiBot.talent.name)
+            local lvl = UnitLevel(botUnit or "player")
+            local unlocked = lvl >= socketReq[i]
+            local ov = s.frames.Overlay
+            if ov and not ov.texture then
+                ov.texture = ov:CreateTexture(nil, "BORDER")
+                ov.texture:SetAllPoints(ov)
+                local base = "Interface\\AddOns\\MultiBot\\Textures\\"
+                ov.texture:SetTexture(base .. (s.type == "Major" and "gliph_majeur_layout.blp" or "gliph_mineur_layout.blp"))
+            end
 
         if not unlocked then
             if s.frames.Glow    then s.frames.Glow:Hide()    end
@@ -5369,19 +5367,19 @@ function MultiBot.talent.showCustomGlyphs()
             btn:SetScript("OnEnter", ShowGlyphTooltip)
             btn:SetScript("OnLeave", HideGlyphTooltip)
             btn:SetScript("OnReceiveDrag", CG_OnReceiveDrag)
-			btn:SetScript("OnClick", CG_OnReceiveDrag)
-			btn:SetScript("OnMouseUp", function(self, button)
-				if button == "RightButton" then
-					ClearGlyphSocket(self:GetParent())
-				end
-			end)
+            btn:SetScript("OnClick", CG_OnReceiveDrag)
+            btn:SetScript("OnMouseUp", function(self, button)
+                if button == "RightButton" then
+                    ClearGlyphSocket(self:GetParent())
+                end
+            end)
             s.item = 0
         end
-		    end
-		end
-	    setBottomTabVisibility(COPY_TAB_KEY, false)
-		refreshApplyTabVisibility()
-		MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.glyphscustomglyphsfor") .. " |r" .. (MultiBot.talent.name or "?"))
+    end
+
+    setBottomTabVisibility(MultiBot.TalentTabKeys.COPY, false)
+    refreshApplyTabVisibility()
+    MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.glyphscustomglyphsfor") .. " |r" .. (MultiBot.talent.name or "?"))
 end
 
 gBtn.doLeft = MultiBot.talent.showCustomGlyphs
@@ -5390,13 +5388,12 @@ gBtn.doLeft = MultiBot.talent.showCustomGlyphs
 --[[
 Tab9 : Copy talents
 ]]--
-
-local copyTabBtn = addTalentBottomTab(COPY_TAB_KEY, MultiBot.L("info.talent.Copy"), -315)
+local copyTabBtn = addTalentBottomTab(MultiBot.TalentTabKeys.COPY, MultiBot.L("info.talent.Copy"), -315)
 copyTabBtn.doLeft = function()
     copyCustomTalentsToTarget()
 
     -- Animation pulse du texte
-    local btn = tabTextures[COPY_TAB_KEY] and tabTextures[COPY_TAB_KEY].btn
+    local btn = tabTextures[MultiBot.TalentTabKeys.COPY] and tabTextures[MultiBot.TalentTabKeys.COPY].btn
     if btn and btn.text then
         local flashes = 0
         local function pulse()
@@ -5415,26 +5412,14 @@ copyTabBtn.doLeft = function()
         pulse()
     end
 
-    -- Remet Tab5 actif
-    local t = tabTextures["Tab5"]
-    if t then
-        t.left:SetVertexColor(1, 0.82, 0, 1)
-        t.mid:SetVertexColor(1, 0.82, 0, 1)
-        t.right:SetVertexColor(1, 0.82, 0, 1)
-        if t.btn and t.btn.text then t.btn.text:SetText("|cffffcc00Talents|r") end
-    end
-    local c = tabTextures[COPY_TAB_KEY]
-    if c then
-        c.left:SetVertexColor(0.5, 0.5, 0.5, 1)
-        c.mid:SetVertexColor(0.5, 0.5, 0.5, 1)
-        c.right:SetVertexColor(0.5, 0.5, 0.5, 1)
-    end
+    setBottomTabVisualState("Tab5", true, "Talents")
+    setBottomTabVisualState(MultiBot.TalentTabKeys.COPY, false, MultiBot.L("info.talent.Copy"))
 end
 
 --[[
 Tab10 : Apply Button
 ]]--
-applyTabBtn = addTalentBottomTab(APPLY_TAB_KEY, MultiBot.L("info.talent.Apply"), -215)
+applyTabBtn = addTalentBottomTab(MultiBot.TalentTabKeys.APPLY, MultiBot.L("info.talent.Apply"), -215)
 applyTabBtn.doHide()
 applyTabBtn.doLeft = function()
     if MultiBot.talent and MultiBot.talent.__activeTab == "custom_talents" then
