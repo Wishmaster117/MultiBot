@@ -80,6 +80,20 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
             end
           end
         },
+		{ "RepsEmblems", "Achievement_Reputation_01", MultiBot.tips.every.repemblems, function(b)
+			if MultiBot.RequestReputations then
+				MultiBot.RequestReputations(b.getName())
+			else
+				SendChatMessage("rep all", "WHISPER", nil, b.getName())
+			end
+
+			if MultiBot.RequestEmblems then
+				MultiBot.RequestEmblems(b.getName())
+			else
+				SendChatMessage("emblems", "WHISPER", nil, b.getName())
+			end
+		end
+		},
 		{ "Maintenance", "Achievement_Halloween_Smiley_01", MultiBot.tips.every.maintenance, function(b)
             SendChatMessage("maintenance", "WHISPER", nil, b.getName())
         end
