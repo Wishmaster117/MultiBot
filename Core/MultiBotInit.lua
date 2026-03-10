@@ -4243,15 +4243,6 @@ local function detachTalentLegacyFrameContent(hostFrame)
     if MultiBot.talent.texts and MultiBot.talent.texts["Title"] then
         MultiBot.talent.texts["Title"]:Hide()
     end
-    local applyBtn = MultiBot.talent.buttons and MultiBot.talent.buttons[MultiBot.L("info.talent.Apply")]
-    if applyBtn and applyBtn.Hide then
-        applyBtn:Hide()
-    end
-
-    local copyBtnLegacy = MultiBot.talent.buttons and MultiBot.talent.buttons[MultiBot.L("info.talent.Copy")]
-    if copyBtnLegacy and copyBtnLegacy.Hide then
-        copyBtnLegacy:Hide()
-    end
 
     local legacyClose = MultiBot.talent.buttons and MultiBot.talent.buttons["X"]
     if legacyClose then
@@ -4443,53 +4434,35 @@ do
     end
 end
 
-MultiBot.talent.wowButton(MultiBot.L("info.talent.Apply"), -474, 966, 100, 20, 12).doHide()
-.doLeft = function(pButton)
+local function buildTalentApplyValues()
 	local tValues = ""
 
 	for i = 1, 3 do
 		local tTab = MultiBot.talent.frames["Tab" .. i]
-
 		for j = 1, table.getn(tTab.buttons) do
 			tValues = tValues .. tTab.buttons[j].value
 		end
-
 		if(i < 3) then tValues = tValues .. "-" end
 	end
 
-	SendChatMessage("talents apply " ..tValues, "WHISPER", nil, MultiBot.talent.name)
-	pButton.doHide()
+	return tValues
 end
 
-local tApply = MultiBot.talent.buttons[ MultiBot.L("info.talent.Apply") ]
+local function applyCustomTalents()
+	SendChatMessage("talents apply " .. buildTalentApplyValues(), "WHISPER", nil, MultiBot.talent.name)
+end
 
-MultiBot.talent.wowButton(MultiBot.L("info.talent.Copy"), -854, 966, 100, 20, 12)
-local copyBtn = MultiBot.talent.buttons[MultiBot.L("info.talent.Copy")]
-copyBtn:Hide()  -- caché définitivement, remplacé par Tab9
-
-copyBtn.doLeft = function(pButton)
+local function copyCustomTalentsToTarget()
 	local tName = UnitName("target")
 	if(tName == nil or tName == "Unknown Entity") then return SendChatMessage(MultiBot.L("info.target"), "SAY") end
 
-	local tLocClass, tClass = UnitClass("target")
+	local _, tClass = UnitClass("target")
 	if(MultiBot.talent.class ~= MultiBot.toClass(tClass)) then return SendChatMessage("The Classes do not match.", "SAY") end
 
 	local tUnit = MultiBot.toUnit(MultiBot.talent.name)
 	if(UnitLevel(tUnit) ~= UnitLevel("target")) then return SendChatMessage("The Levels do not match.", "SAY") end
 
-	local tValues = ""
-
-	for i = 1, 3 do
-		local tTab = MultiBot.talent.frames["Tab" .. i]
-
-		for j = 1, table.getn(tTab.buttons) do
-			tValues = tValues .. tTab.buttons[j].value
-		end
-
-		if(i < 3) then tValues = tValues .. "-" end
-	end
-
-	SendChatMessage("talents apply " ..tValues, "WHISPER", nil, tName)
+	SendChatMessage("talents apply " .. buildTalentApplyValues(), "WHISPER", nil, tName)
 end
 
 MultiBot.talent.wowButton("X", -470, 992, 17, 20, 13)
@@ -4930,7 +4903,6 @@ MultiBot.talent.addTalent = function(pTab, pID, pNeeds, pValue, pMax, piX, piY, 
 			end
 		end
 
-		if tApply then tApply:Hide() end
 		refreshApplyTabVisibility()
 		MultiBot.talent.doState()
 	end
@@ -4964,7 +4936,6 @@ MultiBot.talent.addTalent = function(pTab, pID, pNeeds, pValue, pMax, piX, piY, 
 		end
 
 		MultiBot.talent.doState()
-		if tApply then tApply:Hide() end
 		refreshApplyTabVisibility()
 	end
 	tTalent:SetFrameLevel(8)
@@ -5181,7 +5152,6 @@ function MultiBot.talent.setTalentsCustom()
     MultiBot.talent.frames["Tab2"]:Show()
     MultiBot.talent.frames["Tab3"]:Show()
 	MultiBot.talent.frames["Tab4"]:Hide()
-	if tApply then tApply:Hide() end
 	MultiBot.talent.__activeTab = "custom_talents"
 	refreshApplyTabVisibility()
     MultiBot.talent.doState()
@@ -5423,7 +5393,6 @@ function MultiBot.talent.showCustomGlyphs()
         end
 	    end
 	end
-	if tApply then tApply:Hide() end
 	refreshApplyTabVisibility()
 	MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.glyphscustomglyphsfor") .. " |r" .. (MultiBot.talent.name or "?"))
 end
@@ -5436,11 +5405,9 @@ if MultiBot.talent.frames["Tab9"] then MultiBot.talent.frames["Tab9"]:Hide() end
 Tab9 : Copy — remplace l'ancien bouton Copie
 ]]--
 
-local copyTabBtn = addTalentBottomTab("Tab9", "Copy", -315)
+local copyTabBtn = addTalentBottomTab("Tab9", MultiBot.L("info.talent.Copy"), -315)
 copyTabBtn.doLeft = function(pButton)
-    if copyBtn and copyBtn.doLeft then
-        copyBtn.doLeft(copyBtn)
-    end
+    copyCustomTalentsToTarget()
 
     -- Animation pulse du texte
     local btn = tabTextures["Tab9"] and tabTextures["Tab9"].btn
@@ -5483,8 +5450,8 @@ applyTabBtn = applyTab
 applyTabBtn.doHide()
 applyTabBtn.doLeft = function()
     if MultiBot.talent and MultiBot.talent.__activeTab == "custom_talents" then
-        if tApply and tApply.doLeft and hasCustomTalentSelection() then
-            tApply.doLeft(tApply)
+        if hasCustomTalentSelection() then
+            applyCustomTalents()
         end
     elseif MultiBot.talent and MultiBot.talent.__activeTab == "custom_glyphs" then
         if hasCustomGlyphSelection() then
