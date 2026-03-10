@@ -4114,6 +4114,16 @@ local function refreshApplyTabVisibility()
         or (isCustomGlyphs and hasCustomGlyphSelection())
     if shouldShow then
         applyTabBtn.doShow()
+
+        local t = tabTextures["Tab10"]
+        if t then
+            t.left:SetVertexColor(1, 0.82, 0, 1)
+            t.mid:SetVertexColor(1, 0.82, 0, 1)
+            t.right:SetVertexColor(1, 0.82, 0, 1)
+            if t.btn and t.btn.text then
+                t.btn.text:SetText("|cffffcc00Apply|r")
+            end
+        end
     else
         applyTabBtn.doHide()
     end
@@ -4234,13 +4244,13 @@ local function detachTalentLegacyFrameContent(hostFrame)
         MultiBot.talent.texts["Title"]:Hide()
     end
     local applyBtn = MultiBot.talent.buttons and MultiBot.talent.buttons[MultiBot.L("info.talent.Apply")]
-    if applyBtn and applyBtn.SetParent then
-        applyBtn:SetParent(hostFrame)
+    if applyBtn and applyBtn.Hide then
+        applyBtn:Hide()
     end
 
     local copyBtnLegacy = MultiBot.talent.buttons and MultiBot.talent.buttons[MultiBot.L("info.talent.Copy")]
-    if copyBtnLegacy and copyBtnLegacy.SetParent then
-        copyBtnLegacy:SetParent(hostFrame)
+    if copyBtnLegacy and copyBtnLegacy.Hide then
+        copyBtnLegacy:Hide()
     end
 
     local legacyClose = MultiBot.talent.buttons and MultiBot.talent.buttons["X"]
@@ -4633,14 +4643,6 @@ end
 
 local parentTab4 = MultiBot.talent.frames["Tab4"]
 
--- Bouton "Apply Glyphs"
-gApply = parentTab4.wowButton("Apply Glyphs", 0, 0, 100, 20, 12)
-gApply:ClearAllPoints()
-gApply:SetPoint("TOPRIGHT", parentTab4, "TOPRIGHT", -20, -20)
-gApply:SetFrameLevel(parentTab4:GetFrameLevel() + 10)
-gApply:Hide()
-gApply:EnableMouse(false)
-
 local function applyCustomGlyphs()
     local ids = {}
     for i = 1, 6 do
@@ -4651,10 +4653,6 @@ local function applyCustomGlyphs()
         (MultiBot.talent.name or "?") .. " : " .. payload)
     SendChatMessage(payload, "WHISPER", nil, MultiBot.talent.name)
 end
-
-gApply:SetScript("OnClick", function()
-    applyCustomGlyphs()
-end)
 
 -- Sockets dans des blocs do...end pour libérer les locals
 do
@@ -4823,7 +4821,6 @@ end
 local talentsTabBtn = addTalentBottomTab("Tab5", "Talents", -715)
 talentsTabBtn.doLeft = function(pButton)
 	MultiBot.talent.__activeTab = "talents"
-	if gApply then gApply:Hide() end
     MultiBot.talent.setText("Title", MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", MultiBot.talent.name))
     MultiBot.talent.texts["Points"]:Show()
     MultiBot.talent.frames["Tab1"]:Show()
@@ -4838,7 +4835,7 @@ talentsTabBtn.doLeft = function(pButton)
 	        t9.mid:SetVertexColor(1, 0.82, 0, 1)
 	        t9.right:SetVertexColor(1, 0.82, 0, 1)
 	        if t9.btn and t9.btn.text then
-	            t9.btn.text:SetText("|cffffcc00Copy|r")
+	            t9.btn.text:SetText("|cffffcc00"..MultiBot.L("info.talent.Copy").."|r")
 	        end
 	    end
 	    if applyTabBtn then applyTabBtn.doHide() end
@@ -4848,7 +4845,6 @@ end
 local glyphsTabBtn = addTalentBottomTab("Tab6", "Glyphs", -615)
 glyphsTabBtn.doLeft = function(pButton)
 	MultiBot.talent.__activeTab = "glyphs"
-	if gApply then gApply:Hide() end
     MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.glyphsglyphsfor") .. " |r" .. (MultiBot.talent.name or "?"))
     MultiBot.talent.texts["Points"]:Hide()
     MultiBot.talent.frames["Tab1"]:Hide()
@@ -5185,7 +5181,6 @@ function MultiBot.talent.setTalentsCustom()
     MultiBot.talent.frames["Tab2"]:Show()
     MultiBot.talent.frames["Tab3"]:Show()
 	MultiBot.talent.frames["Tab4"]:Hide()
-	if gApply then gApply:Hide() end
 	if tApply then tApply:Hide() end
 	MultiBot.talent.__activeTab = "custom_talents"
 	refreshApplyTabVisibility()
@@ -5428,7 +5423,6 @@ function MultiBot.talent.showCustomGlyphs()
         end
 	    end
 	end
-	gApply:Hide()
 	if tApply then tApply:Hide() end
 	refreshApplyTabVisibility()
 	MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.glyphscustomglyphsfor") .. " |r" .. (MultiBot.talent.name or "?"))
