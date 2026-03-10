@@ -4121,7 +4121,7 @@ local function refreshApplyTabVisibility()
             t.mid:SetVertexColor(1, 0.82, 0, 1)
             t.right:SetVertexColor(1, 0.82, 0, 1)
             if t.btn and t.btn.text then
-                t.btn.text:SetText("|cffffcc00Apply|r")
+                t.btn.text:SetText("|cffffcc00" ..MultiBot.L("info.talent.Apply").. "|r")
             end
         end
     else
@@ -4242,11 +4242,6 @@ local function detachTalentLegacyFrameContent(hostFrame)
 
     if MultiBot.talent.texts and MultiBot.talent.texts["Title"] then
         MultiBot.talent.texts["Title"]:Hide()
-    end
-
-    local legacyClose = MultiBot.talent.buttons and MultiBot.talent.buttons["X"]
-    if legacyClose then
-        legacyClose:Hide()
     end
 
     MultiBot.talent.__aceDetached = true
@@ -4465,14 +4460,6 @@ local function copyCustomTalentsToTarget()
 	SendChatMessage("talents apply " .. buildTalentApplyValues(), "WHISPER", nil, tName)
 end
 
-MultiBot.talent.wowButton("X", -470, 992, 17, 20, 13)
-.doLeft = function(pButton)
-	local tUnits = MultiBot.frames["MultiBar"].frames["Units"]
-	local tButton = tUnits.frames[MultiBot.talent.name].buttons["Talent"]
-	tButton.doLeft(tButton)
-end
-
--- Tab1, Tab2, Tab3 dans des blocs do...end pour libérer les locals
 do
     local tTab = MultiBot.talent.addFrame("Tab1", -830, 518, 28, 170, 408)
     tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\White.blp")
@@ -4793,6 +4780,10 @@ end
 -- TAB TALENTS --
 local talentsTabBtn = addTalentBottomTab("Tab5", "Talents", -715)
 talentsTabBtn.doLeft = function(pButton)
+	if MultiBot.talent.custom then
+		MultiBot.talent.custom = false
+		MultiBot.talent.setTalents()
+	end
 	MultiBot.talent.__activeTab = "talents"
     MultiBot.talent.setText("Title", MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", MultiBot.talent.name))
     MultiBot.talent.texts["Points"]:Show()
@@ -5163,24 +5154,6 @@ tBtn.doLeft = function(btn)
     if MultiBot.talent.frames["Tab9"] then MultiBot.talent.frames["Tab9"]:Hide() end
 end
 
-local tabTalentsBtn = MultiBot.talent.frames["Tab5"]
-                     and MultiBot.talent.frames["Tab5"].buttons
-                     and MultiBot.talent.frames["Tab5"].buttons["Talents"]
-if tabTalentsBtn then
-    local oldTalentsClick = tabTalentsBtn.doLeft
-    tabTalentsBtn.doLeft = function(btn)
-        if MultiBot.talent.custom then
-            MultiBot.talent.custom = false
-            MultiBot.talent.setTalents()
-            if oldTalentsClick then
-                oldTalentsClick(btn)
-            end
-        else
-            if oldTalentsClick then oldTalentsClick(btn) end
-        end
-    end
-end
-
 -- END TAB CUSTOM TALENTS --
 
 --[[
@@ -5415,13 +5388,13 @@ copyTabBtn.doLeft = function(pButton)
         local flashes = 0
         local function pulse()
             if flashes >= 6 then
-                btn.text:SetText("|cffaaaaaa Copy|r")
+                btn.text:SetText("|cffaaaaaa " ..MultiBot.L("info.talent.Copy").. "|r")
                 return
             end
             if flashes % 2 == 0 then
-                btn.text:SetText("|cffffffff Copy|r")
+                btn.text:SetText("|cffffffff " ..MultiBot.L("info.talent.Copy").. "|r")
             else
-                btn.text:SetText("|cffff4444 Copy|r")
+                btn.text:SetText("|cffff4444 " ..MultiBot.L("info.talent.Copy").. "|r")
             end
             flashes = flashes + 1
             TimerAfter(0.15, pulse)
