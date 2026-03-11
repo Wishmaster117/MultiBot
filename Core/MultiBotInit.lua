@@ -4057,7 +4057,7 @@ tFrame.addFrame("Inspector", -137, 26, 16)
 	InspectUnit(pButton.getName())
 end
 
--- TALENT -- (TODO - Vérifiez qu'on ne mets pas deux fois la même glyphe dans les glyphes custom)
+-- TALENT AND GLYPHS FRAME -- (TODO - Vérifiez qu'on ne mets pas deux fois la même glyphe dans les glyphes custom)
 
 MultiBot.talent = MultiBot.newFrame(MultiBot, -104, -276, 28, 1024, 1024)
 --MultiBot.talent.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent.blp")
@@ -4144,6 +4144,17 @@ function MultiBot.talent.setBottomTabVisualState(tabKey, isActive, labelOverride
     end
 end
 
+function MultiBot.talent.resetBottomTabVisuals(activeTabKey, activeLabel)
+    local activeKey = activeTabKey or MultiBot.TalentTabDefaults.ACTIVE
+    local activeText = activeLabel or MultiBot.TalentTabDefaults.ACTIVE_LABEL
+
+    for _, key in ipairs(MultiBot.TalentTabGroups.BOTTOM) do
+        MultiBot.talent.setBottomTabVisualState(key, key == activeKey)
+    end
+
+    MultiBot.talent.setBottomTabVisualState(activeKey, true, activeText)
+end
+
 function MultiBot.talent.setBottomTabVisibility(frameKey, visible)
     local frame = MultiBot.talent.frames and MultiBot.talent.frames[frameKey]
     if not frame then
@@ -4183,6 +4194,38 @@ function MultiBot.talent.setCopyTabMode(visible, active)
     MultiBot.talent.setBottomTabVisibility(MultiBot.TalentTabKeys.COPY, visible)
     if visible then
         MultiBot.talent.setBottomTabVisualState(MultiBot.TalentTabKeys.COPY, active == true, MultiBot.TalentTabLabels.COPY)
+    end
+end
+
+function MultiBot.talent.setActiveTabContext(state, opts)
+    opts = opts or {}
+
+    if state then
+        MultiBot.talent.__activeTab = state
+    end
+
+    if opts.titleKey then
+        MultiBot.talent.setTalentTitleByKey(opts.titleKey)
+    elseif opts.titleText then
+        MultiBot.talent.setText("Title", opts.titleText)
+    end
+
+    if opts.pointsVisible ~= nil then
+        MultiBot.talent.setPointsVisibility(opts.pointsVisible)
+    end
+
+    if opts.showTalentTrees ~= nil then
+        MultiBot.talent.setTalentContentVisibility(opts.showTalentTrees)
+    end
+
+    if opts.copyVisible ~= nil then
+        MultiBot.talent.setCopyTabMode(opts.copyVisible, opts.copyActive == true)
+    end
+
+    if opts.hideApply then
+        MultiBot.talent.hideApplyTab()
+    elseif opts.refreshApply then
+        MultiBot.talent.refreshApplyTabVisibility()
     end
 end
 
@@ -4384,7 +4427,111 @@ function MultiBot.talent.getBottomTabLegacyYOffset(hostFrame)
     return baseY + legacyYOffset + tuneY
 end
 
-local function attachTalentGlyphFrameToHost(hostFrame)
+function MultiBot.talent.setLegacyTabVisibility(frameName, visible)
+    local frame = MultiBot.talent.frames and MultiBot.talent.frames[frameName]
+    if not frame then
+        return
+    end
+
+    if visible then
+        frame:Show()
+    else
+        frame:Hide()
+    end
+
+    local buttonSet = frame.buttons
+    if buttonSet then
+        for _, button in pairs(buttonSet) do
+            if button and button.Show then
+                if visible then
+                    button:Show()
+                else
+                    button:Hide()
+                end
+            end
+        end
+    end
+end
+
+function MultiBot.talent.updateLegacyTabChrome(hostFrame)
+    local host = MultiBot.talent.getHostFrame(hostFrame)
+    if not host then
+        return
+    end
+
+    local hostStrata = host:GetFrameStrata() or "DIALOG"
+    local hostLevel = host:GetFrameLevel() or 0
+
+    for _, frameName in ipairs(MultiBot.TalentTabGroups.CHROME) do
+        local legacyTab = MultiBot.talent.frames and MultiBot.talent.frames[frameName]
+        if legacyTab and legacyTab.SetPoint and legacyTab.ClearAllPoints then
+            local owner = legacyTab:GetParent()
+            legacyTab:ClearAllPoints()
+            local xOffset = legacyTab.mbXOffset or 0
+            legacyTab:SetPoint("BOTTOMRIGHT", owner, "BOTTOMRIGHT", MultiBot.talent.getBottomTabXOffset(xOffset, host), MultiBot.talent.getBottomTabHostYOffset(host))
+            legacyTab:SetFrameStrata(hostStrata)
+            legacyTab:SetFrameLevel(hostLevel + 2)
+        end
+
+        MultiBot.talent.setLegacyTabVisibility(frameName, frameName ~= MultiBot.TalentTabKeys.APPLY)
+    end
+end
+
+function MultiBot.talent.buildLegacyHostTabButtons(hostFrame)
+    local host = MultiBot.talent.getHostFrame(hostFrame)
+    local buttons = {}
+    if not host then
+        return buttons
+    end
+
+    for state, hostTab in pairs(MultiBot.TalentTabHost.BUTTONS) do
+        local frame = MultiBot.talent.frames and MultiBot.talent.frames[hostTab.key]
+        buttons[state] = frame and frame.buttons and frame.buttons[hostTab.label]
+    end
+
+    host.mbLegacyTabButtons = buttons
+    return buttons
+end
+
+function MultiBot.talent.getHostTitleByState(value)
+    local botName = MultiBot.talent and MultiBot.talent.name or "NAME"
+    local titleKey = MultiBot.TalentTabHost.TITLE_KEYS[value]
+    if titleKey then
+        return MultiBot.L(titleKey) .. " " .. botName
+    end
+
+    return MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", botName)
+end
+
+function MultiBot.talent.showTabChrome(hostFrame)
+    -- Native layout path is roadmap-only for now; keep legacy adapter until phase-2 migration.
+    if MultiBot.TalentGlyphHostFlags and MultiBot.TalentGlyphHostFlags.useNativeLayout == true then
+        MultiBot.talent.updateLegacyTabChrome(hostFrame)
+    else
+        MultiBot.talent.updateLegacyTabChrome(hostFrame)
+    end
+
+    MultiBot.talent.refreshApplyTabVisibility()
+end
+
+function MultiBot.talent.activateLegacyTab(hostFrame, window, value)
+    local host = MultiBot.talent.getHostFrame(hostFrame)
+    local button = host and host.mbLegacyTabButtons and host.mbLegacyTabButtons[value]
+    if button and button.doLeft then
+        button.doLeft(button)
+    end
+
+    MultiBot.talent.showTabChrome(host)
+    if MultiBot.talent.texts and MultiBot.talent.texts["Title"] then
+        MultiBot.talent.texts["Title"]:Hide()
+    end
+
+    if window and window.SetTitle then
+        window:SetTitle(MultiBot.talent.getHostTitleByState(value) or MultiBot.TalentTabHost.TITLE_DEFAULT)
+    end
+end
+
+function MultiBot.talent.attachToHostFrame(hostFrame)
     if not hostFrame or not MultiBot.talent then
         return
     end
@@ -4394,7 +4541,7 @@ local function attachTalentGlyphFrameToHost(hostFrame)
     MultiBot.talent:SetPoint("TOPLEFT", hostFrame, "TOPLEFT", 0, 0)
 end
 
-local function detachTalentLegacyFrameContent(hostFrame)
+function MultiBot.talent.detachLegacyContentToHost(hostFrame)
     if not hostFrame or not MultiBot.talent or MultiBot.talent.__aceDetached then
         return
     end
@@ -4428,7 +4575,7 @@ local function detachTalentLegacyFrameContent(hostFrame)
     MultiBot.talent.__aceDetached = true
 end
 
-local function ensureTalentGlyphAceHost()
+function MultiBot.talent.ensureAceHost()
     if MultiBot.talentAceHost then
         return MultiBot.talentAceHost
     end
@@ -4468,92 +4615,15 @@ local function ensureTalentGlyphAceHost()
         host:SetClipsChildren(false)
     end
 
-    local function showLegacyTalentTabChrome()
-        local hostStrata = host:GetFrameStrata() or "DIALOG"
-        local hostLevel = host:GetFrameLevel() or 0
-        for _, frameName in ipairs(MultiBot.TalentTabGroups.CHROME) do
-            local legacyTab = MultiBot.talent.frames and MultiBot.talent.frames[frameName]
-            if legacyTab and legacyTab.SetPoint and legacyTab.ClearAllPoints then
-                local owner = legacyTab:GetParent()
-                legacyTab:ClearAllPoints()
-                local xOffset = legacyTab.mbXOffset or 0
-                legacyTab:SetPoint("BOTTOMRIGHT", owner, "BOTTOMRIGHT", MultiBot.talent.getBottomTabXOffset(xOffset, host), MultiBot.talent.getBottomTabHostYOffset(host))
-                legacyTab:SetFrameStrata(hostStrata)
-                legacyTab:SetFrameLevel(hostLevel + 2)
-                if frameName ~= MultiBot.TalentTabKeys.APPLY then
-                    legacyTab:Show()
-                end
-            end
+    MultiBot.talent.buildLegacyHostTabButtons(host)
 
-            local buttonSet = legacyTab and legacyTab.buttons
-            if buttonSet then
-                for _, button in pairs(buttonSet) do
-                    if button and button.Show and frameName ~= MultiBot.TalentTabKeys.APPLY then
-                        button:Show()
-                    end
-                end
-            end
-        end
+    MultiBot.talent.attachToHostFrame(host)
+    MultiBot.talent.detachLegacyContentToHost(host)
+    MultiBot.talent.showTabChrome(host)
+    MultiBot.talent.activateLegacyTab(host, window, MultiBot.TalentTabStates.TALENTS)
 
-        MultiBot.talent.refreshApplyTabVisibility()
-    end
-
-    local function showTalentTabChrome()
-        -- Native layout path is roadmap-only for now; keep legacy adapter until phase-2 migration.
-        if MultiBot.TalentGlyphHostFlags and MultiBot.TalentGlyphHostFlags.useNativeLayout == true then
-            showLegacyTalentTabChrome()
-            return
-        end
-
-        showLegacyTalentTabChrome()
-    end
-
-    local function buildLegacyHostTabButtons()
-        local buttons = {}
-        for state, hostTab in pairs(MultiBot.TalentTabHost.BUTTONS) do
-            local frame = MultiBot.talent.frames and MultiBot.talent.frames[hostTab.key]
-            buttons[state] = frame and frame.buttons and frame.buttons[hostTab.label]
-        end
-        return buttons
-    end
-
-    host.mbLegacyTabButtons = buildLegacyHostTabButtons()
-
-    local function getTalentHostTitle(value)
-        local botName = MultiBot.talent and MultiBot.talent.name or "NAME"
-        local titleKey = MultiBot.TalentTabHost.TITLE_KEYS[value]
-        if titleKey then
-            return MultiBot.L(titleKey) .. " " .. botName
-        end
-
-        return MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", botName)
-    end
-
-    local function activateLegacyTab(value)
-        local button = host.mbLegacyTabButtons and host.mbLegacyTabButtons[value]
-        if button and button.doLeft then
-            button.doLeft(button)
-        end
-
-        showTalentTabChrome()
-        if MultiBot.talent.texts and MultiBot.talent.texts["Title"] then
-            MultiBot.talent.texts["Title"]:Hide()
-        end		
-        window:SetTitle(getTalentHostTitle(value) or MultiBot.TalentTabHost.TITLE_DEFAULT)
-    end
-
-    attachTalentGlyphFrameToHost(host)
-    detachTalentLegacyFrameContent(host)
-    showTalentTabChrome()
-    activateLegacyTab(MultiBot.TalentTabStates.TALENTS)
-
-    -- Keep Talents tab active by default.
-    MultiBot.talent.setBottomTabVisualState(MultiBot.TalentTabDefaults.ACTIVE, true, MultiBot.TalentTabDefaults.ACTIVE_LABEL)
-
-    -- Keep other tabs inactive by default.
-    for _, key in ipairs(MultiBot.TalentTabGroups.INACTIVE_DEFAULT) do
-        MultiBot.talent.setBottomTabVisualState(key, false)
-    end
+    -- Keep Talents tab active by default and all other bottom tabs inactive.
+    MultiBot.talent.resetBottomTabVisuals(MultiBot.TalentTabDefaults.ACTIVE, MultiBot.TalentTabDefaults.ACTIVE_LABEL)
 
     MultiBot.talentAceHost = {
         window = window,
@@ -4568,10 +4638,10 @@ do
     local originalIsShown = MultiBot.talent.IsShown
 
     MultiBot.talent.Show = function(self)
-        local host = ensureTalentGlyphAceHost()
+        local host = MultiBot.talent.ensureAceHost()
         if host and host.host then
-            attachTalentGlyphFrameToHost(host.host)
-            detachTalentLegacyFrameContent(host.host)
+            MultiBot.talent.attachToHostFrame(host.host)
+            MultiBot.talent.detachLegacyContentToHost(host.host)
         end
         if host and host.window then
             host.window:Show()
@@ -4795,7 +4865,7 @@ end
 
 -- Define glyph sockets from a compact descriptor list to limit local declarations.
 local glyphSocketDefinitions = {
-    { name = "Socket1", x = -176.5, y = 310,   size = 102, glow = "Interface/Spellbook/UI-Glyph-Slot-Major.blp", runeX = -29, runeY = 29, runeSize = 44,  overlayX = -12, overlayY = 12, overlaySize = 96, socketType = "Major" },
+    { name = "Socket1", x = -176.5, y = 310,   size = 102, glow = "Interface\\Spellbook\\UI-Glyph-Slot-Major.blp", runeX = -29, runeY = 29, runeSize = 44,  overlayX = -12, overlayY = 12, overlaySize = 96, socketType = "Major" },
     { name = "Socket2", x = -187,   y = 18.5,  size = 82,  glow = "Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp", runeX = -25, runeY = 25, runeSize = 32,  overlayX = -9,  overlayY = 9,  overlaySize = 80, socketType = "Minor" },
     { name = "Socket3", x = -18.5,  y = 50.5,  size = 102, glow = "Interface\\Spellbook\\UI-Glyph-Slot-Major.blp", runeX = -29, runeY = 29, runeSize = 44,  overlayX = -12, overlayY = 12, overlaySize = 96, socketType = "Major" },
     { name = "Socket4", x = -302.5, y = 218,   size = 82,  glow = "Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp", runeX = -25, runeY = 25, runeSize = 32,  overlayX = -9,  overlayY = 9,  overlaySize = 80, socketType = "Minor" },
@@ -4813,7 +4883,7 @@ for _, def in ipairs(glyphSocketDefinitions) do
     tGlyph.addFrame("Overlay", def.overlayX, def.overlayY, def.overlaySize).setLevel(9).doHide()
 end
 
-local function addTalentBottomTab(frameKey, buttonLabel, xOffset)
+function MultiBot.talent.addBottomTab(frameKey, buttonLabel, xOffset)
     local tabFrame = MultiBot.talent.addFrame(frameKey, xOffset, MultiBot.talent.getBottomTabLegacyYOffset(), 28, 96, 24)
     tabFrame.mbXOffset = xOffset
     tabFrame.buttons = tabFrame.buttons or {}
@@ -4882,11 +4952,7 @@ local function addTalentBottomTab(frameKey, buttonLabel, xOffset)
     tabButton:SetScript("OnClick", function(_, mouseButton)
         tabButton.text:SetPoint("CENTER", -1, 7)
 
-        for _, key in ipairs(MultiBot.TalentTabGroups.BOTTOM) do
-            MultiBot.talent.setBottomTabVisualState(key, false)
-        end
-
-        MultiBot.talent.setBottomTabVisualState(frameKey, true, buttonLabel)
+        MultiBot.talent.resetBottomTabVisuals(frameKey, buttonLabel)
 
         if mouseButton == "RightButton" and tabButton.doRight then tabButton.doRight(tabButton) end
         if mouseButton == "LeftButton"  and tabButton.doLeft  then tabButton.doLeft(tabButton)  end
@@ -4897,30 +4963,34 @@ local function addTalentBottomTab(frameKey, buttonLabel, xOffset)
 end
 
 -- TAB TALENTS --
-MultiBot.talent.talentsTabBtn = addTalentBottomTab(MultiBot.TalentTabDefaults.ACTIVE, MultiBot.TalentTabDefaults.ACTIVE_LABEL, MultiBot.TalentTabOffsets.TALENTS)
+MultiBot.talent.talentsTabBtn = MultiBot.talent.addBottomTab(MultiBot.TalentTabDefaults.ACTIVE, MultiBot.TalentTabDefaults.ACTIVE_LABEL, MultiBot.TalentTabOffsets.TALENTS)
 MultiBot.talent.talentsTabBtn.doLeft = function()
 	if MultiBot.talent and MultiBot.talent.__activeTab == MultiBot.TalentTabStates.CUSTOM_TALENTS then
 		MultiBot.talent.setTalents()
 	end
-	MultiBot.talent.__activeTab = MultiBot.TalentTabStates.TALENTS
-    MultiBot.talent.setText("Title", MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", MultiBot.talent.name))
-    MultiBot.talent.setPointsVisibility(true)
-    MultiBot.talent.setTalentContentVisibility(true)
-    MultiBot.talent.setCopyTabMode(true, true)
-    MultiBot.talent.hideApplyTab()
+	MultiBot.talent.setActiveTabContext(MultiBot.TalentTabStates.TALENTS, {
+        titleText = MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", MultiBot.talent.name),
+        pointsVisible = true,
+        showTalentTrees = true,
+        copyVisible = true,
+        copyActive = true,
+        hideApply = true,
+    })
 end
 
 -- TAB GLYPHS --
-MultiBot.talent.glyphsTabBtn = addTalentBottomTab(MultiBot.TalentTabKeys.GLYPHS, MultiBot.TalentTabLabels.GLYPHS, MultiBot.TalentTabOffsets.GLYPHS)
+MultiBot.talent.glyphsTabBtn = MultiBot.talent.addBottomTab(MultiBot.TalentTabKeys.GLYPHS, MultiBot.TalentTabLabels.GLYPHS, MultiBot.TalentTabOffsets.GLYPHS)
 MultiBot.talent.glyphsTabBtn.doLeft = function()
-	MultiBot.talent.__activeTab = MultiBot.TalentTabStates.GLYPHS
-    MultiBot.talent.setTalentTitleByKey("info.glyphsglyphsfor")
-    MultiBot.talent.setPointsVisibility(false)
-    MultiBot.talent.setTalentContentVisibility(false)
-    MultiBot.talent.setCopyTabMode(false, false)
+	MultiBot.talent.setActiveTabContext(MultiBot.TalentTabStates.GLYPHS, {
+        titleKey = "info.glyphsglyphsfor",
+        pointsVisible = false,
+        showTalentTrees = false,
+        copyVisible = false,
+        copyActive = false,
+        hideApply = true,
+    })
 	MultiBot.awaitGlyphs = MultiBot.talent.name
 	SendChatMessage("glyphs", "WHISPER", nil, MultiBot.talent.name)
-	MultiBot.talent.hideApplyTab()
 end
 
 -- GLYPHES END --
@@ -5182,7 +5252,7 @@ end
 Add a custom tab to talents windows to make custom builds (Tab7)
 ]]--
 
-MultiBot.talent.customTalentsTabBtn = addTalentBottomTab(MultiBot.TalentTabKeys.CUSTOM_TALENTS, MultiBot.TalentTabLabels.CUSTOM_TALENTS, MultiBot.TalentTabOffsets.CUSTOM_TALENTS)
+MultiBot.talent.customTalentsTabBtn = MultiBot.talent.addBottomTab(MultiBot.TalentTabKeys.CUSTOM_TALENTS, MultiBot.TalentTabLabels.CUSTOM_TALENTS, MultiBot.TalentTabOffsets.CUSTOM_TALENTS)
 
 function MultiBot.talent.setTalentsCustom()
     if not GetTalentInfo(1, 1, true) then
@@ -5237,11 +5307,13 @@ function MultiBot.talent.setTalentsCustom()
         pTab.setText("Title", MultiBot.L("info.talent." .. marker) .. " (0)")
     end
 
-    MultiBot.talent.setPointsVisibility(true)
-    MultiBot.talent.setTalentContentVisibility(true)
-	MultiBot.talent.setCopyTabMode(false, false)
-	MultiBot.talent.__activeTab = MultiBot.TalentTabStates.CUSTOM_TALENTS
-	MultiBot.talent.refreshApplyTabVisibility()
+    MultiBot.talent.setActiveTabContext(MultiBot.TalentTabStates.CUSTOM_TALENTS, {
+        pointsVisible = true,
+        showTalentTrees = true,
+        copyVisible = false,
+        copyActive = false,
+        refreshApply = true,
+    })
     MultiBot.talent.doState()
     MultiBot.talent:Show()
 end
@@ -5256,7 +5328,7 @@ end
 Add a new tab to use custom Glyphs (Tab8)
 ]]--
 
-MultiBot.talent.customGlyphsTabBtn = addTalentBottomTab(MultiBot.TalentTabKeys.CUSTOM_GLYPHS, MultiBot.TalentTabLabels.CUSTOM_GLYPHS, MultiBot.TalentTabOffsets.CUSTOM_GLYPHS)
+MultiBot.talent.customGlyphsTabBtn = MultiBot.talent.addBottomTab(MultiBot.TalentTabKeys.CUSTOM_GLYPHS, MultiBot.TalentTabLabels.CUSTOM_GLYPHS, MultiBot.TalentTabOffsets.CUSTOM_GLYPHS)
 
 local function GetGlyphItemType(itemID)
     if not MultiBot.talent.glyphTip then
@@ -5388,9 +5460,10 @@ local function CG_OnReceiveDrag(self)
 end
 
 function MultiBot.talent.showCustomGlyphs()
-	MultiBot.talent.__activeTab = MultiBot.TalentTabStates.CUSTOM_GLYPHS
-    MultiBot.talent.setPointsVisibility(false)
-    MultiBot.talent.setTalentContentVisibility(false)
+	MultiBot.talent.setActiveTabContext(MultiBot.TalentTabStates.CUSTOM_GLYPHS, {
+        pointsVisible = false,
+        showTalentTrees = false,
+    })
 
     for i = 1, MultiBot.TalentTabLimits.GLYPH_SOCKET_COUNT do
         local s = MultiBot.talent.getGlyphSocket(i)
@@ -5456,9 +5529,12 @@ function MultiBot.talent.showCustomGlyphs()
         end
     end
 
-    MultiBot.talent.setCopyTabMode(false, false)
-    MultiBot.talent.refreshApplyTabVisibility()
-    MultiBot.talent.setTalentTitleByKey("info.glyphscustomglyphsfor")
+    MultiBot.talent.setActiveTabContext(nil, {
+        titleKey = "info.glyphscustomglyphsfor",
+        copyVisible = false,
+        copyActive = false,
+        refreshApply = true,
+    })
 end
 
 MultiBot.talent.customGlyphsTabBtn.doLeft = MultiBot.talent.showCustomGlyphs
@@ -5468,7 +5544,7 @@ MultiBot.talent.customGlyphsTabBtn.doLeft = MultiBot.talent.showCustomGlyphs
 Tab9: Copy — replaces the old copy button
 ]]--
 
-MultiBot.talent.copyTabBtn = addTalentBottomTab(MultiBot.TalentTabKeys.COPY, MultiBot.TalentTabLabels.COPY, MultiBot.TalentTabOffsets.COPY)
+MultiBot.talent.copyTabBtn = MultiBot.talent.addBottomTab(MultiBot.TalentTabKeys.COPY, MultiBot.TalentTabLabels.COPY, MultiBot.TalentTabOffsets.COPY)
 MultiBot.talent.copyTabBtn.doLeft = function()
     MultiBot.talent.copyCustomTalentsToTarget()
 
@@ -5493,11 +5569,10 @@ MultiBot.talent.copyTabBtn.doLeft = function()
     end
 
     -- Restore default active tab visual state.
-    MultiBot.talent.setBottomTabVisualState(MultiBot.TalentTabDefaults.ACTIVE, true, MultiBot.TalentTabDefaults.ACTIVE_LABEL)
-    MultiBot.talent.setBottomTabVisualState(MultiBot.TalentTabKeys.COPY, false, MultiBot.TalentTabLabels.COPY)
+    MultiBot.talent.resetBottomTabVisuals(MultiBot.TalentTabDefaults.ACTIVE, MultiBot.TalentTabDefaults.ACTIVE_LABEL)
 end
 
-MultiBot.talent.applyTabBtn = addTalentBottomTab(MultiBot.TalentTabKeys.APPLY, MultiBot.TalentTabLabels.APPLY, MultiBot.TalentTabOffsets.APPLY)
+MultiBot.talent.applyTabBtn = MultiBot.talent.addBottomTab(MultiBot.TalentTabKeys.APPLY, MultiBot.TalentTabLabels.APPLY, MultiBot.TalentTabOffsets.APPLY)
 MultiBot.talent.applyTabBtn.doHide()
 MultiBot.talent.applyTabBtn.doLeft = function()
     if MultiBot.talent and MultiBot.talent.__activeTab == MultiBot.TalentTabStates.CUSTOM_TALENTS then
