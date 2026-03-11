@@ -4096,6 +4096,20 @@ MultiBot.TalentTabHost = MultiBot.TalentTabHost or {
         [MultiBot.TalentTabStates.CUSTOM_GLYPHS] = "info.glyphscustomglyphsfor",
     },
     TITLE_DEFAULT = "Talents & Glyphs",
+    SIZE = {
+        CANVAS_WIDTH = 1024,
+        CANVAS_HEIGHT = 1024,
+        WIDTH = 620,
+        HEIGHT = 570,
+    },
+    OFFSETS = {
+        -- Centralized Y-offset tuning for legacy tab chrome while native layout is not enabled.
+        HOST_TUNE_X = 0,
+        HOST_BASE_Y = 84,
+        HOST_TUNE_Y = -369,
+        LEGACY_BASE_Y = -35,
+        LEGACY_TUNE_Y = -5,
+    },
 }
 MultiBot.TalentTabColors = MultiBot.TalentTabColors or { ACTIVE = { 1, 0.82, 0, 1 }, INACTIVE = { 0.5, 0.5, 0.5, 1 } }
 MultiBot.TalentGlyphHostFlags = MultiBot.TalentGlyphHostFlags or { useNativeLayout = false }
@@ -4248,12 +4262,28 @@ function MultiBot.talent.refreshApplyTabVisibility()
         MultiBot.talent.applyTabBtn.doHide()
     end
 end
-local TALENT_LEGACY_CANVAS_WIDTH = 1024
-local TALENT_LEGACY_CANVAS_HEIGHT = 1024
-local TALENT_HOST_DEFAULT_WIDTH = 620
-local TALENT_HOST_DEFAULT_HEIGHT = 570
 
-local function getTalentHostFrame(hostFrame)
+function MultiBot.talent.getLayoutSize()
+    local size = MultiBot.TalentTabHost and MultiBot.TalentTabHost.SIZE or {}
+    return {
+        canvasWidth = size.CANVAS_WIDTH or 1024,
+        canvasHeight = size.CANVAS_HEIGHT or 1024,
+        hostWidth = size.WIDTH or 620,
+        hostHeight = size.HEIGHT or 570,
+    }
+end
+
+function MultiBot.talent.getHostDefaultDimensions()
+    local size = MultiBot.talent.getLayoutSize()
+    return size.hostWidth, size.hostHeight
+end
+
+function MultiBot.talent.getLegacyCanvasDimensions()
+    local size = MultiBot.talent.getLayoutSize()
+    return size.canvasWidth, size.canvasHeight
+end
+
+function MultiBot.talent.getHostFrame(hostFrame)
     if hostFrame then
         return hostFrame
     end
@@ -4265,8 +4295,8 @@ local function getTalentHostFrame(hostFrame)
     return nil
 end
 
-local function getTalentHostDimensions(hostFrame)
-    local host = getTalentHostFrame(hostFrame)
+function MultiBot.talent.getHostDimensions(hostFrame)
+    local host = MultiBot.talent.getHostFrame(hostFrame)
     if not host then
         return 0, 0
     end
@@ -4288,37 +4318,70 @@ local function getTalentHostDimensions(hostFrame)
         height = valueH
     end
 
+    local defaultHostWidth, defaultHostHeight = MultiBot.talent.getHostDefaultDimensions()
     if width <= 0 then
-        width = TALENT_HOST_DEFAULT_WIDTH
+        width = defaultHostWidth
     end
 
     if height <= 0 then
-        height = TALENT_HOST_DEFAULT_HEIGHT
+        height = defaultHostHeight
     end
 
     return width, height
 end
 
-local function getTalentBottomTabX(xOffset, hostFrame)
-    local host = getTalentHostFrame(hostFrame)
+function MultiBot.talent.getLegacyHostOffsets(hostFrame)
+    local host = MultiBot.talent.getHostFrame(hostFrame)
     if not host then
-        return xOffset
+        return 0, 0
     end
 
-    local hostWidth = select(1, getTalentHostDimensions(host))
-    local legacyXOffset = math.floor((TALENT_LEGACY_CANVAS_WIDTH - hostWidth) / 2)
-    return xOffset + legacyXOffset
+    local hostWidth, hostHeight = MultiBot.talent.getHostDimensions(host)
+    local legacyCanvasWidth, legacyCanvasHeight = MultiBot.talent.getLegacyCanvasDimensions()
+    local legacyXOffset = math.floor((legacyCanvasWidth - hostWidth) / 2)
+    local legacyYOffset = math.floor((legacyCanvasHeight - hostHeight) / 2)
+    return legacyXOffset, legacyYOffset
 end
 
-local function getTalentBottomTabY(hostFrame)
-    local host = getTalentHostFrame(hostFrame)
+function MultiBot.talent.getBottomTabXOffset(xOffset, hostFrame)
+    local offsets = MultiBot.TalentTabHost and MultiBot.TalentTabHost.OFFSETS or {}
+    local tuneX = offsets.HOST_TUNE_X or 0
+
+    local host = MultiBot.talent.getHostFrame(hostFrame)
     if not host then
-        return 84
+        return xOffset + tuneX
     end
 
-    local hostHeight = select(2, getTalentHostDimensions(host))
-    local legacyYOffset = math.floor((TALENT_LEGACY_CANVAS_HEIGHT - hostHeight) / 2)
-    return 84 + legacyYOffset - 5
+    local legacyXOffset = select(1, MultiBot.talent.getLegacyHostOffsets(host))
+    return xOffset + legacyXOffset + tuneX
+end
+
+function MultiBot.talent.getBottomTabHostYOffset(hostFrame)
+    local offsets = MultiBot.TalentTabHost and MultiBot.TalentTabHost.OFFSETS or {}
+    local baseY = offsets.HOST_BASE_Y or 84
+    local tuneY = offsets.HOST_TUNE_Y or -369
+
+    local host = MultiBot.talent.getHostFrame(hostFrame)
+    if not host then
+        return baseY
+    end
+
+    local legacyYOffset = select(2, MultiBot.talent.getLegacyHostOffsets(host))
+    return baseY + legacyYOffset + tuneY
+end
+
+function MultiBot.talent.getBottomTabLegacyYOffset(hostFrame)
+    local offsets = MultiBot.TalentTabHost and MultiBot.TalentTabHost.OFFSETS or {}
+    local baseY = offsets.LEGACY_BASE_Y or -35
+    local tuneY = offsets.LEGACY_TUNE_Y or -5
+
+    local host = MultiBot.talent.getHostFrame(hostFrame)
+    if not host then
+        return baseY
+    end
+
+    local legacyYOffset = select(2, MultiBot.talent.getLegacyHostOffsets(host))
+    return baseY + legacyYOffset + tuneY
 end
 
 local function attachTalentGlyphFrameToHost(hostFrame)
@@ -4362,7 +4425,6 @@ local function detachTalentLegacyFrameContent(hostFrame)
     if MultiBot.talent.texts and MultiBot.talent.texts["Title"] then
         MultiBot.talent.texts["Title"]:Hide()
     end
-
     MultiBot.talent.__aceDetached = true
 end
 
@@ -4382,8 +4444,9 @@ local function ensureTalentGlyphAceHost()
     end
 
     window:SetTitle(MultiBot.TalentTabHost.TITLE_DEFAULT)
-    window:SetWidth(620)
-    window:SetHeight(570)
+    local hostDefaultWidth, hostDefaultHeight = MultiBot.talent.getHostDefaultDimensions()
+    window:SetWidth(hostDefaultWidth)
+    window:SetHeight(hostDefaultHeight)
     window:EnableResize(false)
     window:SetLayout("Fill")
     window.frame:SetFrameStrata("DIALOG")
@@ -4414,7 +4477,7 @@ local function ensureTalentGlyphAceHost()
                 local owner = legacyTab:GetParent()
                 legacyTab:ClearAllPoints()
                 local xOffset = legacyTab.mbXOffset or 0
-                legacyTab:SetPoint("BOTTOMRIGHT", owner, "BOTTOMRIGHT", getTalentBottomTabX(xOffset, host), getTalentBottomTabY(host))
+                legacyTab:SetPoint("BOTTOMRIGHT", owner, "BOTTOMRIGHT", MultiBot.talent.getBottomTabXOffset(xOffset, host), MultiBot.talent.getBottomTabHostYOffset(host))
                 legacyTab:SetFrameStrata(hostStrata)
                 legacyTab:SetFrameLevel(hostLevel + 2)
                 if frameName ~= MultiBot.TalentTabKeys.APPLY then
@@ -4475,7 +4538,7 @@ local function ensureTalentGlyphAceHost()
         showTalentTabChrome()
         if MultiBot.talent.texts and MultiBot.talent.texts["Title"] then
             MultiBot.talent.texts["Title"]:Hide()
-        end
+        end		
         window:SetTitle(getTalentHostTitle(value) or MultiBot.TalentTabHost.TITLE_DEFAULT)
     end
 
@@ -4575,6 +4638,7 @@ function MultiBot.talent.copyCustomTalentsToTarget()
 	SendChatMessage("talents apply " .. MultiBot.talent.buildTalentApplyValues(), "WHISPER", nil, tName)
 end
 
+-- Tab1, Tab2, Tab3 dans des blocs do...end pour libérer les locals
 do
     local tTab = MultiBot.talent.addFrame("Tab1", -830, 518, 28, 170, 408)
     tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\White.blp")
@@ -4728,9 +4792,10 @@ function MultiBot.talent.applyCustomGlyphs()
     SendChatMessage(payload, "WHISPER", nil, MultiBot.talent.name)
 end
 
+
 -- Define glyph sockets from a compact descriptor list to limit local declarations.
 local glyphSocketDefinitions = {
-    { name = "Socket1", x = -176.5, y = 310,   size = 102, glow = "Interface\\Spellbook\\UI-Glyph-Slot-Major.blp", runeX = -29, runeY = 29, runeSize = 44,  overlayX = -12, overlayY = 12, overlaySize = 96, socketType = "Major" },
+    { name = "Socket1", x = -176.5, y = 310,   size = 102, glow = "Interface/Spellbook/UI-Glyph-Slot-Major.blp", runeX = -29, runeY = 29, runeSize = 44,  overlayX = -12, overlayY = 12, overlaySize = 96, socketType = "Major" },
     { name = "Socket2", x = -187,   y = 18.5,  size = 82,  glow = "Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp", runeX = -25, runeY = 25, runeSize = 32,  overlayX = -9,  overlayY = 9,  overlaySize = 80, socketType = "Minor" },
     { name = "Socket3", x = -18.5,  y = 50.5,  size = 102, glow = "Interface\\Spellbook\\UI-Glyph-Slot-Major.blp", runeX = -29, runeY = 29, runeSize = 44,  overlayX = -12, overlayY = 12, overlaySize = 96, socketType = "Major" },
     { name = "Socket4", x = -302.5, y = 218,   size = 82,  glow = "Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp", runeX = -25, runeY = 25, runeSize = 32,  overlayX = -9,  overlayY = 9,  overlaySize = 80, socketType = "Minor" },
@@ -4748,18 +4813,8 @@ for _, def in ipairs(glyphSocketDefinitions) do
     tGlyph.addFrame("Overlay", def.overlayX, def.overlayY, def.overlaySize).setLevel(9).doHide()
 end
 
-getTalentBottomTabY = function()
-    if MultiBot.talentAceHost and MultiBot.talentAceHost.host and MultiBot.talentAceHost.host.GetHeight then
-        local hostHeight = MultiBot.talentAceHost.host:GetHeight() or 570
-        local legacyYOffset = math.floor((1024 - hostHeight) / 2)
-        return -35 + legacyYOffset - 5
-    end
-
-    return -35
-end
-
 local function addTalentBottomTab(frameKey, buttonLabel, xOffset)
-    local tabFrame = MultiBot.talent.addFrame(frameKey, xOffset, getTalentBottomTabY(), 28, 96, 24)
+    local tabFrame = MultiBot.talent.addFrame(frameKey, xOffset, MultiBot.talent.getBottomTabLegacyYOffset(), 28, 96, 24)
     tabFrame.mbXOffset = xOffset
     tabFrame.buttons = tabFrame.buttons or {}
 
@@ -5400,6 +5455,7 @@ function MultiBot.talent.showCustomGlyphs()
             end
         end
     end
+
     MultiBot.talent.setCopyTabMode(false, false)
     MultiBot.talent.refreshApplyTabVisibility()
     MultiBot.talent.setTalentTitleByKey("info.glyphscustomglyphsfor")
