@@ -4363,7 +4363,7 @@ function MultiBot.talent.hasCustomTalentSelection()
     return MultiBot.talent.forEachTalentTree(function(_, tTab)
         local tButtons = tTab and tTab.buttons
         if tButtons then
-            for j = 1, table.getn(tButtons) do
+            for j = 1, #tButtons do
                 if (tButtons[j].value or 0) > 0 then
                     return true
                 end
@@ -4466,52 +4466,26 @@ function MultiBot.talent.refreshApplyTabVisibility()
     end
 end
 
-function MultiBot.talent.getHostOffsetConfig()
-    return MultiBot.TalentTabHost and MultiBot.TalentTabHost.OFFSETS or {}
-end
-
-function MultiBot.talent.getBottomTabYOffset()
-    local offsets = MultiBot.talent.getHostOffsetConfig()
-    local baseY = offsets.NATIVE_BASE_Y or -35
-    local tuneY = offsets.NATIVE_TUNE_Y or -5
-    return baseY + tuneY
-end
-
-function MultiBot.talent.getBottomTabXOffset(xOffset)
-    local offsets = MultiBot.talent.getHostOffsetConfig()
-    local tuneX = offsets.HOST_TUNE_X or 0
-
-    return xOffset + tuneX
-end
-
-function MultiBot.talent.applyBottomTabChrome(tabFrame, host, hostStrata, hostLevel)
-    if not (tabFrame and tabFrame.SetPoint and tabFrame.ClearAllPoints) then
-        return
-    end
-
-    if not host then
-        return
-    end
-
-    local xOffset = tabFrame.mbXOffset or 0
-    local yOffset = MultiBot.talent.getBottomTabYOffset()
-    tabFrame:ClearAllPoints()
-    tabFrame:SetPoint("BOTTOMRIGHT", host, "BOTTOMRIGHT", MultiBot.talent.getBottomTabXOffset(xOffset), yOffset)
-    tabFrame:SetFrameStrata(hostStrata)
-    tabFrame:SetFrameLevel(hostLevel + 2)
-end
-
 function MultiBot.talent.updateTabChromeForHost(host)
     if not host then
         return
     end
 
+    local offsets = MultiBot.TalentTabHost and MultiBot.TalentTabHost.OFFSETS or {}
+    local yOffset = (offsets.NATIVE_BASE_Y or -35) + (offsets.NATIVE_TUNE_Y or -5)
+    local tuneX = offsets.HOST_TUNE_X or 0
     local hostStrata = host:GetFrameStrata() or "DIALOG"
     local hostLevel = host:GetFrameLevel() or 0
 
     for _, frameName in ipairs(MultiBot.TalentTabGroups.CHROME) do
         local tabFrame = MultiBot.talent.frames and MultiBot.talent.frames[frameName]
-        MultiBot.talent.applyBottomTabChrome(tabFrame, host, hostStrata, hostLevel)
+        if tabFrame and tabFrame.SetPoint and tabFrame.ClearAllPoints then
+            local xOffset = tabFrame.mbXOffset or 0
+            tabFrame:ClearAllPoints()
+            tabFrame:SetPoint("BOTTOMRIGHT", host, "BOTTOMRIGHT", xOffset + tuneX, yOffset)
+            tabFrame:SetFrameStrata(hostStrata)
+            tabFrame:SetFrameLevel(hostLevel + 2)
+        end
 
         local visible = frameName ~= MultiBot.TalentTabKeys.APPLY
         if tabFrame then
@@ -4537,26 +4511,7 @@ function MultiBot.talent.updateTabChromeForHost(host)
     end
 end
 
-function MultiBot.talent.updateHostWindowTitle(window, value)
-    if window and window.SetTitle then
-        local botName = MultiBot.talent and MultiBot.talent.name or "NAME"
-        local titleKey = MultiBot.TalentTabHost.TITLE_KEYS[value]
-        if titleKey then
-            window:SetTitle(MultiBot.L(titleKey) .. " " .. botName)
-        else
-            window:SetTitle(MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", botName) or MultiBot.TalentTabHost.TITLE_DEFAULT)
-        end
-    end
-end
-
-function MultiBot.talent.showTabChrome(host)
-    MultiBot.talent.updateTabChromeForHost(host)
-
-    MultiBot.talent.refreshApplyTabVisibility()
-end
-
-function MultiBot.talent.activateHostTab(hostFrame, window, value)
-    local host = hostFrame
+function MultiBot.talent.activateHostTab(host, window, value)
     local hostTab = MultiBot.TalentTabHost and MultiBot.TalentTabHost.BUTTONS and MultiBot.TalentTabHost.BUTTONS[value]
     local tab = hostTab and MultiBot.talent.tabTextures and MultiBot.talent.tabTextures[hostTab.key]
     local tabButton = tab and tab.btn
@@ -4565,42 +4520,20 @@ function MultiBot.talent.activateHostTab(hostFrame, window, value)
         action()
     end
 
-    MultiBot.talent.showTabChrome(host)
+    MultiBot.talent.updateTabChromeForHost(host)
+    MultiBot.talent.refreshApplyTabVisibility()
     if MultiBot.talent.texts and MultiBot.talent.texts["Title"] then
         MultiBot.talent.texts["Title"]:Hide()
     end
 
-    MultiBot.talent.updateHostWindowTitle(window, value)
-end
-
-function MultiBot.talent.attachSharedHostContent(hostFrame)
-    if not hostFrame or not MultiBot.talent then
-        return
-    end
-
-    if MultiBot.talent.texture then
-        MultiBot.talent.texture:Hide()
-    end
-
-    local moveButton = MultiBot.talent.buttons and MultiBot.talent.buttons["Move"]
-    if moveButton then
-        moveButton:Hide()
-    end
-
-    for _, frameName in ipairs(MultiBot.TalentTabGroups.ALL) do
-        local child = MultiBot.talent.frames and MultiBot.talent.frames[frameName]
-        if child and child.SetParent then
-            child:SetParent(hostFrame)
+    if window and window.SetTitle then
+        local botName = MultiBot.talent and MultiBot.talent.name or "NAME"
+        local titleKey = MultiBot.TalentTabHost.TITLE_KEYS[value]
+        if titleKey then
+            window:SetTitle(MultiBot.L(titleKey) .. " " .. botName)
+        else
+            window:SetTitle(MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", botName) or MultiBot.TalentTabHost.TITLE_DEFAULT)
         end
-    end
-
-    local pointsText = MultiBot.talent.texts and MultiBot.talent.texts["Points"]
-    if pointsText and pointsText.SetParent then
-        pointsText:SetParent(hostFrame)
-    end
-
-    if MultiBot.talent.texts and MultiBot.talent.texts["Title"] then
-        MultiBot.talent.texts["Title"]:Hide()
     end
 end
 
@@ -4613,25 +4546,48 @@ function MultiBot.talent.applyHostLayout(hostFrame)
     MultiBot.talent:SetParent(host)
     MultiBot.talent:ClearAllPoints()
     MultiBot.talent:SetPoint("TOPLEFT", host, "TOPLEFT", 0, 0)
-    MultiBot.talent.attachSharedHostContent(host)
-    MultiBot.talent.showTabChrome(host)
+	
+    if MultiBot.talent.texture then
+        MultiBot.talent.texture:Hide()
+    end
+
+    local moveButton = MultiBot.talent.buttons and MultiBot.talent.buttons["Move"]
+    if moveButton then
+        moveButton:Hide()
+    end
+
+    for _, frameName in ipairs(MultiBot.TalentTabGroups.ALL) do
+        local child = MultiBot.talent.frames and MultiBot.talent.frames[frameName]
+        if child and child.SetParent then
+            child:SetParent(host)
+        end
+    end
+
+    local pointsText = MultiBot.talent.texts and MultiBot.talent.texts["Points"]
+    if pointsText and pointsText.SetParent then
+        pointsText:SetParent(host)
+    end
+
+    if MultiBot.talent.texts and MultiBot.talent.texts["Title"] then
+        MultiBot.talent.texts["Title"]:Hide()
+    end
+
+    MultiBot.talent.updateTabChromeForHost(host)
+    MultiBot.talent.refreshApplyTabVisibility()
     return host
 end
 
-function MultiBot.talent.syncAceHostLayout()
-    local aceHost = MultiBot.talentAceHost
-    if not (aceHost and aceHost.host) then
-        return false
+function MultiBot.talent.ensureAceHost()
+    if MultiBot.talentAceHost then
+        return MultiBot.talentAceHost
     end
 
-    MultiBot.talent.applyHostLayout(aceHost.host)
-    local activeState = MultiBot.talent and MultiBot.talent.__activeTab or MultiBot.TalentTabStates.TALENTS
-    MultiBot.talent.updateHostWindowTitle(aceHost.window, activeState)
-    return true
-end
+    local aceGUI = resolveAceGUI("AceGUI-3.0 is required for MB_TalentGlyphHost")
+    if not aceGUI then
+        return nil
+    end
 
-function MultiBot.talent.createAceHostWindow(aceGUI)
-    local window = aceGUI and aceGUI:Create("Window")
+    local window = aceGUI:Create("Window")
     if not window then
         return nil
     end
@@ -4655,43 +4611,16 @@ function MultiBot.talent.createAceHostWindow(aceGUI)
         end
     end)
 
-    return window
-end
-
-function MultiBot.talent.createAceHostFrame(window)
-    if not (window and window.content) then
+    local host = CreateFrame("Frame", nil, window.content)
+    if not host then
         return nil
     end
 
-    local host = CreateFrame("Frame", nil, window.content)
     host:SetPoint("TOPLEFT", window.content, "TOPLEFT", 0, 0)
     host:SetPoint("TOPRIGHT", window.content, "TOPRIGHT", 0, 0)
     host:SetPoint("BOTTOM", window.content, "BOTTOM", 0, 0)
     if host.SetClipsChildren then
         host:SetClipsChildren(false)
-    end
-
-    return host
-end
-
-function MultiBot.talent.ensureAceHost()
-    if MultiBot.talentAceHost then
-        return MultiBot.talentAceHost
-    end
-
-    local aceGUI = resolveAceGUI("AceGUI-3.0 is required for MB_TalentGlyphHost")
-    if not aceGUI then
-        return nil
-    end
-
-    local window = MultiBot.talent.createAceHostWindow(aceGUI)
-    if not window then
-        return nil
-    end
-
-    local host = MultiBot.talent.createAceHostFrame(window)
-    if not host then
-        return nil
     end
 
     MultiBot.talent.applyHostLayout(host)
@@ -4760,7 +4689,7 @@ function MultiBot.talent.buildTalentApplyValues()
 	local tValues = ""
 
 	MultiBot.talent.forEachTalentTree(function(i, tTab)
-		for j = 1, table.getn(tTab.buttons) do
+		for j = 1, #tTab.buttons do
 			tValues = tValues .. tTab.buttons[j].value
 		end
 		if i < MultiBot.TalentTabLimits.TREE_COUNT then tValues = tValues .. "-" end
@@ -4927,7 +4856,7 @@ do
     tTab:Hide()
 end
 
--- Legacy glyph apply button removed from UI; Apply tab is now the only entry point.
+-- Apply tab is the only entry point for glyph equipment actions.
 function MultiBot.talent.applyCustomGlyphs()
     local ids = {}
     for i = 1, MultiBot.TalentTabLimits.GLYPH_SOCKET_COUNT do
@@ -4962,7 +4891,9 @@ for _, def in ipairs(glyphSocketDefinitions) do
 end
 
 function MultiBot.talent.addBottomTab(frameKey, buttonLabel, xOffset)
-    local tabFrame = MultiBot.talent.addFrame(frameKey, xOffset, MultiBot.talent.getBottomTabYOffset(), 28, 96, 24)
+    local offsets = MultiBot.TalentTabHost and MultiBot.TalentTabHost.OFFSETS or {}
+    local yOffset = (offsets.NATIVE_BASE_Y or -35) + (offsets.NATIVE_TUNE_Y or -5)
+    local tabFrame = MultiBot.talent.addFrame(frameKey, xOffset, yOffset, 28, 96, 24)
     tabFrame.mbXOffset = xOffset
     tabFrame.buttons = tabFrame.buttons or {}
 
@@ -5262,7 +5193,7 @@ function MultiBot.talent.forEachIndexedEntry(entries, callback)
         return nil
     end
 
-    for i = 1, table.getn(entries) do
+    for i = 1, #entries do
         local result = callback(i, entries[i], entries)
         if result ~= nil then
             return result
