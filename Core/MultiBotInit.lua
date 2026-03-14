@@ -4069,16 +4069,70 @@ MultiBot.talent:Hide()
 MultiBot.talent.movButton("Move", -960, 960, 64, MultiBot.L("tips.move.talent"))
 
 MultiBot.talent.tabTextures = MultiBot.talent.tabTextures or {}
-MultiBot.TalentTabKeys = MultiBot.TalentTabKeys or { TALENTS = "Tab5", GLYPHS = "Tab6", CUSTOM_TALENTS = "Tab7", CUSTOM_GLYPHS = "Tab8", COPY = "Tab9", APPLY = "Tab10" }
-MultiBot.TalentTabGroups = MultiBot.TalentTabGroups or {
-    ALL = { "Tab1", "Tab2", "Tab3", "Tab4", "Tab5", "Tab6", "Tab7", "Tab8", "Tab9", "Tab10" },
-    CHROME = { "Tab5", "Tab6", "Tab7", "Tab8", "Tab9", "Tab10" },
-    BOTTOM = { "Tab5", "Tab6", "Tab7", "Tab8", "Tab9", "Tab10" },
-    INACTIVE_DEFAULT = { "Tab6", "Tab7", "Tab8", "Tab9", "Tab10" },
-    TALENT_TREES = { "Tab1", "Tab2", "Tab3" },
-    GLYPH = "Tab4",
+MultiBot.TalentFrameKeys = MultiBot.TalentFrameKeys or {
+    TALENT_TREE_1 = "TALENT_TREE_1",
+    TALENT_TREE_2 = "TALENT_TREE_2",
+    TALENT_TREE_3 = "TALENT_TREE_3",
+    GLYPH_OVERVIEW = "GLYPH_OVERVIEW",
+    TALENTS = "BOTTOM_TAB_TALENTS",
+    GLYPHS = "BOTTOM_TAB_GLYPHS",
+    CUSTOM_TALENTS = "BOTTOM_TAB_CUSTOM_TALENTS",
+    CUSTOM_GLYPHS = "BOTTOM_TAB_CUSTOM_GLYPHS",
+    COPY = "BOTTOM_TAB_COPY",
+    APPLY = "BOTTOM_TAB_APPLY",
 }
-MultiBot.TalentTabDefaults = MultiBot.TalentTabDefaults or { ACTIVE = "Tab5", ACTIVE_LABEL = "Talents" }
+MultiBot.TalentTabKeys = MultiBot.TalentTabKeys or {
+    TALENTS = MultiBot.TalentFrameKeys.TALENTS,
+    GLYPHS = MultiBot.TalentFrameKeys.GLYPHS,
+    CUSTOM_TALENTS = MultiBot.TalentFrameKeys.CUSTOM_TALENTS,
+    CUSTOM_GLYPHS = MultiBot.TalentFrameKeys.CUSTOM_GLYPHS,
+    COPY = MultiBot.TalentFrameKeys.COPY,
+    APPLY = MultiBot.TalentFrameKeys.APPLY,
+}
+MultiBot.TalentTabGroups = MultiBot.TalentTabGroups or {
+    ALL = {
+        MultiBot.TalentFrameKeys.TALENT_TREE_1,
+        MultiBot.TalentFrameKeys.TALENT_TREE_2,
+        MultiBot.TalentFrameKeys.TALENT_TREE_3,
+        MultiBot.TalentFrameKeys.GLYPH_OVERVIEW,
+        MultiBot.TalentFrameKeys.TALENTS,
+        MultiBot.TalentFrameKeys.GLYPHS,
+        MultiBot.TalentFrameKeys.CUSTOM_TALENTS,
+        MultiBot.TalentFrameKeys.CUSTOM_GLYPHS,
+        MultiBot.TalentFrameKeys.COPY,
+        MultiBot.TalentFrameKeys.APPLY,
+    },
+    CHROME = {
+        MultiBot.TalentFrameKeys.TALENTS,
+        MultiBot.TalentFrameKeys.GLYPHS,
+        MultiBot.TalentFrameKeys.CUSTOM_TALENTS,
+        MultiBot.TalentFrameKeys.CUSTOM_GLYPHS,
+        MultiBot.TalentFrameKeys.COPY,
+        MultiBot.TalentFrameKeys.APPLY,
+    },
+    BOTTOM = {
+        MultiBot.TalentFrameKeys.TALENTS,
+        MultiBot.TalentFrameKeys.GLYPHS,
+        MultiBot.TalentFrameKeys.CUSTOM_TALENTS,
+        MultiBot.TalentFrameKeys.CUSTOM_GLYPHS,
+        MultiBot.TalentFrameKeys.COPY,
+        MultiBot.TalentFrameKeys.APPLY,
+    },
+    INACTIVE_DEFAULT = {
+        MultiBot.TalentFrameKeys.GLYPHS,
+        MultiBot.TalentFrameKeys.CUSTOM_TALENTS,
+        MultiBot.TalentFrameKeys.CUSTOM_GLYPHS,
+        MultiBot.TalentFrameKeys.COPY,
+        MultiBot.TalentFrameKeys.APPLY,
+    },
+    TALENT_TREES = {
+        MultiBot.TalentFrameKeys.TALENT_TREE_1,
+        MultiBot.TalentFrameKeys.TALENT_TREE_2,
+        MultiBot.TalentFrameKeys.TALENT_TREE_3,
+    },
+    GLYPH = MultiBot.TalentFrameKeys.GLYPH_OVERVIEW,
+}
+MultiBot.TalentTabDefaults = MultiBot.TalentTabDefaults or { ACTIVE = MultiBot.TalentFrameKeys.TALENTS, ACTIVE_LABEL = "Talents" }
 MultiBot.TalentTabLabels = MultiBot.TalentTabLabels or { GLYPHS = "Glyphs", CUSTOM_TALENTS = "Custom Talents", CUSTOM_GLYPHS = "Custom Glyphs", COPY = MultiBot.L("info.talent.Copy"), APPLY = MultiBot.L("info.talent.Apply") }
 MultiBot.TalentTabStates = MultiBot.TalentTabStates or { TALENTS = "talents", GLYPHS = "glyphs", CUSTOM_TALENTS = "custom_talents", CUSTOM_GLYPHS = "custom_glyphs" }
 MultiBot.TalentTabContextProfiles = MultiBot.TalentTabContextProfiles or {
@@ -4110,6 +4164,15 @@ MultiBot.TalentTabHost = MultiBot.TalentTabHost or {
         WIDTH = 620,
         HEIGHT = 570,
     },
+    AUTO_SIZE = {
+        ENABLED = true,
+        MIN_WIDTH = 620,
+        MIN_HEIGHT = 520,
+        MAX_WIDTH = 1080,
+        MAX_HEIGHT = 760,
+        PADDING_WIDTH = 24,
+        PADDING_HEIGHT = 24,
+    },
     OFFSETS = {
         HOST_TUNE_X = 220,
         NATIVE_BASE_Y = -35,
@@ -4117,6 +4180,50 @@ MultiBot.TalentTabHost = MultiBot.TalentTabHost or {
     },
 }
 MultiBot.TalentTabColors = MultiBot.TalentTabColors or { ACTIVE = { 1, 0.82, 0, 1 }, INACTIVE = { 0.5, 0.5, 0.5, 1 } }
+MultiBot.TalentTabChrome = MultiBot.TalentTabChrome or {
+    STYLE = "CHATFRAME_LEGACY",
+    CHATFRAME_TEXTURES = {
+        LEFT = "Interface\\ChatFrame\\ChatFrameTab-BGLeft",
+        MID = "Interface\\ChatFrame\\ChatFrameTab-BGMid",
+        RIGHT = "Interface\\ChatFrame\\ChatFrameTab-BGRight",
+    },
+}
+
+function MultiBot.talent.applyBottomTabChrome(tabFrame)
+    local chrome = MultiBot.TalentTabChrome or {}
+    local style = chrome.STYLE
+    if style ~= "CHATFRAME_LEGACY" then
+        style = "CHATFRAME_LEGACY"
+    end
+
+    local textures = chrome.CHATFRAME_TEXTURES or {}
+    local leftTexture = textures.LEFT or "Interface\\ChatFrame\\ChatFrameTab-BGLeft"
+    local midTexture = textures.MID or "Interface\\ChatFrame\\ChatFrameTab-BGMid"
+    local rightTexture = textures.RIGHT or "Interface\\ChatFrame\\ChatFrameTab-BGRight"
+
+    local bgLeft = tabFrame:CreateTexture(nil, "BACKGROUND")
+    bgLeft:SetTexture(leftTexture)
+    bgLeft:SetTexCoord(0, 1, 1, 0)
+    bgLeft:SetWidth(16)
+    bgLeft:SetHeight(32)
+    bgLeft:SetPoint("BOTTOMLEFT", tabFrame, "BOTTOMLEFT", 0, -4)
+
+    local bgMid = tabFrame:CreateTexture(nil, "BACKGROUND")
+    bgMid:SetTexture(midTexture)
+    bgMid:SetTexCoord(0, 1, 1, 0)
+    bgMid:SetHeight(32)
+    bgMid:SetPoint("BOTTOMLEFT", tabFrame, "BOTTOMLEFT", 16, -4)
+    bgMid:SetPoint("BOTTOMRIGHT", tabFrame, "BOTTOMRIGHT", -16, -4)
+
+    local bgRight = tabFrame:CreateTexture(nil, "BACKGROUND")
+    bgRight:SetTexture(rightTexture)
+    bgRight:SetTexCoord(0, 1, 1, 0)
+    bgRight:SetWidth(16)
+    bgRight:SetHeight(32)
+    bgRight:SetPoint("BOTTOMRIGHT", tabFrame, "BOTTOMRIGHT", 0, -4)
+
+    return bgLeft, bgMid, bgRight
+end
 
 function MultiBot.talent.setBottomTabVisualState(tabKey, isActive, labelOverride)
     local tab = MultiBot.talent.tabTextures[tabKey]
@@ -4216,6 +4323,43 @@ function MultiBot.talent.setActiveTabContext(state, opts)
     elseif opts.refreshApply then
         MultiBot.talent.refreshApplyTabVisibility()
     end
+
+    MultiBot.talent.syncHostWindowTitle(state, opts)
+
+    local host = MultiBot.talent.ensureAceHost(false)
+    local window = host and host.window
+    MultiBot.talent.scheduleHostAutoSize(window)
+end
+
+function MultiBot.talent.syncHostWindowTitle(state, opts)
+    local host = MultiBot.talentAceHost
+    local window = host and host.window
+    if not (window and window.SetTitle) then
+        return
+    end
+
+    local botName = MultiBot.talent and MultiBot.talent.name or "NAME"
+    local titleText = opts and opts.titleText
+    local titleKey = opts and opts.titleKey
+
+    if titleText and titleText ~= "" then
+        window:SetTitle(titleText)
+        return
+    end
+
+    if titleKey then
+        window:SetTitle((MultiBot.L(titleKey) or "") .. " " .. botName)
+        return
+    end
+
+    local resolvedState = state or MultiBot.talent.__activeTab
+    local hostTitleKey = MultiBot.TalentTabHost and MultiBot.TalentTabHost.TITLE_KEYS and MultiBot.TalentTabHost.TITLE_KEYS[resolvedState]
+    if hostTitleKey then
+        window:SetTitle((MultiBot.L(hostTitleKey) or "") .. " " .. botName)
+        return
+    end
+
+    window:SetTitle(MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", botName) or MultiBot.TalentTabHost.TITLE_DEFAULT)
 end
 
 function MultiBot.talent.copyOptionsTable(values)
@@ -4300,21 +4444,31 @@ end
 
 function MultiBot.talent.getTalentBotLevel(fallbackUnit)
     local unit = MultiBot.talent.getTalentBotUnit()
-    return UnitLevel(unit or fallbackUnit or "player")
+    local resolvedLevel = UnitLevel(unit or fallbackUnit or "player")
+    if type(resolvedLevel) == "number" and resolvedLevel > 0 then
+        MultiBot.talent.__cachedBotLevel = resolvedLevel
+        return resolvedLevel
+    end
+
+    return MultiBot.talent.__cachedBotLevel
 end
 
 function MultiBot.talent.getTalentBotClassKey(fallbackUnit)
     local unit = MultiBot.talent.getTalentBotUnit()
     local _, classFile = UnitClass(unit or fallbackUnit or "player")
     if not classFile then
-        return nil
+        return MultiBot.talent.__cachedBotClassKey
     end
 
+    local classKey
     if classFile == "DEATHKNIGHT" then
-        return "DeathKnight"
+        classKey = "DeathKnight"
+    else
+        classKey = classFile:sub(1,1)..classFile:sub(2):lower()
     end
 
-    return classFile:sub(1,1)..classFile:sub(2):lower()
+    MultiBot.talent.__cachedBotClassKey = classKey
+    return classKey
 end
 
 function MultiBot.talent.getTalentTreeFrame(treeIndex)
@@ -4466,6 +4620,147 @@ function MultiBot.talent.refreshApplyTabVisibility()
     end
 end
 
+function MultiBot.talent.getHostAutoSizeConfig()
+    local hostConfig = MultiBot.TalentTabHost or {}
+    local sizeConfig = hostConfig.AUTO_SIZE or {}
+    local defaultSize = hostConfig.SIZE or {}
+
+    return {
+        enabled = sizeConfig.ENABLED ~= false,
+        minWidth = sizeConfig.MIN_WIDTH or defaultSize.WIDTH or 620,
+        minHeight = sizeConfig.MIN_HEIGHT or defaultSize.HEIGHT or 570,
+        maxWidth = sizeConfig.MAX_WIDTH,
+        maxHeight = sizeConfig.MAX_HEIGHT,
+        paddingWidth = sizeConfig.PADDING_WIDTH or 24,
+        paddingHeight = sizeConfig.PADDING_HEIGHT or 42,
+    }
+end
+
+function MultiBot.talent.measureVisibleFrameBounds(frames)
+    local bounds = nil
+
+    for _, frame in ipairs(frames or {}) do
+        if frame and frame.IsShown and frame:IsShown() then
+            local left = frame:GetLeft()
+            local right = frame:GetRight()
+            local top = frame:GetTop()
+            local bottom = frame:GetBottom()
+
+            if left and right and top and bottom then
+                if not bounds then
+                    bounds = { left = left, right = right, top = top, bottom = bottom }
+                else
+                    bounds.left = math.min(bounds.left, left)
+                    bounds.right = math.max(bounds.right, right)
+                    bounds.top = math.max(bounds.top, top)
+                    bounds.bottom = math.min(bounds.bottom, bottom)
+                end
+            end
+        end
+    end
+
+    return bounds
+end
+
+function MultiBot.talent.collectVisibleHostContentFrames()
+    local frames = {}
+    local contentGroups = {
+        MultiBot.TalentTabGroups and MultiBot.TalentTabGroups.TALENT_TREES,
+        { MultiBot.TalentTabGroups and MultiBot.TalentTabGroups.GLYPH },
+    }
+
+    for _, group in ipairs(contentGroups) do
+        for _, frameKey in ipairs(group or {}) do
+            local frame = MultiBot.talent.frames and MultiBot.talent.frames[frameKey]
+            if frame then
+                table.insert(frames, frame)
+            end
+        end
+    end
+
+    return frames
+end
+
+function MultiBot.talent.alignHostVisibleContentTopLeft(window)
+    local hostEntry = MultiBot.talentAceHost
+    local host = hostEntry and hostEntry.host
+    if not (window and host and host.GetLeft and host.GetTop) then
+        return false
+    end
+
+    local sizeCfg = MultiBot.talent.getHostAutoSizeConfig()
+    local bounds = MultiBot.talent.measureVisibleFrameBounds(MultiBot.talent.collectVisibleHostContentFrames())
+    if not bounds then
+        return false
+    end
+
+    local hostLeft = host:GetLeft()
+    local hostTop = host:GetTop()
+    if not (hostLeft and hostTop) then
+        return false
+    end
+
+    local desiredLeft = hostLeft + math.floor((sizeCfg.paddingWidth or 24) / 2)
+    local desiredTop = hostTop - math.floor((sizeCfg.paddingHeight or 24) / 2)
+    local deltaX = desiredLeft - bounds.left
+    local deltaY = desiredTop - bounds.top
+
+    if math.abs(deltaX) < 0.5 and math.abs(deltaY) < 0.5 then
+        return true
+    end
+
+    local _, _, _, offsetX, offsetY = MultiBot.talent:GetPoint(1)
+    offsetX = offsetX or 0
+    offsetY = offsetY or 0
+
+    MultiBot.talent:ClearAllPoints()
+    MultiBot.talent:SetPoint("CENTER", host, "CENTER", offsetX + deltaX, offsetY + deltaY)
+    MultiBot.talent.updateTabChromeForHost(host)
+    return true
+end
+
+function MultiBot.talent.autoSizeHostWindow(window)
+    if not (window and window.frame and window.frame:IsShown()) then
+        return false
+    end
+
+    local sizeCfg = MultiBot.talent.getHostAutoSizeConfig()
+    if not sizeCfg.enabled then
+        return false
+    end
+
+    local bounds = MultiBot.talent.measureVisibleFrameBounds(MultiBot.talent.collectVisibleHostContentFrames())
+    if not bounds then
+        return false
+    end
+
+    local width = math.max(math.ceil((bounds.right - bounds.left) + sizeCfg.paddingWidth), sizeCfg.minWidth)
+    local height = math.max(math.ceil((bounds.top - bounds.bottom) + sizeCfg.paddingHeight), sizeCfg.minHeight)
+
+    if sizeCfg.maxWidth then
+        width = math.min(width, sizeCfg.maxWidth)
+    end
+
+    if sizeCfg.maxHeight then
+        height = math.min(height, sizeCfg.maxHeight)
+    end
+
+    window:SetWidth(width)
+    window:SetHeight(height)
+    MultiBot.talent.alignHostVisibleContentTopLeft(window)
+    return true
+end
+
+function MultiBot.talent.scheduleHostAutoSize(window)
+    if not window then
+        return
+    end
+
+    TimerAfter(0.01, function()
+        MultiBot.talent.autoSizeHostWindow(window)
+    end)
+end
+
 function MultiBot.talent.updateTabChromeForHost(host)
     if not host then
         return
@@ -4535,6 +4830,8 @@ function MultiBot.talent.activateHostTab(host, window, value)
             window:SetTitle(MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", botName) or MultiBot.TalentTabHost.TITLE_DEFAULT)
         end
     end
+
+    MultiBot.talent.scheduleHostAutoSize(window)
 end
 
 function MultiBot.talent.applyHostLayout(hostFrame)
@@ -4545,7 +4842,7 @@ function MultiBot.talent.applyHostLayout(hostFrame)
 
     MultiBot.talent:SetParent(host)
     MultiBot.talent:ClearAllPoints()
-    MultiBot.talent:SetPoint("TOPLEFT", host, "TOPLEFT", 0, 0)
+    MultiBot.talent:SetPoint("CENTER", host, "CENTER", 0, 0)
 	
     if MultiBot.talent.texture then
         MultiBot.talent.texture:Hide()
@@ -4577,9 +4874,13 @@ function MultiBot.talent.applyHostLayout(hostFrame)
     return host
 end
 
-function MultiBot.talent.ensureAceHost()
+function MultiBot.talent.ensureAceHost(createIfMissing)
     if MultiBot.talentAceHost then
         return MultiBot.talentAceHost
+    end
+
+    if createIfMissing == false then
+        return nil
     end
 
     local aceGUI = resolveAceGUI("AceGUI-3.0 is required for MB_TalentGlyphHost")
@@ -4603,22 +4904,14 @@ function MultiBot.talent.ensureAceHost()
     window.frame:SetFrameStrata("DIALOG")
     registerAceWindowEscapeClose(window, "TalentGlyphHost")
     bindAceWindowPosition(window, "talent_glyph_host")
-    window:SetCallback("OnClose", function()
-        if MultiBot.talent and MultiBot.talent.Hide then
-            MultiBot.talent:Hide()
-        else
-            window:Hide()
-        end
-    end)
+    setAceWindowCloseToHide(window)
 
     local host = CreateFrame("Frame", nil, window.content)
     if not host then
         return nil
     end
 
-    host:SetPoint("TOPLEFT", window.content, "TOPLEFT", 0, 0)
-    host:SetPoint("TOPRIGHT", window.content, "TOPRIGHT", 0, 0)
-    host:SetPoint("BOTTOM", window.content, "BOTTOM", 0, 0)
+    host:SetAllPoints(window.content)
     if host.SetClipsChildren then
         host:SetClipsChildren(false)
     end
@@ -4637,52 +4930,39 @@ function MultiBot.talent.ensureAceHost()
     return MultiBot.talentAceHost
 end
 
-do
-    local originalShow = MultiBot.talent.Show
-    local originalHide = MultiBot.talent.Hide
-    local originalIsShown = MultiBot.talent.IsShown
-
-    MultiBot.talent.Show = function(self)
-        local host = MultiBot.talent.ensureAceHost()
-        if host and host.host then
-            MultiBot.talent.applyHostLayout(host.host)
-        end
-
-        local window = host and host.window
-        if window then
-            window:Show()
-        end
-
-        if originalShow then
-            originalShow(self)
-        end
-        return self
+MultiBot.talent.Show = function(self)
+    local host = MultiBot.talent.ensureAceHost(true)
+    if host and host.host then
+        MultiBot.talent.applyHostLayout(host.host)
     end
 
-    MultiBot.talent.Hide = function(self)
-        local window = MultiBot.talentAceHost and MultiBot.talentAceHost.window
-        if window then
-            window:Hide()
-        end
-
-        if originalHide then
-            return originalHide(self)
-        end
-        return self
+    local window = host and host.window
+    if window then
+        window:Show()
+        MultiBot.talent.scheduleHostAutoSize(window)
     end
 
-    MultiBot.talent.IsShown = function(self)
-        local window = MultiBot.talentAceHost and MultiBot.talentAceHost.window
-        if window and window.frame then
-            return window.frame:IsShown()
-        end
+    return self
+end
 
-        if originalIsShown then
-            return originalIsShown(self)
-        end
-
-        return false
+MultiBot.talent.Hide = function(self)
+    local host = MultiBot.talent.ensureAceHost(false)
+    local window = host and host.window
+    if window then
+        window:Hide()
     end
+
+    return self
+end
+
+MultiBot.talent.IsShown = function(_)
+    local host = MultiBot.talent.ensureAceHost(false)
+    local window = host and host.window
+    if window and window.frame then
+        return window.frame:IsShown()
+    end
+
+    return false
 end
 
 function MultiBot.talent.buildTalentApplyValues()
@@ -4715,9 +4995,9 @@ function MultiBot.talent.copyCustomTalentsToTarget()
 	SendChatMessage("talents apply " .. MultiBot.talent.buildTalentApplyValues(), "WHISPER", nil, tName)
 end
 
--- Tab1, Tab2, Tab3 dans des blocs do...end pour libérer les locals
+-- Talent trees frame initialization in scoped blocks
 do
-    local tTab = MultiBot.talent.addFrame("Tab1", -830, 518, 28, 170, 408)
+    local tTab = MultiBot.talent.addFrame(MultiBot.TalentFrameKeys.TALENT_TREE_1, -830, 518, 28, 170, 408)
     tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\White.blp")
     tTab.addText("Title", MB_TAB_TITLE_DEFAULT, "CENTER", 0, 214, 13)
     tTab.arrows = {}
@@ -4726,7 +5006,7 @@ do
 end
 
 do
-    local tTab = MultiBot.talent.addFrame("Tab2", -656, 518, 28, 170, 408)
+    local tTab = MultiBot.talent.addFrame(MultiBot.TalentFrameKeys.TALENT_TREE_2, -656, 518, 28, 170, 408)
     tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\White.blp")
     tTab.addText("Title", MB_TAB_TITLE_DEFAULT, "CENTER", 0, 214, 13)
     tTab.arrows = {}
@@ -4735,7 +5015,7 @@ do
 end
 
 do
-    local tTab = MultiBot.talent.addFrame("Tab3", -482, 518, 28, 170, 408)
+    local tTab = MultiBot.talent.addFrame(MultiBot.TalentFrameKeys.TALENT_TREE_3, -482, 518, 28, 170, 408)
     tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\White.blp")
     tTab.addText("Title", MB_TAB_TITLE_DEFAULT, "CENTER", 0, 214, 13)
     tTab.arrows = {}
@@ -4801,23 +5081,10 @@ function MultiBot.FillDefaultGlyphs()
 					 or "Interface\\AddOns\\MultiBot\\Textures\\UI-GlyphFrame-Glow.blp"
             local btn = f.frames.IconBtn
             if not btn then
-                btn = CreateFrame("Button", nil, f)
-                btn:SetAllPoints(f)
-                btn:SetScript("OnEnter", MultiBot.talent.showGlyphTooltip)
-                btn:SetScript("OnLeave", MultiBot.talent.hideGlyphTooltip)
-
-                local icon = btn:CreateTexture(nil, "ARTWORK")
-                icon:ClearAllPoints()
-                icon:SetPoint("CENTER", btn, "CENTER", -9, 8)
-
-                local factor = (typ == "Major") and 0.64 or 0.66
-                icon:SetSize(f:GetWidth() * factor, f:GetHeight() * factor)
-
-                local crop = (typ == "Major") and 0.14 or 0.20
-                icon:SetTexCoord(crop, 1 - crop, crop, 1 - crop)
-
-                btn.icon = icon
+                btn = MultiBot.talent.createGlyphSocketIconButton(f)
                 f.frames.IconBtn = btn
+            else
+                MultiBot.talent.bindGlyphSocketIconButtonHandlers(btn)
             end
 
             btn.glyphID = id
@@ -4848,9 +5115,9 @@ function MultiBot.FillDefaultGlyphs()
     end
 end
 
--- Tab4 dans un bloc do...end
+-- Glyph overview frame initialization in a scoped block
 do
-    local tTab = MultiBot.talent.addFrame("Tab4", -513, 518, 28, 456, 430)
+    local tTab = MultiBot.talent.addFrame(MultiBot.TalentFrameKeys.GLYPH_OVERVIEW, -513, 518, 28, 456, 430)
     tTab.addFrame("Glow", 0, 0, 28, 456, 430).setAlpha(0.5).doHide()
     tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Background-GlyphFrame.blp")
     tTab:Hide()
@@ -4897,26 +5164,7 @@ function MultiBot.talent.addBottomTab(frameKey, buttonLabel, xOffset)
     tabFrame.mbXOffset = xOffset
     tabFrame.buttons = tabFrame.buttons or {}
 
-    local bgLeft = tabFrame:CreateTexture(nil, "BACKGROUND")
-    bgLeft:SetTexture("Interface\\ChatFrame\\ChatFrameTab-BGLeft")
-    bgLeft:SetTexCoord(0, 1, 1, 0)
-    bgLeft:SetWidth(16)
-    bgLeft:SetHeight(32)
-    bgLeft:SetPoint("BOTTOMLEFT", tabFrame, "BOTTOMLEFT", 0, -4)
-
-    local bgMid = tabFrame:CreateTexture(nil, "BACKGROUND")
-    bgMid:SetTexture("Interface\\ChatFrame\\ChatFrameTab-BGMid")
-    bgMid:SetTexCoord(0, 1, 1, 0)
-    bgMid:SetHeight(32)
-    bgMid:SetPoint("BOTTOMLEFT", tabFrame, "BOTTOMLEFT", 16, -4)
-    bgMid:SetPoint("BOTTOMRIGHT", tabFrame, "BOTTOMRIGHT", -16, -4)
-
-    local bgRight = tabFrame:CreateTexture(nil, "BACKGROUND")
-    bgRight:SetTexture("Interface\\ChatFrame\\ChatFrameTab-BGRight")
-    bgRight:SetTexCoord(0, 1, 1, 0)
-    bgRight:SetWidth(16)
-    bgRight:SetHeight(32)
-    bgRight:SetPoint("BOTTOMRIGHT", tabFrame, "BOTTOMRIGHT", 0, -4)
+    local bgLeft, bgMid, bgRight = MultiBot.talent.applyBottomTabChrome(tabFrame)
 
     tabFrame.texLeft  = bgLeft
     tabFrame.texMid   = bgMid
@@ -5261,6 +5509,10 @@ function MultiBot.talent.applyTalentRankDelta(pButton, tTab, delta)
 end
 
 function MultiBot.talent.onTalentLeftClick(pButton)
+    if MultiBot.talent.__activeTab ~= MultiBot.TalentTabStates.CUSTOM_TALENTS then
+        return
+    end
+
     local tTab, tButtons, tValue = MultiBot.talent.getTalentButtonContext(pButton)
     if not tTab or not MultiBot.talent.canIncreaseTalent(pButton, tButtons) then
         return
@@ -5278,6 +5530,10 @@ function MultiBot.talent.onTalentLeftClick(pButton)
 end
 
 function MultiBot.talent.onTalentRightClick(pButton)
+    if MultiBot.talent.__activeTab ~= MultiBot.TalentTabStates.CUSTOM_TALENTS then
+        return
+    end
+
     if not MultiBot.talent.canDecreaseTalent(pButton) then
         return
     end
@@ -5540,6 +5796,7 @@ function MultiBot.talent.getTalentsBuildOptions()
         end,
         resolveTalent = MultiBot.talent.buildActiveTalentsResolver(activeGroup),
         onSuccess = function()
+            MultiBot.talent.activateTalentsTabContext()
 		MultiBot.auto.talent = false
         end,
     })
@@ -5616,7 +5873,7 @@ MultiBot.talent.doClear = function()
 end
 
 --[[
-Add a custom tab to talents windows to make custom builds (Tab7)
+Add a custom tab to talents windows to make custom builds (BOTTOM_TAB_CUSTOM_TALENTS)
 ]]--
 
 function MultiBot.talent.setTalentsCustom()
@@ -5626,7 +5883,7 @@ end
 -- END TAB CUSTOM TALENTS --
 
 --[[
-Add a new tab to use custom Glyphs (Tab8)
+Add a new tab to use custom Glyphs (BOTTOM_TAB_CUSTOM_GLYPHS)
 ]]--
 
 function MultiBot.talent.getGlyphItemType(itemID)
@@ -5677,7 +5934,12 @@ function MultiBot.talent.isGlyphSocketUnlocked(socketFrame, level)
         return false
     end
 
-    return level >= MultiBot.TalentTabLimits.SOCKET_REQUIREMENTS[socketIndex]
+    local requiredLevel = MultiBot.TalentTabLimits.SOCKET_REQUIREMENTS[socketIndex] or 1
+    if type(level) ~= "number" then
+        return socketFrame and socketFrame.locked ~= true
+    end
+
+    return level >= requiredLevel
 end
 
 function MultiBot.talent.resetGlyphSocketIconButton(button)
@@ -5704,9 +5966,28 @@ function MultiBot.talent.setGlyphSocketElementVisibility(socketFrame, frameKey, 
     end
 end
 
+function MultiBot.talent.bindGlyphSocketIconButtonHandlers(button)
+    if not button then
+        return
+    end
+
+    button:RegisterForDrag("LeftButton")
+    button:RegisterForClicks("LeftButtonUp")
+    button:SetScript("OnEnter", MultiBot.talent.showGlyphTooltip)
+    button:SetScript("OnLeave", MultiBot.talent.hideGlyphTooltip)
+    button:SetScript("OnReceiveDrag", MultiBot.talent.onGlyphReceiveDrag)
+    button:SetScript("OnClick", MultiBot.talent.onGlyphReceiveDrag)
+    button:SetScript("OnMouseUp", function(self, mouseButton)
+        if mouseButton == "RightButton" then
+            MultiBot.talent.clearGlyphSocket(self:GetParent())
+        end
+    end)
+end
+
 function MultiBot.talent.ensureGlyphSocketIconButton(socketFrame)
     local button = socketFrame and socketFrame.frames and socketFrame.frames.IconBtn
     if button then
+        MultiBot.talent.bindGlyphSocketIconButtonHandlers(button)
         return button
     end
 
@@ -5773,6 +6054,10 @@ function MultiBot.talent.applyGlyphToSocket(socketFrame, button, itemID, glyphIn
 end
 
 function MultiBot.talent.clearGlyphSocket(socketFrame)
+    if MultiBot.talent.getActiveTabState() ~= MultiBot.TalentTabStates.CUSTOM_GLYPHS then
+        return
+    end
+
     socketFrame.item = 0
 
     MultiBot.talent.setGlyphSocketElementVisibility(socketFrame, "Rune", false)
@@ -5795,16 +6080,25 @@ function MultiBot.talent.ensureGlyphIconButtonBackground(btn, socketType, parent
 end
 
 function MultiBot.talent.onGlyphReceiveDrag(self)
+    if MultiBot.talent.getActiveTabState() ~= MultiBot.TalentTabStates.CUSTOM_GLYPHS then
+        return
+    end
+
     local typ, itemID = GetCursorInfo()
     if typ ~= "item" then return end
 
-    local lvl = MultiBot.talent.getTalentBotLevel("player")
+    local socket = self and self:GetParent()
+    if not socket then
+        return
+    end
+
+    local lvl = MultiBot.talent.getTalentBotLevel() or socket.__cachedBotLevel
     if not MultiBot.talent.isGlyphSocketUnlocked(socket, lvl) then
         UIErrorsFrame:AddMessage(MultiBot.L("info.glyphssocketnotunlocked"), 1, 0.3, 0.3, 1)
         return
     end
 
-    local classKey = MultiBot.talent.getTalentBotClassKey("player")
+    local classKey = MultiBot.talent.getTalentBotClassKey()
     if not classKey then
         return
     end
@@ -5847,17 +6141,7 @@ function MultiBot.talent.createGlyphSocketIconButton(socketFrame)
     icon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
     btn.icon = icon
 
-    btn:RegisterForDrag("LeftButton")
-    btn:RegisterForClicks("LeftButtonUp")
-    btn:SetScript("OnEnter", MultiBot.talent.showGlyphTooltip)
-    btn:SetScript("OnLeave", MultiBot.talent.hideGlyphTooltip)
-    btn:SetScript("OnReceiveDrag", MultiBot.talent.onGlyphReceiveDrag)
-    btn:SetScript("OnClick", MultiBot.talent.onGlyphReceiveDrag)
-    btn:SetScript("OnMouseUp", function(self, button)
-        if button == "RightButton" then
-            MultiBot.talent.clearGlyphSocket(self:GetParent())
-        end
-    end)
+    MultiBot.talent.bindGlyphSocketIconButtonHandlers(btn)
 
     return btn
 end
@@ -5888,6 +6172,10 @@ function MultiBot.talent.updateCustomGlyphSocketState(socketFrame, socketIndex, 
     socketFrame:SetID(socketIndex)
     MultiBot.talent.ensureGlyphSocketOverlay(socketFrame)
 
+    if type(botLevel) == "number" and botLevel > 0 then
+        socketFrame.__cachedBotLevel = botLevel
+    end
+
     if not MultiBot.talent.isGlyphSocketUnlocked(socketFrame, botLevel) then
         MultiBot.talent.applyGlyphSocketLockState(socketFrame)
     else
@@ -5896,7 +6184,7 @@ function MultiBot.talent.updateCustomGlyphSocketState(socketFrame, socketIndex, 
 end
 
 function MultiBot.talent.refreshAllCustomGlyphSockets(level)
-    local botLevel = level or MultiBot.talent.getTalentBotLevel("player")
+    local botLevel = tonumber(level or MultiBot.talent.getTalentBotLevel() or MultiBot.talent.__cachedBotLevel)
     MultiBot.talent.forEachGlyphSocket(function(i, socket)
         if socket then
             MultiBot.talent.updateCustomGlyphSocketState(socket, i, botLevel)
@@ -5909,7 +6197,6 @@ function MultiBot.talent.showCustomGlyphs()
         MultiBot.TalentTabStates.CUSTOM_GLYPHS,
         {
             titleKey = nil,
-            refreshApply = false,
         },
         function()
             MultiBot.talent.refreshAllCustomGlyphSockets()
@@ -5920,7 +6207,7 @@ end
 -- END TAB CUSTOM GLYPHS --
 
 --[[
-Tab9: Copy — replaces the old copy button
+BOTTOM_TAB_COPY: Copy — replaces the old copy button
 ]]--
 
 function MultiBot.talent.getBottomTabButton(tabKey)
