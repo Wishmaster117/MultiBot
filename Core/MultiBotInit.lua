@@ -836,20 +836,20 @@ tButton.doLeft = function(pButton, oRoster, oFilter)
 	elseif(oFilter ~= nil) then pButton.filter = oFilter
 	end
 
-    -- Filet de sécurité : si on veut 'players' mais l'index est vide, reconstruit ou redemande la liste
+    -- Safety net: if roster is 'players' but index is empty, rebuild or request the list.
     if oRoster == "players" or pButton.roster == "players" then
-      if not (MultiBot.index.players and table.getn(MultiBot.index.players) > 0) then
+      if not (MultiBot.index.players and #MultiBot.index.players > 0) then
         if MultiBot.RebuildPlayersIndexFromButtons then MultiBot.RebuildPlayersIndexFromButtons() end
-        if not (MultiBot.index.players and table.getn(MultiBot.index.players) > 0) then
-          -- toujours vide : on (re)demande la liste une fois
+        if not (MultiBot.index.players and #MultiBot.index.players > 0) then
+          -- Still empty: request the list once.
           SendChatMessage(".playerbot bot list", "SAY")
         end
       end
     end
 
-    -- Construction de la table source selon roster/filtre
+    -- Build the source table according to roster/filter.
     if pButton.roster == "players" then
-      -- On fusionne players ∪ actives pour que les bots déjà groupés apparaissent aussi
+      -- Merge players ∪ actives so already grouped bots also appear.
       local function merge_lists(a, b)
         local res, seen = {}, {}
         if a then for i=1,#a do local n=a[i]; if n and not seen[n] then seen[n]=true; table.insert(res, n) end end end
@@ -870,32 +870,32 @@ tButton.doLeft = function(pButton, oRoster, oFilter)
         tTable = MultiBot.index[pButton.roster]
       end
     end
-    MultiBot.dprint("Units.tTable.size", tTable and table.getn(tTable) or 0) -- DEBUG
-        -- Fin Construction de la table source selon roster/filtre
+    MultiBot.dprint("Units.tTable.size", tTable and #tTable or 0) -- DEBUG
+        -- End of source table build according to roster/filter.
 
         local tButton = nil
         local tFrame = nil
         local tIndex = 0
 
-        -- Certains favoris peuvent être chargés avant que leurs boutons ne soient créés
-        -- (par exemple juste après un login, avant le retour de `.playerbot bot list`).
-        -- On filtre donc la liste à afficher pour ne conserver que les entrées disposant
-        -- d'un bouton, afin d'éviter les erreurs Lua tout en laissant la vue se remplir
-        -- dès que les données arrivent.
+        -- Some favorites may load before their buttons are created
+        -- (for example right after login, before `.playerbot bot list` returns).
+        -- Filter the list to display only entries with an existing button
+        -- to avoid Lua errors while still allowing the view to fill in
+        -- as soon as data arrives.
         --
         local tDisplay = {}
         if tTable ~= nil then
-          for i = 1, table.getn(tTable) do
+          for i = 1, #tTable do
             local name = tTable[i]
             if name ~= nil and tUnits.buttons[name] ~= nil then
               table.insert(tDisplay, name)
             else
-              MultiBot.dprint("Units.skip", name or "<nil>", "(bouton manquant)")
+              MultiBot.dprint("Units.skip", name or "<nil>", "(missing button)")
             end
           end
         end
 
-        pButton.limit = table.getn(tDisplay)
+        pButton.limit = #tDisplay
 
         pButton.from = 1
         pButton.to = 10
@@ -1157,7 +1157,7 @@ btnPvpRaid.doLeft = function()
 end
 
 -- COMMANDS FOR ALL BOTS --
--- Bouton principal sous PvP Stats qui ouvre un sous-menu de commandes globales.
+-- Main button under PvP Stats that opens a global commands submenu.
 local btnAllBots = tControl.addButton("AllBotsCommands", 0, 90,
 	"Temp",
 	MultiBot.L("tips.allbots.commandsallbots"))
@@ -1175,11 +1175,11 @@ btnAllBots.doLeft = function(pButton)
 	end
 end
 
--- Sous-menu vertical qui s'ouvre au-dessus du bouton principal
+-- Vertical submenu displayed above the main button.
 local tAllBotsMenu = tControl.addFrame("AllBotsCommandsMenu", -30, 92, 32, 64)
 tAllBotsMenu:Hide()
 
--- Bouton : Maintenance pour tous les bots
+-- Button: maintenance for all bots.
 tAllBotsMenu.addButton("MaintenanceAllBots", 0, 34,
 	"achievement_halloween_smiley_01",
 	MultiBot.L("tips.allbots.maintenanceallbots"))
@@ -1189,7 +1189,7 @@ tAllBotsMenu.addButton("MaintenanceAllBots", 0, 34,
 	end
 end
 
--- Bouton : vendre tous les objets gris pour tous les bots (s *)
+-- Button: sell all gray items for all bots (s *).
 tAllBotsMenu.addButton("SellAllBotsGrey", 0, 0,
 	"inv_misc_coin_18",
 	MultiBot.L("tips.allbots.sellallvendor"))
@@ -1203,7 +1203,7 @@ local tButton = tControl.addButton("Invite", 0, 120, "Interface\\AddOns\\MultiBo
 tButton.doRight = function(pButton)
     if (GetNumRaidMembers() > 0 or GetNumPartyMembers() > 0) then return end
     MultiBot.timer.invite.roster = MultiBot.frames["MultiBar"].buttons["Units"].roster
-    MultiBot.timer.invite.needs  = table.getn(MultiBot.index[MultiBot.timer.invite.roster])
+    MultiBot.timer.invite.needs  = #MultiBot.index[MultiBot.timer.invite.roster]
     MultiBot.timer.invite.index  = 1
     MultiBot.auto.invite = true
     SendChatMessage(MultiBot.L("info.starting"), "SAY")
@@ -1509,7 +1509,7 @@ end
 
 local tButton = tMain.addButton("Reward", 0, 306, "Interface\\AddOns\\MultiBot\\Icons\\reward.blp", MultiBot.L("tips.main.reward")).setDisable()
 tButton.doRight = function(pButton)
-	if(table.getn(MultiBot.reward.rewards) > 0 and table.getn(MultiBot.reward.units) > 0) then MultiBot.reward:Show() end
+	if(#MultiBot.reward.rewards > 0 and #MultiBot.reward.units > 0) then MultiBot.reward:Show() end
 end
 tButton.doLeft = function(pButton)
 	MultiBot.reward.state = MultiBot.OnOffSwitch(pButton)
@@ -1525,11 +1525,11 @@ tMain.addButton("Actions", 0, 374, "inv_helmet_02", MultiBot.L("tips.main.action
 	MultiBot.ActionToTargetOrGroup("reset")
 end
 
--- [AJOUT] Bouton Options (ouvre/ferme le panneau des sliders)
+-- [ADDED] Options button (opens/closes the sliders panel).
 local tBtnOptions = tMain.addButton("Options", 0, 404, "inv_misc_gear_02", MultiBot.L("tips.main.options"))
 tBtnOptions._active = false
 
--- Grisé par défaut (alpha 0.4 + désaturation)
+-- Dimmed by default (alpha 0.4 + desaturation).
 do
   local f = tBtnOptions.frame or tBtnOptions
   if f and f.SetAlpha then f:SetAlpha(0.4) end
