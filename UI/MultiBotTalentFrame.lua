@@ -762,7 +762,7 @@ function MultiBot.InitializeTalentFrameModule()
         MultiBot.talent:ClearAllPoints()
         local layout = MultiBot.TalentHostContentLayout or DEFAULT_TALENT_HOST_CONTENT_LAYOUT
         MultiBot.talent:SetPoint("TOPLEFT", host, "TOPLEFT", layout.CONTENT_TUNE_X or 0, layout.CONTENT_TUNE_Y or 0)
-	
+
         if MultiBot.talent.texture then
             MultiBot.talent.texture:Hide()
         end
@@ -882,7 +882,7 @@ function MultiBot.InitializeTalentFrameModule()
             return window.frame:IsShown()
         end
 
-        return false	
+        return false
     end
 
     function MultiBot.talent.buildTalentApplyValues()
