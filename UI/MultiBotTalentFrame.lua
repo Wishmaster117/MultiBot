@@ -96,6 +96,7 @@ local function setTalentFrameCloseToHide(window)
     end
 end
 
+-- TODO = Mettre une variable pour deplacer l'icone fallback dans le cadre
 local DEFAULT_TALENT_HOST_CONTENT_LAYOUT = {
     CONTENT_TUNE_X = 0, -- Décalage horizontal global de tout le contenu dans la fenêtre host ACE.
     CONTENT_TUNE_Y = 0, -- Décalage vertical global de tout le contenu dans la fenêtre host ACE.
@@ -248,9 +249,11 @@ function MultiBot.InitializeTalentFrameModule()
 
     function MultiBot.talent.applyBottomTabChrome(tabFrame)
         local chrome = MultiBot.TalentTabChrome or {}
-        local style = chrome.STYLE
-        if style ~= "CHATFRAME_LEGACY" then
-            style = "CHATFRAME_LEGACY"
+        if chrome.STYLE ~= "CHATFRAME_LEGACY" then
+            chrome = {
+                STYLE = "CHATFRAME_LEGACY",
+                CHATFRAME_TEXTURES = MultiBot.TalentTabChrome and MultiBot.TalentTabChrome.CHATFRAME_TEXTURES,
+            }
         end
 
         local textures = chrome.CHATFRAME_TEXTURES or {}
@@ -1790,7 +1793,13 @@ function MultiBot.InitializeTalentFrameModule()
         end)
 
         if type(entries) == "table" then
-            table.wipe(entries)
+            if table.wipe then
+                table.wipe(entries) -- WoW runtime
+            else
+                for k in pairs(entries) do
+                    entries[k] = nil
+                end
+            end
         end
 
         tTab[collectionKey] = {}
