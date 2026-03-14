@@ -669,6 +669,9 @@ local ruRUValues = {
   ["ui.pvp.tab.placeholder"] = "|cffffff00Вкладка‑заглушка|r",
   ["ui.pvp.prefix.team"] = "Команда: ",
   ["ui.pvp.prefix.rating"] = "Рейтинг: ",
+  ["spec.list.title"] = "Specs",
+  ["info.managegroups"] = "Управление группами",
+  ["info.avalaiblebots"] = "Доступные боты",
 }
 
 register("ruRU", ruRUValues)

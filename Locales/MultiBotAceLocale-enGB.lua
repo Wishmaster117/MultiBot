@@ -671,6 +671,9 @@ local enGBValues = {
   ["ui.pvp.tab.placeholder"] = "|cffffff00Placeholder Tab|r",
   ["ui.pvp.prefix.team"] = "Team: ",
   ["ui.pvp.prefix.rating"] = "Rating: ",
+  ["spec.list.title"] = "Specs",
+  ["info.managegroups"] = "Group Management",
+  ["info.avalaiblebots"] = "Available Bots",
 }
 
 register("enGB", enGBValues)

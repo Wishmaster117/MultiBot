@@ -1302,9 +1302,10 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 				MultiBot.receivedGlyphs[author][sock] = { id = id, type = typ }
 			end
 
-			-- Si l'onglet Glyphes est ouvert, on force son rafraîchissement
-			local tab4 = MultiBot.talent.frames["Tab4"]
-			if tab4 and tab4:IsShown() then
+			-- Si l'onglet Glyphes est ouvert, on force son rafraîchissement.
+			local glyphFrameKey = MultiBot.TalentTabGroups and MultiBot.TalentTabGroups.GLYPH
+			local glyphFrame = glyphFrameKey and MultiBot.talent.frames[glyphFrameKey]
+			if glyphFrame and glyphFrame:IsShown() then
 
 				MultiBot.FillDefaultGlyphs()
 			end

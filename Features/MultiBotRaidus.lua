@@ -117,26 +117,469 @@ local function MultiBotRaidusIsBotGrouped(name)
 end
 
 MultiBot.raidus = MultiBot.newFrame(MultiBot, -340, -126, 32, 884, 884)
-MultiBot.raidus.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Raidus.blp")
 MultiBot.raidus:SetMovable(true)
 MultiBot.raidus:Hide()
 
+local function syncRaidusMainButtonState(isVisible)
+    local mainFrame = MultiBot.frames and MultiBot.frames["MultiBar"] and MultiBot.frames["MultiBar"].frames and MultiBot.frames["MultiBar"].frames["Main"]
+    local raidusButton = mainFrame and mainFrame.buttons and mainFrame.buttons["Raidus"]
+    if not raidusButton then
+        return
+    end
+
+    if isVisible then
+        if raidusButton.setEnable then
+            raidusButton.setEnable()
+        end
+    else
+        if raidusButton.setDisable then
+            raidusButton.setDisable()
+        end
+    end
+end
+
+MultiBot.raidus:HookScript("OnShow", function()
+    syncRaidusMainButtonState(true)
+end)
+
+MultiBot.raidus:HookScript("OnHide", function()
+    syncRaidusMainButtonState(false)
+end)
+
+local raidusUsesAceWindow = false
+
+local function getRaidusAceGUI()
+    if type(LibStub) ~= "table" then
+        return nil
+    end
+
+    local ok, aceGUI = pcall(LibStub.GetLibrary, LibStub, "AceGUI-3.0", true)
+    if ok and type(aceGUI) == "table" and type(aceGUI.Create) == "function" then
+        return aceGUI
+    end
+
+    return nil
+end
+
+local function initRaidusAceWindow()
+    local aceGUI = getRaidusAceGUI()
+    if not aceGUI then
+        return
+    end
+
+    local window = aceGUI:Create("Window")
+    if not window or not window.frame or not window.content then
+        return
+    end
+
+    raidusUsesAceWindow = true
+
+    window:SetTitle("MultiBot - Raidus")
+    window:SetWidth(920)
+    window:SetHeight(630)
+    window:EnableResize(false)
+    window:SetLayout("Fill")
+    window.frame:SetFrameStrata("DIALOG")
+
+    MultiBot.raidus:SetParent(window.content)
+    MultiBot.raidus:ClearAllPoints()
+    MultiBot.raidus:SetPoint("TOP", window.content, "TOP", 0, -12)
+
+    local visibilitySync = false
+    local raidusShow = MultiBot.raidus.Show
+    local raidusHide = MultiBot.raidus.Hide
+
+    window:SetCallback("OnClose", function()
+        if visibilitySync then
+            return
+        end
+
+        visibilitySync = true
+        raidusHide(MultiBot.raidus)
+        window:Hide()
+        visibilitySync = false
+    end)
+
+    MultiBot.raidus.Show = function(frame, ...)
+        if visibilitySync then
+            return raidusShow(frame, ...)
+        end
+
+        visibilitySync = true
+        window:Show()
+        local result = raidusShow(frame, ...)
+        visibilitySync = false
+        return result
+    end
+
+    MultiBot.raidus.Hide = function(frame, ...)
+        if visibilitySync then
+            return raidusHide(frame, ...)
+        end
+
+        visibilitySync = true
+        local result = raidusHide(frame, ...)
+        window:Hide()
+        visibilitySync = false
+        return result
+    end
+
+    window:Hide()
+end
+
+initRaidusAceWindow()
+
+if not raidusUsesAceWindow then
+    MultiBot.raidus.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Raidus.blp")
+end
+
 MultiBot.raidus.addFrame("Pool", -20, 360, 28, 160, 490)
-MultiBot.raidus.addFrame("Btop", -35, 822, 24, 128, 32).addTexture("Interface\\AddOns\\MultiBot\\Textures\\Raidus_Banner_Top.blp")
-MultiBot.raidus.addFrame("Bbot", -35, 354, 24, 128, 32).addTexture("Interface\\AddOns\\MultiBot\\Textures\\Raidus_Banner_Bottom.blp")
-MultiBot.raidus.addFrame("Group8", -185, 364, 28, 160, 240)
-MultiBot.raidus.addFrame("Group7", -350, 364, 28, 160, 240)
-MultiBot.raidus.addFrame("Group6", -515, 364, 28, 160, 240)
-MultiBot.raidus.addFrame("Group5", -680, 364, 28, 160, 240)
-MultiBot.raidus.addFrame("Group4", -185, 604, 28, 160, 240)
-MultiBot.raidus.addFrame("Group3", -350, 604, 28, 160, 240)
-MultiBot.raidus.addFrame("Group2", -515, 604, 28, 160, 240)
-MultiBot.raidus.addFrame("Group1", -680, 604, 28, 160, 240)
-MultiBot.raidus.addText("RaidScore", "RaidScore: 0", "BOTTOMLEFT", 376, 364, 12)
+if not raidusUsesAceWindow then
+    MultiBot.raidus.addFrame("Btop", -35, 822, 24, 128, 32).addTexture("Interface\\AddOns\\MultiBot\\Textures\\Raidus_Banner_Top.blp")
+    MultiBot.raidus.addFrame("Bbot", -35, 354, 24, 128, 32).addTexture("Interface\\AddOns\\MultiBot\\Textures\\Raidus_Banner_Bottom.blp")
+end
+
+local RAIDUS_GROUP_SHIFT_X = -30
+local RAIDUS_GROUP_PANEL_X = -180 + RAIDUS_GROUP_SHIFT_X
+local RAIDUS_GROUP_PANEL_Y = 360
+local RAIDUS_GROUP_PANEL_WIDTH = 665 -- Raid Frame Widht
+local RAIDUS_GROUP_PANEL_HEIGHT = 490
+local RAIDUS_POOL_PANEL_X = -18
+local RAIDUS_POOL_PANEL_Y = 360
+local RAIDUS_POOL_PANEL_WIDTH = 165
+local RAIDUS_POOL_PANEL_HEIGHT = 490
+
+local RAIDUS_GROUP_SLOT_WIDTH = 160 -- Group Frame Widht
+
+local RAIDUS_SLOT_TEXTURE_INSET_X = 6 -- grey background widht, minus this value
+local RAIDUS_SLOT_TEXTURE_INSET_Y = 4 -- grey background height, minus this value
+local RAIDUS_SLOT_BORDER_INSET_X = 4 -- occuped frame widht, minus this value
+local RAIDUS_SLOT_BORDER_INSET_Y = 0 -- occuped frame height, minus this value
+
+local function applyRaidusSlotTextureInset(slotFrame, insetX, insetY)
+    if not slotFrame or not slotFrame.texture then
+        return
+    end
+
+    local x = insetX or RAIDUS_SLOT_TEXTURE_INSET_X
+    local y = insetY or RAIDUS_SLOT_TEXTURE_INSET_Y
+
+    slotFrame.texture:ClearAllPoints()
+    slotFrame.texture:SetPoint("TOPLEFT", slotFrame, "TOPLEFT", x, -y)
+    slotFrame.texture:SetPoint("BOTTOMRIGHT", slotFrame, "BOTTOMRIGHT", -x, y)
+end
+
+local function formatRaidusBadgeLabel(text)
+    return "|cffd4af37[|r " .. tostring(text or "") .. " |cffd4af37]|r"
+end
+
+local RAIDUS_SCORE_ANCHOR = "TOPLEFT"
+local RAIDUS_SCORE_OFFSET_X = 26
+local RAIDUS_SCORE_OFFSET_Y = -14
+local RAIDUS_SCORE_FONT_SIZE = 12
+
+local function formatRaidusScoreLabel(score)
+    return "|cffd4af37[|r |cffffcc00RaidScore|r |cffb8b8b8" .. tostring(score or 0) .. "|r |cffd4af37]|r"
+end
+
+local function ApplyRaidusGroupCardChrome(groupFrame, groupIndex)
+    if not groupFrame or groupFrame._cardStyled or not groupFrame.SetBackdrop then
+        return
+    end
+
+    local topRow = groupIndex <= 4
+    local bgAlpha = topRow and 0.30 or 0.26
+
+    groupFrame:SetBackdrop({
+        bgFile = "Interface\\Buttons\\WHITE8X8",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true,
+        tileSize = 8,
+        edgeSize = 8,
+        insets = { left = 2, right = 2, top = 2, bottom = 2 },
+    })
+    groupFrame:SetBackdropColor(0, 0, 0, bgAlpha)
+    groupFrame:SetBackdropBorderColor(0.78, 0.62, 0.18, 0.42)
+    groupFrame._cardStyled = true
+end
+
+MultiBot.raidus.addFrame("Group8", -185 + RAIDUS_GROUP_SHIFT_X, 364, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addFrame("Group7", -350 + RAIDUS_GROUP_SHIFT_X, 364, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addFrame("Group6", -515 + RAIDUS_GROUP_SHIFT_X, 364, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addFrame("Group5", -680 + RAIDUS_GROUP_SHIFT_X, 364, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addFrame("Group4", -185 + RAIDUS_GROUP_SHIFT_X, 604, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addFrame("Group3", -350 + RAIDUS_GROUP_SHIFT_X, 604, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addFrame("Group2", -515 + RAIDUS_GROUP_SHIFT_X, 604, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addFrame("Group1", -680 + RAIDUS_GROUP_SHIFT_X, 604, 28, RAIDUS_GROUP_SLOT_WIDTH, 240)
+MultiBot.raidus.addText("RaidScore", formatRaidusScoreLabel(0), RAIDUS_SCORE_ANCHOR, RAIDUS_SCORE_OFFSET_X, RAIDUS_SCORE_OFFSET_Y, RAIDUS_SCORE_FONT_SIZE)
+
+local function CreateRaidusGoldOutline(x, y, width, height)
+    local outline = CreateFrame("Frame", nil, MultiBot.raidus)
+    outline:SetPoint("BOTTOMRIGHT", x, y)
+    outline:SetSize(width, height)
+    outline:EnableMouse(false)
+    outline:SetFrameLevel(MultiBot.raidus:GetFrameLevel() + 1)
+
+    if outline.SetBackdrop then
+        outline:SetBackdrop({
+            bgFile = "Interface\\Buttons\\WHITE8X8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            tile = true,
+            tileSize = 8,
+            edgeSize = 10,
+            insets = { left = 2, right = 2, top = 2, bottom = 2 },
+        })
+        outline:SetBackdropColor(0, 0, 0, 0.10)
+        outline:SetBackdropBorderColor(1, 0.82, 0, 0.75)
+    end
+
+    return outline
+end
+
+local function CreateRaidusPanelChrome(panelKey, x, y, width, height, title)
+    local panel = CreateFrame("Frame", nil, MultiBot.raidus)
+    panel:SetPoint("BOTTOMRIGHT", x, y)
+    panel:SetSize(width, height)
+    panel:EnableMouse(false)
+    panel:SetFrameLevel(MultiBot.raidus:GetFrameLevel())
+
+    if panel.SetBackdrop then
+        panel:SetBackdrop({
+            bgFile = "Interface\\Buttons\\WHITE8X8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            tile = true,
+            tileSize = 8,
+            edgeSize = 10,
+            insets = { left = 2, right = 2, top = 2, bottom = 2 },
+        })
+        local isGroupsPanel = panelKey == "GroupsPanel"
+        panel:SetBackdropColor(0, 0, 0, isGroupsPanel and 0.40 or 0.30)
+        panel:SetBackdropBorderColor(isGroupsPanel and 0.44 or 0.30, isGroupsPanel and 0.34 or 0.22, isGroupsPanel and 0.10 or 0.08, isGroupsPanel and 0.62 or 0.42)
+    end
+
+    panel.texts = panel.texts or {}
+    panel.texts["Title"] = panel:CreateFontString(nil, "ARTWORK")
+    panel.texts["Title"]:SetFont("Fonts\\ARIALN.ttf", 16, "PLAIN")
+    panel.texts["Title"]:SetPoint("BOTTOM", panel, "TOP", 0, 8)
+    panel.texts["Title"]:SetText("|cffffcc00" .. title .. "|r")
+    panel.texts["Title"]:Show()
+    return panel
+end
+
+local raidusManageGroupsLabel = MultiBot.L("info.managegroups")
+local raidusAvailableBotsLabel = MultiBot.L("info.avalaiblebots")
+
+CreateRaidusPanelChrome("GroupsPanel", RAIDUS_GROUP_PANEL_X, RAIDUS_GROUP_PANEL_Y, RAIDUS_GROUP_PANEL_WIDTH, RAIDUS_GROUP_PANEL_HEIGHT, raidusManageGroupsLabel)
+CreateRaidusPanelChrome("PoolPanel", RAIDUS_POOL_PANEL_X, RAIDUS_POOL_PANEL_Y, RAIDUS_POOL_PANEL_WIDTH, RAIDUS_POOL_PANEL_HEIGHT, raidusAvailableBotsLabel)
+CreateRaidusGoldOutline(RAIDUS_GROUP_PANEL_X, RAIDUS_GROUP_PANEL_Y, RAIDUS_GROUP_PANEL_WIDTH, RAIDUS_GROUP_PANEL_HEIGHT)
+CreateRaidusGoldOutline(RAIDUS_POOL_PANEL_X, RAIDUS_POOL_PANEL_Y, RAIDUS_POOL_PANEL_WIDTH, RAIDUS_POOL_PANEL_HEIGHT)
 
 local RAIDUS_GROUP_COUNT = 8
 local RAIDUS_GROUP_SLOT_COUNT = 5
 local RAIDUS_POOL_PAGE_SIZE = 11
+
+local RAIDUS_CLASS_SLOT_COLORS = {
+	DeathKnight = { 0.77, 0.12, 0.23, 0.35 },
+	Druid       = { 1.00, 0.49, 0.04, 0.35 },
+	Hunter      = { 0.67, 0.83, 0.45, 0.35 },
+	Mage        = { 0.41, 0.80, 0.94, 0.35 },
+	Paladin     = { 0.96, 0.55, 0.73, 0.35 },
+	Priest      = { 1.00, 1.00, 1.00, 0.35 },
+	Rogue       = { 1.00, 0.96, 0.41, 0.35 },
+	Shaman      = { 0.00, 0.44, 0.87, 0.35 },
+	Warlock     = { 0.58, 0.51, 0.79, 0.35 },
+	Warrior     = { 0.78, 0.61, 0.43, 0.35 },
+}
+
+local RAIDUS_ROLE_COLORS = {
+    TANK = { 0.33, 0.61, 0.96, 1.00 },
+    HEAL = { 0.32, 0.84, 0.46, 1.00 },
+    DPS  = { 0.92, 0.33, 0.33, 1.00 },
+}
+
+local function formatRaidusRoleLabel(role)
+    if role == "TANK" then
+        return "Tank"
+    elseif role == "HEAL" then
+        return "Heal"
+    end
+    return "DPS"
+end
+
+local function getRaidusClassHexColor(className)
+    local color = RAIDUS_CLASS_SLOT_COLORS[className]
+    if not color then
+        return "ffffffff"
+    end
+
+    local r = math.floor((color[1] or 1) * 255 + 0.5)
+    local g = math.floor((color[2] or 1) * 255 + 0.5)
+    local b = math.floor((color[3] or 1) * 255 + 0.5)
+    return string.format("ff%02x%02x%02x", r, g, b)
+end
+
+local function ensureRaidusRoleBorder(slotFrame)
+    if not slotFrame or slotFrame.roleBorder then
+        return
+    end
+
+    local border = CreateFrame("Frame", nil, slotFrame)
+    border:SetAllPoints(slotFrame)
+    border:EnableMouse(false)
+    border:SetFrameLevel(slotFrame:GetFrameLevel() + 2)
+
+    local function edge(anchor, point, x, y, width, height)
+        local tex = border:CreateTexture(nil, "OVERLAY")
+        tex:SetTexture(MultiBot.SafeTexturePath("Interface\\Buttons\\WHITE8X8"))
+        tex:SetPoint(anchor, border, point, x, y)
+        tex:SetSize(width, height)
+        return tex
+    end
+
+    border.top = edge("TOPLEFT", "TOPLEFT", 0, 0, 1, 1)
+    border.bottom = edge("BOTTOMLEFT", "BOTTOMLEFT", 0, 0, 1, 1)
+    border.left = edge("TOPLEFT", "TOPLEFT", 0, 0, 1, 1)
+    border.right = edge("TOPRIGHT", "TOPRIGHT", 0, 0, 1, 1)
+
+    slotFrame.roleBorder = border
+end
+
+local function setRaidusSlotRoleBorder(slotFrame, role, alpha)
+    if not slotFrame then
+        return
+    end
+
+    ensureRaidusRoleBorder(slotFrame)
+    if not slotFrame.roleBorder then
+        return
+    end
+
+    local border = slotFrame.roleBorder
+    local color = RAIDUS_ROLE_COLORS[role or ""]
+    local r, g, b = 0.45, 0.45, 0.45
+    if color then
+        r, g, b = color[1], color[2], color[3]
+    end
+
+    local width = math.max((slotFrame.width or slotFrame:GetWidth() or 0) - (RAIDUS_SLOT_BORDER_INSET_X * 2), 1)
+    local height = math.max((slotFrame.height or slotFrame:GetHeight() or 0) - (RAIDUS_SLOT_BORDER_INSET_Y * 2), 1)
+    border.top:SetPoint("TOPLEFT", border, "TOPLEFT", RAIDUS_SLOT_BORDER_INSET_X, -RAIDUS_SLOT_BORDER_INSET_Y)
+    border.top:SetSize(width, 1)
+    border.bottom:SetPoint("BOTTOMLEFT", border, "BOTTOMLEFT", RAIDUS_SLOT_BORDER_INSET_X, RAIDUS_SLOT_BORDER_INSET_Y)
+    border.bottom:SetSize(width, 1)
+    border.left:SetPoint("TOPLEFT", border, "TOPLEFT", RAIDUS_SLOT_BORDER_INSET_X, -RAIDUS_SLOT_BORDER_INSET_Y)
+    border.left:SetSize(1, height)
+    border.right:SetPoint("TOPRIGHT", border, "TOPRIGHT", -RAIDUS_SLOT_BORDER_INSET_X, -RAIDUS_SLOT_BORDER_INSET_Y)
+    border.right:SetSize(1, height)
+
+    local a = alpha or 0.25
+    border.top:SetVertexColor(r, g, b, a)
+    border.bottom:SetVertexColor(r, g, b, a)
+    border.left:SetVertexColor(r, g, b, a)
+    border.right:SetVertexColor(r, g, b, a)
+end
+
+local RAIDUS_DROP_ANIM_DURATION = 0.12
+local RAIDUS_FEEDBACK_DURATION = 1.4
+local RAIDUS_FEEDBACK_ANCHOR = "TOPLEFT"
+local RAIDUS_FEEDBACK_OFFSET_X = 26
+local RAIDUS_FEEDBACK_OFFSET_Y = 14
+
+local raidusFeedbackTimer = CreateFrame("Frame")
+raidusFeedbackTimer:Hide()
+raidusFeedbackTimer.remaining = 0
+raidusFeedbackTimer:SetScript("OnUpdate", function(self, elapsed)
+    self.remaining = self.remaining - elapsed
+    if self.remaining > 0 then
+        return
+    end
+
+    local feedbackText = MultiBot.raidus and MultiBot.raidus.texts and MultiBot.raidus.texts["DropFeedback"]
+    if feedbackText then
+        feedbackText:SetText("")
+        feedbackText:Hide()
+    end
+
+    self:Hide()
+end)
+
+local function showRaidusDropFeedback(message)
+    if not MultiBot.raidus then
+        return
+    end
+
+    local text = tostring(message or "")
+    if text == "" then
+        return
+    end
+
+    if MultiBot.raidus.texts and MultiBot.raidus.texts["DropFeedback"] then
+        MultiBot.raidus.setText("DropFeedback", "|cffb8b8b8" .. text .. "|r")
+        MultiBot.raidus.texts["DropFeedback"]:Show()
+    else
+        MultiBot.raidus.addText("DropFeedback", "|cffb8b8b8" .. text .. "|r", RAIDUS_FEEDBACK_ANCHOR, RAIDUS_FEEDBACK_OFFSET_X, RAIDUS_FEEDBACK_OFFSET_Y, 15)
+    end
+
+    raidusFeedbackTimer.remaining = RAIDUS_FEEDBACK_DURATION
+    raidusFeedbackTimer:Show()
+end
+
+local function playRaidusDropPulse(slotFrame)
+    if not slotFrame then
+        return
+    end
+
+    local driver = slotFrame._dropPulseDriver
+    if not driver then
+        driver = CreateFrame("Frame", nil, slotFrame)
+        driver:SetAllPoints(slotFrame)
+        slotFrame._dropPulseDriver = driver
+    end
+
+    driver.elapsed = 0
+    driver:Show()
+    driver:SetScript("OnUpdate", function(self, elapsed)
+        self.elapsed = self.elapsed + elapsed
+        local progress = self.elapsed / RAIDUS_DROP_ANIM_DURATION
+
+        if progress >= 1 then
+            slotFrame:SetScale(1)
+            self:SetScript("OnUpdate", nil)
+            self:Hide()
+            return
+        end
+
+        local pulse = (progress < 0.5) and (progress * 2) or ((1 - progress) * 2)
+        slotFrame:SetScale(1 + (0.03 * pulse))
+    end)
+end
+
+local function getRaidusSlotColor(slotFrame)
+	if not slotFrame or not slotFrame.bot or not slotFrame.bot.class then
+		return nil
+	end
+
+	local className = MultiBot.toClass(slotFrame.bot.class)
+	return RAIDUS_CLASS_SLOT_COLORS[className]
+end
+
+local function applyRaidusSlotTexture(slotFrame, useClassColor)
+	if not slotFrame or not slotFrame.texture then
+		return
+	end
+
+	if useClassColor then
+		local color = getRaidusSlotColor(slotFrame)
+		if color then
+			slotFrame.texture:SetTexture(MultiBot.SafeTexturePath("Interface\\Buttons\\WHITE8X8"))
+			slotFrame.texture:SetVertexColor(color[1], color[2], color[3], color[4])
+			return
+		end
+	end
+
+	slotFrame.texture:SetTexture(MultiBot.SafeTexturePath("Interface\\AddOns\\MultiBot\\Textures\\grey.blp"))
+	slotFrame.texture:SetVertexColor(1, 1, 1, 1)
+end
 
 MultiBot.raidus.save = ""
 MultiBot.raidus.from = 1
@@ -179,10 +622,12 @@ end
 
 MultiBot.raidus.movButton("Move", -780, 790, 90, MultiBot.L("tips.move.raidus"))
 
-MultiBot.raidus.wowButton("x", -13, 841, 16, 20, 12)
-.doLeft = function(pButton)
-	local tButton = MultiBot.frames["MultiBar"].frames["Main"].buttons["Raidus"]
-	tButton.doLeft(tButton)
+if not raidusUsesAceWindow then
+    MultiBot.raidus.wowButton("x", -13, 841, 16, 20, 12)
+    .doLeft = function(pButton)
+		local tButton = MultiBot.frames["MultiBar"].frames["Main"].buttons["Raidus"]
+		tButton.doLeft(tButton)
+	end
 end
 
 
@@ -392,8 +837,39 @@ local function applyRaidusLayout(layout)
     end
 end
 
-MultiBot.raidus.wowButton("Load", -762, 360, 80, 20, 12)
-.doLeft = function(pButton)
+local RAIDUS_ACTION_BAR_Y = raidusUsesAceWindow and 332 or 360
+local RAIDUS_ACTION_SHIFT_X = raidusUsesAceWindow and -20 or 0
+local RAIDUS_SORT_SHIFT_X = raidusUsesAceWindow and -55 or 0
+
+local function styleRaidusActionButton(button, isPrimary)
+    if not button then
+        return button
+    end
+
+    button:SetSize(80, 20)
+
+    local normalTexture = button:GetNormalTexture()
+    local pushedTexture = button:GetPushedTexture()
+    local highlightTexture = button:GetHighlightTexture()
+    local disabledTexture = button:GetDisabledTexture()
+
+    if isPrimary then
+        if normalTexture then normalTexture:SetVertexColor(1.00, 0.96, 0.78, 1.00) end
+        if pushedTexture then pushedTexture:SetVertexColor(1.00, 0.90, 0.55, 1.00) end
+        if highlightTexture then highlightTexture:SetVertexColor(1.00, 0.96, 0.72, 0.90) end
+        if disabledTexture then disabledTexture:SetVertexColor(0.55, 0.55, 0.55, 1.00) end
+    else
+        if normalTexture then normalTexture:SetVertexColor(0.88, 0.88, 0.88, 1.00) end
+        if pushedTexture then pushedTexture:SetVertexColor(0.74, 0.74, 0.74, 1.00) end
+        if highlightTexture then highlightTexture:SetVertexColor(0.95, 0.95, 0.95, 0.85) end
+        if disabledTexture then disabledTexture:SetVertexColor(0.50, 0.50, 0.50, 1.00) end
+    end
+
+    return button
+end
+
+local btnLoad = styleRaidusActionButton(MultiBot.raidus.wowButton("Load", -762 + RAIDUS_ACTION_SHIFT_X, RAIDUS_ACTION_BAR_Y, 80, 20, 12), false)
+btnLoad.doLeft = function(pButton)
 	local layoutData = getRaidusLayoutValue(MultiBot.raidus.save)
 	if(layoutData == nil or layoutData == "") then
 		SendChatMessage(MultiBot.L("info.nothing"), "SAY")
@@ -429,7 +905,7 @@ UIDropDownMenu_Initialize(slotDropDown, function(self, level)
 	end
 end)
 
-local slotButton = MultiBot.raidus.wowButton("Slot", -682, 360, 80, 20, 12)
+local slotButton = styleRaidusActionButton(MultiBot.raidus.wowButton("Slot", -682 + RAIDUS_ACTION_SHIFT_X, RAIDUS_ACTION_BAR_Y, 80, 20, 12), false)
 slotButton.tip = MultiBot.L("tips.raidus.slot")
 slotButton:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOP")
@@ -446,9 +922,42 @@ slotButton.doLeft = function()
 end
 UpdateRaidusSlotButtonText(slotButton)
 
+local function styleRaidusSortButtonVisual(button, isActive)
+    if not button then
+        return
+    end
+
+    local normalTexture = button:GetNormalTexture()
+    local pushedTexture = button:GetPushedTexture()
+    local highlightTexture = button:GetHighlightTexture()
+
+    if isActive then
+        if normalTexture then normalTexture:SetVertexColor(1.00, 0.92, 0.55, 1.00) end
+        if pushedTexture then pushedTexture:SetVertexColor(1.00, 0.84, 0.35, 1.00) end
+        if highlightTexture then highlightTexture:SetVertexColor(1.00, 0.95, 0.60, 0.90) end
+        if button.text then button.text:SetTextColor(1.00, 0.95, 0.65) end
+    else
+        if normalTexture then normalTexture:SetVertexColor(0.74, 0.74, 0.74, 0.95) end
+        if pushedTexture then pushedTexture:SetVertexColor(0.62, 0.62, 0.62, 0.95) end
+        if highlightTexture then highlightTexture:SetVertexColor(0.85, 0.85, 0.85, 0.80) end
+        if button.text then button.text:SetTextColor(0.86, 0.86, 0.86) end
+    end
+end
+
+local function updateRaidusSortButtonsVisual(activeSortName)
+    local sortButtons = MultiBot.raidus and MultiBot.raidus.buttons
+    if not sortButtons then
+        return
+    end
+
+    styleRaidusSortButtonVisual(sortButtons["Score"], activeSortName == "Score")
+    styleRaidusSortButtonVisual(sortButtons["Level"], activeSortName == "Level")
+    styleRaidusSortButtonVisual(sortButtons["Class"], activeSortName == "Class")
+end
+
 -- Contrôle du mode Tri, "Score / Level / Class"
-local sortBaseX   = -300 -- position du bouton "Score", pour déplacer tout le groupe il faut modifier cette valeur
-local sortY       = 360
+local sortBaseX   = -300 + RAIDUS_SORT_SHIFT_X -- position du bouton "Score", pour déplacer tout le groupe il faut modifier cette valeur
+local sortY       = RAIDUS_ACTION_BAR_Y
 local sortSpacing = 6    -- espace entre les boutons
 
 local scoreWidth  = 60
@@ -458,6 +967,7 @@ local classWidth  = 60
 -- Bouton "Score"
 local btnScore = MultiBot.raidus.wowButton("Score", sortBaseX, sortY, scoreWidth, 20, 12)
 btnScore.setEnable()
+updateRaidusSortButtonsVisual("Score")
 btnScore:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_TOP")
     GameTooltip:SetText(MultiBot.L("tips.raidus.score"), 1, 1, 1, true)
@@ -476,6 +986,7 @@ btnScore.doLeft = function(pButton)
         pButton.parent.buttons["Class"].setDisable()
     end
 
+    updateRaidusSortButtonsVisual("Score")
     MultiBot.raidus.setRaidus()
 end
 
@@ -507,6 +1018,7 @@ btnLevel.doLeft = function(pButton)
         pButton.parent.buttons["Class"].setDisable()
     end
 
+    updateRaidusSortButtonsVisual("Level")
     MultiBot.raidus.setRaidus()
 end
 
@@ -538,11 +1050,12 @@ btnClass.doLeft = function(pButton)
         pButton.parent.buttons["Level"].setDisable()
     end
 
+    updateRaidusSortButtonsVisual("Class")
     MultiBot.raidus.setRaidus()
 end
 
-MultiBot.raidus.wowButton("Save", -597, 360, 80, 20, 12)
-.doLeft = function(pButton)
+local btnSave = styleRaidusActionButton(MultiBot.raidus.wowButton("Save", -597 + RAIDUS_ACTION_SHIFT_X, RAIDUS_ACTION_BAR_Y, 80, 20, 12), false)
+btnSave.doLeft = function(pButton)
 	setRaidusLayoutValue(MultiBot.raidus.save, serializeRaidusLayoutFromFrames())
 	SendChatMessage("I wrote it down.", "SAY")
 end
@@ -624,8 +1137,8 @@ local function startRaidusApplyInviteOrSort(inviteCount)
     end
 end
 
-MultiBot.raidus.wowButton("Apply", -514, 360, 80, 20, 12)
-.doLeft = function(pButton)
+local btnApply = styleRaidusActionButton(MultiBot.raidus.wowButton("Apply", -514 + RAIDUS_ACTION_SHIFT_X, RAIDUS_ACTION_BAR_Y, 80, 20, 12), true)
+btnApply.doLeft = function(pButton)
     local tRaidByIndex, tRaidByName = MultiBot.raidus.getRaidTarget()
     if(tRaidByIndex == nil or tRaidByName == nil) then return end
 
@@ -646,7 +1159,7 @@ end
 -- Bouton Auto-balance raid :
 -- Clic gauche  : équilibrage simple par score
 -- Clic droit   : équilibrage avancé Tank / Heal / DPS
-local btnAuto = MultiBot.raidus.wowButton("Auto", -431, 360, 80, 20, 12)
+local btnAuto = styleRaidusActionButton(MultiBot.raidus.wowButton("Auto", -431 + RAIDUS_ACTION_SHIFT_X, RAIDUS_ACTION_BAR_Y, 80, 20, 12), true)
 
 btnAuto:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_TOP")
@@ -669,14 +1182,17 @@ end
 
 -- Update pool visibility according to current Raidus page window.
 local function refreshRaidusPoolPageVisibility()
-	local poolFrames = MultiBot.raidus.frames["Pool"].frames
+	local poolFrame = MultiBot.raidus.frames["Pool"]
+	local poolFrames = poolFrame.frames
 	for slotIndex = 1, MultiBot.raidus.slots, 1 do
 		local poolSlot = poolFrames["Slot" .. slotIndex]
-		if(slotIndex >= MultiBot.raidus.from and slotIndex <= MultiBot.raidus.to) then poolSlot:Show() else poolSlot:Hide() end
+		if poolSlot and poolSlot.parent == poolFrame then
+			if(slotIndex >= MultiBot.raidus.from and slotIndex <= MultiBot.raidus.to) then poolSlot:Show() else poolSlot:Hide() end
+		end
 	end
 end
 
-MultiBot.raidus.wowButton("<", -40, 360, 16, 20, 12)
+MultiBot.raidus.wowButton("<", -110, RAIDUS_ACTION_BAR_Y, 16, 20, 12)
 .doLeft = function(pButton)
 	MultiBot.raidus.from = MultiBot.raidus.from - RAIDUS_POOL_PAGE_SIZE
 	MultiBot.raidus.to = MultiBot.raidus.to - RAIDUS_POOL_PAGE_SIZE
@@ -689,7 +1205,7 @@ MultiBot.raidus.wowButton("<", -40, 360, 16, 20, 12)
 	refreshRaidusPoolPageVisibility()
 end
 
-MultiBot.raidus.wowButton(">", -20, 360, 16, 20, 12)
+MultiBot.raidus.wowButton(">", -70, RAIDUS_ACTION_BAR_Y, 16, 20, 12)
 .doLeft = function(pButton)
 	MultiBot.raidus.from = MultiBot.raidus.from + RAIDUS_POOL_PAGE_SIZE
 	MultiBot.raidus.to = MultiBot.raidus.to + RAIDUS_POOL_PAGE_SIZE
@@ -809,17 +1325,28 @@ MultiBot.raidus.setRaidus = function()
 		return (a.sort or 0) > (b.sort or 0)
 	end)
 
+	local function formatRaidusSlotName(name, maxLen)
+		local text = tostring(name or "")
+		local limit = maxLen or 16
+		if string.len(text) <= limit then
+			return text
+		end
+		return string.sub(text, 1, limit - 1) .. "..."
+	end
+
 	for tIndex = 1, #tBots do
 		local tBot = tBots[tIndex]
 
 		local tFrame = tPool.addFrame("Slot" .. tSlot, 0, tY, 28, 160, 36)
 		tFrame.addTexture("Interface\\AddOns\\MultiBot\\Textures\\grey.blp")
+		applyRaidusSlotTextureInset(tFrame)
 		tFrame:SetResizable(false)
 		tFrame:SetMovable(true)
 		tFrame.class = MultiBot.toClass(tBot.class)
 		tFrame.slot = "Slot" .. tSlot
 		tFrame.name = tBot.name
 		tFrame.bot = tBot
+		setRaidusSlotRoleBorder(tFrame, nil, 0.22)
 
         local tButton = tFrame.addButton("Icon", -128, 3, "Interface\\AddOns\\MultiBot\\Icons\\class_" .. string.lower(tFrame.class) .. ".blp", "")
 
@@ -837,6 +1364,10 @@ MultiBot.raidus.setRaidus = function()
 			local botSpecial = bot.special or "?"
 			local botLevel   = bot.level or 0
 			local botScore   = bot.score or 0
+			local botRole    = bot.role or MultiBotRaidusDetectRole(bot)
+			local roleColor  = RAIDUS_ROLE_COLORS[botRole] or RAIDUS_ROLE_COLORS["DPS"]
+			local roleHex    = string.format("ff%02x%02x%02x", math.floor(roleColor[1] * 255 + 0.5), math.floor(roleColor[2] * 255 + 0.5), math.floor(roleColor[3] * 255 + 0.5))
+			local classHex   = getRaidusClassHexColor(MultiBot.toClass(botClass))
 
 			local tReward = botLevel .. "." .. MultiBot.IF(botScore < 100, "0", MultiBot.IF(botScore < 10, "00", "")) .. botScore
 
@@ -845,11 +1376,11 @@ MultiBot.raidus.setRaidus = function()
 			pButton.tip.addModel(botName, 0, 64, 160, 240, 1.0)
 			pButton.tip.addText("1", "|cff555555- WANTED -|h", "TOP", 0, -30, 24)
 			pButton.tip.addText("2", "|cff555555-DEAD OR ALIVE-|h", "TOP", 0, -55, 24)
-			pButton.tip.addText("3", "|cff333333" .. botName .. " - " .. botGender .. " - " .. botRace .. "|h", "BOTTOM", 0, 220, 15)
-			pButton.tip.addText("4", "|cff333333" .. botClass .. " - " .. botTalents .. " - " .. botSpecial .. "|h", "BOTTOM", 0, 200, 15)
-			pButton.tip.addText("5", "|cff555555--------------------------------------------|h", "BOTTOM", 0, 188, 15)
-			pButton.tip.addText("6", "|cff555555CASH - " .. tReward .. " - GOLD|h", "BOTTOM", 0, 170, 20)
-			pButton.tip.addText("7", "|cff555555--------------------------------------------|h", "BOTTOM", 0, 160, 15)
+			pButton.tip.addText("3", "|cff333333" .. botName .. " - " .. botGender .. " - " .. botRace .. "|h", "BOTTOM", 0, 224, 15)
+			pButton.tip.addText("4", "|c" .. classHex .. botClass .. "|r  |cff909090(" .. botSpecial .. ")|r", "BOTTOM", 0, 206, 15)
+			pButton.tip.addText("5", "|c" .. roleHex .. formatRaidusRoleLabel(botRole) .. "|r  |cff333333Score:|r |cffffdd55" .. botScore .. "|r", "BOTTOM", 0, 188, 15)
+			pButton.tip.addText("6", "|cff333333Talents:|r |cff505050" .. botTalents .. "|r", "BOTTOM", 0, 172, 14)
+			pButton.tip.addText("7", "|cff555555CASH - " .. tReward .. " - GOLD|h", "BOTTOM", 0, 154, 20)
 			pButton.tip:Show()
 		end)
 
@@ -878,6 +1409,9 @@ MultiBot.raidus.setRaidus = function()
                     local dropSlot = tDrag.slot
                     local tX       = tDrag.x
                     local dropY    = tDrag.y
+                    local targetGroup = tDrop.parent and tDrop.parent.group
+                    local targetSlot = tDrop.slot
+                    local swappedName = tDrop.name
 
                     MultiBot.raidus.doDrop(
                         tDrag,
@@ -897,6 +1431,15 @@ MultiBot.raidus.setRaidus = function()
                         tHeight,
                         dropSlot
                     )
+
+                    playRaidusDropPulse(tDrag)
+                    if targetGroup then
+                        if swappedName and swappedName ~= "" and swappedName ~= tDrag.name then
+                            showRaidusDropFeedback("Echange avec " .. swappedName .. " -> " .. targetGroup .. " / " .. targetSlot)
+                        else
+                            showRaidusDropFeedback("Ajoute dans " .. targetGroup .. " / " .. targetSlot)
+                        end
+                    end
                 else
                     pButton.parent:ClearAllPoints()
                     pButton.parent:SetPoint(pButton.parent.align, pButton.parent.x, pButton.parent.y)
@@ -921,13 +1464,14 @@ MultiBot.raidus.setRaidus = function()
             end
         end)
 
-		local displayClass   = tBot.class or "Unknown"
 		local displayLevel   = tBot.level or 0
 		local displayScore   = tBot.score or 0
 		local displaySpecial = tBot.special or ""
+		local displayName    = formatRaidusSlotName(tBot.name, 14)
 
-		tFrame.addText("1", displayLevel .. " - " .. displayClass, "BOTTOMLEFT", 36, 18, 12)
-		tFrame.addText("2", displayScore .. " - " .. displaySpecial, "BOTTOMLEFT", 36, 6, 12)
+		tFrame.addText("Name", "|cfffff2c0" .. displayName .. "|r", "BOTTOMLEFT", 36, 18, 13) -- Display name in bot frame
+		tFrame.addText("Meta", "|cffb8b8b8" .. displayLevel .. " - " .. displaySpecial .. "|r", "BOTTOMLEFT", 36, 6, 11) -- Display level and spec in bot frame
+		tFrame.addText("ScoreBadge", "|cffd4af37[" .. displayScore .. "]|r", "BOTTOMRIGHT", -8, 16, 11) -- Display Score in bot frame
 
 		if(tSlot > RAIDUS_POOL_PAGE_SIZE) then tFrame:Hide() else tFrame:Show() end
 		tY = MultiBot.IF(tSlot % RAIDUS_POOL_PAGE_SIZE == 0, 426, tY - 40)
@@ -937,7 +1481,9 @@ MultiBot.raidus.setRaidus = function()
 	for i = tSlot % RAIDUS_POOL_PAGE_SIZE, RAIDUS_POOL_PAGE_SIZE, 1 do
 		local tFrame = tPool.addFrame("Slot" .. tSlot, 0, tY, 28, 160, 36)
 		tFrame.addTexture("Interface\\AddOns\\MultiBot\\Textures\\grey.blp")
+		applyRaidusSlotTextureInset(tFrame)
 		tFrame.slot = "Slot" .. tSlot
+		setRaidusSlotRoleBorder(tFrame, nil, 0.22)
 		if(tSlot > RAIDUS_POOL_PAGE_SIZE) then tFrame:Hide() else tFrame:Show() end
 		tSlot = tSlot + 1
 		tY = tY - 40
@@ -949,14 +1495,18 @@ MultiBot.raidus.setRaidus = function()
 		local tGroup = MultiBot.raidus.frames["Group" .. i]
 		local groupY = 182
 
-		tGroup.addText("Title", "- Group" .. i .. " : 0 -", "BOTTOM", 0, 223, 12)
+		ApplyRaidusGroupCardChrome(tGroup, i)
+		tGroup.addText("GroupName", "|cffffcc00Group" .. i .. "|r", "BOTTOM", -20, 223, 12)
+		tGroup.addText("GroupScoreBadge", formatRaidusBadgeLabel(0), "BOTTOM", 52, 223, 11)
 		tGroup.group = "Group" .. i
 		tGroup.score = 0
 
 		for j = 1, RAIDUS_GROUP_SLOT_COUNT, 1 do
-			local tFrame = tGroup.addFrame("Slot" .. j, 0, groupY, 28, 160, 36)
+			local tFrame = tGroup.addFrame("Slot" .. j, 0, groupY, 28, RAIDUS_GROUP_SLOT_WIDTH, 36)
 			tFrame.addTexture("Interface\\AddOns\\MultiBot\\Textures\\grey.blp")
+			applyRaidusSlotTextureInset(tFrame)
 			tFrame.slot = "Slot" .. j
+			setRaidusSlotRoleBorder(tFrame, nil, 0.20)
 			groupY = groupY - 40
 		end
 	end
@@ -1005,7 +1555,7 @@ MultiBot.raidus.getRaidTarget = function()
 	end)
 
 	if(tBots) then return SendChatMessage("There is no Bot in the Raid", "SAY") end
-	if(tUser) then return SendChatMessage("I must be in the Raid!", "SAY") end
+	if(tUser) then return SendChatMessage("Place me in a Raidus raid group slot before clicking Apply.", "SAY") end
 	return tRaidByIndex, tRaidByName
 end
 
@@ -1100,15 +1650,28 @@ MultiBot.raidus.doGroupScore = function(pGroup)
 	local tScore = 0
 	local tSize = 0
 
+	local roleCounts = { TANK = 0, HEAL = 0, DPS = 0 }
 	for tKey, tSlot in pairs(pGroup.frames) do
 		if(tSlot ~= nil and tSlot.bot ~= nil) then
 			tScore = tScore + tSlot.bot.score
 			tSize = tSize + 1
+			local slotRole = tSlot.bot.role or MultiBotRaidusDetectRole(tSlot.bot)
+			roleCounts[slotRole] = (roleCounts[slotRole] or 0) + 1
+		end
+	end
+
+	local dominantRole = "DPS"
+	if roleCounts.HEAL > roleCounts[dominantRole] then dominantRole = "HEAL" end
+	if roleCounts.TANK > roleCounts[dominantRole] then dominantRole = "TANK" end
+
+	for tKey, tSlot in pairs(pGroup.frames) do
+		if tSlot ~= nil then
+			setRaidusSlotRoleBorder(tSlot, dominantRole, tSize > 0 and 0.32 or 0.20)
 		end
 	end
 
 	pGroup.score = MultiBot.IF(tSize > 0, math.floor(tScore / tSize), 0)
-	pGroup.setText("Title", "- " .. pGroup.group .. " : " .. pGroup.score .. " -")
+	pGroup.setText("GroupScoreBadge", formatRaidusBadgeLabel(pGroup.score))
 end
 
 MultiBot.raidus.doRaidScore = function()
@@ -1123,7 +1686,12 @@ MultiBot.raidus.doRaidScore = function()
 	end
 
 	tScore = MultiBot.IF(tSize > 0, math.floor(tScore / tSize), 0)
-	MultiBot.raidus.setText("RaidScore", "RaidScore: " .. tScore)
+	local raidScoreLabel = formatRaidusScoreLabel(tScore)
+	if MultiBot.raidus.texts and MultiBot.raidus.texts["RaidScore"] then
+		MultiBot.raidus.setText("RaidScore", raidScoreLabel)
+	else
+		MultiBot.raidus.addText("RaidScore", raidScoreLabel, RAIDUS_SCORE_ANCHOR, RAIDUS_SCORE_OFFSET_X, RAIDUS_SCORE_OFFSET_Y, RAIDUS_SCORE_FONT_SIZE)
+	end
 end
 
 MultiBot.raidus.doDrop = function(pObject, pParent, pX, pY, pWidth, pHeight, pSlot)
@@ -1138,6 +1706,15 @@ MultiBot.raidus.doDrop = function(pObject, pParent, pX, pY, pWidth, pHeight, pSl
 	pObject.slot = pSlot
 	pObject.x = pX
 	pObject.y = pY
+    local isGroupSlot = pParent and pParent.group ~= nil
+    applyRaidusSlotTexture(pObject, isGroupSlot)
+    if isGroupSlot then
+		-- Keep dropped bot texture perfectly aligned with the empty slot grey background.
+		applyRaidusSlotTextureInset(pObject)
+    else
+        applyRaidusSlotTextureInset(pObject)
+		setRaidusSlotRoleBorder(pObject, nil, 0.22)
+	end
 	MultiBot.raidus.doGroupScore(pParent)
 	MultiBot.raidus.doRaidScore()
 end

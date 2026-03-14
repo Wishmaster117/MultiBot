@@ -18,7 +18,7 @@ Libs\AceConsole-3.0\AceConsole-3.0.lua
 Libs\AceDB-3.0\AceDB-3.0.lua
 Libs\AceLocale-3.0\AceLocale-3.0.lua
 Libs\AceTimer-3.0\AceTimer-3.0.lua
-Libs\AceGUI-3.0\AceGUI-3.0.lua
+Libs\AceGUI-3.0\AceGUI-3.0.xml
 Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
 Libs\libdatabroker-1-1\LibDataBroker-1.1.lua
 Libs\LibDropdown-1.0\LibDropdown-1.0.lua
@@ -27,6 +27,7 @@ Libs\LibDropdown-1.0\LibDropdown-1.0.lua
 Core\MultiBot.lua
 Core\MultiBotConfig.lua
 Core\MultiBotLocale.lua
+Core\MultiBotDebug.lua
 UI\MultiBotOptions.lua
 Core\MultiBotThrottle.lua
 
@@ -60,6 +61,7 @@ Core\MultiBotEvery.lua
 UI\MultiBotStats.lua
 UI\MultiBotSpell.lua
 UI\MultiBotItem.lua
+UI\MultiBotTalentFrame.lua
 Core\MultiBotInit.lua
 UI\MultiBotIconos.lua
 UI\MultiBotSpecUI.lua

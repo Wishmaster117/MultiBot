@@ -19,7 +19,7 @@ local frFRValues = {
   ["info.glyphsglyphsocket"] = "socket incorrect.",
   ["info.glyphsleveltoolow"] = "Niveau trop bas pour cette glyphe.",
   ["info.glyphscustomglyphsfor"] = "Glyphes personnalisées pour",
-  ["info.glyphsglyphsfor"] = "Glyphes pour",
+  ["info.glyphsglyphsfor"] = "Glyphes de",
   ["info.talentscustomtalentsfor"] = "Talents personnalisés pour",
   ["info.hunterpeteditentervalue"] = "Saisir une valeur",
   ["info.hunterpetcreaturelist"] = "Liste des familiers par nom",
@@ -62,7 +62,7 @@ local frFRValues = {
   ["info.talent.Level"] = "Son niveau est inférieur à 10.",
   ["info.talent.OutOfRange"] = "Le bot est hors de portée.",
   ["info.talent.Apply"] = "Appliquer",
-  ["info.talent.Copy"] = "Copie",
+  ["info.talent.Copy"] = "Copier",
   ["info.talent.Title"] = "Talents de NAME",
   ["info.talent.Points"] = "|cffffcc00Talents non dépensés : |r",
   ["info.talent.DeathKnight1"] = "|cffffcc00Sang|r",
@@ -668,6 +668,9 @@ local frFRValues = {
   ["ui.pvp.tab.placeholder"] = "|cffffff00Dummy tab (placeholder)|r",
   ["ui.pvp.prefix.team"] = "Team: ",
   ["ui.pvp.prefix.rating"] = "Rating: ",
+  ["spec.list.title"] = "Spés",
+  ["info.managegroups"] = "Gestion des Groupes",
+  ["info.avalaiblebots"] = "Bots Disponibles",
 }
 
 register("frFR", frFRValues)

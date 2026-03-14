@@ -1,10 +1,17 @@
 -- MultiBot PvP UI with cache per bots
 -- local ADDON = "MultiBot"
 
+local function MBPVP_GetAceGUI()
+    if type(LibStub) ~= "table" then
+        return nil
+    end
+    return LibStub("AceGUI-3.0", true)
+end
+
 local function CreateStyledFrame()
     -- Main frame
     local f = CreateFrame("Frame", "MultiBotPVPFrame", UIParent)
-    f:SetSize(420, 460)
+    f:SetSize(420, 490)
     f:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
     f:Hide()
     f:EnableMouse(true)
@@ -43,10 +50,25 @@ local function CreateStyledFrame()
     content:SetPoint("TOPLEFT", f, "TOPLEFT", 16, -68)
     content:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -16, 64)
 
-    -- Column offsets (relative to right edge of section)
+    -- Thin inner border around displayed PvP data.
+    local dataRoot = CreateFrame("Frame", nil, content)
+    dataRoot:SetPoint("TOPLEFT", content, "TOPLEFT", 0, 0)
+    dataRoot:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", 0, 0)
+    dataRoot:SetBackdrop({
+        bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true,
+        tileSize = 16,
+        edgeSize = 12,
+        insets = { left = 2, right = 2, top = 2, bottom = 2 }
+    })
+    if dataRoot.SetBackdropColor then dataRoot:SetBackdropColor(0, 0, 0, 0.15) end
+    if dataRoot.SetBackdropBorderColor then dataRoot:SetBackdropBorderColor(0.35, 0.35, 0.35, 0.9) end
+
+    -- Column offsets
     local colOffsets = { -120, -80, -40 }
 
-    -- Section factory (simple)
+    -- Section factory
     local function CreateSection(parent, topOffset, height, title)
         local sec = CreateFrame("Frame", nil, parent)
         sec:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, -topOffset)
@@ -58,7 +80,6 @@ local function CreateStyledFrame()
         return sec
     end
 
-    -- AddRow returns fontstrings so they can be updated later
     local function AddRow(sec, index, label, col1, col2, col3)
         local lineHeight, startY = 18, -22
         local y = startY - (index - 1) * lineHeight
@@ -76,27 +97,39 @@ local function CreateStyledFrame()
         return out
     end
 
-    -- Build layout top-down
-    local top = 0
+    -- Build layou
+    local top = 58
     local spacing = 12
 
-    -- Header that will display bot name (updated from whisper sender)
-    local customHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    customHeader:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -top)
+    local customHeader = dataRoot:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    customHeader:SetPoint("TOPLEFT", dataRoot, "TOPLEFT", 8, -34)
     customHeader:SetText(MultiBot.L("tips.every.pvpcustom"))
     top = top + 18 + 6
 
     -- Bot selector (cache par bot) - alimenté par les réponses [PVP] reçues en whisper
-    local botDropDown = CreateFrame("Frame", "MultiBotPVPBotDropDown", content, "UIDropDownMenuTemplate")
-    botDropDown:SetPoint("TOPRIGHT", content, "TOPRIGHT", 18, 10)
-    UIDropDownMenu_SetWidth(botDropDown, 180)
-    UIDropDownMenu_SetText(botDropDown, MultiBot.L("ui.pvp.bot_selector"))
+    local botDropDown
+    local AceGUI = MBPVP_GetAceGUI()
+    if AceGUI then
+        botDropDown = AceGUI:Create("Dropdown")
+        botDropDown:SetLabel(MultiBot.L("ui.pvp.bot_selector"))
+        botDropDown:SetWidth(220)
+        botDropDown.frame:SetParent(dataRoot)
+        botDropDown.frame:ClearAllPoints()
+        botDropDown.frame:SetPoint("TOPRIGHT", dataRoot, "TOPRIGHT", -8, -4)
+    else
+        botDropDown = CreateFrame("Frame", "MultiBotPVPBotDropDown", content, "UIDropDownMenuTemplate")
+        botDropDown:SetParent(dataRoot)
+        botDropDown:ClearAllPoints()
+        botDropDown:SetPoint("TOPRIGHT", dataRoot, "TOPRIGHT", 14, 8)
+        UIDropDownMenu_SetWidth(botDropDown, 180)
+        UIDropDownMenu_SetText(botDropDown, MultiBot.L("ui.pvp.bot_selector"))
+    end
 
     -- HONNEUR section: only one row "Honneur"
     local honorHeight = 18 + 1 * 18 + 8
-    local honor = CreateSection(content, top, honorHeight, MultiBot.L("ui.pvp.honor_section"))
+    local honor = CreateSection(dataRoot, top, honorHeight, MultiBot.L("ui.pvp.honor_section"))
 
-    -- Column header labels for Honneur (1st renamed Total)
+    -- Column header labels for Honneur
     local hdr1 = honor:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     hdr1:SetPoint("TOPRIGHT", honor, "TOPRIGHT", colOffsets[1], -2)
    hdr1:SetText(MultiBot.L("tips.every.pvptotal"))
@@ -108,7 +141,7 @@ local function CreateStyledFrame()
     sepH:SetPoint("TOPRIGHT", honor, "TOPRIGHT", 0, -18)
     sepH:SetTexture(0.5, 0.5, 0.5, 0.6)
 
-    -- Only the Honneur row (we keep placeholders)
+    -- Only the Honneur row
     local honorRow = AddRow(honor, 1, MultiBot.L("ui.pvp.honor_row"), "-", "-", "-")
 	if honorRow[2] then honorRow[2]:Hide() end
     if honorRow[3] then honorRow[3]:Hide() end
@@ -116,9 +149,9 @@ local function CreateStyledFrame()
 
     top = top + honorHeight + spacing
 
-    -- ARENE section: we create three sub-blocks, one per mode, stacked vertically
+    -- ARENE section
     local arenaBlockHeight = 18 + 2 * 18 + 6 -- title + two lines (team + rating) approx
-    local arena = CreateSection(content, top, arenaBlockHeight * 3 + spacing * 2, MultiBot.L("ui.pvp.arena_section"))
+    local arena = CreateSection(dataRoot, top, arenaBlockHeight * 3 + spacing * 2, MultiBot.L("ui.pvp.arena_section"))
 
     -- separator
     local arenaSep = arena:CreateTexture(nil, "ARTWORK")
@@ -169,49 +202,79 @@ local function CreateStyledFrame()
     end
 
     --top = top + arenaBlockHeight * 3 + spacing * 2
-    -- Tabs (bottom)
-    local tabs = {}
-    --local tabNames = { "JcJ", "Dummy" }
-	local tabNames = { MultiBot.L("ui.pvp.tab.pvp") }
-
-    for i, name in ipairs(tabNames) do
-        local template = (_G["CharacterFrameTabButtonTemplate"] and
-            "CharacterFrameTabButtonTemplate") or "UIPanelButtonTemplate"
-        local tab = CreateFrame("Button", f:GetName() .. "Tab" .. i, f, template)
-        tab:SetSize(90, 22)
-        tab:SetText(name)
-        tab:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT",
-            12 + (i - 1) * 98, 12)
-        tab.id = i
-        tabs[i] = tab
-    end
-
     -- Dummy pane (shares content area)
     local dummy = CreateFrame("Frame", nil, f)
-    dummy:SetPoint("TOPLEFT", content, "TOPLEFT")
-    dummy:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT")
+    dummy:SetPoint("TOPLEFT", dataRoot, "TOPLEFT")
+    dummy:SetPoint("BOTTOMRIGHT", dataRoot, "BOTTOMRIGHT")
     dummy:Hide()
     dummy.text = dummy:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     dummy.text:SetPoint("TOPLEFT", dummy, "TOPLEFT", 4, -4)
     dummy.text:SetText(MultiBot.L("ui.pvp.tab.placeholder"))
 
-    -- SelectTab: show/hide + visual feedback
-    local function SelectTab(id)
-        if id == 1 then content:Show(); dummy:Hide() else content:Hide(); dummy:Show() end
-        for idx, t in ipairs(tabs) do
-            if t.LockHighlight then
-                if idx == id then t:LockHighlight() else t:UnlockHighlight() end
+    -- Tabs (bottom)
+    if AceGUI then
+        local tabGroup = AceGUI:Create("TabGroup")
+        tabGroup.frame:SetParent(f)
+        tabGroup.frame:ClearAllPoints()
+        tabGroup.frame:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 8, 10)
+        tabGroup.frame:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -8, 10)
+        tabGroup:SetTabs({
+            { text = MultiBot.L("ui.pvp.tab.pvp"), value = "pvp" },
+            --{ text = MultiBot.L("ui.pvp.tab.placeholder"), value = "dummy", disabled = true },
+        })
+        tabGroup:SetCallback("OnGroupSelected", function(_, _, group)
+            if group == "dummy" then
+                content:Hide()
+                dummy:Show()
             else
-                if idx == id and t.Disable then t:Disable() elseif t.Enable then t:Enable() end
+                content:Show()
+                dummy:Hide()
+            end
+        end)
+        tabGroup:SelectTab("pvp")
+        f._tabGroup = tabGroup
+    else
+        local tabs = {}
+        local tabNames = {
+            { text = MultiBot.L("ui.pvp.tab.pvp"), disabled = false },
+            --{ text = MultiBot.L("ui.pvp.tab.placeholder"), disabled = true },
+        }
+
+        for i, tabCfg in ipairs(tabNames) do
+            local template = (_G["CharacterFrameTabButtonTemplate"] and
+                "CharacterFrameTabButtonTemplate") or "UIPanelButtonTemplate"
+            local tab = CreateFrame("Button", f:GetName() .. "Tab" .. i, f, template)
+            tab:SetSize(90, 22)
+            tab:SetText(tabCfg.text)
+            tab:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 12 + (i - 1) * 98, 12)
+            tab.id = i
+            if tabCfg.disabled then
+                if tab.SetDisabled then
+                    tab:SetDisabled(true)
+                elseif tab.Disable then
+                    tab:Disable()
+                end
+            end
+            tabs[i] = tab
+        end
+
+        local function SelectTab(id)
+            if id == 1 then content:Show(); dummy:Hide() else content:Hide(); dummy:Show() end
+            for idx, t in ipairs(tabs) do
+                if t.LockHighlight then
+                    if idx == id then t:LockHighlight() else t:UnlockHighlight() end
+                else
+                    if idx == id and t.Disable then t:Disable() elseif t.Enable then t:Enable() end
+                end
             end
         end
-    end
 
-    for _, t in ipairs(tabs) do
-        t:SetScript("OnClick", function(self) SelectTab(self.id) end)
-    end
+        for _, t in ipairs(tabs) do
+            t:SetScript("OnClick", function(self) SelectTab(self.id) end)
+        end
 
-    SelectTab(1)
+        SelectTab(1)
+    end
 
     -- expose references for update from chat handler
 	f._botDropDown = botDropDown
@@ -373,15 +436,61 @@ local function MBPVP_SetCurrentBot(frame, botName)
     frame._currentBot = botName
 
     if frame._botDropDown then
-        UIDropDownMenu_SetSelectedValue(frame._botDropDown, botName)
-        UIDropDownMenu_SetText(frame._botDropDown, botName ~= "" and botName or MultiBot.L("ui.pvp.bot_selector"))
+        if frame._botDropDown.type == "Dropdown" then
+            if botName and botName ~= "" then
+                frame._botDropDown:SetValue(botName)
+                frame._botDropDown:SetText(botName)
+            else
+                frame._botDropDown:SetValue(nil)
+                frame._botDropDown:SetText(MultiBot.L("ui.pvp.bot_selector"))
+            end
+        else
+            UIDropDownMenu_SetSelectedValue(frame._botDropDown, botName)
+            UIDropDownMenu_SetText(frame._botDropDown, botName ~= "" and botName or MultiBot.L("ui.pvp.bot_selector"))
+        end
     end
 
     MBPVP_ApplyStateToUi(frame, botName)
 end
 
 local function MBPVP_InitBotDropDown(frame)
-    if not frame or not frame._botDropDown or frame._botDropDown._mbInit then
+        if not frame or not frame._botDropDown then
+        return
+    end
+
+    if frame._botDropDown.type == "Dropdown" then
+        local dropdown = frame._botDropDown
+
+        if not dropdown._mbInit then
+            dropdown._mbInit = true
+            dropdown:SetLabel(MultiBot.L("ui.pvp.bot_selector"))
+            dropdown:SetCallback("OnValueChanged", function(_, _, value)
+                MBPVP_SetCurrentBot(frame, value)
+                if not frame:IsShown() then
+                    frame:Show()
+                end
+            end)
+        end
+
+        local bots = MBPVP_GetSortedBotList(frame)
+        local list = {}
+        for _, name in ipairs(bots) do
+            list[name] = name
+        end
+        dropdown:SetList(list)
+
+        if frame._currentBot and frame._currentBot ~= "" and list[frame._currentBot] then
+            dropdown:SetValue(frame._currentBot)
+            dropdown:SetText(frame._currentBot)
+        else
+            dropdown:SetValue(nil)
+            dropdown:SetText(MultiBot.L("ui.pvp.bot_selector"))
+        end
+
+        return
+    end
+
+    if frame._botDropDown._mbInit then
         return
     end
 

@@ -669,6 +669,9 @@ local zhCNValues = {
   ["ui.pvp.tab.placeholder"] = "|cffffff00占位符标签|r",
   ["ui.pvp.prefix.team"] = "队伍：",
   ["ui.pvp.prefix.rating"] = "评分：",
+  ["spec.list.title"] = "Specs",
+  ["info.managegroups"] = "队伍管理",
+  ["info.avalaiblebots"] = "可用的机器人",
 }
 
 register("zhCN", zhCNValues)

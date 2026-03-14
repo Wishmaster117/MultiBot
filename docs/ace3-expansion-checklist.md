@@ -13,11 +13,26 @@ Checklist for the full addon-wide ACE3 expansion after M7 completion.
 
 ## Milestone 8 — AceGUI UI refactor
 
-- [ ] Inventory all legacy frame-based screens and map migration order.
+- [x] Inventory all legacy frame-based screens and map migration order.
+  - Source of truth: `docs/ace3-ui-frame-inventory.md` (update per M8 PR).
 - [ ] Migrate one screen at a time to AceGUI containers/widgets.
-- [ ] Preserve slash entry points and open/close behavior.
-- [ ] Keep persisted state routed through existing AceDB helpers.
-- [ ] Validate visual/interaction parity per migrated screen.
+- [x] Options panel content migrated to AceGUI widgets (`UI/MultiBotOptions.lua`) while keeping InterfaceOptions category + slash entrypoint behavior.
+- [x] Temporary shared migration debug helper introduced (`Core/MultiBotDebug.lua`) to avoid duplicated diagnostics across files.
+- [x] PVP window migration slice completed for targeted controls (`UI/MultiBotPVPUI.lua`: bot selector dropdown + tab group, with localized fallback).
+- [x] Spec window/inspect helper migration slice completed and finalized (`UI/MultiBotSpecUI.lua`): Ace window close-cross UX, layering/clickability fix, compact height, and position persistence via existing `specDropdownPositions` store.
+- [x] Raidus migration/polish slice completed and finalized (`Features/MultiBotRaidus.lua`): Ace host window path + fallback, close-state sync with main button, score badges, drop feedback animation, and interactive contrast polish.
+- [x] Universal prompt migration slice completed (`Core/MultiBotInit.lua`: `MBUniversalPrompt`) with AceGUI window/edit/button path and no legacy frame fallback.
+- [x] Universal prompt migration slice completed (`Core/MultiBotInit.lua`: `MBUniversalPrompt`) with AceGUI window/edit/button path and no legacy frame fallback.
+- [x] GameObject popup/copy migration slice completed (`Core/MultiBotInit.lua`: `MB_GameObjPopup` + `MB_GameObjCopyBox`) with AceGUI windows/widgets path and no legacy frame fallback.
+- [x] Quest popup family migration slice completed (`Core/MultiBotInit.lua`: `MB_QuestPopup`, `MB_BotQuestPopup`, `MB_BotQuestCompPopup`, `MB_BotQuestAllPopup`) with AceGUI host windows and no legacy frame fallback.
+- [x] Hunter prompt/search/family migration slice completed (`Core/MultiBotInit.lua`: `MBHunterPrompt`, `MBHunterPetSearch`, `MBHunterPetFamily`) with AceGUI prompt/host windows and retained preview model support.
+- [x] Hidden tooltip utility cleanup completed (`Core/MultiBotInit.lua`): `MB_LocalizeQuestTooltip` and `MBHiddenTip` now reuse a shared hidden-tooltip helper and remain native by design.
+- [x] AceGUI popup close-behavior parity tightened (`Core/MultiBotInit.lua`): migrated popup windows now hide on close (no release), preserving reopen behavior across the same session.
+- [x] AceGUI resolver deduplication completed (`Core/MultiBotInit.lua`): migrated popup paths now share a single resolver helper for dependency lookup + error reporting.
+- [x] Escape-close parity added for migrated AceGUI popups (`Core/MultiBotInit.lua`): popup windows are now registered in `UISpecialFrames` for consistent ESC close behavior.
+- [x] Preserve slash entry points and open/close behavior (aliases unchanged in migrated slices; popup close/hide + ESC parity preserved).
+- [x] Keep persisted state routed through existing AceDB helpers (`Core/MultiBotInit.lua`: migrated popups now persist positions in `MultiBot.db.profile.ui.popupPositions`).
+- [x] Validate visual/interaction parity per migrated screen (close/hide/ESC parity + popup reopen behavior aligned across migrated slices).
 
 ## Milestone 9 — Localization and text pipeline
 
