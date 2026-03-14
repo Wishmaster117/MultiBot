@@ -1793,13 +1793,9 @@ function MultiBot.InitializeTalentFrameModule()
         end)
 
         if type(entries) == "table" then
-            if table.wipe then
-                table.wipe(entries) -- WoW runtime
-            else
-                for k in pairs(entries) do
-                    entries[k] = nil
-                end
-            end
+           for key in pairs(entries) do
+               entries[key] = nil
+           end
         end
 
         tTab[collectionKey] = {}
