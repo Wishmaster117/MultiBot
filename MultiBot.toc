@@ -61,6 +61,7 @@ Core\MultiBotEvery.lua
 UI\MultiBotStats.lua
 UI\MultiBotSpell.lua
 UI\MultiBotItem.lua
+UI\MultiBotTalentFrame.lua
 Core\MultiBotInit.lua
 UI\MultiBotIconos.lua
 UI\MultiBotSpecUI.lua

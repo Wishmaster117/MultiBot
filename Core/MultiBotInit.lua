@@ -836,20 +836,20 @@ tButton.doLeft = function(pButton, oRoster, oFilter)
 	elseif(oFilter ~= nil) then pButton.filter = oFilter
 	end
 
-    -- Filet de sécurité : si on veut 'players' mais l'index est vide, reconstruit ou redemande la liste
+    -- Safety net: if roster is 'players' but index is empty, rebuild or request the list.
     if oRoster == "players" or pButton.roster == "players" then
-      if not (MultiBot.index.players and table.getn(MultiBot.index.players) > 0) then
+      if not (MultiBot.index.players and #MultiBot.index.players > 0) then
         if MultiBot.RebuildPlayersIndexFromButtons then MultiBot.RebuildPlayersIndexFromButtons() end
-        if not (MultiBot.index.players and table.getn(MultiBot.index.players) > 0) then
-          -- toujours vide : on (re)demande la liste une fois
+        if not (MultiBot.index.players and #MultiBot.index.players > 0) then
+          -- Still empty: request the list once.
           SendChatMessage(".playerbot bot list", "SAY")
         end
       end
     end
 
-    -- Construction de la table source selon roster/filtre
+    -- Build the source table according to roster/filter.
     if pButton.roster == "players" then
-      -- On fusionne players ∪ actives pour que les bots déjà groupés apparaissent aussi
+      -- Merge players ∪ actives so already grouped bots also appear.
       local function merge_lists(a, b)
         local res, seen = {}, {}
         if a then for i=1,#a do local n=a[i]; if n and not seen[n] then seen[n]=true; table.insert(res, n) end end end
@@ -870,32 +870,32 @@ tButton.doLeft = function(pButton, oRoster, oFilter)
         tTable = MultiBot.index[pButton.roster]
       end
     end
-    MultiBot.dprint("Units.tTable.size", tTable and table.getn(tTable) or 0) -- DEBUG
-        -- Fin Construction de la table source selon roster/filtre
+    MultiBot.dprint("Units.tTable.size", tTable and #tTable or 0) -- DEBUG
+        -- End of source table build according to roster/filter.
 
         local tButton = nil
         local tFrame = nil
         local tIndex = 0
 
-        -- Certains favoris peuvent être chargés avant que leurs boutons ne soient créés
-        -- (par exemple juste après un login, avant le retour de `.playerbot bot list`).
-        -- On filtre donc la liste à afficher pour ne conserver que les entrées disposant
-        -- d'un bouton, afin d'éviter les erreurs Lua tout en laissant la vue se remplir
-        -- dès que les données arrivent.
+        -- Some favorites may load before their buttons are created
+        -- (for example right after login, before `.playerbot bot list` returns).
+        -- Filter the list to display only entries with an existing button
+        -- to avoid Lua errors while still allowing the view to fill in
+        -- as soon as data arrives.
         --
         local tDisplay = {}
         if tTable ~= nil then
-          for i = 1, table.getn(tTable) do
+          for i = 1, #tTable do
             local name = tTable[i]
             if name ~= nil and tUnits.buttons[name] ~= nil then
               table.insert(tDisplay, name)
             else
-              MultiBot.dprint("Units.skip", name or "<nil>", "(bouton manquant)")
+              MultiBot.dprint("Units.skip", name or "<nil>", "(missing button)")
             end
           end
         end
 
-        pButton.limit = table.getn(tDisplay)
+        pButton.limit = #tDisplay
 
         pButton.from = 1
         pButton.to = 10
@@ -1157,7 +1157,7 @@ btnPvpRaid.doLeft = function()
 end
 
 -- COMMANDS FOR ALL BOTS --
--- Bouton principal sous PvP Stats qui ouvre un sous-menu de commandes globales.
+-- Main button under PvP Stats that opens a global commands submenu.
 local btnAllBots = tControl.addButton("AllBotsCommands", 0, 90,
 	"Temp",
 	MultiBot.L("tips.allbots.commandsallbots"))
@@ -1175,11 +1175,11 @@ btnAllBots.doLeft = function(pButton)
 	end
 end
 
--- Sous-menu vertical qui s'ouvre au-dessus du bouton principal
+-- Vertical submenu displayed above the main button.
 local tAllBotsMenu = tControl.addFrame("AllBotsCommandsMenu", -30, 92, 32, 64)
 tAllBotsMenu:Hide()
 
--- Bouton : Maintenance pour tous les bots
+-- Button: maintenance for all bots.
 tAllBotsMenu.addButton("MaintenanceAllBots", 0, 34,
 	"achievement_halloween_smiley_01",
 	MultiBot.L("tips.allbots.maintenanceallbots"))
@@ -1189,7 +1189,7 @@ tAllBotsMenu.addButton("MaintenanceAllBots", 0, 34,
 	end
 end
 
--- Bouton : vendre tous les objets gris pour tous les bots (s *)
+-- Button: sell all gray items for all bots (s *).
 tAllBotsMenu.addButton("SellAllBotsGrey", 0, 0,
 	"inv_misc_coin_18",
 	MultiBot.L("tips.allbots.sellallvendor"))
@@ -1203,7 +1203,7 @@ local tButton = tControl.addButton("Invite", 0, 120, "Interface\\AddOns\\MultiBo
 tButton.doRight = function(pButton)
     if (GetNumRaidMembers() > 0 or GetNumPartyMembers() > 0) then return end
     MultiBot.timer.invite.roster = MultiBot.frames["MultiBar"].buttons["Units"].roster
-    MultiBot.timer.invite.needs  = table.getn(MultiBot.index[MultiBot.timer.invite.roster])
+    MultiBot.timer.invite.needs  = #MultiBot.index[MultiBot.timer.invite.roster]
     MultiBot.timer.invite.index  = 1
     MultiBot.auto.invite = true
     SendChatMessage(MultiBot.L("info.starting"), "SAY")
@@ -1509,7 +1509,7 @@ end
 
 local tButton = tMain.addButton("Reward", 0, 306, "Interface\\AddOns\\MultiBot\\Icons\\reward.blp", MultiBot.L("tips.main.reward")).setDisable()
 tButton.doRight = function(pButton)
-	if(table.getn(MultiBot.reward.rewards) > 0 and table.getn(MultiBot.reward.units) > 0) then MultiBot.reward:Show() end
+	if(#MultiBot.reward.rewards > 0 and #MultiBot.reward.units > 0) then MultiBot.reward:Show() end
 end
 tButton.doLeft = function(pButton)
 	MultiBot.reward.state = MultiBot.OnOffSwitch(pButton)
@@ -1525,11 +1525,11 @@ tMain.addButton("Actions", 0, 374, "inv_helmet_02", MultiBot.L("tips.main.action
 	MultiBot.ActionToTargetOrGroup("reset")
 end
 
--- [AJOUT] Bouton Options (ouvre/ferme le panneau des sliders)
+-- [ADDED] Options button (opens/closes the sliders panel).
 local tBtnOptions = tMain.addButton("Options", 0, 404, "inv_misc_gear_02", MultiBot.L("tips.main.options"))
 tBtnOptions._active = false
 
--- Grisé par défaut (alpha 0.4 + désaturation)
+-- Dimmed by default (alpha 0.4 + desaturation).
 do
   local f = tBtnOptions.frame or tBtnOptions
   if f and f.SetAlpha then f:SetAlpha(0.4) end
@@ -1764,10 +1764,93 @@ end
 
 MultiBot.GetAceGUI = MultiBot.GetAceGUI or getUniversalPromptAceGUI
 
-local function createAceQuestPopupHost(title, width, height, missingDepMessage)
+local function resolveAceGUI(missingDepMessage)
     local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())
+    if not aceGUI and missingDepMessage then
+        UIErrorsFrame:AddMessage(missingDepMessage, 1, 0.2, 0.2, 1)
+    end
+
+    return aceGUI
+end
+
+local function setAceWindowCloseToHide(window)
+    if window and window.SetCallback then
+        window:SetCallback("OnClose", function(widget)
+            widget:Hide()
+        end)
+    end
+end
+
+local _aceEscapeIndex = 0
+local function registerAceWindowEscapeClose(window, namePrefix)
+    if not window or not window.frame or type(UISpecialFrames) ~= "table" then
+        return
+    end
+
+    if window.__mbEscapeName then
+        return
+    end
+
+    _aceEscapeIndex = _aceEscapeIndex + 1
+    local safePrefix = tostring(namePrefix or "Popup"):gsub("[^%w_]", "")
+    local frameName = string.format("MultiBotAce%s_%d", safePrefix, _aceEscapeIndex)
+
+    window.__mbEscapeName = frameName
+    _G[frameName] = window.frame
+
+    for _, existing in ipairs(UISpecialFrames) do
+        if existing == frameName then
+            return
+        end
+    end
+
+    table.insert(UISpecialFrames, frameName)
+end
+
+local function getUiProfileStore()
+    local profile = MultiBot.db and MultiBot.db.profile
+    if not profile then
+        return nil
+    end
+
+    profile.ui = profile.ui or {}
+    return profile.ui
+end
+
+local function bindAceWindowPosition(window, persistenceKey)
+    if not window or not window.frame or not persistenceKey then
+        return
+    end
+
+    local uiStore = getUiProfileStore()
+    if not uiStore then
+        return
+    end
+
+    uiStore.popupPositions = uiStore.popupPositions or {}
+    local positions = uiStore.popupPositions
+    local saved = positions[persistenceKey]
+    if saved and saved.point then
+        window.frame:ClearAllPoints()
+        window.frame:SetPoint(saved.point, UIParent, saved.point, saved.x or 0, saved.y or 0)
+    end
+
+    if window.__mbPositionHooked then
+        return
+    end
+
+    window.__mbPositionHooked = true
+    window.frame:HookScript("OnDragStop", function(frame)
+        local point, _, _, x, y = frame:GetPoint(1)
+        if point then
+            positions[persistenceKey] = { point = point, x = x or 0, y = y or 0 }
+        end
+    end)
+end
+
+local function createAceQuestPopupHost(title, width, height, missingDepMessage, persistenceKey)
+    local aceGUI = resolveAceGUI(missingDepMessage or "AceGUI-3.0 is required")
     if not aceGUI then
-        UIErrorsFrame:AddMessage(missingDepMessage or "AceGUI-3.0 is required", 1, 0.2, 0.2, 1)
         return nil
     end
 
@@ -1782,6 +1865,9 @@ local function createAceQuestPopupHost(title, width, height, missingDepMessage)
     window:EnableResize(false)
     window:SetLayout("Fill")
     window.frame:SetFrameStrata("DIALOG")
+    setAceWindowCloseToHide(window)
+    registerAceWindowEscapeClose(window, "QuestHost")
+    bindAceWindowPosition(window, persistenceKey)
     window:Hide()
 
     local host = CreateFrame("Frame", nil, window.content)
@@ -1820,7 +1906,7 @@ tQuestMenu.addButton("AcceptAll", 0, 30,
 -- END BUTTON Accept * --
 
 -- POP-UP Frame for Quests --
-local tQuests = createAceQuestPopupHost(QUEST_LOG, 390, 470, "AceGUI-3.0 is required for MB_QuestPopup")
+local tQuests = createAceQuestPopupHost(QUEST_LOG, 390, 470, "AceGUI-3.0 is required for MB_QuestPopup", "quest_popup")
 assert(tQuests, "AceGUI-3.0 is required for MB_QuestPopup")
 
 -- ScrollFrame + ScrollBar
@@ -1979,7 +2065,7 @@ end
 MultiBot.BotQuestsIncompleted = {}  -- [botName] = { [questID]=questName, ... }
 
 -- Popup Liste des quêtes du bot
-local tBotPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.incomplist"), 380, 420, "AceGUI-3.0 is required for MB_BotQuestPopup")
+local tBotPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.incomplist"), 380, 420, "AceGUI-3.0 is required for MB_BotQuestPopup", "bot_quest_popup")
 assert(tBotPopup, "AceGUI-3.0 is required for MB_BotQuestPopup")
 
 local scroll = CreateFrame("ScrollFrame", "MB_BotQuestScroll", tBotPopup, "UIPanelScrollFrameTemplate")
@@ -2177,7 +2263,7 @@ tRight.buttons["BotQuestsIncompWhisper"] = btnWhisper
 MultiBot.BotQuestsCompleted = {}  -- [botName] = { [questID]=questName, ... }
 
 -- 2) Pop-up Liste des quêtes terminées du bot
-local tBotCompPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.complist"), 380, 420, "AceGUI-3.0 is required for MB_BotQuestCompPopup")
+local tBotCompPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.complist"), 380, 420, "AceGUI-3.0 is required for MB_BotQuestCompPopup", "bot_quest_comp_popup")
 assert(tBotCompPopup, "AceGUI-3.0 is required for MB_BotQuestCompPopup")
 
 local scroll2 = CreateFrame("ScrollFrame", "MB_BotQuestCompScroll", tBotCompPopup, "UIPanelScrollFrameTemplate")
@@ -2382,7 +2468,7 @@ tRight.buttons["BotQuestsTalk"] = btnTalk
 -- BUTTON QUESTS ALL --
 
 -- POPUP Quests All
-local tBotAllPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.alllist"), 420, 460, "AceGUI-3.0 is required for MB_BotQuestAllPopup")
+local tBotAllPopup = createAceQuestPopupHost(MultiBot.L("tips.quests.alllist"), 420, 460, "AceGUI-3.0 is required for MB_BotQuestAllPopup", "bot_quest_all_popup")
 assert(tBotAllPopup, "AceGUI-3.0 is required for MB_BotQuestAllPopup")
 
 -- On expose immédiatement pour qu'il existe dans SendAll
@@ -2720,9 +2806,8 @@ local function ensureGameObjectPopupFrame()
         return MultiBot.GameObjPopup
     end
 
-    local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())
+    local aceGUI = resolveAceGUI("AceGUI-3.0 is required for MB_GameObjPopup")
     if not aceGUI then
-        UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MB_GameObjPopup", 1, 0.2, 0.2, 1)
         return nil
     end
 
@@ -2737,6 +2822,9 @@ local function ensureGameObjectPopupFrame()
     window:EnableResize(false)
     window:SetLayout("Flow")
     window.frame:SetFrameStrata("DIALOG")
+    setAceWindowCloseToHide(window)
+    registerAceWindowEscapeClose(window, "GameObjPopup")
+    bindAceWindowPosition(window, "gameobject_popup")
 
     local scroll = aceGUI:Create("ScrollFrame")
     scroll:SetFullWidth(true)
@@ -2766,9 +2854,8 @@ local function ensureGameObjectCopyBoxFrame()
         return MultiBot.GameObjCopyBox
     end
 
-    local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())()
+    local aceGUI = resolveAceGUI("AceGUI-3.0 is required for MB_GameObjCopyBox")
     if not aceGUI then
-        UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MB_GameObjCopyBox", 1, 0.2, 0.2, 1)
         return nil
     end
 
@@ -2783,6 +2870,9 @@ local function ensureGameObjectCopyBoxFrame()
     window:EnableResize(false)
     window:SetLayout("Fill")
     window.frame:SetFrameStrata("DIALOG")
+    setAceWindowCloseToHide(window)
+    registerAceWindowEscapeClose(window, "GameObjCopy")
+    bindAceWindowPosition(window, "gameobject_copy")
 
     local editor = aceGUI:Create("MultiLineEditBox")
     editor:SetLabel("")
@@ -2813,9 +2903,8 @@ function MultiBot.ShowGameObjectPopup()
     popup.scroll:ReleaseChildren()
 
     -- Render captured lines grouped by bot
-    local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())
+    local aceGUI = resolveAceGUI("AceGUI-3.0 is required for MB_GameObjPopup")
     if not aceGUI then
-        UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MB_GameObjPopup", 1, 0.2, 0.2, 1)
         return
     end
 
@@ -2889,9 +2978,8 @@ local PROMPT_WINDOW_HEIGHT = 108
 local PROMPT_OK_BUTTON_WIDTH = 100
 
 function ShowPrompt(title, onOk, defaultText)
-    local aceGUI = (MultiBot.GetAceGUI and MultiBot.GetAceGUI()) or (getUniversalPromptAceGUI and getUniversalPromptAceGUI())
+    local aceGUI = resolveAceGUI("AceGUI-3.0 is required for MBUniversalPrompt")
     if not aceGUI then
-        UIErrorsFrame:AddMessage("AceGUI-3.0 is required for MBUniversalPrompt", 1, 0.2, 0.2, 1)
         return
     end
 
@@ -2907,6 +2995,9 @@ function ShowPrompt(title, onOk, defaultText)
         window:EnableResize(false)
         window:SetLayout("Flow")
         window.frame:SetFrameStrata("DIALOG")
+        setAceWindowCloseToHide(window)
+        registerAceWindowEscapeClose(window, "UniversalPrompt")
+        bindAceWindowPosition(window, "universal_prompt")
 
         local edit = aceGUI:Create("EditBox")
         edit:SetLabel("")
@@ -3966,979 +4057,11 @@ tFrame.addFrame("Inspector", -137, 26, 16)
 	InspectUnit(pButton.getName())
 end
 
--- TALENT --
+-- TALENT AND GLYPHS FRAME --
 
-MultiBot.talent = MultiBot.newFrame(MultiBot, -104, -276, 28, 1024, 1024)
-MultiBot.talent.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent.blp")
-MultiBot.talent.addText("Points", MultiBot.L("info.talent.Points"), "CENTER", -228, -8, 13)
-MultiBot.talent.addText("Title", MultiBot.L("info.talent.Title"), "CENTER", -228, 491, 13)
-MultiBot.talent:SetMovable(true)
-MultiBot.talent:Hide()
-
-MultiBot.talent.movButton("Move", -960, 960, 64, MultiBot.L("tips.move.talent"))
-
-MultiBot.talent.wowButton(MultiBot.L("info.talent.Apply"), -474, 966, 100, 20, 12).doHide()
-.doLeft = function(pButton)
-	local tValues = ""
-
-	for i = 1, 3 do
-		local tTab = MultiBot.talent.frames["Tab" .. i]
-
-		for j = 1, table.getn(tTab.buttons) do
-			tValues = tValues .. tTab.buttons[j].value
-		end
-
-		if(i < 3) then tValues = tValues .. "-" end
-	end
-
-	SendChatMessage("talents apply " ..tValues, "WHISPER", nil, MultiBot.talent.name)
-	pButton.doHide()
+if MultiBot.InitializeTalentFrameModule then
+    MultiBot.InitializeTalentFrameModule()
 end
-
-local tApply = MultiBot.talent.buttons[ MultiBot.L("info.talent.Apply") ]
-
-MultiBot.talent.wowButton(MultiBot.L("info.talent.Copy"), -854, 966, 100, 20, 12)
-local copyBtn = MultiBot.talent.buttons[MultiBot.L("info.talent.Copy")]
-
-copyBtn.doLeft = function(pButton)
-	local tName = UnitName("target")
-	if(tName == nil or tName == "Unknown Entity") then return SendChatMessage(MultiBot.L("info.target"), "SAY") end
-
-	local tLocClass, tClass = UnitClass("target")
-	if(MultiBot.talent.class ~= MultiBot.toClass(tClass)) then return SendChatMessage("The Classes do not match.", "SAY") end
-
-	local tUnit = MultiBot.toUnit(MultiBot.talent.name)
-	if(UnitLevel(tUnit) ~= UnitLevel("target")) then return SendChatMessage("The Levels do not match.", "SAY") end
-
-	local tValues = ""
-
-	for i = 1, 3 do
-		local tTab = MultiBot.talent.frames["Tab" .. i]
-
-		for j = 1, table.getn(tTab.buttons) do
-			tValues = tValues .. tTab.buttons[j].value
-		end
-
-		if(i < 3) then tValues = tValues .. "-" end
-	end
-
-	SendChatMessage("talents apply " ..tValues, "WHISPER", nil, tName)
-end
-
-MultiBot.talent.wowButton("X", -470, 992, 17, 20, 13)
-.doLeft = function(pButton)
-	local tUnits = MultiBot.frames["MultiBar"].frames["Units"]
-	local tButton = tUnits.frames[MultiBot.talent.name].buttons["Talent"]
-	tButton.doLeft(tButton)
-end
-
-local tTab = MultiBot.talent.addFrame("Tab1", -830, 518, 28, 170, 408)
-tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\White.blp")
-tTab.addText("Title", MB_TAB_TITLE_DEFAULT, "CENTER", 0, 214, 13)
-tTab.arrows = {}
-tTab.value = 0
-tTab.id = 1
-
-local tTab = MultiBot.talent.addFrame("Tab2", -656, 518, 28, 170, 408)
-tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\White.blp")
-tTab.addText("Title", MB_TAB_TITLE_DEFAULT, "CENTER", 0, 214, 13)
-tTab.arrows = {}
-tTab.value = 0
-tTab.id = 2
-
-local tTab = MultiBot.talent.addFrame("Tab3", -482, 518, 28, 170, 408)
-tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\White.blp")
-tTab.addText("Title", MB_TAB_TITLE_DEFAULT, "CENTER", 0, 214, 13)
-tTab.arrows = {}
-tTab.value = 0
-tTab.id = 3
-
--- ACTUAL GLYPHES START --
-
--- Minimum level for each Socket (in order 1→6)
-local socketReq = { 15, 15, 30, 50, 70, 80 }
-
-local function ShowGlyphTooltip(self)
-    local id = self.glyphID
-    if not id then return end
-    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-
-    -- 1) try like a spell
-    if GameTooltip:SetSpellByID(id) then
-        return
-    end
-
-    -- 2) try like a item
-    GameTooltip:SetHyperlink("item:"..id..":0:0:0:0:0:0:0")
-end
-
-local function HideGlyphTooltip()
-    GameTooltip:Hide()
-end
-
-function MultiBot.FillDefaultGlyphs()
-    local botName = MultiBot.talent.name
-    local unit    = MultiBot.toUnit(botName)
-    if not unit then return end
-
-    -- rec is the table received from the handler, in the following format
-    -- { [1]={id=…,type=…}, …, [6]={…} }
-    local rec = MultiBot.receivedGlyphs and MultiBot.receivedGlyphs[botName]
-    if not rec then
-        DEFAULT_CHAT_FRAME:AddMessage("|cff00ff00[MultiBot]|r Waiting for glyphs…")
-        return
-    end
-
-    -- Derive the class key to access glyphDB
-    local _, classFile = UnitClass(unit)
-    local classKey = (classFile == "DEATHKNIGHT" and "DeathKnight")
-                   or (classFile:sub(1,1) .. classFile:sub(2):lower())
-    local glyphDB = MultiBot.data.talent.glyphs[classKey] or {}
-
-    -- Loop through each slot i = 1..6
-    for i, entry in ipairs(rec) do
-        local id, typ = entry.id, entry.type
-        local f = MultiBot.talent.frames["Tab4"].frames["Socket"..i]
-        if f and f.frames then
-            -- 1) Glow
-            f.type, f.item = typ, id
-            f.frames.Glow:Show()
-
-            -- 2) Rune
-            local raw = glyphDB[typ] and glyphDB[typ][id] or ""
-            local _, runeIdx = strsplit(",%s*", raw)
-            runeIdx = runeIdx or "1"
-            local rFrame = f.frames.Rune
-            if rFrame then
-                rFrame:Hide()
-                local runeTex = rFrame.texture or rFrame
-                runeTex:SetTexture(MultiBot.SafeTexturePath("Interface\\Spellbook\\UI-Glyph-Rune"..runeIdx))
-            end
-
-            -- 3) Icon + Tooltip
-            local tex = GetSpellTexture(id)
-                     or select(10, GetItemInfo(id))
-                     -- or "Interface\\Icons\\INV_Misc_QuestionMark"
-					 or "Interface\\AddOns\\MultiBot\\Textures\\UI-GlyphFrame-Glow.blp"
-            local btn = f.frames.IconBtn
-            if not btn then
-                btn = CreateFrame("Button", nil, f)
-                btn:SetAllPoints(f)
-                btn:SetScript("OnEnter", ShowGlyphTooltip)
-                btn:SetScript("OnLeave", HideGlyphTooltip)
-
-                -- Creating the texture
-                local icon = btn:CreateTexture(nil, "ARTWORK")
-                icon:ClearAllPoints()
-                icon:SetPoint("CENTER", btn, "CENTER", -9, 8)
-
-                -- resizing
-                local factor = (typ == "Major") and 0.64 or 0.66
-                icon:SetSize(f:GetWidth() * factor, f:GetHeight() * factor)
-
-                -- croping
-                local crop = (typ == "Major") and 0.14 or 0.20
-                icon:SetTexCoord(crop, 1 - crop, crop, 1 - crop)
-
-                btn.icon = icon
-                f.frames.IconBtn = btn
-            end
-
-            -- Update icon
-            btn.glyphID = id
-            btn.icon:SetTexture(MultiBot.SafeTexturePath(tex))
-            btn:Show()
-
-            -- Overlay circle
-            local ov = f.frames.Overlay
-            if ov and not ov.texture then
-                ov.texture = ov:CreateTexture(nil, "BORDER")
-                ov.texture:SetAllPoints(ov)
-                local base = "Interface\\AddOns\\MultiBot\\Textures\\"
-                ov.texture:SetTexture(
-                    base .. (typ == "Major"
-                            and "gliph_majeur_layout.blp"
-                            or "gliph_mineur_layout.blp"))
-            end
-            if ov then ov:Show() end
-        end
-    end
-
-    -- Chat display (optional)
-    local names = {}
-    for _, entry in ipairs(rec) do
-        local n = select(1, GetItemInfo(entry.id))   -- name of object (glyphe)
-              or GetSpellInfo(entry.id)              -- fallback if no objecy
-              or ("ID "..entry.id)
-        table.insert(names,
-            (entry.type=="Major" and "|cffffff00" or "|cff00ff00") .. n .. "|r")
-    end
-end
-
--- Add a custom background to the Glyphs Frame (tTab)
-local tTab = MultiBot.talent.addFrame("Tab4", -513, 518, 28, 456, 430) -- offset x, offset y, strata level, widht, height
-tTab.addFrame("Glow", 0, 0, 28, 456, 430).setAlpha(0.5).doHide()-- .addTexture("Interface/Spellbook/Talent_Glyphs_Glow.blp")
-tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Background-GlyphFrame.blp")
-tTab:Hide()
-
-local parentTab4 = MultiBot.talent.frames["Tab4"]   -- alias
-
--- Bouton “Apply Glyphs” – créé **une seule fois** :
-gApply = parentTab4.wowButton("Apply Glyphs", 0, 0, 100, 20, 12)
-gApply:ClearAllPoints()
-gApply:SetPoint("TOPRIGHT", parentTab4, "TOPRIGHT", -20, -20)
-gApply:SetFrameLevel(parentTab4:GetFrameLevel() + 10)
-gApply:Hide()          -- invisible till no modif
-gApply:SetScript("OnClick", function()
-    local ids = {}
-    for i = 1, 6 do
-        ids[i] = parentTab4.frames["Socket"..i].item or 0
-    end
-    local payload = "glyph equip " .. table.concat(ids, " ")
-    DEFAULT_CHAT_FRAME:AddMessage("|cff66ccff[DBG]|r " ..
-        (MultiBot.talent.name or "?") .. " : " .. payload)
-    SendChatMessage(payload, "WHISPER", nil, MultiBot.talent.name)
-    gApply:Hide()
-end)
-
--- GLYPH:SOCKET1 --
-
--- Level 15
-local tGlyph = tTab.addFrame("Socket1", -176.5, 310, 102) -- 1st socket at the top: Major (offset x, offset y, frame size)
-tGlyph.addFrame("Glow",   0,  0, 102).setLevel(7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Slot-Major.blp")
-tGlyph.addFrame("Rune", -29, 29,  44).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
-tGlyph.frames = tGlyph.frames or {}
-tGlyph.type = "Major"
-tGlyph.item = 0
-
-tGlyph.addFrame("Overlay", -12, 12, 96).setLevel(9).doHide()
-
--- GLYPH:SOCKET2 --
-
--- Level 15
-local tGlyph = tTab.addFrame("Socket2", -187, 18.5, 82) -- Minor socket at the very bottom: Minor
-tGlyph.addFrame("Glow",   0,  0, 82).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp")
-tGlyph.addFrame("Rune", -25, 25, 32).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
-tGlyph.frames = tGlyph.frames or {}
-tGlyph.type = "Minor"
-
-tGlyph.addFrame("Overlay", -9, 9, 80).setLevel(9).doHide()
-
--- GLYPH:SOCKET3 --
-
--- Level 30
-local tGlyph = tTab.addFrame("Socket3", -18.5, 50.5, 102) -- Bottom-right socket: Major
-tGlyph.addFrame("Glow",   0,  0, 102).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Major.blp")
-tGlyph.addFrame("Rune", -29, 29,  44).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
-tGlyph.frames = tGlyph.frames or {}
-tGlyph.type = "Major"
-
-tGlyph.addFrame("Overlay", -12, 12, 96) .setLevel(9).doHide()
-
--- GLYPH:SOCKET4 --
-
--- Level 50
-local tGlyph = tTab.addFrame("Socket4", -302.5, 218, 82) -- Top-left socket: Minor
-tGlyph.addFrame("Glow",   0,  0, 82).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp")
-tGlyph.addFrame("Rune", -25, 25, 32).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
-tGlyph.frames = tGlyph.frames or {}
-tGlyph.type = "Minor"
-
-tGlyph.addFrame("Overlay", -9, 9, 80).setLevel(9).doHide()
-
--- GLYPH:SOCKET5 --
-
--- Level 70
-local tGlyph = tTab.addFrame("Socket5", -72.5, 218, 82) -- Top-right socket: Minor
-tGlyph.addFrame("Glow",   0,  0, 82).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp")
-tGlyph.addFrame("Rune", -25, 25, 32).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
-tGlyph.frames = tGlyph.frames or {}
-tGlyph.type = "Minor"
-
-tGlyph.addFrame("Overlay", -9, 9, 80).setLevel(9).doHide()
-
--- GLYPH:SOCKET6 --
-
--- Level 80
-local tGlyph = tTab.addFrame("Socket6", -336, 50.5, 102) -- Bottom-left socket: Major
-tGlyph.addFrame("Glow",   0,  0, 102).setLevel(7).doHide().addTexture("Interface\\Spellbook\\UI-Glyph-Slot-Major.blp")
-tGlyph.addFrame("Rune", -29, 29,  44).setLevel(8).setAlpha(0.7).doHide().addTexture("Interface/Spellbook/UI-Glyph-Rune-1")
-tGlyph.frames = tGlyph.frames or {}
-tGlyph.type = "Major"
-
-tGlyph.addFrame("Overlay", -12, 12, 96) .setLevel(9).doHide()
-
--- TAB TALENTS --
-local tTab = MultiBot.talent.addFrame("Tab5", -900, 461, 28, 96, 24)
-tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_Tab.blp")
-tTab.wowButton("Talents", -2, 6, 92, 17, 11)
-.doLeft = function(pButton)
-	if gApply then gApply:Hide() end
-    -- Update UI
-    MultiBot.talent.setText("Title", MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME", MultiBot.talent.name))
-    MultiBot.talent.texts["Points"]:Show()
-    MultiBot.talent.frames["Tab1"]:Show()
-    MultiBot.talent.frames["Tab2"]:Show()
-    MultiBot.talent.frames["Tab3"]:Show()
-    MultiBot.talent.frames["Tab4"]:Hide()
-	copyBtn:doShow()
-end
-
--- TAB GLYPHS --
-local tTab = MultiBot.talent.addFrame("Tab6", -800, 461, 28, 96, 24)
-tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_Tab.blp")
-tTab.wowButton("Glyphs", -2, 6, 92, 17, 11)
-
-.doLeft = function(pButton)
-	if gApply then gApply:Hide() end
-    -- UI
-    MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.glyphsglyphsfor") .. " |r" .. (MultiBot.talent.name or "?"))
-    MultiBot.talent.texts["Points"]:Hide()
-    MultiBot.talent.frames["Tab1"]:Hide()
-    MultiBot.talent.frames["Tab2"]:Hide()
-    MultiBot.talent.frames["Tab3"]:Hide()
-    MultiBot.talent.frames["Tab4"]:Show()
-	copyBtn:doHide()
-    local botName = MultiBot.talent.name
-    MultiBot.awaitGlyphs = botName
-    SendChatMessage("glyphs", "WHISPER", nil, botName)
-end
-
--- GLYPHES END --
-
-MultiBot.talent.setGrid = function(pTab)
-	pTab.grid = {}
-	pTab.grid.icons = {}
-	pTab.grid.icons.size = pTab.size + 8
-	pTab.grid.icons.x = pTab.width / 2 + pTab.grid.icons.size * 2 + 4
-	pTab.grid.icons.y = pTab.height / 2 + pTab.grid.icons.size * 5.5 + 4
-	pTab.grid.arrows = {}
-	pTab.grid.arrows.size = pTab.grid.icons.size + 8
-	pTab.grid.arrows.x = pTab.width / 2 + pTab.grid.icons.size * 2 - 4
-	pTab.grid.arrows.y = pTab.height / 2 + pTab.grid.icons.size * 5.5 - 4
-	pTab.grid.values = {}
-	pTab.grid.values.x = pTab.width / 2 + pTab.grid.icons.size * 2
-	pTab.grid.values.y = pTab.height / 2 + pTab.grid.icons.size * 5.5
-	return pTab
-end
-
-MultiBot.talent.addArrow = function(pTab, pID, pNeeds, piX, piY, pTexture)
-	local tArrow = pTab.addFrame("Arrow" .. pID, piX * pTab.grid.icons.size - pTab.grid.arrows.x, pTab.grid.arrows.y - piY * pTab.grid.icons.size, pTab.grid.arrows.size)
-	tArrow.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_Silver_" .. pTexture .. ".blp")
-	tArrow.active = "Interface\\AddOns\\MultiBot\\Textures\\Talent_Gold_" .. pTexture .. ".blp"
-	tArrow.needs = pNeeds
-	tArrow:SetFrameLevel(7)
-	return tArrow
-end
-
-MultiBot.talent.addTalent = function(pTab, pID, pNeeds, pValue, pMax, piX, piY, pTexture, pTips)
-	local tTalent = pTab.addButton(pID, piX * pTab.grid.icons.size - pTab.grid.icons.x, pTab.grid.icons.y - piY * pTab.grid.icons.size, pTexture, pTips[pValue + 1])
-    tTalent:RegisterForClicks("LeftButtonUp", "RightButtonUp") 	-- Added for custom talents accept right and left click
-	tTalent.points = piY * 5 - 5
-	tTalent.needs = pNeeds
-	tTalent.value = pValue
-	tTalent.tips = pTips
-	tTalent.max = pMax
-	tTalent.id = pID
-
-	tTalent.doLeft = function(pButton)
-		if(MultiBot.talent.points == 0) then return end
-
-		local tButtons = pButton.parent.buttons
-		local tValue = pButton.parent.frames[pButton.id]
-		local tTab = pButton.parent
-
-		if(pButton.state == false) then return end
-		if(pButton.value == pButton.max) then return end
-		if(pButton.needs > 0 and tButtons[pButton.needs].value == 0) then return end
-
-		MultiBot.talent.points = MultiBot.talent.points - 1
-		MultiBot.talent.setText("Points", MultiBot.L("info.talent.Points") .. MultiBot.talent.points)
-
-		tTab.value = tTab.value + 1
-		tTab.setText("Title", MultiBot.L("info.talent." .. pButton.getClass() .. tTab.id) .. " ("  .. tTab.value .. ")")
-
-		pButton.value = pButton.value + 1
-		pButton.tip = pButton.tips[pButton.value + 1]
-
-		local tColor = MultiBot.IF(pButton.value < pButton.max, "|cff4db24d", "|cffffcc00")
-		tValue.setText("Value", tColor .. pButton.value .. "/" .. pButton.max .. "|r")
-		tValue:Show()
-
-		for i = 1, table.getn(tButtons) do
-			if(tButtons[i].points > tTab.value)
-			then tButtons[i].setDisable()
-			else
-				if(tButtons[i].needs > 0)
-				then if(tButtons[tButtons[i].needs].value > 0) then tButtons[i].setEnable() end
-				else tButtons[i].setEnable()
-				end
-			end
-		end
-
-		MultiBot.talent.buttons[MultiBot.L("info.talent.Apply")].doShow()
-		MultiBot.talent.doState()
-	end
-
-	-- Add right click to remove custom Points
-	-- Right click : –1 point
-	tTalent.doRight = function(pButton)
-		if pButton.value == 0 then return end          -- Nothing to remove
-
-		local tTab   = pButton.parent                  -- Tab (tree)
-		local tValue = tTab.frames[pButton.id]         -- Text 1/5
-
-		-- Restore the global point
-		MultiBot.talent.points = MultiBot.talent.points + 1
-		MultiBot.talent.setText("Points",
-			MultiBot.L("info.talent.Points") .. MultiBot.talent.points)
-
-		-- -- Update this talent + the tab
-		pButton.value = pButton.value - 1
-		pButton.tip   = pButton.tips[pButton.value + 1]
-		tTab.value    = tTab.value  - 1
-		-- Updates the title at the top of the tree
-		tTab.setText("Title",
-			MultiBot.L("info.talent." .. pButton.getClass() .. tTab.id) ..
-			" (" .. tTab.value .. ")")
-
-		-- Color based on rank
-		local c = (pButton.value == 0)      and "|cffffffff"
-			or (pButton.value < pButton.max) and "|cff4db24d"
-			or "|cffffcc00"
-		tValue.setText("Value",
-			c .. pButton.value .. "/" .. pButton.max .. "|r")
-		if MultiBot.talent.points == 0 and pButton.value == 0 then
-			tValue:Hide()
-		else
-			tValue:Show()
-		end
-
-		-- -- Re-evaluate the state of all buttons/arrows
-		MultiBot.talent.doState()
-
-		-- -- Re-display the "Apply" button (modified build)
-		MultiBot.talent.buttons[MultiBot.L("info.talent.Apply")].doShow()
-	end
-		tTalent:SetFrameLevel(8)
-		return tTalent
-end
-
-MultiBot.talent.addValue = function(pTab, pID, piX, piY, pRank, pMax)
-	local tColor = MultiBot.IF(pRank > 0, MultiBot.IF(pRank < pMax, "|cff4db24d", "|cffffcc00"), "|cffffffff")
-	local tValue = pTab.addFrame(pID, piX * pTab.grid.icons.size - pTab.grid.values.x, pTab.grid.values.y - piY * pTab.grid.icons.size, 24, 18, 12)
-	tValue.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_Black.blp")
-	tValue.addText("Value", tColor .. pRank .. "/" .. pMax .. "|r", "CENTER", -0.5, 1, 10)
-	if(MultiBot.talent.points == 0 and pRank == 0) then tValue:Hide() end
-	tValue:SetFrameLevel(9)
-	return tValue
-end
-
-MultiBot.talent.setTalents = function()
-    -- 1) Check datas
-    local tClass = MultiBot.data.talent.talents[ MultiBot.talent.class ]
-    if not tClass then
-        print("|cffff0000[MultiBot] No build found for class "
-              .. tostring(MultiBot.talent.class) .. "!|r")
-        return
-    end
-
-    local tArrow = MultiBot.data.talent.arrows[ MultiBot.talent.class ]
-    if not tArrow then
-        print("|cffff0000[MultiBot] No arrow schem found for class "
-              .. tostring(MultiBot.talent.class) .. "!|r")
-        return
-    end
-
-	local activeGroup = GetActiveTalentGroup(true) or 1
-
-    -- No talents loaded yet ? we retry in 0,1 s
-    if not GetTalentInfo(1, 1, true) then
-        TimerAfter(0.1, MultiBot.talent.setTalents)
-        return
-    end
-
-    -- 2) Frame update
-    MultiBot.talent.points = tonumber(GetUnspentTalentPoints(true))
-    MultiBot.talent.setText("Points",
-       MultiBot.L("info.talent.Points") .. MultiBot.talent.points)
-    MultiBot.talent.setText("Title",
-        MultiBot.doReplace(MultiBot.L("info.talent.Title"), "NAME",
-                           MultiBot.talent.name))
-
-    for i = 1, 3 do
-        local tMarker = MultiBot.talent.class .. i
-        local tTab    = MultiBot.talent.setGrid(
-                            MultiBot.talent.frames["Tab" .. i])
-        tTab.setTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_" ..
-                        tMarker .. ".blp")
-        tTab.value, tTab.id = 0, i
-
-        -- arrows
-        for j = 1, #tArrow[i] do
-            local tData = MultiBot.doSplit(tArrow[i][j], ", ")
-            local tNeed = tonumber(tData[1])
-            tTab.arrows[j] = MultiBot.talent.addArrow(
-                                 tTab, j, tNeed, tData[2], tData[3], tData[4])
-        end
-
-        -- talents
-        for j = 1, #tClass[i] do
-            local link = GetTalentLink(i,j,true,nil,activeGroup)
-
-            local tTale = MultiBot.doSplit(MultiBot.doSplit(link, "|")[3], ":")[2]
-
-            local iName, iIcon, iTier, iColumn, iRank = GetTalentInfo(i, j, true, nil, activeGroup)
-
-            if not iName then
-                TimerAfter(0.1, MultiBot.talent.setTalents)
-                return
-            end
-
-            local tData = MultiBot.doSplit(tClass[i][j], ", ")
-            local tMax  = #tData - 4
-            local tNeed = tonumber(tData[1])
-            local tRank = tonumber(iRank)
-            local tTips = {}
-
-            tTab.value = tTab.value + tRank
-            table.insert(tTips,
-                "|cff4e96f7|Htalent:" .. tTale ..":-1|h[" .. iName .. "]|h|r")
-            for k = 5, #tData do
-                table.insert(tTips,
-                    "|cff4e96f7|Htalent:" .. tTale ..":" .. (k - 5) ..
-                    "|h[" .. iName .. "]|h|r")
-            end
-
-            MultiBot.talent.addTalent(
-                tTab, j, tNeed, tRank, tMax,
-                tData[2], tData[3], tData[4], tTips)
-            MultiBot.talent.addValue(
-                tTab, j, tData[2], tData[3], tRank, tMax)
-        end
-
-        tTab.setText("Title",
-            MultiBot.L("info.talent." .. tMarker) .. " (" .. tTab.value .. ")")
-    end
-
-    -- 3) Final display
-    MultiBot.talent.doState()
-	MultiBot.talent:Show()
-	MultiBot.auto.talent = false
-end
-
-MultiBot.talent.doState = function()
-	for i = 1, 3 do
-		local tTab = MultiBot.talent.frames["Tab" .. i]
-
-		for j = 1, table.getn(tTab.buttons) do
-			local tTalent = tTab.buttons[j]
-			local tValue = tTab.frames[j]
-
-			if(MultiBot.talent.points == 0) then
-				if(tTalent.value == 0) then
-					tTalent.setDisable(false)
-					tValue:Hide()
-				else
-					tTalent.setEnable(false)
-					tValue:Show()
-				end
-			else
-				if(tTab.value < tTalent.points) then
-					tTalent.setDisable(false)
-					tValue:Hide()
-				else
-					tTalent.setEnable(false)
-					tValue:Show()
-				end
-			end
-		end
-
-		for j = 1, table.getn(tTab.arrows) do
-			if(tTab.buttons[tTab.arrows[j].needs].value > 0) then
-				tTab.arrows[j].setTexture(tTab.arrows[j].active)
-			end
-		end
-	end
-end
-
-MultiBot.talent.doClear = function()
-	for i = 1, 3 do
-		local tTab = MultiBot.talent.frames["Tab" .. i]
-		for j = 1, table.getn(tTab.buttons) do tTab.buttons[j]:Hide() end
-		for j = 1, table.getn(tTab.frames) do tTab.frames[j]:Hide() end
-		for j = 1, table.getn(tTab.arrows) do tTab.arrows[j]:Hide() end
-		table.wipe(tTab.buttons)
-		table.wipe(tTab.frames)
-		table.wipe(tTab.arrows)
-		tTab.buttons = {}
-		tTab.frames = {}
-		tTab.arrows = {}
-	end
-end
-
---[[
-Add a custom tab to talents windows to make custom builds (Tab7)
-]]--
-
-local tTab = MultiBot.talent.addFrame("Tab7", -700, 461, 28, 96, 24)
-tTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_Tab.blp")
-local tBtn = tTab.wowButton("Custom Talents", -2, 6, 92, 17, 11)
-
--- 1) FONCTION to INITIALIZE CUSTOM TAB
-function MultiBot.talent.setTalentsCustom()
-    -- Protection if data from Talents still not.
-    if not GetTalentInfo(1, 1, true) then
-        TimerAfter(0.05, MultiBot.talent.setTalentsCustom)
-        return
-    end
-    -- 0) visual Reset
-    MultiBot.talent.doClear()
-    MultiBot.talent.custom = true
-
-    -- 1) Load existing datas class/arrows
-    local tClass = MultiBot.data.talent.talents[ MultiBot.talent.class ]
-    local tArrow = MultiBot.data.talent.arrows[  MultiBot.talent.class ]
-    if not (tClass and tArrow) then
-        print("|cffff0000[MultiBot] Class data missing for custom talents!|r")
-        return
-    end
-
-    -- 2) Available points (level - 9)
-    local unit  = MultiBot.toUnit(MultiBot.talent.name)
-    local level = UnitLevel(unit) or 80
-    MultiBot.talent.points = math.max(level - 9, 0)
-
-    MultiBot.talent.setText("Points",   MultiBot.L("info.talent.Points") .. MultiBot.talent.points)
-	MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.talentscustomtalentsfor") .. " |r" .. (MultiBot.talent.name or "?"))
-
-    -- 3) Construction of the 3 empty trees
-    for i = 1, 3 do
-        local marker = MultiBot.talent.class .. i
-        local pTab   = MultiBot.talent.setGrid( MultiBot.talent.frames["Tab"..i] )
-        pTab.setTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_"..marker..".blp")
-        pTab.value, pTab.id = 0, i
-
-        -- arrows/requireds
-        for j = 1, #tArrow[i] do
-            local d = MultiBot.doSplit(tArrow[i][j], ", ")
-            local need = tonumber(d[1])
-            pTab.arrows[j] = MultiBot.talent.addArrow(pTab, j, need, d[2], d[3], d[4])
-        end
-
-        -- talents (rank 0 everywhere)
-        for j = 1, #tClass[i] do
-            local data = MultiBot.doSplit(tClass[i][j], ", ")
-            local max  = #data - 4
-            local need = tonumber(data[1])
-            local tips = {}
-            local link = GetTalentLink(i,j,true)
-            local tale = MultiBot.doSplit(MultiBot.doSplit(link,"|")[3],":")[2]
-            local name, icon = GetTalentInfo(i, j, true)
-            table.insert(tips, "|cff4e96f7|Htalent:"..tale..":-1|h["..name.."]|h|r")
-            for k=5,#data do
-                table.insert(tips, "|cff4e96f7|Htalent:"..tale..":"..(k-5) .."|h["..name.."]|h|r")
-            end
-
-            MultiBot.talent.addTalent(pTab, j, need, 0, max, data[2], data[3], data[4], tips)
-            MultiBot.talent.addValue (pTab, j, data[2], data[3], 0, max)
-        end
-
-        pTab.setText("Title", MultiBot.L("info.talent." .. marker) .. " (0)")
-    end
-
-    -- 4) Ajustement final + affichage
-    MultiBot.talent.texts["Points"]:Show()
-    MultiBot.talent.frames["Tab1"]:Show()
-    MultiBot.talent.frames["Tab2"]:Show()
-    MultiBot.talent.frames["Tab3"]:Show()
-    MultiBot.talent.frames["Tab4"]:Hide()   -- glyphs
-	if gApply then gApply:Hide() end
-	copyBtn:doHide()
-    MultiBot.talent.doState()
-    MultiBot.talent:Show()
-end
-
--- CALLBACK OF BUTTON (CUSTOM TAB)
-tBtn.doLeft = function(btn)
-    MultiBot.talent.setTalentsCustom()
-end
-
--- RETURN FROM CUSTOM TO TALENTS
-local tabTalentsBtn = MultiBot.talent.frames["Tab5"]
-                     and MultiBot.talent.frames["Tab5"].buttons
-                     and MultiBot.talent.frames["Tab5"].buttons["Talents"]
-if tabTalentsBtn then
-    local oldTalentsClick = tabTalentsBtn.doLeft
-    tabTalentsBtn.doLeft = function(btn)
-        if MultiBot.talent.custom then
-            MultiBot.talent.custom = false
-            MultiBot.talent.setTalents()   -- Rebuild the actual spec tree
-            if oldTalentsClick then
-                oldTalentsClick(btn)
-            end
-        else
-            if oldTalentsClick then oldTalentsClick(btn) end
-        end
-    end
-end
-
--- END TAB CUSTOM TAMENTS --
-
---[[
-Add a new tab to use custom Glyphs (Tab8)
-]]--
-
-local gTab = MultiBot.talent.addFrame("Tab8", -600, 461, 28, 96, 24)
-gTab.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_Tab.blp")
-local gBtn = gTab.wowButton("Custom Glyphs", -2, 6, 92, 17, 11)
-
--- 1) Cache for tooltips
-local glyphTip
-
--- 2) Detect Major / Minor glyph via tooltip
-local function GetGlyphItemType(itemID)
-    if not glyphTip then
-        glyphTip = ensureHiddenTooltip("MBHiddenTip", UIParent)
-    end
-    glyphTip:ClearLines()
-    glyphTip:SetHyperlink("item:"..itemID..":0:0:0:0:0:0:0")
-    for i = 2, glyphTip:NumLines() do
-        local line = _G[glyphTip:GetName().."TextLeft"..i]
-        local txt = (line and line:GetText() or ""):lower()
-        if txt:find("major glyph") then return "Major" end
-        if txt:find("minor glyph") then return "Minor" end
-    end
-    return nil
-end
-
--- 3) Build the itemID→classKey table once
-function MultiBot.BuildGlyphClassTable()
-    if MultiBot.__glyphClass then return end
-    if not MultiBot.data or not MultiBot.data.talent or not MultiBot.data.talent.glyphs then return end
-    MultiBot.__glyphClass = {}
-    for clsKey, data in pairs(MultiBot.data.talent.glyphs) do
-        for id in pairs(data.Major or {}) do
-            MultiBot.__glyphClass[id] = clsKey
-        end
-        for id in pairs(data.Minor or {}) do
-            MultiBot.__glyphClass[id] = clsKey
-        end
-    end
-end
-
--- Send true if a least a glyph socket are filled
-local function HasPendingGlyph()
-    for i = 1, 6 do
-        if parentTab4.frames["Socket"..i].item ~= 0 then
-            return true
-        end
-    end
-    return false
-end
-
--- 4) Oups i drag the wrong glyph
-local function ClearGlyphSocket(socketFrame)
-    socketFrame.item = 0          -- plus d’ID enregistré
-
-    -- partie visuelle
-    if socketFrame.frames.Rune  then socketFrame.frames.Rune:Hide()  end
-    if socketFrame.frames.IconBtn then
-        local btn = socketFrame.frames.IconBtn
-        if btn.icon then btn.icon:SetTexture(nil) end
-        if btn.bg   then btn.bg:Show()            end
-        btn.glyphID = nil
-        btn:Show()          -- on laisse le bouton visible pour un futur drop
-    end
-
-    if gApply then
-	   if HasPendingGlyph() then
-	      gApply:Show()
-	   else
-	      gApply:Hide()
-	    end
-	end
-end
-
--- 5) Shared drag/click handler
-local function CG_OnReceiveDrag(self)
-    local typ, itemID = GetCursorInfo()
-    if typ ~= "item" then return end
-
-    if MultiBot.BuildGlyphClassTable then
-        MultiBot.BuildGlyphClassTable()
-    end
-    local socket = self:GetParent()
-
-	-- Reject drop if required level is not reached
-local botUnit = MultiBot.toUnit(MultiBot.talent.name)
-local lvl     = UnitLevel(botUnit or "player")
-
-local idx = socket:GetID()
-
-if idx == 0 then
-    idx = tonumber(socket:GetName():match("Socket(%d+)"))
-end
-if lvl < socketReq[idx] then
-    UIErrorsFrame:AddMessage(MultiBot.L("info.glyphssocketnotunlocked"),1,0.3,0.3,1)
-    return
-end
-
-    local unit   = MultiBot.toUnit(MultiBot.talent.name)
-    local _, cf  = UnitClass(unit or "player")
-    local classKey = (cf == "DEATHKNIGHT") and "DeathKnight" or (cf:sub(1,1)..cf:sub(2):lower())
-    local gDB = (MultiBot.data.talent.glyphs or {})[classKey] or {}
-
-    local glyphClass = MultiBot.__glyphClass and MultiBot.__glyphClass[itemID]
-    if glyphClass and glyphClass ~= classKey then
-        UIErrorsFrame:AddMessage(MultiBot.L("info.glyphswrongclass"), 1,0.3,0.3,1)
-        return
-    end
-
-    local gType, info
-    if gDB.Major and gDB.Major[itemID] then
-        gType, info = "Major", gDB.Major[itemID]
-    elseif gDB.Minor and gDB.Minor[itemID] then
-        gType, info = "Minor", gDB.Minor[itemID]
-    else
-        gType = GetGlyphItemType(itemID)
-        if not gType then
-            UIErrorsFrame:AddMessage(MultiBot.L("info.glyphsunknowglyph"),1,0.3,0.3,1)
-            return
-        end
-    end
-
-    if gType ~= (socket.type or "Major") then
-         UIErrorsFrame:AddMessage(MultiBot.L("info.glyphsglyphtype") .. gType .. " : " .. MultiBot.L("info.glyphsglyphsocket"), 1, 0.3, 0.3, 1)
-        return
-    end
-
-    if info then
-        local reqLvl = tonumber((strsplit(",%s*", info)))
-        if reqLvl and reqLvl > lvl then
-            UIErrorsFrame:AddMessage(MultiBot.L("info.glyphsleveltoolow"),1,0.3,0.3,1)
-            return
-        end
-    end
-
-    if socket.frames.Glow    then socket.frames.Glow:Show()    end
-    if socket.frames.Overlay then socket.frames.Overlay:Show() end
-    if self.bg then self.bg:Hide() end
-
-    local runeIdx = info and select(2, strsplit(",%s*", info)) or "1"
-    local r = socket.frames.Rune
-    if r then
-        (r.texture or r):SetTexture(MultiBot.SafeTexturePath("Interface\\Spellbook\\UI-Glyph-Rune-"..runeIdx))
-        r:Show()
-    end
-    -- local tex = select(10, GetItemInfo(itemID)) or GetSpellTexture(itemID) or "Interface\\Icons\\INV_Misc_QuestionMark"
-	local tex = select(10, GetItemInfo(itemID)) or GetSpellTexture(itemID) or "Interface\\AddOns\\MultiBot\\Textures\\UI-GlyphFrame-Glow.blp"
-    self.icon:SetTexture(MultiBot.SafeTexturePath(tex))
-    self.glyphID = itemID
-    socket.item = itemID
-    ClearCursor()
-    gApply:Show()
-end
-
--- 7) Prepare Tab4 for custom mode
-function MultiBot.talent.showCustomGlyphs()
-    MultiBot.talent.texts["Points"]:Hide()
-    for i=1,3 do MultiBot.talent.frames["Tab"..i]:Hide() end
-    parentTab4:Show()
-
-    for i=1,6 do
-        local s = parentTab4.frames["Socket"..i]
-        if s then
-		    s:SetID(i) -- Add an ID to the socket
-		    -- Check the bot's level
-            local botUnit  = MultiBot.toUnit(MultiBot.talent.name)
-			local lvl      = UnitLevel(botUnit or "player")
-			local unlocked = lvl >= socketReq[i] -- Ajout pour test
-			-- Ensure the Overlay already has its "empty circle" texture
-			local ov = s.frames.Overlay
-			if ov and not ov.texture then
-				ov.texture = ov:CreateTexture(nil, "BORDER")
-				ov.texture:SetAllPoints(ov)
-				local base = "Interface\\AddOns\\MultiBot\\Textures\\"
-				ov.texture:SetTexture(
-					base .. (s.type == "Major"
-							and "gliph_majeur_layout.blp"
-							or  "gliph_mineur_layout.blp"))
-			end
-
-        -- If the slot is not yet available, hide everything
-        if not unlocked then
-            if s.frames.Glow    then s.frames.Glow:Hide()    end
-            if s.frames.Overlay then s.frames.Overlay:Hide() end
-            if s.frames.Rune    then s.frames.Rune:Hide()    end
-            if s.frames.IconBtn then s.frames.IconBtn:Hide() end
-            s.locked = true
-        else
-            s.locked = false
-
-            if s.frames.Glow    then s.frames.Glow:Show()    end
-            if s.frames.Overlay then s.frames.Overlay:Show() end
-            if s.frames.Rune    then s.frames.Rune:Hide()    end
-
-            local btn = s.frames.IconBtn
-            if not btn then
-                btn = CreateFrame("Button", nil, s)
-                btn:SetAllPoints(s)
-                btn.bg = btn:CreateTexture(nil, "BACKGROUND")
-                btn.bg:SetAllPoints(s)
-                local texSlot = (s.type == "Minor") and
-                                 "Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp" or
-                                 "Interface\\Spellbook\\UI-Glyph-Slot-Major.blp"
-                btn.bg:SetTexture(MultiBot.SafeTexturePath(texSlot))
-                local ic = btn:CreateTexture(nil, "ARTWORK")
-                ic:SetPoint("CENTER", btn, "CENTER", -9, 8)
-                ic:SetSize(s:GetWidth()*0.66, s:GetHeight()*0.66)
-                ic:SetTexCoord(0.15, 0.85, 0.15, 0.85)
-                btn.icon = ic
-                s.frames.IconBtn = btn
-            end
-
-			if not btn.bg then
-				btn.bg = btn:CreateTexture(nil, "BACKGROUND")
-				btn.bg:SetAllPoints(s)
-				local texSlot = (s.type == "Minor") and
-								"Interface\\Spellbook\\UI-Glyph-Slot-Minor.blp" or
-								"Interface\\Spellbook\\UI-Glyph-Slot-Major.blp"
-				btn.bg:SetTexture(MultiBot.SafeTexturePath(texSlot))
-			end
-
-            btn.bg:Show()
-            btn.icon:SetTexture(nil)
-            btn.icon:Show()
-            btn.glyphID = nil
-
-            btn:RegisterForDrag("LeftButton")
-            btn:RegisterForClicks("LeftButtonUp")
-
-            btn:SetScript("OnEnter", ShowGlyphTooltip)
-            btn:SetScript("OnLeave", HideGlyphTooltip)
-            btn:SetScript("OnReceiveDrag", CG_OnReceiveDrag)
-			btn:SetScript("OnClick", CG_OnReceiveDrag)
-			-- Yesss i can remove the wrong glyph!
-			btn:SetScript("OnMouseUp", function(self, button)
-				if button == "RightButton" then
-					ClearGlyphSocket(self:GetParent())
-				end
-			end)
-            s.item = 0
-        end
-    end
-end
-    gApply:Hide()
-	if copyBtn then copyBtn:doHide() end
-	if tApply then tApply:Hide() end
-    MultiBot.talent.setText("Title", "|cffffff00" .. MultiBot.L("info.glyphscustomglyphsfor") .. " |r" .. (MultiBot.talent.name or "?"))
-end
-
--- 8) Assignation du clic onglet
-gBtn.doLeft = MultiBot.talent.showCustomGlyphs
-
--- EN TAB CUSTOM GLYPHS --
 
 -- RTSC --
 
@@ -5510,7 +4633,7 @@ if not MultiBot.InitHunterQuick then
 
     function MBH:EnsureSearchFrame()
       if self.SEARCH_FRAME then return end
-      local f = createAceQuestPopupHost(MultiBot.L("info.hunterpetcreaturelist"), 360, 360, "AceGUI-3.0 is required for MBHunterPetSearch")
+      local f = createAceQuestPopupHost(MultiBot.L("info.hunterpetcreaturelist"), 360, 360, "AceGUI-3.0 is required for MBHunterPetSearch", "hunter_pet_search")
       assert(f, "AceGUI-3.0 is required for MBHunterPetSearch")
       self.SEARCH_FRAME = f
 
@@ -5689,7 +4812,7 @@ if not MultiBot.InitHunterQuick then
     function MBH:ShowFamilyFrame(targetName)
       local ff = self.FAMILY_FRAME
       if not ff then
-        ff = createAceQuestPopupHost(MultiBot.L("info.hunterpetrandomfamily"), 260, 340, "AceGUI-3.0 is required for MBHunterPetFamily")
+        ff = createAceQuestPopupHost(MultiBot.L("info.hunterpetrandomfamily"), 260, 340, "AceGUI-3.0 is required for MBHunterPetFamily", "hunter_pet_family")
         assert(ff, "AceGUI-3.0 is required for MBHunterPetFamily")
         self.FAMILY_FRAME = ff
 
