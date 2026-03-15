@@ -1514,29 +1514,19 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 		-- Spellbook --
 
-		if(tButton.waitFor == "SPELLBOOK" and MultiBot.isInside(arg1, "Spells")) then
-			local tOverlay = MultiBot.spellbook.frames["Overlay"]
-			local tSpellbook = MultiBot.spellbook
-			for key in pairs(tSpellbook.spells) do tSpellbook.spells[key] = nil end
-			tOverlay.setText("Title", MultiBot.doReplace(MultiBot.L("info.spellbook"), "NAME", arg2))
-			tSpellbook.name = arg2
-			tSpellbook.index = 0
-			tSpellbook.from = 1
-			tSpellbook.to = 16
+		if(tButton.waitFor == "SPELLBOOK" and MultiBot.isSpellbookHeaderLine and MultiBot.isSpellbookHeaderLine(arg1)) then
+			if(MultiBot.beginSpellbookCollection) then
+				MultiBot.beginSpellbookCollection(arg2)
+			end
 			tButton.waitFor = "SPELL"
 			SendChatMessage("stats", "WHISPER", nil, arg2)
 			return
 		end
 
-		if(tButton.waitFor == "SPELL" and MultiBot.isInside(arg1, "Bag,", "Dur", "XP", "背包", "耐久度", "经验值")) then
-			local tOverlay = MultiBot.spellbook.frames["Overlay"]
-			local tSpellbook = MultiBot.spellbook
-			tSpellbook.now = 1
-			tSpellbook.max = math.ceil(tSpellbook.index / 16)
-			tOverlay.setText("Pages", "|cffffffff" .. tSpellbook.now .. "/" .. tSpellbook.max .. "|r")
-			if(tSpellbook.now == tSpellbook.max) then tOverlay.buttons[">"].doHide() else tOverlay.buttons[">"].doShow() end
-			tOverlay.buttons["<"].doHide()
-			tSpellbook:Show()
+		if(tButton.waitFor == "SPELL" and MultiBot.isSpellbookFooterLine and MultiBot.isSpellbookFooterLine(arg1)) then
+			if(MultiBot.finishSpellbookCollection) then
+				MultiBot.finishSpellbookCollection()
+			end
 			tButton.waitFor = ""
 			InspectUnit(arg2)
 			return

@@ -1,7 +1,30 @@
+local SPELLBOOK_PAGE_SIZE = 18
+
+local function getSpellBookUI()
+	return MultiBot.SpellBookUISettings or {}
+end
+
 MultiBot.getSpellID = function(pInfo)
+	if(type(pInfo) ~= "string" or pInfo == "") then
+		return 0
+	end
+
 	local tInfo = MultiBot.doSplit(pInfo, "|")
-	if(string.sub(tInfo[3], 1, 6) == "Hspell") then return string.sub(tInfo[3], 8) end
-	return 0
+	local tLinkInfo = tInfo and tInfo[3]
+	if(type(tLinkInfo) ~= "string") then
+		return 0
+	end
+
+	if(string.sub(tLinkInfo, 1, 6) ~= "Hspell") then
+		return 0
+	end
+
+	local tSpellId = string.match(tLinkInfo, "Hspell:(%d+)")
+	if(not tSpellId) then
+		return 0
+	end
+
+	return tonumber(tSpellId) or 0
 end
 
 MultiBot.addSpell = function(pInfo, pName)
@@ -24,9 +47,60 @@ MultiBot.addSpell = function(pInfo, pName)
 	if(MultiBot.spells[pName] == nil) then MultiBot.spells[pName] = {} end
 	if(MultiBot.spells[pName][tID] == nil) then MultiBot.spells[pName][tID] = true end
 
-	if(MultiBot.spellbook.index < 17) then
+	if(MultiBot.spellbook.index < (SPELLBOOK_PAGE_SIZE + 1)) then
 		MultiBot.setSpell(MultiBot.spellbook.index, tSpell, pName)
 	end
+end
+
+MultiBot.beginSpellbookCollection = function(pName)
+	local tOverlay = MultiBot.spellbook.frames["Overlay"]
+	local tSpellbook = MultiBot.spellbook
+    local tWindowTitle = MultiBot.doReplace(MultiBot.L("info.spellbook"), "NAME", pName)
+
+	for key in pairs(tSpellbook.spells) do tSpellbook.spells[key] = nil end
+	if(tSpellbook.setTitle) then tSpellbook:setTitle(tWindowTitle) end
+	tSpellbook.name = pName
+	tSpellbook.index = 0
+	tSpellbook.from = 1
+	tSpellbook.to = SPELLBOOK_PAGE_SIZE
+	tSpellbook.now = 1
+	tSpellbook.max = 1
+
+	for i = 1, SPELLBOOK_PAGE_SIZE do
+		MultiBot.setSpell(i, nil, pName)
+	end
+end
+
+MultiBot.finishSpellbookCollection = function()
+	local tOverlay = MultiBot.spellbook.frames["Overlay"]
+	local tSpellbook = MultiBot.spellbook
+
+	tSpellbook.now = 1
+	tSpellbook.max = math.max(1, math.ceil((tSpellbook.index or 0) / SPELLBOOK_PAGE_SIZE))
+	tOverlay.setText("Pages", "|cff" .. (getSpellBookUI().PAGE_TEXT_COLOR_HEX or "ffffff") .. tSpellbook.now .. "/" .. tSpellbook.max .. "|r")
+	if(tSpellbook.now == tSpellbook.max) then tOverlay.buttons[">"].doHide() else tOverlay.buttons[">"].doShow() end
+	tOverlay.buttons["<"].doHide()
+	tSpellbook:Show()
+end
+
+MultiBot.isSpellbookHeaderLine = function(pLine)
+	if(type(pLine) ~= "string") then
+		return false
+	end
+
+	return MultiBot.isInside(pLine, SPELLBOOK, "Spells", "法术", "Магия")
+end
+
+MultiBot.isSpellbookFooterLine = function(pLine)
+	if(type(pLine) ~= "string") then
+		return false
+	end
+
+	local tBag = MultiBot.L("info.shorts.bag") or "Bag"
+	local tDur = MultiBot.L("info.shorts.dur") or "Dur"
+	local tXP = MultiBot.L("info.shorts.xp") or "XP"
+
+	return MultiBot.isInside(pLine, tBag, tDur, tXP, "Bag,", "Dur", "XP", "背包", "耐久度", "经验值")
 end
 
 MultiBot.setSpell = function(pIndex, pSpell, pName)
@@ -34,15 +108,12 @@ MultiBot.setSpell = function(pIndex, pSpell, pName)
 	local tOverlay = MultiBot.spellbook.frames["Overlay"]
 
 	if(pSpell ~= nil) then
-		local tTitle = MultiBot.IF(string.len(pSpell[2]) > 16, string.sub(pSpell[2], 1, 16) .. "...", pSpell[2])
 		tOverlay.setButton("S" .. tIndex, pSpell[4], pSpell[5])
-		tOverlay.setText("T" .. tIndex, "|cffffcc00" .. tTitle .. "|r")
-		tOverlay.setText("R" .. tIndex, "|cff402000" .. pSpell[3] .. "|r")
+		tOverlay.setText("R" .. tIndex, "|cff" .. (getSpellBookUI().RANK_TEXT_COLOR_HEX or "ffcc00") .. pSpell[3] .. "|r")
 		tOverlay.buttons["S" .. tIndex].spell = pSpell[1]
 		tOverlay.buttons["C" .. tIndex].spell = pSpell[1]
 		tOverlay.buttons["S" .. tIndex].doShow()
 		tOverlay.buttons["C" .. tIndex].doShow()
-		tOverlay.texts["T" .. tIndex]:Show()
 		tOverlay.texts["R" .. tIndex]:Show()
 		tOverlay.buttons["C" .. tIndex]:SetChecked(MultiBot.spells[pName][pSpell[1]])
 		tOverlay.buttons["C" .. tIndex].doClick = function(pButton)

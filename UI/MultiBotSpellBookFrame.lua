@@ -1,261 +1,439 @@
+local SPELLBOOK_PAGE_SIZE = 18
+
+-- Réglages UI SpellBook (ACE3) : modifier ces valeurs pour ajuster rapidement le layout.
+local SPELLBOOK_UI_DEFAULTS = {
+	-- Taille des icônes de sorts (largeur/hauteur du bouton icon).
+	ICON_SIZE = 40,
+	-- Niveau de frame des icônes/boutons de sorts (base parent + boost).
+	ICON_FRAMELEVEL_BOOST = 5,
+	-- Taille des checkboxes "ignore" associées aux sorts.
+	CHECKBOX_SIZE = 16,
+	-- Surélévation du FrameLevel des checkboxes pour capter les clics au-dessus des icônes.
+	CHECKBOX_FRAMELEVEL_BOOST = 30,
+	-- Décalage de la checkbox par rapport à l'icône de sort.
+	CHECKBOX_OFFSET_X = 24,
+	CHECKBOX_OFFSET_Y = -25,
+
+	-- Position du bloc overlay dans le contenu de la fenêtre ACE3.
+	OVERLAY_LEFT_X = 18,
+	OVERLAY_TOP_Y = -42,
+	OVERLAY_RIGHT_X = -18,
+	OVERLAY_BOTTOM_Y = 18,
+
+	-- Position du texte de pagination (ex: 1/6).
+	PAGE_TEXT_X = 0,
+	PAGE_TEXT_Y = -272,
+	-- Couleur du texte de pagination au format hex WoW (sans préfixe |cff).
+	PAGE_TEXT_COLOR_HEX = "ffffff",
+
+	-- Position des boutons précédent/suivant.
+	PREV_BUTTON_X = 115,
+	PREV_BUTTON_Y = -270,
+	NEXT_BUTTON_X = 170,
+	NEXT_BUTTON_Y = -270,
+	NAV_BUTTON_WIDTH = 18,
+	NAV_BUTTON_HEIGHT = 18,
+
+	-- Positions X des colonnes (icône, titre, rang) en layout 3 colonnes.
+	LEFT_ICON_X = 2,
+	MIDDLE_ICON_X = 112,
+	RIGHT_ICON_X = 222,
+	LEFT_TITLE_X = 34,
+	MIDDLE_TITLE_X = 144,
+	RIGHT_TITLE_X = 254,
+	LEFT_RANK_X = 44,
+	MIDDLE_RANK_X = 154,
+	RIGHT_RANK_X = 264,
+
+	-- Réglages Y des lignes (base + espacement vertical).
+	ROW_SPACING_Y = 46,
+	ICON_BASE_Y = 10,
+	TITLE_BASE_Y = -28,
+	RANK_BASE_Y = -16,
+
+	-- Couleur des rangs au format hex WoW (sans préfixe |cff).
+	RANK_TEXT_COLOR_HEX = "ffcc00",
+ 	-- Surélévation du FrameLevel pour les textes (rang/titre) afin de rester visibles au-dessus des icônes.
+	TEXT_FRAMELEVEL_BOOST = 60,
+	-- Strata du layer texte (laisser DIALOG pour rester au-dessus de la zone SpellBook).
+	TEXT_FRAMESTRATA = "DIALOG",
+	-- Sous-couche de rendu pour les textes (FontString draw layer sublevel, 0..7).
+ 	TEXT_DRAW_SUBLEVEL = 5,
+}
+
+MultiBot.SpellBookUISettings = MultiBot.SpellBookUISettings or {}
+for tKey, tValue in pairs(SPELLBOOK_UI_DEFAULTS) do
+	if(MultiBot.SpellBookUISettings[tKey] == nil) then
+		MultiBot.SpellBookUISettings[tKey] = tValue
+	end
+end
+
+local function getSpellBookUI()
+	return MultiBot.SpellBookUISettings or {}
+end
+
+local function getSpellBookDefaultPageLabel()
+	local tDefault = MB_PAGE_DEFAULT
+	if(type(tDefault) ~= "string" or tDefault == "") then
+		return "1/1"
+	end
+	return tDefault
+end
+
+local function getSafeTextDrawSubLevel()
+	local level = tonumber(getSpellBookUI().TEXT_DRAW_SUBLEVEL or 5) or 5
+	if(level < 0) then return 0 end
+	if(level > 7) then return 7 end
+	return math.floor(level)
+end
+
+local function getSpellBookAceGUI()
+	if(MultiBot.GetAceGUI) then
+		local tAce = MultiBot.GetAceGUI()
+		if(type(tAce) == "table" and type(tAce.Create) == "function") then
+			return tAce
+		end
+	end
+
+	if(type(LibStub) == "table") then
+		local ok, aceGUI = pcall(LibStub.GetLibrary, LibStub, "AceGUI-3.0", true)
+		if(ok and type(aceGUI) == "table" and type(aceGUI.Create) == "function") then
+			return aceGUI
+		end
+	end
+
+	return nil
+end
+
+local function createSpellSlotButton(parent, x, y)
+	local button = CreateFrame("Button", nil, parent)
+	button:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
+	button:SetWidth(getSpellBookUI().ICON_SIZE or 22)
+	button:SetHeight(getSpellBookUI().ICON_SIZE or 22)
+	button:SetFrameStrata(parent:GetFrameStrata())
+	button:SetFrameLevel((parent:GetFrameLevel() or 0) + (getSpellBookUI().ICON_FRAMELEVEL_BOOST or 5))
+
+	button.icon = button:CreateTexture(nil, "ARTWORK")
+	button.icon:SetAllPoints(button)
+	button.icon:SetTexture(MultiBot.SafeTexturePath("Interface\\Icons\\INV_Misc_QuestionMark"))
+
+	button.spell = 0
+	button.texture = "Interface\\Icons\\INV_Misc_QuestionMark"
+	button.link = ""
+
+	button.doShow = function(self)
+		(self or button):Show()
+	end
+
+	button.doHide = function(self)
+		(self or button):Hide()
+	end
+
+	button.getName = function(_)
+		return MultiBot.spellbook and MultiBot.spellbook.name or ""
+	end
+
+	button:SetScript("OnClick", function(self, pMouseButton)
+		if(pMouseButton == "LeftButton" and self.doLeft) then
+			self.doLeft(self)
+			return
+		end
+
+		if(pMouseButton == "RightButton" and self.doRight) then
+			self.doRight(self)
+		end
+	end)
+
+	button:SetScript("OnEnter", function(self)
+		if(not GameTooltip) then return end
+		if(not self.spell or self.spell == 0) then return end
+
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		if(type(self.link) == "string" and self.link ~= "") then
+			GameTooltip:SetHyperlink(self.link)
+		else
+			GameTooltip:SetHyperlink("spell:" .. tostring(self.spell))
+		end
+		GameTooltip:Show()
+	end)
+
+	button:SetScript("OnLeave", function(_)
+		if(GameTooltip and GameTooltip.Hide) then
+			GameTooltip:Hide()
+		end
+	end)
+
+	return button
+end
+
+local function createSpellIgnoreCheck(parent, x, y)
+	local check = CreateFrame("CheckButton", nil, parent, "UICheckButtonTemplate")
+	check:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
+	check:SetWidth(getSpellBookUI().CHECKBOX_SIZE or 16)
+	check:SetHeight(getSpellBookUI().CHECKBOX_SIZE or 16)
+	check:SetFrameStrata(parent:GetFrameStrata())
+	check:SetFrameLevel((parent:GetFrameLevel() or 0) + (getSpellBookUI().CHECKBOX_FRAMELEVEL_BOOST or 30))
+	check:EnableMouse(true)
+	check.spell = 0
+
+	check.doShow = function(self)
+		(self or check):Show()
+	end
+
+	check.doHide = function(self)
+		(self or check):Hide()
+	end
+
+	check.getName = function(_)
+		return MultiBot.spellbook and MultiBot.spellbook.name or ""
+	end
+
+	check:SetScript("OnClick", function(self)
+		if(self.doClick) then
+			self.doClick(self)
+		end
+	end)
+
+	return check
+end
+
+local function createSpellbookContent(window)
+	local root = CreateFrame("Frame", nil, window.content)
+	root:SetAllPoints(window.content)
+
+	root:SetBackdrop({
+		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+		tile = true,
+		tileSize = 16,
+		edgeSize = 16,
+		insets = { left = 4, right = 4, top = 4, bottom = 4 },
+	})
+	if(root.SetBackdropColor) then root:SetBackdropColor(0.07, 0.07, 0.07, 0.92) end
+	if(root.SetBackdropBorderColor) then root:SetBackdropBorderColor(0.35, 0.35, 0.35, 0.95) end
+
+	local tOverlay = CreateFrame("Frame", nil, root)
+	tOverlay:SetPoint("TOPLEFT", root, "TOPLEFT", getSpellBookUI().OVERLAY_LEFT_X or 18, getSpellBookUI().OVERLAY_TOP_Y or -42)
+	tOverlay:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", getSpellBookUI().OVERLAY_RIGHT_X or -18, getSpellBookUI().OVERLAY_BOTTOM_Y or 18)
+
+	tOverlay.texts = {}
+	tOverlay.buttons = {}
+
+	local textLayer = CreateFrame("Frame", nil, tOverlay)
+	textLayer:SetAllPoints(tOverlay)
+	textLayer:SetFrameStrata(getSpellBookUI().TEXT_FRAMESTRATA or tOverlay:GetFrameStrata())
+	textLayer:SetFrameLevel((tOverlay:GetFrameLevel() or 0) + (getSpellBookUI().TEXT_FRAMELEVEL_BOOST or 60))
+	textLayer:EnableMouse(false)
+
+	tOverlay.setText = function(pKey, pText)
+		local text = tOverlay.texts[pKey]
+		if(text) then
+			text:SetText(pText or "")
+		end
+	end
+
+	tOverlay.setButton = function(pKey, pTexture, pLink)
+		local button = tOverlay.buttons[pKey]
+		if(not button) then
+			return
+		end
+
+		button.texture = pTexture or "Interface\\Icons\\INV_Misc_QuestionMark"
+		button.link = pLink or ""
+		if(button.icon) then
+			local texturePath = button.texture
+			if(type(texturePath) == "string" and not string.find(texturePath, "[/\\]") and not string.find(texturePath, "^Interface")) then
+				texturePath = "Interface\\Icons\\" .. texturePath
+			end
+			button.icon:SetTexture(MultiBot.SafeTexturePath(texturePath))
+		end
+	end
+
+	local pages = textLayer:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	pages:SetPoint("TOP", textLayer, "TOP", getSpellBookUI().PAGE_TEXT_X or 14, getSpellBookUI().PAGE_TEXT_Y or 13)
+	pages:SetDrawLayer("OVERLAY", getSafeTextDrawSubLevel())
+	pages:SetText("|cff" .. (getSpellBookUI().PAGE_TEXT_COLOR_HEX or "ffffff") .. getSpellBookDefaultPageLabel() .. "|r")
+	tOverlay.texts["Pages"] = pages
+
+	local prevButton = CreateFrame("Button", nil, tOverlay, "UIPanelButtonTemplate")
+	prevButton:SetPoint("TOPLEFT", tOverlay, "TOPLEFT", getSpellBookUI().PREV_BUTTON_X or 35, getSpellBookUI().PREV_BUTTON_Y or 2)
+	prevButton:SetWidth(getSpellBookUI().NAV_BUTTON_WIDTH or 18)
+	prevButton:SetHeight(getSpellBookUI().NAV_BUTTON_HEIGHT or 18)
+	prevButton:SetText("<")
+	prevButton.doShow = function(self) (self or prevButton):Show() end
+	prevButton.doHide = function(self) (self or prevButton):Hide() end
+	prevButton.getName = function(_) return MultiBot.spellbook and MultiBot.spellbook.name or "" end
+	tOverlay.buttons["<"] = prevButton
+
+	local nextButton = CreateFrame("Button", nil, tOverlay, "UIPanelButtonTemplate")
+	nextButton:SetPoint("TOPLEFT", tOverlay, "TOPLEFT", getSpellBookUI().NEXT_BUTTON_X or 135, getSpellBookUI().NEXT_BUTTON_Y or 2)
+	nextButton:SetWidth(getSpellBookUI().NAV_BUTTON_WIDTH or 18)
+	nextButton:SetHeight(getSpellBookUI().NAV_BUTTON_HEIGHT or 18)
+	nextButton:SetText(">")
+	nextButton.doShow = function(self) (self or nextButton):Show() end
+	nextButton.doHide = function(self) (self or nextButton):Hide() end
+	nextButton.getName = function(_) return MultiBot.spellbook and MultiBot.spellbook.name or "" end
+	tOverlay.buttons[">"] = nextButton
+
+	local function onSpellSlotLeftClick(pButton)
+		SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
+	end
+
+	local function onSpellSlotRightClick(pButton)
+		MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
+	end
+
+	for i = 1, SPELLBOOK_PAGE_SIZE do
+		local tIndex = MultiBot.IF(i < 10, "0", "") .. i
+		local tCol = (i - 1) % 3
+		local tRow = math.floor((i - 1) / 3)
+		local tBaseX = MultiBot.IF(tCol == 0, (getSpellBookUI().LEFT_ICON_X or 2), MultiBot.IF(tCol == 1, (getSpellBookUI().MIDDLE_ICON_X or 112), (getSpellBookUI().RIGHT_ICON_X or 222)))
+		local tTitleX = MultiBot.IF(tCol == 0, (getSpellBookUI().LEFT_TITLE_X or 34), MultiBot.IF(tCol == 1, (getSpellBookUI().MIDDLE_TITLE_X or 144), (getSpellBookUI().RIGHT_TITLE_X or 254)))
+		local tRankX = MultiBot.IF(tCol == 0, (getSpellBookUI().LEFT_RANK_X or 34), MultiBot.IF(tCol == 1, (getSpellBookUI().MIDDLE_RANK_X or 144), (getSpellBookUI().RIGHT_RANK_X or 254)))
+		local tY = (getSpellBookUI().ICON_BASE_Y or -26) - ((getSpellBookUI().ROW_SPACING_Y or 36) * tRow)
+		local tTextY = (getSpellBookUI().TITLE_BASE_Y or -28) - ((getSpellBookUI().ROW_SPACING_Y or 36) * tRow)
+		local tRankY = (getSpellBookUI().RANK_BASE_Y or -38) - ((getSpellBookUI().ROW_SPACING_Y or 36) * tRow)
+
+		local rank = textLayer:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+		rank:SetPoint("TOPLEFT", textLayer, "TOPLEFT", tRankX, tRankY)
+		rank:SetDrawLayer("OVERLAY", getSafeTextDrawSubLevel())
+		rank:SetText("|cff" .. (getSpellBookUI().RANK_TEXT_COLOR_HEX or "ffcc00") .. "Rank|r")
+		tOverlay.texts["R" .. tIndex] = rank
+
+		local titleText = textLayer:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+		titleText:SetPoint("TOPLEFT", textLayer, "TOPLEFT", tTitleX, tTextY)
+		titleText:SetDrawLayer("OVERLAY", getSafeTextDrawSubLevel())
+		titleText:SetText("|cffffcc00Title|r")
+		titleText:Hide()
+		tOverlay.texts["T" .. tIndex] = titleText
+
+		local slotButton = createSpellSlotButton(tOverlay, tBaseX, tY)
+		slotButton.doLeft = onSpellSlotLeftClick
+		slotButton.doRight = onSpellSlotRightClick
+		tOverlay.buttons["S" .. tIndex] = slotButton
+
+		local check = createSpellIgnoreCheck(tOverlay, tBaseX + (getSpellBookUI().CHECKBOX_OFFSET_X or 16), tY + (getSpellBookUI().CHECKBOX_OFFSET_Y or -2))
+		tOverlay.buttons["C" .. tIndex] = check
+	end
+
+	return root, tOverlay
+end
+
 function MultiBot.InitializeSpellBookFrame()
-
--- SPELLBOOK --
-
-MultiBot.spellbook = MultiBot.newFrame(MultiBot, -802, 302, 28, 336, 448)
-MultiBot.spellbook.spells = {}
-MultiBot.spellbook.icons = {}
-MultiBot.spellbook.max = 1
-MultiBot.spellbook.now = 1
-MultiBot.spellbook:SetMovable(true)
-MultiBot.spellbook:Hide()
-
-for i = 1, GetNumMacroIcons() do MultiBot.spellbook.icons[GetMacroIconInfo(i)] = i end
-
-local tFrame = MultiBot.spellbook.addFrame("Icon", -276, 392, 28, 50, 50)
-tFrame.addTexture("Interface/Spellbook/Spellbook-Icon")
-tFrame:SetFrameLevel(0)
-
-local tFrame = MultiBot.spellbook.addFrame("TopLeft", -112, 224, 28, 224, 224)
-tFrame.addTexture("Interface/ItemTextFrame/UI-ItemText-TopLeft")
-tFrame:SetFrameLevel(1)
-
-local tFrame = MultiBot.spellbook.addFrame("TopRight", -0, 224, 28, 112, 224)
-tFrame.addTexture("Interface/Spellbook/UI-SpellbookPanel-TopRight")
-tFrame:SetFrameLevel(2)
-
-local tFrame = MultiBot.spellbook.addFrame("BottomLeft", -112, 0, 28, 224, 224)
-tFrame.addTexture("Interface/ItemTextFrame/UI-ItemText-BotLeft")
-tFrame:SetFrameLevel(3)
-
-local tFrame = MultiBot.spellbook.addFrame("BottomRight", -0, 0, 28, 112, 224)
-tFrame.addTexture("Interface/Spellbook/UI-SpellbookPanel-BotRight")
-tFrame:SetFrameLevel(4)
-
-local tOverlay = MultiBot.spellbook.addFrame("Overlay", -47, 81, 28, 258, 292)
-tOverlay.addText("Title", SPELLBOOK, "CENTER", 14, 200, 13)
-tOverlay.addText("Pages", MB_PAGE_DEFAULT, "CENTER", 14, 173, 13)
-tOverlay:SetFrameLevel(5)
-
-tOverlay.movButton("Move", -226, 310, 50, MultiBot.L("tips.move.spellbook"), MultiBot.spellbook)
-
-tOverlay.wowButton("<", -159, 309, 15, 18, 13)
-.doLeft = function(pButton)
-	MultiBot.spellbook.to = MultiBot.spellbook.to - 16
-	MultiBot.spellbook.now = MultiBot.spellbook.now - 1
-	MultiBot.spellbook.from = MultiBot.spellbook.from - 16
-	MultiBot.spellbook.frames["Overlay"].setText("Pages", MultiBot.spellbook.now .. "/" .. MultiBot.spellbook.max)
-	MultiBot.spellbook.frames["Overlay"].buttons[">"].doShow()
-
-	if(MultiBot.spellbook.now == 1) then pButton.doHide() end
-	local tIndex = 1
-
-	for i = MultiBot.spellbook.from, MultiBot.spellbook.to do
-		MultiBot.setSpell(tIndex, MultiBot.spellbook.spells[i], pButton.getName())
-		tIndex = tIndex + 1
+	local aceGUI = getSpellBookAceGUI()
+	if(not aceGUI) then
+		UIErrorsFrame:AddMessage("AceGUI-3.0 is required for SpellBook", 1, 0.2, 0.2, 1)
+		return
 	end
-end
 
-tOverlay.wowButton(">", -59, 309, 15, 18, 11)
-.doLeft = function(pButton)
-	MultiBot.spellbook.to = MultiBot.spellbook.to + 16
-	MultiBot.spellbook.now = MultiBot.spellbook.now + 1
-	MultiBot.spellbook.from = MultiBot.spellbook.from + 16
-	MultiBot.spellbook.frames["Overlay"].setText("Pages", MultiBot.spellbook.now .. "/" .. MultiBot.spellbook.max)
-	MultiBot.spellbook.frames["Overlay"].buttons["<"].doShow()
+	local window = aceGUI:Create("Window")
+	window:SetTitle(SPELLBOOK)
+	window:SetWidth(360)
+	window:SetHeight(390)
+	window:EnableResize(false)
+	window:SetLayout("Fill")
+	window.frame:SetClampedToScreen(true)
+	window.frame:SetFrameStrata("DIALOG")
+	window:SetCallback("OnClose", function(widget)
+		widget:Hide()
+	end)
+	window:Hide()
 
-	if(MultiBot.spellbook.now == MultiBot.spellbook.max) then pButton.doHide() end
-	local tIndex = 1
+	local root, overlay = createSpellbookContent(window)
 
-	for i = MultiBot.spellbook.from, MultiBot.spellbook.to do
-		MultiBot.setSpell(tIndex, MultiBot.spellbook.spells[i], pButton.getName())
-		tIndex = tIndex + 1
+	MultiBot.spellbook = {
+		window = window,
+		root = root,
+		frames = { Overlay = overlay },
+		spells = {},
+		icons = {},
+		max = 1,
+		now = 1,
+		from = 1,
+		to = SPELLBOOK_PAGE_SIZE,
+		name = "",
+		index = 0,
+	}
+
+	MultiBot.spellbook.setTitle = function(self, pTitle)
+		if(self.window and self.window.SetTitle) then
+			self.window:SetTitle(pTitle or SPELLBOOK)
+		end
 	end
-end
 
-tOverlay.wowButton("X", 16, 336, 15, 18, 11)
-.doLeft = function(pButton)
-	local tUnits = MultiBot.frames["MultiBar"].frames["Units"]
-	local tButton = tUnits.frames[MultiBot.spellbook.name].buttons["Spellbook"]
-	tButton.doLeft(tButton)
-end
+	MultiBot.spellbook.Show = function(self)
+		if(self.window) then
+			self.window:Show()
+		end
+	end
 
-tOverlay.addText("R01", "|cff402000Rank|r", "TOPLEFT", 44, -16, 11)
-tOverlay.addText("T01", "|cffffcc00Title|r", "TOPLEFT", 30, -2, 12)
-local tButton = tOverlay.addButton("S01", -230, 264, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
+	MultiBot.spellbook.Hide = function(self)
+		if(self.window) then
+			self.window:Hide()
+		end
+	end
 
-tOverlay.addText("R02", "|cff402000Rank|r", "TOPLEFT", 172, -16, 11)
-tOverlay.addText("T02", "|cffffcc00Title|r", "TOPLEFT", 159, -2, 12)
-local tButton = tOverlay.addButton("S02", -101, 264, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
+	MultiBot.spellbook.IsVisible = function(self)
+		return self.window and self.window.frame and self.window.frame:IsShown() or false
+	end
 
-tOverlay.addText("R03", "|cff402000Rank|r", "TOPLEFT", 44, -52, 11)
-tOverlay.addText("T03", "|cffffcc00Title|r", "TOPLEFT", 30, -38, 12)
-local tButton = tOverlay.addButton("S03", -230, 228, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
+	MultiBot.spellbook.setPoint = function(x, y)
+		if(type(x) ~= "number" or type(y) ~= "number") then return end
+		window.frame:ClearAllPoints()
+		window.frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", x, y)
+	end
 
-tOverlay.addText("R04", "|cff402000Rank|r", "TOPLEFT", 172, -52, 11)
-tOverlay.addText("T04", "|cffffcc00Title|r", "TOPLEFT", 159, -38, 12)
-local tButton = tOverlay.addButton("S04", -101, 228, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
+	MultiBot.spellbook.GetRight = function(self)
+		return self.window and self.window.frame and self.window.frame:GetRight() or 0
+	end
 
-tOverlay.addText("R05", "|cff402000Rank|r", "TOPLEFT", 44, -88, 11)
-tOverlay.addText("T05", "|cffffcc00Title|r", "TOPLEFT", 30, -74, 12)
-local tButton = tOverlay.addButton("S05", -230, 192, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
+	MultiBot.spellbook.GetBottom = function(self)
+		return self.window and self.window.frame and self.window.frame:GetBottom() or 0
+	end
 
-tOverlay.addText("R06", "|cff402000Rank|r", "TOPLEFT", 172, -88, 11)
-tOverlay.addText("T06", "|cffffcc00Title|r", "TOPLEFT", 159, -74, 12)
-local tButton = tOverlay.addButton("S06", -101, 192, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
+	for i = 1, GetNumMacroIcons() do MultiBot.spellbook.icons[GetMacroIconInfo(i)] = i end
 
-tOverlay.addText("R07", "|cff402000Rank|r", "TOPLEFT", 44, -124, 11)
-tOverlay.addText("T07", "|cffffcc00Title|r", "TOPLEFT", 30, -110, 12)
-local tButton = tOverlay.addButton("S07", -230, 156, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
+	-- Default baseline position (legacy parity), can be overridden by saved layout restore.
+	MultiBot.spellbook.setPoint(-802, 302)
 
-tOverlay.addText("R08", "|cff402000Rank|r", "TOPLEFT", 172, -124, 11)
-tOverlay.addText("T08", "|cffffcc00Title|r", "TOPLEFT", 159, -110, 12)
-local tButton = tOverlay.addButton("S08", -101, 156, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
+	overlay.buttons["<"].doLeft = function(pButton)
+		local tSpellbook = MultiBot.spellbook
+		tSpellbook.to = tSpellbook.to - SPELLBOOK_PAGE_SIZE
+		tSpellbook.now = tSpellbook.now - 1
+		tSpellbook.from = tSpellbook.from - SPELLBOOK_PAGE_SIZE
+		tSpellbook.frames["Overlay"].setText("Pages", tSpellbook.now .. "/" .. tSpellbook.max)
+		tSpellbook.frames["Overlay"].buttons[">"]:doShow()
 
-tOverlay.addText("R09", "|cff402000Rank|r", "TOPLEFT", 44, -160, 11)
-tOverlay.addText("T09", "|cffffcc00Title|r", "TOPLEFT", 30, -146, 12)
-local tButton = tOverlay.addButton("S09", -230, 120, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
+		if(tSpellbook.now == 1) then pButton:doHide() end
+		local tIndex = 1
+		for i = tSpellbook.from, tSpellbook.to do
+			MultiBot.setSpell(tIndex, tSpellbook.spells[i], pButton:getName())
+			tIndex = tIndex + 1
+		end
+	end
 
-tOverlay.addText("R10", "|cff402000Rank|r", "TOPLEFT", 172, -160, 11)
-tOverlay.addText("T10", "|cffffcc00Title|r", "TOPLEFT", 159, -146, 12)
-local tButton = tOverlay.addButton("S10", -101, 120, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
+	overlay.buttons["<"]:SetScript("OnClick", function(self)
+		if(self.doLeft) then self.doLeft(self) end
+	end)
 
-tOverlay.addText("R11", "|cff402000Rank|r", "TOPLEFT", 44, -196, 11)
-tOverlay.addText("T11", "|cffffcc00Title|r", "TOPLEFT", 30, -182, 12)
-local tButton = tOverlay.addButton("S11", -230, 84, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
+	overlay.buttons[">"].doLeft = function(pButton)
+		local tSpellbook = MultiBot.spellbook
+		tSpellbook.to = tSpellbook.to + SPELLBOOK_PAGE_SIZE
+		tSpellbook.now = tSpellbook.now + 1
+		tSpellbook.from = tSpellbook.from + SPELLBOOK_PAGE_SIZE
+		tSpellbook.frames["Overlay"].setText("Pages", tSpellbook.now .. "/" .. tSpellbook.max)
+		tSpellbook.frames["Overlay"].buttons["<"]:doShow()
 
-tOverlay.addText("R12", "|cff402000Rank|r", "TOPLEFT", 172, -196, 11)
-tOverlay.addText("T12", "|cffffcc00Title|r", "TOPLEFT", 159, -182, 12)
-local tButton = tOverlay.addButton("S12", -101, 84, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
+		if(tSpellbook.now == tSpellbook.max) then pButton:doHide() end
+		local tIndex = 1
+		for i = tSpellbook.from, tSpellbook.to do
+			MultiBot.setSpell(tIndex, tSpellbook.spells[i], pButton:getName())
+			tIndex = tIndex + 1
+		end
+	end
 
-tOverlay.addText("R13", "|cff402000Rank|r", "TOPLEFT", 44, -232, 11)
-tOverlay.addText("T13", "|cffffcc00Title|r", "TOPLEFT", 30, -218, 12)
-local tButton = tOverlay.addButton("S13", -230, 48, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
-
-tOverlay.addText("R14", "|cff402000Rank|r", "TOPLEFT", 172, -232, 11)
-tOverlay.addText("T14", "|cffffcc00Title|r", "TOPLEFT", 159, -218, 12)
-local tButton = tOverlay.addButton("S14", -101, 48, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
-
-tOverlay.addText("R15", "|cff402000Rank|r", "TOPLEFT", 44, -268, 11)
-tOverlay.addText("T15", "|cffffcc00Title|r", "TOPLEFT", 30, -254, 12)
-local tButton = tOverlay.addButton("S15", -230, 12, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
-
-tOverlay.addText("R16", "|cff402000Rank|r", "TOPLEFT", 172, -268, 11)
-tOverlay.addText("T16", "|cffffcc00Title|r", "TOPLEFT", 159, -254, 12)
-local tButton = tOverlay.addButton("S16", -101, 12, "inv_misc_questionmark", "Text")
-tButton.doRight = function(pButton)
-	MultiBot.SpellToMacro(MultiBot.spellbook.name, pButton.spell, pButton.texture)
-end
-tButton.doLeft = function(pButton)
-	SendChatMessage("cast " .. pButton.spell, "WHISPER", nil, MultiBot.spellbook.name)
-end
-
-tOverlay.boxButton("C01", -214, 262, 16, true)
-tOverlay.boxButton("C02",  -85, 262, 16, true)
-tOverlay.boxButton("C03", -214, 226, 16, true)
-tOverlay.boxButton("C04",  -85, 226, 16, true)
-tOverlay.boxButton("C05", -214, 190, 16, true)
-tOverlay.boxButton("C06",  -85, 190, 16, true)
-tOverlay.boxButton("C07", -214, 154, 16, true)
-tOverlay.boxButton("C08",  -85, 154, 16, true)
-tOverlay.boxButton("C09", -214, 118, 16, true)
-tOverlay.boxButton("C10",  -85, 118, 16, true)
-tOverlay.boxButton("C11", -214,  82, 16, true)
-tOverlay.boxButton("C12",  -85,  82, 16, true)
-tOverlay.boxButton("C13", -214,  46, 16, true)
-tOverlay.boxButton("C14",  -85,  46, 16, true)
-tOverlay.boxButton("C15", -214,  10, 16, true)
-tOverlay.boxButton("C16",  -85,  10, 16, true)
-
+	overlay.buttons[">"]:SetScript("OnClick", function(self)
+		if(self.doLeft) then self.doLeft(self) end
+	end)
 
 end
