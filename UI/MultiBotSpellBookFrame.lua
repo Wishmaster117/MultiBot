@@ -51,14 +51,14 @@ local SPELLBOOK_UI_DEFAULTS = {
 	TITLE_BASE_Y = -28,
 	RANK_BASE_Y = -16,
 
-	-- Couleur des rangs au format hex WoW (sans préfixe |cff).
-	RANK_TEXT_COLOR_HEX = "ffcc00",
- 	-- Surélévation du FrameLevel pour les textes (rang/titre) afin de rester visibles au-dessus des icônes.
-	TEXT_FRAMELEVEL_BOOST = 60,
-	-- Strata du layer texte (laisser DIALOG pour rester au-dessus de la zone SpellBook).
-	TEXT_FRAMESTRATA = "DIALOG",
-	-- Sous-couche de rendu pour les textes (FontString draw layer sublevel, 0..7).
- 	TEXT_DRAW_SUBLEVEL = 5,
+    -- Couleur des rangs au format hex WoW (sans préfixe |cff).
+    RANK_TEXT_COLOR_HEX = "ffcc00",
+    -- Surélévation du FrameLevel pour les textes (rang/titre) afin de rester visibles au-dessus des icônes.
+    TEXT_FRAMELEVEL_BOOST = 60,
+    -- Strata du layer texte (laisser DIALOG pour rester au-dessus de la zone SpellBook).
+    TEXT_FRAMESTRATA = "DIALOG",
+    -- Sous-couche de rendu pour les textes (FontString draw layer sublevel, 0..7).
+    TEXT_DRAW_SUBLEVEL = 5,
 }
 
 MultiBot.SpellBookUISettings = MultiBot.SpellBookUISettings or {}
@@ -149,10 +149,18 @@ local function createSpellSlotButton(parent, x, y)
 		if(not self.spell or self.spell == 0) then return end
 
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		if(type(self.link) == "string" and self.link ~= "") then
-			GameTooltip:SetHyperlink(self.link)
-		else
-			GameTooltip:SetHyperlink("spell:" .. tostring(self.spell))
+
+		local tLink = MultiBot.IF(type(self.link) == "string", self.link, "")
+		local tSpellLink = "spell:" .. tostring(self.spell)
+		local tHasWoWLink = (tLink ~= "" and string.find(tLink, "|H", 1, true) ~= nil)
+
+		local ok = false
+		if(tHasWoWLink) then
+			ok = pcall(GameTooltip.SetHyperlink, GameTooltip, tLink)
+		end
+
+		if(not ok) then
+			pcall(GameTooltip.SetHyperlink, GameTooltip, tSpellLink)
 		end
 		GameTooltip:Show()
 	end)

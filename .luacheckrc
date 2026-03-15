@@ -35,7 +35,7 @@ globals = {
     "GameFontNormal", "_G", "SetDesaturation", "WOW_PROJECT_ID", "WOW_PROJECT_MAINLINE", "ColorPickerFrame", "fixstrata", "UIDropDownMenu_HandleGlobalMouseEvent", "EventRegistry", "BackdropTemplateMixin",
 	"TooltipBackdropTemplateMixin", "NORMAL_FONT_COLOR", "HIGHLIGHT_FONT_COLOR", "GameTooltip_SetDefaultAnchor", "ChatFrame1", "UISpecialFrames", "GetMouseFocus", "ShowUIPanel", "tremove", "min", "max",
 	"GetMinimapShape", "GetMinimapShape", "PanelTemplates_TabResize", "GetGuildRosterShowOffline", "SetGuildRosterShowOffline", "IsInGuild", "GetGuildInfo", "SetGuildRosterShowOffline", "PLAYER", "INVENTORY_TOOLTIP",
-	"BAGSLOT", "UNKNOWN", "UnitIsDead", "ShowPrompt", "_MB_GetOrCreateShamanPos", "ensureHiddenTooltip", "MB_TAB_TITLE_DEFAULT"
+	"BAGSLOT", "UNKNOWN", "UnitIsDead", "ShowPrompt", "_MB_GetOrCreateShamanPos", "ensureHiddenTooltip", "MB_TAB_TITLE_DEFAULT", "SPELLBOOK", "MB_PAGE_DEFAULT"
 }
 
 read_globals = {

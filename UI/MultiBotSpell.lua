@@ -37,7 +37,7 @@ MultiBot.addSpell = function(pInfo, pName)
 	if(tName == nil) then tName = "" end
 	if(tRank == nil) then tRank = "" end
 	if(tIcon == nil) then tIcon = "inv_misc_questionmark" end
-	if(tLink == nil) then tLink = tName end
+	if(tLink == nil) then tLink = "" end
 
 	local tSpell = { tID, tName, tRank, tIcon, tLink }
 
@@ -72,8 +72,11 @@ MultiBot.beginSpellbookCollection = function(pName)
 end
 
 MultiBot.finishSpellbookCollection = function()
-	local tOverlay = MultiBot.spellbook.frames["Overlay"]
 	local tSpellbook = MultiBot.spellbook
+	local tOverlay = tSpellbook and tSpellbook.frames and tSpellbook.frames["Overlay"]
+	if(not tSpellbook or not tOverlay) then
+		return
+	end
 
 	tSpellbook.now = 1
 	tSpellbook.max = math.max(1, math.ceil((tSpellbook.index or 0) / SPELLBOOK_PAGE_SIZE))
