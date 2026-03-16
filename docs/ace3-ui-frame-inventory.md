@@ -61,6 +61,14 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   File: `Core/MultiBotInit.lua`.  
   References: lines `5505`, `5551`, `5730`, `5588`.
 
+- [x] **SpellBook window** (`MultiBot.spellbook`) migrated to AceGUI host window path with programmatic slot/check generation and stateful chat-collection handling (replacing legacy hardcoded slot blocks and inline footer-only stop logic).
+  Files: `UI/MultiBotSpellBookFrame.lua`, `UI/MultiBotSpell.lua`, `Core/MultiBotHandler.lua`.
+  References: lines `330`, `294`, `173`, `1517`.
+
+- [x] **Talents/Glyphs frame** (`MultiBot.talent`) migrated with AceGUI host integration for the talents/glyphs workflow while preserving tab-state, copy/apply actions, and custom glyph socket interactions.
+  File: `UI/MultiBotTalentFrame.lua`.
+  References: lines `5`, `23`, `119`, `2228`.
+
 ---
 
 ## 3) Embedded controls inside existing screens (likely migrate with owning screen)

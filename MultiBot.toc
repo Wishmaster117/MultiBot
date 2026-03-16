@@ -60,6 +60,7 @@ Strategies\MultiBotWarrior.lua
 Core\MultiBotEvery.lua
 UI\MultiBotStats.lua
 UI\MultiBotSpell.lua
+UI\MultiBotSpellBookFrame.lua
 UI\MultiBotItem.lua
 UI\MultiBotTalentFrame.lua
 Core\MultiBotInit.lua
