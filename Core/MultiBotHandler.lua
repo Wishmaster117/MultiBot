@@ -1514,26 +1514,7 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 		-- Spellbook --
 
-		if(tButton.waitFor == "SPELLBOOK" and MultiBot.isSpellbookHeaderLine and MultiBot.isSpellbookHeaderLine(arg1)) then
-			if(MultiBot.beginSpellbookCollection) then
-				MultiBot.beginSpellbookCollection(arg2)
-			end
-			tButton.waitFor = "SPELL"
-			SendChatMessage("stats", "WHISPER", nil, arg2)
-			return
-		end
-
-		if(tButton.waitFor == "SPELL" and MultiBot.isSpellbookFooterLine and MultiBot.isSpellbookFooterLine(arg1)) then
-			if(MultiBot.finishSpellbookCollection) then
-				MultiBot.finishSpellbookCollection()
-			end
-			tButton.waitFor = ""
-			InspectUnit(arg2)
-			return
-		end
-
-		if(tButton.waitFor == "SPELL") then
-			MultiBot.addSpell(arg1, arg2)
+		if(MultiBot.handleSpellbookChatLine and MultiBot.handleSpellbookChatLine(tButton, arg1, arg2)) then
 			return
 		end
 

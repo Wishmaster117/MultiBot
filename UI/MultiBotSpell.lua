@@ -4,27 +4,41 @@ local function getSpellBookUI()
 	return MultiBot.SpellBookUISettings or {}
 end
 
+local function getSpellbookHeaderTokens()
+	return {
+		SPELLBOOK,
+		MultiBot.L("info.spellbook") or "",
+		"Spells",
+		"Spels",
+		"法术",
+		"Магия",
+	}
+end
+
 MultiBot.getSpellID = function(pInfo)
 	if(type(pInfo) ~= "string" or pInfo == "") then
 		return 0
 	end
 
-	local tInfo = MultiBot.doSplit(pInfo, "|")
-	local tLinkInfo = tInfo and tInfo[3]
-	if(type(tLinkInfo) ~= "string") then
-		return 0
+	-- Primary path: extract any Hspell:id found in the chat line.
+	local tSpellId = string.match(pInfo, "Hspell:(%d+)")
+	if(tSpellId) then
+		return tonumber(tSpellId) or 0
 	end
 
-	if(string.sub(tLinkInfo, 1, 6) ~= "Hspell") then
-		return 0
+	-- Fallback path for non-hyperlink lines like: [Spell Name] - gray
+	local tSpellName = string.match(pInfo, "%[(.-)%]")
+	if(type(tSpellName) == "string" and tSpellName ~= "") then
+		local tLink = GetSpellLink(tSpellName)
+		if(type(tLink) == "string") then
+			local tFallbackId = string.match(tLink, "Hspell:(%d+)")
+			if(tFallbackId) then
+				return tonumber(tFallbackId) or 0
+			end
+		end
 	end
 
-	local tSpellId = string.match(tLinkInfo, "Hspell:(%d+)")
-	if(not tSpellId) then
-		return 0
-	end
-
-	return tonumber(tSpellId) or 0
+	return 0
 end
 
 MultiBot.addSpell = function(pInfo, pName)
@@ -103,7 +117,51 @@ MultiBot.isSpellbookFooterLine = function(pLine)
 	local tDur = MultiBot.L("info.shorts.dur") or "Dur"
 	local tXP = MultiBot.L("info.shorts.xp") or "XP"
 
-	return MultiBot.isInside(pLine, tBag, tDur, tXP, "Bag,", "Dur", "XP", "背包", "耐久度", "经验值")
+	-- More strict end-of-list detection to avoid cutting spell lines too early.
+	if(MultiBot.beInside(pLine, tBag, tDur) or MultiBot.beInside(pLine, tBag, tXP)) then
+		return true
+	end
+
+	if(MultiBot.beInside(pLine, "Bag,", "Dur") or MultiBot.beInside(pLine, "Bag,", "XP")) then
+		return true
+	end
+
+	if(MultiBot.beInside(pLine, "背包", "耐久度") or MultiBot.beInside(pLine, "背包", "经验值")) then
+		return true
+	end
+
+	return false
+end
+
+MultiBot.handleSpellbookChatLine = function(pButton, pLine, pSender)
+	if(not pButton or type(pButton.waitFor) ~= "string") then
+		return false
+	end
+
+	if(pButton.waitFor == "SPELLBOOK" and MultiBot.isSpellbookHeaderLine and MultiBot.isSpellbookHeaderLine(pLine)) then
+		if(MultiBot.beginSpellbookCollection) then
+			MultiBot.beginSpellbookCollection(pSender)
+		end
+		pButton.waitFor = "SPELL"
+		SendChatMessage("stats", "WHISPER", nil, pSender)
+		return true
+	end
+
+	if(pButton.waitFor == "SPELL" and MultiBot.isSpellbookFooterLine and MultiBot.isSpellbookFooterLine(pLine)) then
+		if(MultiBot.finishSpellbookCollection) then
+			MultiBot.finishSpellbookCollection()
+		end
+		pButton.waitFor = ""
+		InspectUnit(pSender)
+		return true
+	end
+
+	if(pButton.waitFor == "SPELL") then
+		MultiBot.addSpell(pLine, pSender)
+		return true
+	end
+
+	return false
 end
 
 MultiBot.setSpell = function(pIndex, pSpell, pName)
