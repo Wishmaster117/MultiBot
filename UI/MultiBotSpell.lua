@@ -15,6 +15,41 @@ local function getSpellbookHeaderTokens()
 	}
 end
 
+local function ensureSpellbookCollectionState(pButton)
+	if(type(pButton.spellbookCollectionState) ~= "table") then
+		pButton.spellbookCollectionState = {
+			hasCollectedSpell = false,
+			nonSpellStreak = 0,
+		}
+	end
+
+	return pButton.spellbookCollectionState
+end
+
+local function resetSpellbookCollectionState(pButton)
+	if(type(pButton) ~= "table") then
+		return
+	end
+
+	pButton.spellbookCollectionState = nil
+end
+
+local function shouldFinishSpellbookCollection(pLine, pCollectionState)
+	if(type(pCollectionState) ~= "table") then
+		return false
+	end
+
+	if(MultiBot.isSpellbookFooterLine and MultiBot.isSpellbookFooterLine(pLine)) then
+		return true
+	end
+
+	if(pCollectionState.hasCollectedSpell and pCollectionState.nonSpellStreak >= SPELLBOOK_END_NON_SPELL_STREAK) then
+		return true
+	end
+
+	return false
+end
+
 MultiBot.getSpellID = function(pInfo)
 	if(type(pInfo) ~= "string" or pInfo == "") then
 		return 0
@@ -43,7 +78,7 @@ end
 
 MultiBot.addSpell = function(pInfo, pName)
 	local tID = MultiBot.getSpellID(pInfo)
-	if(tID == 0) then return end
+	if(tID == 0) then return false end
 
 	local tName, tRank, tIcon = GetSpellInfo(tID)
 	local tLink = GetSpellLink(tID)
@@ -64,6 +99,8 @@ MultiBot.addSpell = function(pInfo, pName)
 	if(MultiBot.spellbook.index < (SPELLBOOK_PAGE_SIZE + 1)) then
 		MultiBot.setSpell(MultiBot.spellbook.index, tSpell, pName)
 	end
+
+	return true
 end
 
 MultiBot.beginSpellbookCollection = function(pName)
@@ -117,7 +154,6 @@ MultiBot.isSpellbookFooterLine = function(pLine)
 	local tDur = MultiBot.L("info.shorts.dur") or "Dur"
 	local tXP = MultiBot.L("info.shorts.xp") or "XP"
 
-	-- More strict end-of-list detection to avoid cutting spell lines too early.
 	if(MultiBot.beInside(pLine, tBag, tDur) or MultiBot.beInside(pLine, tBag, tXP)) then
 		return true
 	end
@@ -142,22 +178,34 @@ MultiBot.handleSpellbookChatLine = function(pButton, pLine, pSender)
 		if(MultiBot.beginSpellbookCollection) then
 			MultiBot.beginSpellbookCollection(pSender)
 		end
+		resetSpellbookCollectionState(pButton)
+		ensureSpellbookCollectionState(pButton)
 		pButton.waitFor = "SPELL"
 		SendChatMessage("stats", "WHISPER", nil, pSender)
 		return true
 	end
 
-	if(pButton.waitFor == "SPELL" and MultiBot.isSpellbookFooterLine and MultiBot.isSpellbookFooterLine(pLine)) then
-		if(MultiBot.finishSpellbookCollection) then
-			MultiBot.finishSpellbookCollection()
-		end
-		pButton.waitFor = ""
-		InspectUnit(pSender)
-		return true
-	end
-
 	if(pButton.waitFor == "SPELL") then
-		MultiBot.addSpell(pLine, pSender)
+		local tCollectionState = ensureSpellbookCollectionState(pButton)
+		local tAddedSpell = MultiBot.addSpell(pLine, pSender)
+
+		if(tAddedSpell) then
+			tCollectionState.hasCollectedSpell = true
+			tCollectionState.nonSpellStreak = 0
+			return true
+		end
+
+		tCollectionState.nonSpellStreak = (tCollectionState.nonSpellStreak or 0) + 1
+		if(shouldFinishSpellbookCollection(pLine, tCollectionState)) then
+			if(MultiBot.finishSpellbookCollection) then
+				MultiBot.finishSpellbookCollection()
+			end
+			resetSpellbookCollectionState(pButton)
+			pButton.waitFor = ""
+			InspectUnit(pSender)
+			return true
+		end
+
 		return true
 	end
 

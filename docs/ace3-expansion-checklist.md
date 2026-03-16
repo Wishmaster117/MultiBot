@@ -22,7 +22,8 @@ Checklist for the full addon-wide ACE3 expansion after M7 completion.
 - [x] Spec window/inspect helper migration slice completed and finalized (`UI/MultiBotSpecUI.lua`): Ace window close-cross UX, layering/clickability fix, compact height, and position persistence via existing `specDropdownPositions` store.
 - [x] Raidus migration/polish slice completed and finalized (`Features/MultiBotRaidus.lua`): Ace host window path + fallback, close-state sync with main button, score badges, drop feedback animation, and interactive contrast polish.
 - [x] Universal prompt migration slice completed (`Core/MultiBotInit.lua`: `MBUniversalPrompt`) with AceGUI window/edit/button path and no legacy frame fallback.
-- [x] Universal prompt migration slice completed (`Core/MultiBotInit.lua`: `MBUniversalPrompt`) with AceGUI window/edit/button path and no legacy frame fallback.
+- [x] SpellBook migration slice completed (`UI/MultiBotSpellBookFrame.lua` + `UI/MultiBotSpell.lua`): AceGUI host window, dynamic slot/check generation, normalized page-size handling, and stateful chat collection end-detection fallback.
+- [x] Talents/Glyphs frame migration slice completed (`UI/MultiBotTalentFrame.lua`): AceGUI host integration for the talents/glyphs workflow with preserved tab/copy/apply behavior and custom glyph interactions.
 - [x] GameObject popup/copy migration slice completed (`Core/MultiBotInit.lua`: `MB_GameObjPopup` + `MB_GameObjCopyBox`) with AceGUI windows/widgets path and no legacy frame fallback.
 - [x] Quest popup family migration slice completed (`Core/MultiBotInit.lua`: `MB_QuestPopup`, `MB_BotQuestPopup`, `MB_BotQuestCompPopup`, `MB_BotQuestAllPopup`) with AceGUI host windows and no legacy frame fallback.
 - [x] Hunter prompt/search/family migration slice completed (`Core/MultiBotInit.lua`: `MBHunterPrompt`, `MBHunterPetSearch`, `MBHunterPetFamily`) with AceGUI prompt/host windows and retained preview model support.
