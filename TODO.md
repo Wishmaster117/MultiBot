@@ -8,3 +8,7 @@ TODO
 * dans la liste des quêtes des fois c'est l'ID de la queête qui apparait et pas le tritre
 * Afficher le pognon et les places de sacs dans la frame inventaire
 * La fenêtre inventaire doit se rafraichir par exemple quand on fait le bot bouffer il faut que ce qu'il a bouffé se décompte
+* Fenêtre inventaire: faire un deuxième passage purement UI pour aller plus loin que ce simple resserrage, par exemple :
+* passer les actions instantanées (SellGrey, SellVendor, Open) sur une rangée séparée plus compacte,
+* garder les 5 modes principaux (Sell, Equip, Use, Trade, Destroy) visuellement prioritaires,
+* ou encore recalculer dynamiquement itemsPerRow pour exploiter encore mieux la largeur gagnée.

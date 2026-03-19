@@ -5,10 +5,20 @@ local INVENTORY_WINDOW_DEFAULTS = {
     height = 470,
     pointX = -700,
     pointY = -144,
-    actionsWidth = 172,
+    actionsWidth = 100,
+    panelInset = 8,
+    panelGap = 6,
     buttonSize = 32,
-    buttonSpacing = 38,
-    labelOffsetX = 42,
+    buttonSpacing = 36,
+    buttonOffsetX = 6,
+    buttonStartOffsetY = 106,
+    modeLabelHeight = 34,
+    helperTextOffsetY = 6,
+    helperTextHeight = 36,
+    instantActionsTopPadding = 18,
+    instantActionColumns = 3,
+    instantActionSpacingX = 29,
+    instantActionSpacingY = 34,
     itemSize = 32,
     itemSpacingX = 38,
     itemSpacingY = 37,
@@ -130,11 +140,11 @@ local function addSimpleBackdrop(frame, bgAlpha)
     end
 end
 
-local function makeActionButton(parent, key, iconTexture, tooltipText, yOffset)
+local function makeActionButton(parent, key, iconTexture, tooltipText, yOffset, xOffset)
     local size = INVENTORY_WINDOW_DEFAULTS.buttonSize
     local button = CreateFrame("Button", nil, parent)
     button:SetSize(size, size)
-    button:SetPoint("TOPLEFT", parent, "TOPLEFT", 12, yOffset)
+    button:SetPoint("TOPLEFT", parent, "TOPLEFT", xOffset or INVENTORY_WINDOW_DEFAULTS.buttonOffsetX, yOffset)
     button:RegisterForClicks("LeftButtonDown", "RightButtonDown")
     button:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
     button:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress")
@@ -247,7 +257,7 @@ local function makeItemsContainer(parent, scrollChild)
         local additionalSlots = math.floor(math.max(0, usableWidth - self.iconSize) / stepX)
         self.itemsPerRow = math.max(1, additionalSlots + 1)
         self.child:SetWidth(math.max(usableWidth, self.itemsPerRow * stepX))
-     end
+    end
 
     function items:getNextSlotPosition()
         self:refreshLayoutMetrics()
@@ -688,32 +698,47 @@ local function createInventoryContent(window)
     content:SetPoint("TOPLEFT", window.frame, "TOPLEFT", 10, -30)
     content:SetPoint("BOTTOMRIGHT", window.frame, "BOTTOMRIGHT", -10, 10)
 
+    local panelInset = INVENTORY_WINDOW_DEFAULTS.panelInset
+    local panelGap = INVENTORY_WINDOW_DEFAULTS.panelGap
+
     local root = CreateFrame("Frame", nil, content)
     root:SetAllPoints(content)
     addSimpleBackdrop(root, 0.90)
 
     local leftPanel = CreateFrame("Frame", nil, root)
-    leftPanel:SetPoint("TOPLEFT", root, "TOPLEFT", 8, -8)
-    leftPanel:SetPoint("BOTTOMLEFT", root, "BOTTOMLEFT", 8, 8)
+    leftPanel:SetPoint("TOPLEFT", root, "TOPLEFT", panelInset, -panelInset)
+    leftPanel:SetPoint("BOTTOMLEFT", root, "BOTTOMLEFT", panelInset, panelInset)
     leftPanel:SetWidth(INVENTORY_WINDOW_DEFAULTS.actionsWidth)
     addSimpleBackdrop(leftPanel, 0.55)
 
     local itemsPanel = CreateFrame("Frame", nil, root)
-    itemsPanel:SetPoint("TOPLEFT", leftPanel, "TOPRIGHT", 10, 0)
-    itemsPanel:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -8, 8)
+    itemsPanel:SetPoint("TOPLEFT", leftPanel, "TOPRIGHT", panelGap, 0)
+    itemsPanel:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -panelInset, panelInset)
     addSimpleBackdrop(itemsPanel, 0.55)
 
-    local modeLabel = leftPanel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    modeLabel:SetPoint("TOPLEFT", leftPanel, "TOPLEFT", 12, -14)
-    modeLabel:SetPoint("TOPRIGHT", leftPanel, "TOPRIGHT", -12, -14)
+    local modeLabel = leftPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    modeLabel:SetPoint("TOPLEFT", leftPanel, "TOPLEFT", 10, -14)
+    modeLabel:SetPoint("TOPRIGHT", leftPanel, "TOPRIGHT", -8, -14)
     modeLabel:SetJustifyH("LEFT")
+    modeLabel:SetJustifyV("TOP")
+    modeLabel:SetHeight(INVENTORY_WINDOW_DEFAULTS.modeLabelHeight)
+    if modeLabel.SetNonSpaceWrap then
+        modeLabel:SetNonSpaceWrap(true)
+    end
+    if modeLabel.SetWordWrap then
+        modeLabel:SetWordWrap(true)
+    end
     modeLabel:SetText(MultiBot.L("info.action", "Action") .. ": Sell")
 
-    local helperText = leftPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    helperText:SetPoint("TOPLEFT", modeLabel, "BOTTOMLEFT", 0, -8)
-    helperText:SetPoint("TOPRIGHT", leftPanel, "TOPRIGHT", -12, -8)
+    local helperText = leftPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
+    helperText:SetPoint("TOPLEFT", modeLabel, "BOTTOMLEFT", 0, -INVENTORY_WINDOW_DEFAULTS.helperTextOffsetY)
+    helperText:SetPoint("TOPRIGHT", modeLabel, "BOTTOMRIGHT", 0, -INVENTORY_WINDOW_DEFAULTS.helperTextOffsetY)
     helperText:SetJustifyH("LEFT")
     helperText:SetJustifyV("TOP")
+    helperText:SetHeight(INVENTORY_WINDOW_DEFAULTS.helperTextHeight)
+    if helperText.SetWordWrap then
+        helperText:SetWordWrap(true)
+    end
     helperText:SetText("")
 
     local scrollFrame = CreateFrame("ScrollFrame", "MultiBotInventoryScrollFrame", itemsPanel, "UIPanelScrollFrameTemplate")
@@ -727,20 +752,36 @@ local function createInventoryContent(window)
 
     local actionHost = { inventoryRef = nil }
     local buttons = {}
-    local buttonDefs = {
+    local modeButtonDefs = {
         { key = "Sell", texture = "inv_misc_coin_16", tip = MultiBot.L("tips.inventory.sell") },
-        { key = "SellGrey", texture = "inv_misc_coin_03", tip = MultiBot.L("tips.inventory.sellgrey") },
-        { key = "SellVendor", texture = "inv_misc_coin_04", tip = MultiBot.L("tips.inventory.sellvendor") },
         { key = "Equip", texture = "inv_helmet_22", tip = MultiBot.L("tips.inventory.equip") },
         { key = "Use", texture = "inv_gauntlets_25", tip = MultiBot.L("tips.inventory.use") },
         { key = "Trade", texture = "achievement_reputation_01", tip = MultiBot.L("tips.inventory.trade") },
         { key = "Destroy", texture = "inv_hammer_15", tip = MultiBot.L("tips.inventory.drop") },
+    }
+    local instantButtonDefs = {
+        { key = "SellGrey", texture = "inv_misc_coin_03", tip = MultiBot.L("tips.inventory.sellgrey") },
+        { key = "SellVendor", texture = "inv_misc_coin_04", tip = MultiBot.L("tips.inventory.sellvendor") },
         { key = "Open", texture = "inv_misc_gift_05", tip = MultiBot.L("tips.inventory.open") },
     }
 
-    for index, definition in ipairs(buttonDefs) do
-        local yOffset = -54 - ((index - 1) * INVENTORY_WINDOW_DEFAULTS.buttonSpacing)
+    for index, definition in ipairs(modeButtonDefs) do
+        local yOffset = -INVENTORY_WINDOW_DEFAULTS.buttonStartOffsetY - ((index - 1) * INVENTORY_WINDOW_DEFAULTS.buttonSpacing)
         buttons[definition.key] = makeActionButton(leftPanel, definition.key, definition.texture, definition.tip, yOffset)
+    end
+
+    local instantStartY = -INVENTORY_WINDOW_DEFAULTS.buttonStartOffsetY
+        - (#modeButtonDefs * INVENTORY_WINDOW_DEFAULTS.buttonSpacing)
+        - INVENTORY_WINDOW_DEFAULTS.instantActionsTopPadding
+    local instantColumns = math.max(1, INVENTORY_WINDOW_DEFAULTS.instantActionColumns or 1)
+    local instantSpacingX = INVENTORY_WINDOW_DEFAULTS.instantActionSpacingX or INVENTORY_WINDOW_DEFAULTS.buttonSpacing
+    local instantSpacingY = INVENTORY_WINDOW_DEFAULTS.instantActionSpacingY or INVENTORY_WINDOW_DEFAULTS.buttonSpacing
+    for index, definition in ipairs(instantButtonDefs) do
+        local column = (index - 1) % instantColumns
+        local row = math.floor((index - 1) / instantColumns)
+        local xOffset = INVENTORY_WINDOW_DEFAULTS.buttonOffsetX + (column * instantSpacingX)
+        local yOffset = instantStartY - (row * instantSpacingY)
+        buttons[definition.key] = makeActionButton(leftPanel, definition.key, definition.texture, definition.tip, yOffset, xOffset)
     end
 
     local items = makeItemsContainer(itemsPanel, scrollChild)

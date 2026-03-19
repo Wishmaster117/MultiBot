@@ -69,6 +69,10 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   Files: `UI/MultiBotRewardFrame.lua`, `Features/MultiBotReward.lua`, `Core/MultiBotInit.lua`.
   References: `UI/MultiBotRewardFrame.lua:193`, `Features/MultiBotReward.lua:5`, `Core/MultiBotInit.lua:1510`.
 
+- [x] **Inventory window** (`MultiBot.inventory`) migrated to a native AceGUI host window path with dedicated controller API, item renderer split, hybrid dense-icon scroll grid, action/refresh parity, and legacy shell removal.
+  Files: `UI/MultiBotInventoryFrame.lua`, `UI/MultiBotInventoryItem.lua`, `Core/MultiBotHandler.lua`, `Core/MultiBotEvery.lua`, `Core/MultiBotEngine.lua`.
+  References: `UI/MultiBotInventoryFrame.lua:704`, `UI/MultiBotInventoryItem.lua:221`, `Core/MultiBotHandler.lua:1506`, `Core/MultiBotEvery.lua:142`, `Core/MultiBotEngine.lua:1554`.
+
 - [x] **Talents/Glyphs frame** (`MultiBot.talent`) migrated with AceGUI host integration for the talents/glyphs workflow while preserving tab-state, copy/apply actions, and custom glyph socket interactions.
   File: `UI/MultiBotTalentFrame.lua`.
   References: lines `5`, `23`, `119`, `2228`.

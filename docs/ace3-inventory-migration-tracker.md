@@ -162,7 +162,7 @@ Dedicated tracking document for the full migration of the bot **INVENTORY** fram
 ### Phase 6 — Legacy removal
 - [x] Remove the legacy Inventory frame construction from `Core/MultiBotInit.lua`.
 - [x] Remove obsolete helper assumptions tied only to the old shell.
-- [ ] Update the Milestone 8 docs/checklists to mark the screen as migrated.
+- [x] Update the Milestone 8 docs/checklists to mark the screen as migrated.
 
 ---
 
@@ -187,7 +187,7 @@ Dedicated tracking document for the full migration of the bot **INVENTORY** fram
 ### Static/code checks for the PR
 - [ ] TOC load order updated if new UI file is added.
 - [x] No remaining user-facing dependency on the legacy Inventory texture shell.
-- [ ] Inventory migration is documented in the milestone checklist files.
+- [x] Inventory migration is documented in the milestone checklist files.
 - [x] No dead references to removed legacy inventory widgets remain.
 
 ---
@@ -195,7 +195,7 @@ Dedicated tracking document for the full migration of the bot **INVENTORY** fram
 ## 7) Open design decisions
 
 - [x] Item renderer moved to `UI/MultiBotInventoryItem.lua`; `UI/MultiBotItem.lua` now remains only as a compatibility shim for the existing global entrypoint.
-- [ ] Should the new inventory host use pure AceGUI widgets for the item grid, or a hybrid AceGUI host plus native scroll child for dense icon rendering?
+- [x] The new inventory host uses a hybrid AceGUI host plus native scroll child for dense icon rendering.
 - [x] `InventoryPoint` is preserved as-is with backward-compatible layout persistence wiring for the AceGUI host.
 - [ ] Should close-button parity be handled by calling the source MultiBar button behavior directly, or by centralizing open/close state in an inventory controller API?
 
@@ -206,7 +206,7 @@ Dedicated tracking document for the full migration of the bot **INVENTORY** fram
 - [x] New dedicated inventory UI file added under `UI/`.
 - [x] Legacy inventory shell removed from `Core/MultiBotInit.lua`.
 - [ ] Existing inventory flows verified against the parity checklist above.
-- [ ] `docs/ace3-ui-frame-inventory.md` updated.
-- [ ] `docs/ace3-expansion-checklist.md` updated.
+- [x] `docs/ace3-ui-frame-inventory.md` updated.
+- [x] `docs/ace3-expansion-checklist.md` updated.
 - [ ] Screenshot captured if the final UI change is visually testable in this environment.
 - [ ] Final PR summary explicitly calls out preserved behaviors and any intentional UX improvements.
