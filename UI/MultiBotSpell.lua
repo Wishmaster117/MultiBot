@@ -43,7 +43,9 @@ local function shouldFinishSpellbookCollection(pLine, pCollectionState)
 		return true
 	end
 
-	if(pCollectionState.hasCollectedSpell and pCollectionState.nonSpellStreak >= SPELLBOOK_END_NON_SPELL_STREAK) then
+	local tNonSpellStreak = tonumber(pCollectionState.nonSpellStreak) or 0
+	local tNonSpellThreshold = tonumber(SPELLBOOK_END_NON_SPELL_STREAK) or 4
+	if(pCollectionState.hasCollectedSpell and tNonSpellStreak >= tNonSpellThreshold) then
 		return true
 	end
 
@@ -195,7 +197,7 @@ MultiBot.handleSpellbookChatLine = function(pButton, pLine, pSender)
 			return true
 		end
 
-		tCollectionState.nonSpellStreak = (tCollectionState.nonSpellStreak or 0) + 1
+		tCollectionState.nonSpellStreak = (tonumber(tCollectionState.nonSpellStreak) or 0) + 1
 		if(shouldFinishSpellbookCollection(pLine, tCollectionState)) then
 			if(MultiBot.finishSpellbookCollection) then
 				MultiBot.finishSpellbookCollection()

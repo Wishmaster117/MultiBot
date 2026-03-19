@@ -1509,10 +1509,22 @@ end
 
 local tButton = tMain.addButton("Reward", 0, 306, "Interface\\AddOns\\MultiBot\\Icons\\reward.blp", MultiBot.L("tips.main.reward")).setDisable()
 tButton.doRight = function(pButton)
-	if(#MultiBot.reward.rewards > 0 and #MultiBot.reward.units > 0) then MultiBot.reward:Show() end
+	MultiBot.rewardReopenIfAvailable()
 end
+
 tButton.doLeft = function(pButton)
-	MultiBot.reward.state = MultiBot.OnOffSwitch(pButton)
+	local wasSavedEnabled = (MultiBot.GetSavedMainBarValue and MultiBot.GetSavedMainBarValue("Reward") == "true")
+	local isEnabled = MultiBot.OnOffSwitch(pButton)
+
+	MultiBot.rewardSetEnabled(isEnabled)
+
+	if(MultiBot.SetSavedMainBarValue) then
+		MultiBot.SetSavedMainBarValue("Reward", MultiBot.IF(isEnabled, "true", "false"))
+	end
+
+	if(isEnabled and not wasSavedEnabled and MultiBot.rewardShowConfigPopup) then
+		MultiBot.rewardShowConfigPopup()
+	end
 end
 
 tMain.addButton("Reset", 0, 340, "inv_misc_tournaments_symbol_gnome", MultiBot.L("tips.main.reset"))
@@ -3161,9 +3173,19 @@ MultiBot.inventory.movButton("Move", -406, 849, 34, MultiBot.L("tips.move.invent
 
 MultiBot.inventory.wowButton("X", -126, 862, 15, 18, 13)
 .doLeft = function(pButton)
-	local tUnits = MultiBot.frames["MultiBar"].frames["Units"]
-	local tButton = tUnits.frames[MultiBot.inventory.name].buttons["Inventory"]
-	tButton.doLeft(tButton)
+	local tUnits = MultiBot.frames and MultiBot.frames["MultiBar"] and MultiBot.frames["MultiBar"].frames and MultiBot.frames["MultiBar"].frames["Units"]
+	local tName = MultiBot.inventory and MultiBot.inventory.name
+	if(tUnits == nil or tName == nil or tUnits.buttons == nil or tUnits.buttons[tName] == nil) then
+		MultiBot.inventory:Hide()
+		return
+	end
+
+	local tButton = tUnits.buttons[tName].buttons and tUnits.buttons[tName].buttons["Inventory"]
+	if(tButton ~= nil and tButton.doLeft ~= nil) then
+		tButton.doLeft(tButton)
+	else
+		MultiBot.inventory:Hide()
+	end
 end
 
 MultiBot.inventory.addButton("Sell", -94, 806, "inv_misc_coin_16", MultiBot.L("tips.inventory.sell")).setEnable()
@@ -3523,285 +3545,8 @@ tFrame:Show()
 MultiBot.InitializeSpellBookFrame()
 
 -- REWARD --
-
-MultiBot.reward = MultiBot.newFrame(MultiBot, -754, 238, 28, 384, 512)
-MultiBot.reward.rewards = {}
-MultiBot.reward.units = {}
-MultiBot.reward.from = 1
-MultiBot.reward.max = 1
-MultiBot.reward.now = 1
-MultiBot.reward.to = 12
-MultiBot.reward:SetMovable(true)
-MultiBot.reward:Hide()
-
-MultiBot.reward.doClose = function()
-	local tOverlay = MultiBot.reward.frames["Overlay"]
-	for key, value in pairs(MultiBot.reward.units) do if(value.rewarded == false) then return end end
-	MultiBot.reward:Hide()
-end
-
-local tFrame = MultiBot.reward.addFrame("Icon", -313, 443, 28, 64, 64)
-tFrame.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Reward.blp")
-tFrame:SetFrameLevel(0)
-
-local tFrame = MultiBot.reward.addFrame("TopLeft", -128, 256, 28, 256, 256)
-tFrame.addTexture("Interface/ItemTextFrame/UI-ItemText-TopLeft")
-tFrame:SetFrameLevel(1)
-
-local tFrame = MultiBot.reward.addFrame("TopRight", -0, 256, 28, 128, 256)
-tFrame.addTexture("Interface/Spellbook/UI-SpellbookPanel-TopRight")
-tFrame:SetFrameLevel(2)
-
-local tFrame = MultiBot.reward.addFrame("BottomLeft", -128, 0, 28, 256, 256)
-tFrame.addTexture("Interface/ItemTextFrame/UI-ItemText-BotLeft")
-tFrame:SetFrameLevel(3)
-
-local tFrame = MultiBot.reward.addFrame("BottomRight", -0, 0, 28, 128, 256)
-tFrame.addTexture("Interface/Spellbook/UI-SpellbookPanel-BotRight")
-tFrame:SetFrameLevel(4)
-
-local tOverlay = MultiBot.reward.addFrame("Overlay", -48, 97, 28, 310, 330)
-tOverlay.addText("Title", MultiBot.L("info.reward"), "CENTER", 16, 226, 13)
-tOverlay.addText("Pages", MB_PAGE_DEFAULT, "CENTER", 16, 196, 13)
-tOverlay:SetFrameLevel(5)
-
-tOverlay.movButton("Move", -270, 354, 50, MultiBot.L("tips.move.reward"), MultiBot.reward)
-
-tOverlay.wowButton("<", -182, 351, 15, 18, 13)
-.doLeft = function(pButton)
-	local tOverlay = MultiBot.reward.frames["Overlay"]
-	local tReward = MultiBot.reward
-
-	tReward.to = tReward.to - 12
-	tReward.now = tReward.now - 1
-	tReward.from = tReward.from - 12
-	tOverlay.setText("Pages", tReward.now .. "/" .. tReward.max)
-	tOverlay.buttons[">"].doShow()
-
-	if(tReward.now == 1) then pButton.doHide() end
-	local tIndex = 1
-
-	for i = tReward.from, tReward.to do
-		MultiBot.setReward(tIndex, MultiBot.reward.units[i])
-		tIndex = tIndex + 1
-	end
-end
-
-tOverlay.wowButton(">", -82, 351, 15, 18, 11)
-.doLeft = function(pButton)
-	local tOverlay = MultiBot.reward.frames["Overlay"]
-	local tReward = MultiBot.reward
-
-	tReward.to = tReward.to + 12
-	tReward.now = tReward.now + 1
-	tReward.from = tReward.from + 12
-	tOverlay.setText("Pages", tReward.now .. "/" .. tReward.max)
-	tOverlay.buttons["<"].doShow()
-
-	if(tReward.now == tReward.max) then pButton.doHide() end
-	local tIndex = 1
-
-	for i = tReward.from, tReward.to do
-		MultiBot.setReward(tIndex, MultiBot.reward.units[i])
-		tIndex = tIndex + 1
-	end
-end
-
-tOverlay.wowButton("X", 13, 381, 17, 20, 11)
-.doLeft = function(pButton)
-	MultiBot.reward:Hide()
-end
-
--- GROUP:U01 --
-
-local tFrame = tOverlay.addFrame("U01", -156, 282, 23, 154, 48)
-tFrame.addText("U01", "|cffffcc00NAME - CLASS|r", "BOTTOMLEFT", 20, 28, 13)
-tFrame.addButton("R1", -130, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R2", -104, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R3", -78, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R4", -52, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R5", -26, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R6", -0, 0, "inv_misc_questionmark", "Text")
-tFrame.addFrame("Inspector", -137, 26, 16)
-.addButton("Inspect", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", "Inspect")
-.doLeft = function(pButton)
-	InspectUnit(pButton.getName())
-end
-
--- GROUP:U02 --
-
-local tFrame = tOverlay.addFrame("U02", 0, 282, 23, 154, 48)
-tFrame.addText("U02", "|cffffcc00NAME - CLASS|r", "BOTTOMLEFT", 20, 28, 13)
-tFrame.addButton("R1", -130, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R2", -104, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R3", -78, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R4", -52, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R5", -26, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R6", -0, 0, "inv_misc_questionmark", "Text")
-tFrame.addFrame("Inspector", -137, 26, 16)
-.addButton("Inspect", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", "Inspect")
-.doLeft = function(pButton)
-	InspectUnit(pButton.getName())
-end
-
--- GROUP:U03 --
-
-local tFrame = tOverlay.addFrame("U03", -156, 228, 23, 154, 48)
-tFrame.addText("U03", "|cffffcc00NAME - CLASS|r", "BOTTOMLEFT", 20, 28, 13)
-tFrame.addButton("R1", -130, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R2", -104, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R3", -78, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R4", -52, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R5", -26, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R6", -0, 0, "inv_misc_questionmark", "Text")
-tFrame.addFrame("Inspector", -137, 26, 16)
-.addButton("Inspect", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", "Inspect")
-.doLeft = function(pButton)
-	InspectUnit(pButton.getName())
-end
-
--- GROUP:U04 --
-
-local tFrame = tOverlay.addFrame("U04", 0, 228, 23, 154, 48)
-tFrame.addText("U04", "|cffffcc00NAME - CLASS|r", "BOTTOMLEFT", 20, 28, 13)
-tFrame.addButton("R1", -130, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R2", -104, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R3", -78, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R4", -52, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R5", -26, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R6", -0, 0, "inv_misc_questionmark", "Text")
-tFrame.addFrame("Inspector", -137, 26, 16)
-.addButton("Inspect", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", "Inspect")
-.doLeft = function(pButton)
-	InspectUnit(pButton.getName())
-end
-
--- GROUP:U05 --
-
-local tFrame = tOverlay.addFrame("U05", -156, 174, 23, 154, 48)
-tFrame.addText("U05", "|cffffcc00NAME - CLASS|r", "BOTTOMLEFT", 20, 28, 13)
-tFrame.addButton("R1", -130, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R2", -104, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R3", -78, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R4", -52, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R5", -26, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R6", -0, 0, "inv_misc_questionmark", "Text")
-tFrame.addFrame("Inspector", -137, 26, 16)
-.addButton("Inspect", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", "Inspect")
-.doLeft = function(pButton)
-	InspectUnit(pButton.getName())
-end
-
--- GROUP:U06 --
-
-local tFrame = tOverlay.addFrame("U06", 0, 174, 23, 154, 48)
-tFrame.addText("U06", "|cffffcc00NAME - CLASS|r", "BOTTOMLEFT", 20, 28, 13)
-tFrame.addButton("R1", -130, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R2", -104, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R3", -78, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R4", -52, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R5", -26, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R6", -0, 0, "inv_misc_questionmark", "Text")
-tFrame.addFrame("Inspector", -137, 26, 16)
-.addButton("Inspect", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", "Inspect")
-.doLeft = function(pButton)
-	InspectUnit(pButton.getName())
-end
-
--- GROUP:U07 --
-
-local tFrame = tOverlay.addFrame("U07", -156, 120, 23, 154, 48)
-tFrame.addText("U07", "|cffffcc00NAME - CLASS|r", "BOTTOMLEFT", 20, 28, 13)
-tFrame.addButton("R1", -130, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R2", -104, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R3", -78, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R4", -52, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R5", -26, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R6", -0, 0, "inv_misc_questionmark", "Text")
-tFrame.addFrame("Inspector", -137, 26, 16)
-.addButton("Inspect", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", "Inspect")
-.doLeft = function(pButton)
-	InspectUnit(pButton.getName())
-end
-
--- GROUP:U08 --
-
-local tFrame = tOverlay.addFrame("U08", 0, 120, 23, 154, 48)
-tFrame.addText("U08", "|cffffcc00NAME - CLASS|r", "BOTTOMLEFT", 20, 28, 13)
-tFrame.addButton("R1", -130, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R2", -104, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R3", -78, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R4", -52, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R5", -26, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R6", -0, 0, "inv_misc_questionmark", "Text")
-tFrame.addFrame("Inspector", -137, 26, 16)
-.addButton("Inspect", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", "Inspect")
-.doLeft = function(pButton)
-	InspectUnit(pButton.getName())
-end
-
--- GROUP:U09 --
-
-local tFrame = tOverlay.addFrame("U09", -156, 66, 23, 154, 48)
-tFrame.addText("U09", "|cffffcc00NAME - CLASS|r", "BOTTOMLEFT", 20, 28, 13)
-tFrame.addButton("R1", -130, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R2", -104, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R3", -78, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R4", -52, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R5", -26, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R6", -0, 0, "inv_misc_questionmark", "Text")
-tFrame.addFrame("Inspector", -137, 26, 16)
-.addButton("Inspect", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", "Inspect")
-.doLeft = function(pButton)
-	InspectUnit(pButton.getName())
-end
-
--- GROUP:U10 --
-
-local tFrame = tOverlay.addFrame("U10", 0, 66, 23, 154, 48)
-tFrame.addText("U10", "|cffffcc00NAME - CLASS|r", "BOTTOMLEFT", 20, 28, 13)
-tFrame.addButton("R1", -130, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R2", -104, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R3", -78, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R4", -52, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R5", -26, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R6", -0, 0, "inv_misc_questionmark", "Text")
-tFrame.addFrame("Inspector", -137, 26, 16)
-.addButton("Inspect", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", "Inspect")
-.doLeft = function(pButton)
-	InspectUnit(pButton.getName())
-end
-
--- GROUP:U11 --
-
-local tFrame = tOverlay.addFrame("U11", -156, 12, 23, 154, 48)
-tFrame.addText("U11", "|cffffcc00NAME - CLASS|r", "BOTTOMLEFT", 20, 28, 13)
-tFrame.addButton("R1", -130, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R2", -104, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R3", -78, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R4", -52, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R5", -26, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R6", -0, 0, "inv_misc_questionmark", "Text")
-tFrame.addFrame("Inspector", -137, 26, 16)
-.addButton("Inspect", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", "Inspect")
-.doLeft = function(pButton)
-	InspectUnit(pButton.getName())
-end
-
--- GROUP:U12 --
-
-local tFrame = tOverlay.addFrame("U12", 0, 12, 23, 154, 48)
-tFrame.addText("U12", "|cffffcc00NAME - CLASS|r", "BOTTOMLEFT", 20, 28, 13)
-tFrame.addButton("R1", -130, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R2", -104, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R3", -78, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R4", -52, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R5", -26, 0, "inv_misc_questionmark", "Text")
-tFrame.addButton("R6", -0, 0, "inv_misc_questionmark", "Text")
-tFrame.addFrame("Inspector", -137, 26, 16)
-.addButton("Inspect", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\filter_none.blp", "Inspect")
-.doLeft = function(pButton)
-	InspectUnit(pButton.getName())
+if MultiBot.InitializeRewardFrame then
+	MultiBot.InitializeRewardFrame()
 end
 
 -- TALENT AND GLYPHS FRAME --

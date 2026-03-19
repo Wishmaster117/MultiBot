@@ -55,6 +55,7 @@ local frFRValues = {
   ["info.combination"] = "Il n'y a pas d'objets pour cette combinaison.Je dois d'abord activer le sélecteur de langue.",
   ["info.rights"] = "Je n'ai pas les droits MJ.",
   ["info.reward"] = "Sélectionner les récompenses",
+  ["info.reward.popup"] = "Pour que cette fonctionnalité fonctionne, il faut configurer playerbot.conf de la manière suivante:\nAiPlayerbot.AutoPickReward = no (obligatoire)\nAiPlayerbot.SyncQuestWithPlayer = 1 (recommandé)",
   ["info.shorts.bag"] = "Sac",
   ["info.shorts.dur"] = "Dur",
   ["info.shorts.xp"] = "XP",

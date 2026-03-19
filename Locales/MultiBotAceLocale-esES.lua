@@ -55,6 +55,7 @@ local esESValues = {
   ["info.combination"] = "No hay elementos para esta combinación.Necesito activar el selector de idioma primero.",
   ["info.rights"] = "No tengo los GameMaster-Rights.",
   ["info.reward"] = "Selecciona las recompensas",
+  ["info.reward.popup"] = "Para que esta función funcione, debes configurar playerbot.conf de la siguiente manera:\nAiPlayerbot.AutoPickReward = no (obligatorio)\nAiPlayerbot.SyncQuestWithPlayer = 1 (recomendado)",
   ["info.shorts.bag"] = "Bag",
   ["info.shorts.dur"] = "Dur",
   ["info.shorts.xp"] = "XP",
