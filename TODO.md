@@ -6,3 +6,5 @@ TODO
 * Quand on deplace ou fait quelque chose dans l'ui il faudrait que ça se sauvegarde tout de suite dans les variables dans deco reco
 * Raidus doit se rafraichir à l'ouverture et fermeture
 * dans la liste des quêtes des fois c'est l'ID de la queête qui apparait et pas le tritre
+* Afficher le pognon et les places de sacs dans la frame inventaire
+* La fenêtre inventaire doit se rafraichir par exemple quand on fait le bot bouffer il faut que ce qu'il a bouffé se décompte

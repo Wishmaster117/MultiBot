@@ -7,6 +7,7 @@ local enGBValues = {
   ["info.itemdestroyalert"] = "Do you REALLY want to destroy this item?\n%s",
   ["info.keydestroyalert"] = "I will not sell Keys.",
   ["info.itemsellalert"] = "I cant sell this Item.",
+  ["info.inventoryvendortarget"] = "You must select a vendor first.",
   ["info.butttitle"] = "|cffffd100MultiBot|r",
   ["info.buttontoggle"] = "|cff00ff00Left-click: toggle UI|r",
   ["info.buttonoptions"] = "|cffff0000Right-click: options|r",
