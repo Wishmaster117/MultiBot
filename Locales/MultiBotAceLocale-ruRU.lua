@@ -55,6 +55,7 @@ local ruRUValues = {
   ["info.combination"] = "Нет предметов для этой комбинации.Мне нужно сначала активировать выбор языка.",
   ["info.rights"] = "У меня нет прав Гейммастера.",
   ["info.reward"] = "Выберите награды",
+  ["info.reward.popup"] = "Чтобы эта функция работала, необходимо настроить playerbot.conf следующим образом:\nAiPlayerbot.AutoPickReward = no (обязательно)\nAiPlayerbot.SyncQuestWithPlayer = 1 (рекомендуется)",
   ["info.shorts.bag"] = "Сумка",
   ["info.shorts.dur"] = "Прочн.",
   ["info.shorts.xp"] = "Опыт",

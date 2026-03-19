@@ -55,6 +55,7 @@ local deDEValues = {
   ["info.combination"] = "Es gibt keine Items für diese Kombination.Ich muss zuerst den Language-Selector aktivieren.",
   ["info.rights"] = "Ich habe keine GameMaster-Rechte.",
   ["info.reward"] = "Wähle die Belohnungen",
+  ["info.reward.popup"] = "Damit diese Funktion funktioniert, muss die playerbot.conf wie folgt konfiguriert werden:\nAiPlayerbot.AutoPickReward = no (erforderlich)\nAiPlayerbot.SyncQuestWithPlayer = 1 (empfohlen)",
   ["info.shorts.bag"] = "Bag",
   ["info.shorts.dur"] = "Dur",
   ["info.shorts.xp"] = "XP",

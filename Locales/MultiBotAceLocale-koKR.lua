@@ -55,6 +55,7 @@ local koKRValues = {
   ["info.combination"] = "이 조합에 맞는 항목이 없습니다.먼저 언어 선택기를 활성화해야 했습니다.",
   ["info.rights"] = "GM 권한이 없습니다.",
   ["info.reward"] = "보상을 선택하세요.",
+  ["info.reward.popup"] = "이 기능이 작동하려면 playerbot.conf를 다음과 같이 설정해야 합니다:\nAiPlayerbot.AutoPickReward = no (필수)\nAiPlayerbot.SyncQuestWithPlayer = 1 (권장)",
   ["info.shorts.bag"] = "배낭",
   ["info.shorts.dur"] = "내구성",
   ["info.shorts.xp"] = "경험",
