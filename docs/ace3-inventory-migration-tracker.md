@@ -104,7 +104,7 @@ Dedicated tracking document for the full migration of the bot **INVENTORY** fram
 - [x] Items are added incrementally as chat lines arrive.
 - [x] Tooltips show the item hyperlink correctly.
 - [x] Clicking an item with no selected action still gives user feedback.
-- [ ] Layout supports the full inventory payload without depending on the legacy background texture shell.
+- [x] Layout supports the full inventory payload without depending on the legacy background texture shell.
 
 ### E. Item action rules
 - [x] Selling still requires a valid vendor target.
@@ -186,9 +186,9 @@ Dedicated tracking document for the full migration of the bot **INVENTORY** fram
 
 ### Static/code checks for the PR
 - [ ] TOC load order updated if new UI file is added.
-- [ ] No remaining user-facing dependency on the legacy Inventory texture shell.
+- [x] No remaining user-facing dependency on the legacy Inventory texture shell.
 - [ ] Inventory migration is documented in the milestone checklist files.
-- [ ] No dead references to removed legacy inventory widgets remain.
+- [x] No dead references to removed legacy inventory widgets remain.
 
 ---
 

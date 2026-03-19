@@ -169,7 +169,7 @@ end
 
 local function handleInventoryItemClick(button)
     local action, botName = getInventoryItemActionState()
-    local item = button and button.item or nil	
+    local item = button and button.item or nil
 
     if action == "" then
         sendInventoryFeedback("action", "Choose an action first")
@@ -232,9 +232,6 @@ MultiBot.InventoryAddItem = function(frame, itemInfo)
     local itemIndex = frame.index or 0
     local buttonKey = buildInventoryButtonKey(frame, item.name)
     local button = frame.addButton(buttonKey, itemX, itemY, item.icon, item.link)
-    if frame.catButton ~= nil then
-        frame.catButton("Catecher", 270, -490, 308, 524)
-    end
 
     item.index = itemIndex
     item.x = itemX

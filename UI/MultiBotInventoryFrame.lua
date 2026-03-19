@@ -13,6 +13,9 @@ local INVENTORY_WINDOW_DEFAULTS = {
     itemSpacingX = 38,
     itemSpacingY = 37,
     itemsPerRow = 8,
+    itemsPanelPadding = 8,
+    scrollBarAllowance = 28,
+    minCanvasHeight = 260,
 }
 local INVENTORY_LAYOUT_KEY = "InventoryPoint"
 
@@ -232,11 +235,22 @@ local function makeItemsContainer(parent, scrollChild)
         return MultiBot.inventory and MultiBot.inventory.getButton and MultiBot.inventory.getButton(index) or nil
     end
 
-    function items.catButton(_)
-        return items
+    function items:getAvailableWidth()
+        local hostWidth = self.host and self.host.GetWidth and self.host:GetWidth() or 0
+        local horizontalPadding = (INVENTORY_WINDOW_DEFAULTS.itemsPanelPadding * 2) + INVENTORY_WINDOW_DEFAULTS.scrollBarAllowance
+        return math.max(self.iconSize, hostWidth - horizontalPadding)
     end
 
+    function items:refreshLayoutMetrics()
+        local stepX = math.max(self.iconSize, self.spacingX or self.iconSize)
+        local usableWidth = self:getAvailableWidth()
+        local additionalSlots = math.floor(math.max(0, usableWidth - self.iconSize) / stepX)
+        self.itemsPerRow = math.max(1, additionalSlots + 1)
+        self.child:SetWidth(math.max(usableWidth, self.itemsPerRow * stepX))
+     end
+
     function items:getNextSlotPosition()
+        self:refreshLayoutMetrics()
         local perRow = math.max(1, self.itemsPerRow or 1)
         local posX = (self.index % perRow) * (self.spacingX or 0)
         local posY = math.floor(self.index / perRow) * -(self.spacingY or 0)
@@ -263,13 +277,36 @@ local function makeItemsContainer(parent, scrollChild)
     end
 
     function items:updateCanvas()
-        local count = 0
-        for _ in pairs(self.buttons) do
-            count = count + 1
+        self:refreshLayoutMetrics()
+
+        local count = math.max(self.index or 0, 0)
+        if count == 0 then
+            for _ in pairs(self.buttons) do
+                count = count + 1
+            end
         end
-        local rows = math.max(1, math.ceil(count / (self.itemsPerRow or 1)))
-        local height = math.max(260, 20 + (rows * self.spacingY))
+
+        local rows = math.max(1, math.ceil(count / math.max(1, self.itemsPerRow or 1)))
+        local height = math.max(INVENTORY_WINDOW_DEFAULTS.minCanvasHeight, 20 + (rows * self.spacingY))
         self.child:SetHeight(height)
+    end
+
+    function items:updateLayout()
+        self:refreshLayoutMetrics()
+
+        for _, button in pairs(self.buttons) do
+            if button and button.ClearAllPoints then
+                local layoutIndex = button.layoutIndex or 0
+                local posX = (layoutIndex % self.itemsPerRow) * (self.spacingX or 0)
+                local posY = math.floor(layoutIndex / self.itemsPerRow) * -(self.spacingY or 0)
+                button:ClearAllPoints()
+                button:SetPoint("TOPLEFT", self.child, "TOPLEFT", posX, posY)
+                button.x = posX
+                button.y = posY
+            end
+        end
+
+        self:updateCanvas()
     end
 
     function items.addButton(pName, pX, pY, pTexture, pTip)
@@ -294,6 +331,7 @@ local function makeItemsContainer(parent, scrollChild)
         button.tip = pTip
         button.texture = MultiBot.SafeTexturePath(pTexture)
         button.size = items.iconSize
+        button.layoutIndex = items.index or 0
         button.x = pX
         button.y = pY
 
@@ -344,7 +382,7 @@ local function makeItemsContainer(parent, scrollChild)
         end)
 
         items.buttons[pName] = button
-        items:updateCanvas()
+        items:updateLayout()
         return button
     end
 
@@ -679,12 +717,12 @@ local function createInventoryContent(window)
     helperText:SetText("")
 
     local scrollFrame = CreateFrame("ScrollFrame", "MultiBotInventoryScrollFrame", itemsPanel, "UIPanelScrollFrameTemplate")
-    scrollFrame:SetPoint("TOPLEFT", itemsPanel, "TOPLEFT", 8, -8)
-    scrollFrame:SetPoint("BOTTOMRIGHT", itemsPanel, "BOTTOMRIGHT", -28, 8)
+    scrollFrame:SetPoint("TOPLEFT", itemsPanel, "TOPLEFT", INVENTORY_WINDOW_DEFAULTS.itemsPanelPadding, -INVENTORY_WINDOW_DEFAULTS.itemsPanelPadding)
+    scrollFrame:SetPoint("BOTTOMRIGHT", itemsPanel, "BOTTOMRIGHT", -INVENTORY_WINDOW_DEFAULTS.scrollBarAllowance, INVENTORY_WINDOW_DEFAULTS.itemsPanelPadding)
 
     local scrollChild = CreateFrame("Frame", nil, scrollFrame)
-    scrollChild:SetWidth(304)
-    scrollChild:SetHeight(260)
+    scrollChild:SetWidth(1)
+    scrollChild:SetHeight(INVENTORY_WINDOW_DEFAULTS.minCanvasHeight)
     scrollFrame:SetScrollChild(scrollChild)
 
     local actionHost = { inventoryRef = nil }
@@ -706,6 +744,11 @@ local function createInventoryContent(window)
     end
 
     local items = makeItemsContainer(itemsPanel, scrollChild)
+    items:updateLayout()
+
+    itemsPanel:SetScript("OnSizeChanged", function()
+        items:updateLayout()
+    end)
 
     return {
         root = root,
