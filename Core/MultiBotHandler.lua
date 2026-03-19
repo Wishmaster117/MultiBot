@@ -177,6 +177,14 @@ local function setSavedMainBarValue(key, value)
 	return value
 end
 
+MultiBot.GetSavedMainBarValue = function(key)
+	return getSavedMainBarValue(key)
+end
+
+MultiBot.SetSavedMainBarValue = function(key, value)
+	return setSavedMainBarValue(key, value)
+end
+
 local function getLayoutProfileStore()
 	local profile = MultiBot.db and MultiBot.db.profile
 	if not profile then return nil end

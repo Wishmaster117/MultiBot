@@ -55,6 +55,7 @@ local enGBValues = {
   ["info.combination"] = "I couldn't find any items that match this filter combination.I need to activate the Language-Selector first.",
   ["info.rights"] = "I have no GameMaster privileges.",
   ["info.reward"] = "Select Rewards",
+  ["info.reward.popup"] = "For this feature to work, playerbot.conf must be configured as follows:\nAiPlayerbot.AutoPickReward = no (required)\nAiPlayerbot.SyncQuestWithPlayer = 1 (recommended)",
   ["info.nothing"] = "Nothing is saved in this Slot.",
   ["info.shorts.bag"] = "Bag",
   ["info.shorts.dur"] = "Dur",

@@ -65,6 +65,10 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   Files: `UI/MultiBotSpellBookFrame.lua`, `UI/MultiBotSpell.lua`, `Core/MultiBotHandler.lua`.
   References: lines `330`, `294`, `173`, `1517`.
 
+- [x] **Reward window** (`MultiBot.reward`) migrated to a native AceGUI host window path with dedicated Reward module flow, stable close/paging behavior, and localized saved-state-aware config popup on activation.
+  Files: `UI/MultiBotRewardFrame.lua`, `Features/MultiBotReward.lua`, `Core/MultiBotInit.lua`.
+  References: `UI/MultiBotRewardFrame.lua:193`, `Features/MultiBotReward.lua:5`, `Core/MultiBotInit.lua:1510`.
+
 - [x] **Talents/Glyphs frame** (`MultiBot.talent`) migrated with AceGUI host integration for the talents/glyphs workflow while preserving tab-state, copy/apply actions, and custom glyph socket interactions.
   File: `UI/MultiBotTalentFrame.lua`.
   References: lines `5`, `23`, `119`, `2228`.

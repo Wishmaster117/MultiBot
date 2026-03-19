@@ -55,6 +55,7 @@ local zhCNValues = {
   ["info.combination"] = "没有适合这种组合的物品。我需要先激活语言选择器。",
   ["info.rights"] = "我没有GM权限。",
   ["info.reward"] = "选择奖励。",
+  ["info.reward.popup"] = "要使此功能正常工作，必须按如下方式配置 playerbot.conf：\nAiPlayerbot.AutoPickReward = no (必需)\nAiPlayerbot.SyncQuestWithPlayer = 1 (推荐)",
   ["info.shorts.bag"] = "背包",
   ["info.shorts.dur"] = "耐久度",
   ["info.shorts.xp"] = "经验值",
