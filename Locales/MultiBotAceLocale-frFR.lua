@@ -7,6 +7,7 @@ local frFRValues = {
   ["info.itemdestroyalert"] = "Voulez-vous VRAIMENT détruire cet objet ?\n%s",
   ["info.keydestroyalert"] = "Je ne peux pas vendre des clés.",
   ["info.itemsellalert"] = "Je ne peux pas vendre cet item.",
+  ["info.inventoryvendortarget"] = "Vous devez dabord sélectionner un vendeur.",
   ["info.butttitle"] = "|cffffd100MultiBot|r",
   ["info.buttontoggle"] = "|cff00ff00Clic gauche : afficher/masquer l’interface|r",
   ["info.buttonoptions"] = "|cffff0000Clic droit : options|r",

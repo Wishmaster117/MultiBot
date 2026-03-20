@@ -7,6 +7,7 @@ local deDEValues = {
   ["info.itemdestroyalert"] = "Möchtest du diesen Gegenstand WIRKLICH zerstören?\n%s",
   ["info.keydestroyalert"] = "Ich verkaufe keine Schlüssel.",
   ["info.itemsellalert"] = "Ich kann diesen Gegenstand nicht verkaufen.",
+  ["info.inventoryvendortarget"] = "Sie müssen zuerst einen Händler auswählen.",
   ["info.butttitle"] = "|cffffd100MultiBot|r",
   ["info.buttontoggle"] = "|cff00ff00Linksklick: UI umschalten|r",
   ["info.buttonoptions"] = "|cffff0000Rechtsklick: Optionen|r",

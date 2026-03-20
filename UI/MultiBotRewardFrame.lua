@@ -33,16 +33,9 @@ end
 local function requestBotInventory(botName)
 	if(botName == nil) then return end
 
-	local unitsButtons = MultiBot.frames
-		and MultiBot.frames["MultiBar"]
-		and MultiBot.frames["MultiBar"].frames
-		and MultiBot.frames["MultiBar"].frames["Units"]
-		and MultiBot.frames["MultiBar"].frames["Units"].buttons
-
-	local botButton = unitsButtons and unitsButtons[botName] or nil
-	if(botButton ~= nil) then botButton.waitFor = "INVENTORY" end
-
-	SendChatMessage("items", "WHISPER", nil, botName)
+	if(MultiBot.RequestBotInventory) then
+		MultiBot.RequestBotInventory(botName)
+	end
 end
 
 local function buildRow(parent, yOffset)

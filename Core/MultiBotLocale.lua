@@ -65,7 +65,7 @@ function MultiBot.GetLocaleString(key, fallback)
 
   if aceLocale then
     local activeLocale = aceLocale:GetLocale(LOCALE_NAMESPACE, true)
-    local activeValue = activeLocale and activeLocale[key]
+    local activeValue = type(activeLocale) == "table" and rawget(activeLocale, key) or nil
     if type(activeValue) == "string" then
       return activeValue
     end

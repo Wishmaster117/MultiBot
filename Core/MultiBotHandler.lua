@@ -246,6 +246,14 @@ local function setSavedLayoutValue(key, value)
 	return value
 end
 
+MultiBot.GetSavedLayoutValue = function(key)
+	return getSavedLayoutValue(key)
+end
+
+MultiBot.SetSavedLayoutValue = function(key, value)
+	return setSavedLayoutValue(key, value)
+end
+
 -- HANDLER --
 
 
@@ -1496,12 +1504,20 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		-- Inventory --
 
 		if(tButton.waitFor == "INVENTORY" and MultiBot.isInside(arg1, "Inventory", "背包")) then
-			local tItems = MultiBot.inventory.frames["Items"]
-			for key, value in pairs(tItems.buttons) do value:Hide() end
-			for key in pairs(tItems.buttons) do tItems.buttons[key] = nil end
-			MultiBot.inventory.setText("Title", MultiBot.doReplace(MultiBot.L("info.inventory"), "NAME", arg2))
-			MultiBot.inventory.name = arg2
-			tItems.index = 0
+			if(MultiBot.inventory and MultiBot.inventory.beginPayload) then
+				MultiBot.inventory:beginPayload(arg2)
+			else
+				local tItems = MultiBot.inventory.frames["Items"]
+				if(tItems.clear) then
+					tItems:clear()
+				else
+					for key, value in pairs(tItems.buttons) do value:Hide() end
+					for key in pairs(tItems.buttons) do tItems.buttons[key] = nil end
+				end
+				MultiBot.inventory.setText("Title", MultiBot.doReplace(MultiBot.L("info.inventory"), "NAME", arg2))
+				MultiBot.inventory.name = arg2
+				tItems.index = 0
+			end
 			tButton.waitFor = "ITEM"
 			SendChatMessage("stats", "WHISPER", nil, arg2)
 			return
@@ -1516,7 +1532,11 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 		if(tButton.waitFor == "ITEM") then
 			if(string.sub(arg1, 1, 3) == "---") then return end
-			MultiBot.addItem(MultiBot.inventory.frames["Items"], arg1)
+			if(MultiBot.inventory and MultiBot.inventory.appendItem) then
+				MultiBot.inventory:appendItem(arg1)
+			else
+				MultiBot.addItem(MultiBot.inventory.frames["Items"], arg1)
+			end
 			return
 		end
 
@@ -1542,7 +1562,11 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			end
 
 			if(MultiBot.inventory:IsVisible() and MultiBot.isInside(string.lower(arg1), "opened")) then
-				tButton.waitFor = "LOOT"
+				if(MultiBot.inventory and MultiBot.inventory.markLootPending) then
+					MultiBot.inventory:markLootPending(tButton.name)
+				else
+					tButton.waitFor = "LOOT"
+				end
 				return
 			end
 		end
@@ -1562,6 +1586,12 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			if(MultiBot.isInside(string.lower(arg1), "beute", "receives")) then
 				local tName = MultiBot.doSplit(arg1, " ")[1]
 				tButton = MultiBot.frames["MultiBar"].frames["Units"].buttons[tName]
+			end
+
+			if(tButton ~= nil and MultiBot.inventory and MultiBot.inventory.handleLootReceived
+				and MultiBot.inventory:handleLootReceived(tButton.name)) then
+				tButton.waitFor = ""
+				return
 			end
 
 			if(tButton ~= nil and tButton.waitFor == "LOOT" and tButton ~= nil) then

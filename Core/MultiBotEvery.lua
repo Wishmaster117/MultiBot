@@ -144,19 +144,14 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 		if(pButton.state) then
 			MultiBot.inventory:Hide()
 			pButton.setDisable()
-		else
-			local tUnits = MultiBot.frames["MultiBar"].frames["Units"]
-			for key, value in pairs(MultiBot.index.actives) do
-				if(tUnits.buttons[value].name ~= UnitName("player")) then
-					tUnits.frames[value].getButton("Inventory").setDisable()
-				end
-			end
-
-			pButton.setEnable()
-			MultiBot.inventory.name = pButton.getName()
-			tUnits.buttons[MultiBot.inventory.name].waitFor = "INVENTORY"
-			SendChatMessage("items", "WHISPER", nil, pButton.getName())
+			return
 		end
+
+		if(MultiBot.RequestBotInventory and MultiBot.RequestBotInventory(pButton.getName())) then
+			return
+		end
+
+		pButton.setEnable()
 	end
 
 	pFrame.addButton("Spellbook", 274, 0, "inv_misc_book_09", MultiBot.L("tips.every.spellbook")).setDisable()
