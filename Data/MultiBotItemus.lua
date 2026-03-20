@@ -43878,7 +43878,11 @@ MultiBot.data.itemus = {
 	{ 56806, 0, 3, 0, "Mini Thor" }
 }
 
-for key, value in pairs(MultiBot.data.itemus) do
+local itemus = MultiBot.itemus or {}
+itemus.index = itemus.index or {}
+MultiBot.itemus = itemus
+
+for _, value in pairs(MultiBot.data.itemus) do
 	local tLevel
 
 	if(value[2] < 11) then tLevel = "L10"
@@ -43894,76 +43898,36 @@ for key, value in pairs(MultiBot.data.itemus) do
 	local tRare = "R" .. MultiBot.IF(value[3] < 10, "0", "") .. value[3]
 	local tSlot = "S" .. MultiBot.IF(value[4] < 10, "0", "") .. value[4]
 
-	if(MultiBot.itemus.index[tLevel] == nil) then MultiBot.itemus.index[tLevel] = {} end
-	if(MultiBot.itemus.index[tLevel][tRare] == nil) then MultiBot.itemus.index[tLevel][tRare] = {} end
-	if(MultiBot.itemus.index[tLevel][tRare][tSlot] == nil) then MultiBot.itemus.index[tLevel][tRare][tSlot] = {} end
+	itemus.index[tLevel] = itemus.index[tLevel] or {}
+	itemus.index[tLevel][tRare] = itemus.index[tLevel][tRare] or {}
+	itemus.index[tLevel][tRare][tSlot] = itemus.index[tLevel][tRare][tSlot] or {}
 
-	if(string.sub(value[5], 1, 3) == "NPC") then
-		if(MultiBot.itemus.index[tLevel][tRare][tSlot]["NPC"] == nil) then MultiBot.itemus.index[tLevel][tRare][tSlot]["NPC"] = {} end
-		table.insert(MultiBot.itemus.index[tLevel][tRare][tSlot]["NPC"], { value[1], value[5] })
-	else
-		if(MultiBot.itemus.index[tLevel][tRare][tSlot]["PC"] == nil) then MultiBot.itemus.index[tLevel][tRare][tSlot]["PC"] = {} end
-		table.insert(MultiBot.itemus.index[tLevel][tRare][tSlot]["PC"], { value[1], value[5] })
-	end
+	local itemType = MultiBot.IF(string.sub(value[5], 1, 3) == "NPC", "NPC", "PC")
+	itemus.index[tLevel][tRare][tSlot][itemType] = itemus.index[tLevel][tRare][tSlot][itemType] or {}
+	table.insert(itemus.index[tLevel][tRare][tSlot][itemType], { value[1], value[5] })
 end
 
-MultiBot.itemus.addItems = function(pNow)
-	local tItems = MultiBot.itemus.frames["Items"]
-	local tTable = MultiBot.itemus.index[MultiBot.itemus.level]
-	if(tTable ~= nil) then tTable = tTable[MultiBot.itemus.rare] end
-	if(tTable ~= nil) then tTable = tTable[MultiBot.itemus.slot] end
-	if(tTable ~= nil) then tTable = tTable[MultiBot.itemus.type] end
+function itemus:getFilteredItems()
+	local tTable = self.index and self.index[self.level]
+	if(tTable ~= nil) then tTable = tTable[self.rare] end
+	if(tTable ~= nil) then tTable = tTable[self.slot] end
+	if(tTable ~= nil) then tTable = tTable[self.type] end
+	return tTable
+end
 
-	for key, value in pairs(tItems.buttons) do value:Hide() end
-	wipe(tItems.buttons)
+itemus.addItems = function(pNow)
+	local tTable = itemus:getFilteredItems()
+	if(itemus.renderItems) then
+		return itemus:renderItems(tTable or {}, pNow)
+	end
 
-	if(tTable == nil) then
-		SendChatMessage(MultiBot.L("info.combination"), "SAY")
-		MultiBot.itemus.setText("Pages", "0/0")
-		MultiBot.itemus.buttons[">"]:Hide()
-		MultiBot.itemus.buttons["<"]:Hide()
+	local tTotal = tTable and #tTable or 0
+	if(tTotal == 0) then
+		itemus.max = 0
+		itemus.now = 0
 		return
 	end
 
-	local tTotal = #tTable
-	MultiBot.itemus.max = math.ceil(tTotal / 112)
-	MultiBot.itemus.now = MultiBot.IF(pNow ~= nil, pNow, MultiBot.itemus.now)
-	MultiBot.itemus.setText("Pages", MultiBot.itemus.now .. "/" .. MultiBot.itemus.max)
-
-	if(MultiBot.itemus.max > MultiBot.itemus.now)
-	then MultiBot.itemus.buttons[">"]:Show()
-	else MultiBot.itemus.buttons[">"]:Hide()
-	end
-
-	if(MultiBot.itemus.now == 1)
-	then MultiBot.itemus.buttons["<"]:Hide()
-	else MultiBot.itemus.buttons["<"]:Show()
-	end
-
-	local tIndex = 0
-	local tFrom = (MultiBot.itemus.now - 1) * 112 + 1
-	local tTo = tFrom + 111
-
-	if(tTo > tTotal) then tTo = tTotal end
-
-	for i = tFrom, tTo do
-		local tID = tTable[i][1]
-		local tName = tTable[i][2]
-		local tIcon = GetItemIcon(tID)
-        local tLink = "|" .. MultiBot.itemus.color .. "|Hitem:" .. tID .. ":0:0:0:0:0:0:0:0:0:0|h[" .. tName .. "]|h|r"
-
-		local tX = (tIndex%8) * 38
-		local tY = math.floor(tIndex/8) * -37.25
-
-		if(tIcon == nil) then tIcon = "inv_misc_questionmark" end
-
-		local tButton = tItems.addButton(tID, tX, tY, tIcon, tLink)
-		tButton.id = tID
-
-		tButton.doLeft = function(pButton)
-			MultiBot.doDotWithTarget(".additem", pButton.id .. " 1")
-		end
-
-		tIndex = tIndex + 1
-	end
+	itemus.max = math.ceil(tTotal / 112)
+	itemus.now = MultiBot.IF(pNow ~= nil, pNow, itemus.now)
 end
