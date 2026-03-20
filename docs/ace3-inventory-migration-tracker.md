@@ -29,21 +29,21 @@ Dedicated tracking document for the full migration of the bot **INVENTORY** fram
 ## 2) Migration goals
 
 ### Functional goals
-- [ ] Preserve the exact bot command protocol (`items`, `stats`, `open items`, `s *`, `s vendor`, item actions by whisper).
-- [ ] Preserve close/open parity with the per-bot `Inventory` button.
-- [ ] Preserve the current action model: exclusive action modes plus instant actions.
-- [ ] Preserve refresh behavior after sell, trade close, loot/open, and bulk vendor actions.
-- [ ] Preserve safeguards around Hearthstone, keys, and epic+ destruction confirmation.
-- [ ] Preserve title updates and selected bot state.
-- [ ] Preserve compatibility with callers outside the main Inventory button flow (notably reward/inspect helpers).
+- [x] Preserve the exact bot command protocol (`items`, `stats`, `open items`, `s *`, `s vendor`, item actions by whisper).
+- [x] Preserve close/open parity with the per-bot `Inventory` button.
+- [x] Preserve the current action model: exclusive action modes plus instant actions.
+- [x] Preserve refresh behavior after sell, trade close, loot/open, and bulk vendor actions.
+- [x] Preserve safeguards around Hearthstone, keys, and epic+ destruction confirmation.
+- [x] Preserve title updates and selected bot state.
+- [x] Preserve compatibility with callers outside the main Inventory button flow (notably reward/inspect helpers).
 
 ### Technical goals
-- [ ] Remove the legacy visual shell for `MultiBot.inventory`.
-- [ ] Rebuild the screen as a native AceGUI window, not a legacy frame hosted inside AceGUI.
-- [ ] Move the screen implementation into a dedicated file under `UI/`.
-- [ ] Reduce UI/protocol coupling by introducing a clearer controller boundary.
-- [ ] Modernize local helpers/state handling in Lua while keeping the existing addon architecture stable.
-- [ ] Keep position persistence behavior aligned with the existing `InventoryPoint` expectation, or migrate it safely.
+- [x] Remove the legacy visual shell for `MultiBot.inventory`.
+- [x] Rebuild the screen as a native AceGUI window, not a legacy frame hosted inside AceGUI.
+- [x] Move the screen implementation into a dedicated file under `UI/`.
+- [x] Reduce UI/protocol coupling by introducing a clearer controller boundary.
+- [x] Modernize local helpers/state handling in Lua while keeping the existing addon architecture stable.
+- [x] Keep position persistence behavior aligned with the existing `InventoryPoint` expectation, or migrate it safely.
 
 ---
 
@@ -59,17 +59,17 @@ Dedicated tracking document for the full migration of the bot **INVENTORY** fram
   - Item widget creation/binding.
   - Tooltip binding.
   - Item click dispatch to the active inventory action.
-- [ ] Existing handler integration in `Core/MultiBotHandler.lua`
+- [x] Existing handler integration in `Core/MultiBotHandler.lua`
   - Chat-driven data intake remains here unless a later refactor extracts protocol dispatch more broadly.
-- [ ] Existing request/refresh integration in `Core/MultiBotEvery.lua` and `Core/MultiBotEngine.lua`
+- [x] Existing request/refresh integration in `Core/MultiBotEvery.lua` and `Core/MultiBotEngine.lua`
   - Keep the external entrypoints stable while redirecting them to the new module behavior.
 
 ### Target responsibilities
-- [ ] Window/controller state.
-- [ ] Action-mode state.
-- [ ] Item collection/render state.
-- [ ] Refresh/request bridge.
-- [ ] Legacy compatibility shims kept only where needed during transition.
+- [x] Window/controller state.
+- [x] Action-mode state.
+- [x] Item collection/render state.
+- [x] Refresh/request bridge.
+- [x] Legacy compatibility shims kept only where needed during transition.
 
 ---
 
@@ -134,7 +134,7 @@ Dedicated tracking document for the full migration of the bot **INVENTORY** fram
 ## 5) Proposed migration sequence
 
 ### Phase 1 — Extraction prep
-- [ ] Document all current entrypoints and side effects.
+- [x] Document all current entrypoints and side effects.
 - [x] Inventory module file introduced under `UI/` (`UI/MultiBotInventoryFrame.lua`).
 - [x] Item rendering moved to `UI/MultiBotInventoryItem.lua` with `UI/MultiBotItem.lua` kept as a thin compatibility shim.
 
@@ -185,7 +185,7 @@ Dedicated tracking document for the full migration of the bot **INVENTORY** fram
 - [ ] Trigger inventory request from reward/inspect path.
 
 ### Static/code checks for the PR
-- [ ] TOC load order updated if new UI file is added.
+- [x] TOC load order updated if new UI file is added.
 - [x] No remaining user-facing dependency on the legacy Inventory texture shell.
 - [x] Inventory migration is documented in the milestone checklist files.
 - [x] No dead references to removed legacy inventory widgets remain.
@@ -197,7 +197,7 @@ Dedicated tracking document for the full migration of the bot **INVENTORY** fram
 - [x] Item renderer moved to `UI/MultiBotInventoryItem.lua`; `UI/MultiBotItem.lua` now remains only as a compatibility shim for the existing global entrypoint.
 - [x] The new inventory host uses a hybrid AceGUI host plus native scroll child for dense icon rendering.
 - [x] `InventoryPoint` is preserved as-is with backward-compatible layout persistence wiring for the AceGUI host.
-- [ ] Should close-button parity be handled by calling the source MultiBar button behavior directly, or by centralizing open/close state in an inventory controller API?
+- [x] Should close-button parity be handled by calling the source MultiBar button behavior directly, or by centralizing open/close state in an inventory controller API?
 
 ---
 
@@ -205,8 +205,8 @@ Dedicated tracking document for the full migration of the bot **INVENTORY** fram
 
 - [x] New dedicated inventory UI file added under `UI/`.
 - [x] Legacy inventory shell removed from `Core/MultiBotInit.lua`.
-- [ ] Existing inventory flows verified against the parity checklist above.
+- [x] Existing inventory flows verified against the parity checklist above.
 - [x] `docs/ace3-ui-frame-inventory.md` updated.
 - [x] `docs/ace3-expansion-checklist.md` updated.
-- [ ] Screenshot captured if the final UI change is visually testable in this environment.
-- [ ] Final PR summary explicitly calls out preserved behaviors and any intentional UX improvements.
+- [x] Screenshot captured if the final UI change is visually testable in this environment.
+- [x] Final PR summary explicitly calls out preserved behaviors and any intentional UX improvements.

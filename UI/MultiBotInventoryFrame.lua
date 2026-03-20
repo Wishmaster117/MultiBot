@@ -5,16 +5,17 @@ local INVENTORY_WINDOW_DEFAULTS = {
     height = 470,
     pointX = -700,
     pointY = -144,
-    actionsWidth = 100,
+    actionsWidth = 110,
     panelInset = 8,
     panelGap = 6,
     buttonSize = 32,
     buttonSpacing = 36,
     buttonOffsetX = 6,
-    buttonStartOffsetY = 106,
-    modeLabelHeight = 34,
-    helperTextOffsetY = 6,
-    helperTextHeight = 36,
+    buttonStartOffsetY = 124,
+    modeLabelHeight = 36,
+    modeValueHeight = 20,
+    helperTextOffsetY = 4,
+    helperTextHeight = 28,
     instantActionsTopPadding = 18,
     instantActionColumns = 3,
     instantActionSpacingX = 29,
@@ -405,16 +406,20 @@ local function updateModeLabel()
         return
     end
 
-    local labels = {
-        [""] = MultiBot.L("info.action", "Action") .. ": -",
-        s = MultiBot.L("info.action", "Action") .. ": Sell",
-        e = MultiBot.L("info.action", "Action") .. ": Equip",
-        u = MultiBot.L("info.action", "Action") .. ": Use",
-        give = MultiBot.L("info.action", "Action") .. ": Trade",
-        destroy = MultiBot.L("info.action", "Action") .. ": Destroy",
+    local actionLabel = MultiBot.L("info.action", "Action")
+    local actionValues = {
+        [""] = "-",
+        s = "Sell",
+        e = "Equip",
+        u = "Use",
+        give = "Trade",
+        destroy = "Destroy",
     }
 
-    inventory.modeLabel:SetText(labels[inventory.action or ""] or (MultiBot.L("info.action", "Action") .. ": -"))
+    inventory.modeLabel:SetText(actionLabel .. ":")
+    if inventory.modeValueLabel then
+        inventory.modeValueLabel:SetText(actionValues[inventory.action or ""] or "-")
+    end
 end
 
 local function getInventoryWindowTitle(botName)
@@ -728,16 +733,27 @@ local function createInventoryContent(window)
     if modeLabel.SetWordWrap then
         modeLabel:SetWordWrap(true)
     end
-    modeLabel:SetText(MultiBot.L("info.action", "Action") .. ": Sell")
+    modeLabel:SetText(MultiBot.L("info.action", "Action") .. ":")
 
+    local modeValueLabel = leftPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    modeValueLabel:SetPoint("TOPLEFT", modeLabel, "BOTTOMLEFT", 0, -2)
+    modeValueLabel:SetPoint("TOPRIGHT", modeLabel, "BOTTOMRIGHT", 0, -2)
+    modeValueLabel:SetJustifyH("LEFT")
+    modeValueLabel:SetJustifyV("TOP")
+    modeValueLabel:SetHeight(INVENTORY_WINDOW_DEFAULTS.modeValueHeight)
+    modeValueLabel:SetText("Sell")
+    
     local helperText = leftPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
-    helperText:SetPoint("TOPLEFT", modeLabel, "BOTTOMLEFT", 0, -INVENTORY_WINDOW_DEFAULTS.helperTextOffsetY)
-    helperText:SetPoint("TOPRIGHT", modeLabel, "BOTTOMRIGHT", 0, -INVENTORY_WINDOW_DEFAULTS.helperTextOffsetY)
+    helperText:SetPoint("TOPLEFT", modeValueLabel, "BOTTOMLEFT", 0, -INVENTORY_WINDOW_DEFAULTS.helperTextOffsetY)
+    helperText:SetPoint("TOPRIGHT", modeValueLabel, "BOTTOMRIGHT", 0, -INVENTORY_WINDOW_DEFAULTS.helperTextOffsetY)
     helperText:SetJustifyH("LEFT")
     helperText:SetJustifyV("TOP")
     helperText:SetHeight(INVENTORY_WINDOW_DEFAULTS.helperTextHeight)
     if helperText.SetWordWrap then
         helperText:SetWordWrap(true)
+    end
+    if helperText.SetTextColor then
+        helperText:SetTextColor(1.0, 0.82, 0.0)
     end
     helperText:SetText("")
 
@@ -776,10 +792,12 @@ local function createInventoryContent(window)
     local instantColumns = math.max(1, INVENTORY_WINDOW_DEFAULTS.instantActionColumns or 1)
     local instantSpacingX = INVENTORY_WINDOW_DEFAULTS.instantActionSpacingX or INVENTORY_WINDOW_DEFAULTS.buttonSpacing
     local instantSpacingY = INVENTORY_WINDOW_DEFAULTS.instantActionSpacingY or INVENTORY_WINDOW_DEFAULTS.buttonSpacing
+    local instantGroupWidth = INVENTORY_WINDOW_DEFAULTS.buttonSize + ((instantColumns - 1) * instantSpacingX)
+    local instantStartX = math.floor((INVENTORY_WINDOW_DEFAULTS.actionsWidth - instantGroupWidth) / 2)
     for index, definition in ipairs(instantButtonDefs) do
         local column = (index - 1) % instantColumns
         local row = math.floor((index - 1) / instantColumns)
-        local xOffset = INVENTORY_WINDOW_DEFAULTS.buttonOffsetX + (column * instantSpacingX)
+        local xOffset = instantStartX + (column * instantSpacingX)
         local yOffset = instantStartY - (row * instantSpacingY)
         buttons[definition.key] = makeActionButton(leftPanel, definition.key, definition.texture, definition.tip, yOffset, xOffset)
     end
@@ -797,6 +815,7 @@ local function createInventoryContent(window)
         itemsPanel = itemsPanel,
         items = items,
         modeLabel = modeLabel,
+        modeValueLabel = modeValueLabel,
         helperText = helperText,
         actionHost = actionHost,
         buttons = buttons,
@@ -845,6 +864,7 @@ function MultiBot.InitializeInventoryFrame()
         frames = { Items = content.items },
         texts = { Title = content.modeLabel },
         modeLabel = content.modeLabel,
+        modeValueLabel = content.modeValueLabel,
         helperText = content.helperText,
         name = "",
         action = "s",
@@ -866,8 +886,8 @@ function MultiBot.InitializeInventoryFrame()
             return inventory
         end
 
-        if key == "Mode" and inventory.modeLabel then
-            inventory.modeLabel:SetText(value or "")
+        if key == "Mode" and inventory.modeValueLabel then
+            inventory.modeValueLabel:SetText(value or "")
         end
         return inventory
     end
