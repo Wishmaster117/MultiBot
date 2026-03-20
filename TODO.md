@@ -9,128 +9,93 @@ TODO
 * Afficher le pognon et les places de sacs dans la frame inventaire
 * La fenêtre inventaire doit se rafraichir par exemple quand on fait le bot bouffer il faut que ce qu'il a bouffé se décompte
 
+Ajouter unequipe item a multibot
 
-Ajouter la fonction unequipe à Multibit:
-Oui, beaucoup plus facilement que le déplacement d’items dans les sacs
-Oui, clairement c’est faisable en interface graphique, et même beaucoup plus proprement que l’idée de déplacer des items entre slots de sacs.
-La raison principale est que “unequip” est une action orientée équipement, donc elle colle naturellement à une vue d’inspection / slots d’équipement, alors que la réorganisation des sacs demande une logique de bag/slot bien plus lourde. 
+Oui, avec ue [item], c’est encore plus faisable
+Le fait que la commande soit :
 
-Pourquoi c’est un bon candidat pour la fenêtre d’inspection
-1) L’inspection est déjà centrée sur les slots d’équipement
-Le code existant manipule déjà très bien la notion de slot d’équipement :
+ue [item]
 
-dans le calcul d’ilvl, on parcourt explicitement les slots 1..18 ;
+change beaucoup la réponse : oui, c’est très faisable via interface graphique sur l’inspection d’un bot, et même de façon assez propre.
 
-dans itemus, il existe déjà une cartographie claire des slots d’équipement (S00, S01, etc.). 
+Pourquoi c’est une bonne nouvelle
+1) Le protocole actuel de MultiBot sait déjà très bien travailler “par item link”
+Dans la frame INVENTORY actuelle, les actions envoyées au bot sont déjà construites sous la forme :
 
-Donc si la commande ue fonctionne par slot ou peut être reliée à un slot, l’intégration UI est très naturelle.
+s [item]
 
-2) On a déjà un point d’entrée “Inspect”
-L’addon sait déjà lancer l’inspection d’un bot via InspectUnit(...) :
+e [item]
 
-depuis le bouton Inspect dans la Reward frame ;
+u [item]
 
-et ailleurs dans l’addon. 
+give [item]
 
-Donc graphiquement, il y a déjà un flux utilisateur existant :
+destroy [item]
 
-ouvrir l’inspection du bot,
+Donc l’addon a déjà exactement le pattern dont on a besoin :
 
-voir son équipement,
+récupérer un lien d’objet,
 
-déclencher une action sur un slot équipé.
+construire une commande whisper,
 
-Là où il faut être prudent
-Le vrai point clé : comment fonctionne exactement ue
-C’est ça qui détermine la qualité de l’intégration.
+l’envoyer au bot. 
 
-Cas A — si ue fonctionne par slot
-Exemple conceptuel :
+Du coup, ue [item] s’insère très naturellement dans le modèle existant.
 
-ue head
+Pourquoi l’inspection est un bon endroit pour ça
+2) L’inspection ouvre déjà le bon contexte bot
+Le code actuel a déjà un flux “Inspect bot” :
 
-ue 1
+le bouton Inspect appelle InspectUnit(tName),
 
-ue S01
+et déclenche aussi une requête d’inventaire du bot. 
 
-Dans ce cas, c’est idéal.
-Parce que la fenêtre d’inspection affiche précisément des slots. Tu peux donc faire une UI très propre :
+Donc on a déjà :
 
-clic droit sur un slot équipé → unequip ;
+le nom du bot cible,
 
-ou petit bouton contextuel sur chaque slot ;
+l’ouverture de l’inspection,
 
-ou mode “Unequip” activable, puis clic sur le slot.
+et un écosystème UI orienté équipement / inventaire.
 
-Cas B — si ue fonctionne par item
-Exemple conceptuel :
+3) Si la commande cible l’item équipé, le clic sur un slot inspecté devient naturel
+Comme ue attend un item link, la bonne UX serait simplement :
 
-ue [ItemLink]
+tu inspectes le bot,
 
-C’est encore faisable, mais un peu moins robuste :
+tu cliques un slot équipé,
 
-s’il y a ambiguïté,
+l’addon récupère le lien de l’objet porté,
 
-si deux objets identiques existent,
+puis envoie ue [item] au bot.
 
-ou si la commande backend attend autre chose qu’un lien standard.
+En pratique, c’est beaucoup plus simple que si la commande demandait un bag/slot exact.
 
-Cas C — si ue a une syntaxe spéciale côté playerbots
-Alors il faudra juste aligner l’UI sur cette syntaxe.
-Mais dans tous les cas, le concept UI reste pertinent.
+Est-ce qu’il y a un risque d’ambiguïté ?
+Oui, mais il est limité
+Si tu fais l’action depuis un slot d’équipement visible, l’ambiguïté est faible :
 
-Pourquoi c’est plus simple que sur la frame INVENTORY
-Dans INVENTORY, les clics d’items sont pensés pour :
+l’utilisateur clique précisément l’objet actuellement porté ;
 
-s
+l’UI connaît l’objet visé.
 
-e
+Le seul vrai point à valider côté backend, c’est :
 
-u
+est-ce que ue [item] fonctionne bien même si le bot possède aussi un autre exemplaire identique dans ses sacs ?
 
-give
+Mon intuition
+Souvent, si la commande backend interprète “unequip cet item équipé” à partir du lien, ça peut marcher correctement.
+Mais ce point dépend totalement du code playerbots.
 
-destroy 
+Donc :
 
-Donc la frame INVENTORY actuelle agit surtout sur des items dans les sacs.
+UI : oui
 
-À l’inverse, “unequip” est une action sur :
+ambiguïté backend : à vérifier
 
-un slot équipé,
-
-ou un item actuellement porté.
-
-Donc conceptuellement, la fenêtre d’inspection est le meilleur endroit :
-
-plus logique pour l’utilisateur ;
-
-plus lisible ;
-
-moins ambigu ;
-
-plus proche du modèle métier.
-
-Est-ce que l’addon actuel est déjà prêt pour ça ?
-Partiellement oui, mais pas complètement
-Ce qui existe déjà :
-
-l’addon sait ouvrir une inspection ; 
-
-l’addon sait envoyer des commandes whisper à un bot ; 
-
-l’addon a déjà des représentations de slots d’équipement dans d’autres zones du code. 
-
-Ce qui manque encore :
-
-une action UI dédiée “unequip” dans la vue d’inspection ;
-
-un mapping propre entre slot UI et payload ue ;
-
-et probablement un refresh fiable après l’action.
-
-Le point technique le plus important à ne pas oublier
-Le refresh après ue
-Aujourd’hui, le handler refresh l’inventaire lorsqu’il détecte des messages du bot du genre :
+Là où il faut rester attentif
+1) Le refresh après ue
+Aujourd’hui, le handler refresh l’inventaire sur certains retours comme :
 
 equipping
 
@@ -140,65 +105,72 @@ destroyed
 
 etc. 
 
-Donc si la commande ue renvoie un message différent, par exemple :
+Donc si ue [item] renvoie un texte différent :
 
 unequipping
 
 removed
 
-taking off
+taken off
 
 ou autre
 
-alors il faudra penser à raccrocher ce retour au refresh.
-Sinon l’action pourra marcher côté bot, mais l’UI ne se resynchronisera pas proprement.
+il faudra penser à brancher ce message sur un refresh, sinon :
 
-C’est probablement le principal piège de cette feature.
+l’action peut réussir côté bot,
 
-UX que je recommanderais, sans code
-Si tu veux une bonne intégration, je recommanderais plutôt :
+mais l’UI peut rester visuellement périmée.
 
-Option 1 — clic droit sur slot équipé
-Très naturel :
+C’est probablement le principal point technique.
 
-clic gauche = comportement standard / tooltip ;
+2) L’inspection standard n’est pas encore enrichie par MultiBot pour cette action
+Le code actuel montre bien le point d’entrée Inspect, mais pas encore une logique UI “unequip depuis le slot inspecté”. 
 
-clic droit = ue sur le slot.
+Donc oui, c’est faisable, mais aujourd’hui :
 
-Option 2 — mode “Unequip”
-Comme dans INVENTORY avec les modes d’action :
+ce n’est pas encore implémenté
 
-tu actives “Unequip” ;
+il faudrait ajouter cette interaction explicitement.
 
-puis tu cliques un slot inspecté.
+Quelle UX je recommanderais
+Avec ue [item], ma recommandation serait :
 
-C’est cohérent avec la philosophie existante de MultiBot, mais probablement un peu plus lourd que nécessaire.
+Option la plus propre : clic droit sur item équipé dans l’inspection
+Pourquoi ?
 
-Option 3 — petit bouton contextuel / menu sur slot
-Plus explicite, mais visuellement plus chargé.
+très naturel,
 
-Mon avis
-Le clic droit sur le slot équipé est probablement la meilleure UX :
+pas besoin d’un mode supplémentaire,
 
-rapide,
+cohérent avec une action contextuelle sur équipement,
 
-lisible,
+évite d’alourdir la fenêtre.
 
-très cohérent avec une frame d’inspection.
+Option alternative : petit bouton Unequip”
+Possible aussi, mais moins élégant.
 
-Mon diagnostic final
-Oui, c’est une bonne idée
-Et franchement, c’est bien plus réaliste et propre que de vouloir réordonner les sacs par drag & drop.
+Option que je recommanderais moins
+Un mode global “Unequip” comme dans INVENTORY.
+Ça marcherait, mais ce serait plus lourd qu’un simple clic contextuel sur un slot inspecté.
 
-Condition indispensable
-Il faut juste confirmer précisément :
+Donc, mon verdict
+Oui, ça vaut le coup
+Avec ue [item], oui, tu peux très raisonnablement exposer ça graphiquement dans la fenêtre d’inspection d’un bot.
 
-la syntaxe réelle de ue,
+Pourquoi c’est une bonne feature
+le protocole s’aligne avec le modèle actuel “commande par item link” ; 
 
-si elle cible un slot ou un item,
+l’inspection est déjà présente ; 
 
-quel message de retour elle produit, pour rebrancher le refresh.
+l’action est conceptuellement liée à l’équipement, donc mieux placée là que dans la grille INVENTORY.
 
-Si ces 3 points sont clairs, alors oui, ça vaut complètement le coup de l’exposer graphiquement dans l’inspection d’un bot.
+Ce qu’il faudra juste confirmer
+que ue [item] déséquipe bien l’objet porté quand on lui passe le lien ;
 
+quel message texte renvoie le bot après l’action ;
 
+si l’UI doit refresh seulement l’inventaire, ou aussi l’inspection.
+
+Réponse courte
+Oui, avec ue [item], c’est une très bonne candidate pour une intégration UI sur l’inspection d’un bot.
+Le vrai point de vigilance n’est pas l’interface, mais le refresh et la validation backend de la commande sur les objets équipés. 
