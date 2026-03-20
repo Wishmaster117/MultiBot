@@ -25,12 +25,12 @@
   - `UI/MultiBotPVPUI.lua` migration slice is completed for the targeted controls (bot selector dropdown + tab group with localized fallback compatibility).
   - `UI/MultiBotSpecUI.lua` migration slice is completed for the spec popup/inspect helper controls (AceGUI window path finalized: close-cross UX, layering fix, compact size, and position persistence on AceDB path).
   - `Features/MultiBotRaidus.lua` migration/polish slice is completed (AceGUI window hosting path, close state sync with main button, slot/group score badges, drag/drop feedback, and interactive contrast pass).
-  - `UI/MultiBotTalentFrame.lua` Talents/Glyphs host path is active on AceGUI (`Window` container + host layout + tab context updates), with legacy visual tab chrome intentionally preserved (`ChatFrameTab-*`) by design choice for now.
-  - Milestone 8 Talents/Glyphs remains **GO partiel**: ACE3 hosting path is in place, but full "no legacy dependency" validation is not yet declared closed.
+  - `UI/MultiBotTalentFrame.lua` Talents/Glyphs migration slice is completed for the targeted host workflow with preserved tab/copy/apply behavior and custom glyph interactions.
   - `UI/MultiBotSpellBookFrame.lua` + `UI/MultiBotSpell.lua` SpellBook migration slice is completed (AceGUI window host, dynamic slot/check generation, page-size normalization, and stateful chat-collection parsing/finish flow).
-  - Reward frame migration slice is completed (`UI/MultiBotRewardFrame.lua` + `Features/MultiBotReward.lua` + main-bar integration): native AceGUI host, deduped module API, saved-state-aware popup trigger, and parity close/paging behavior are in place. 
-  - Remaining screens continue screen-by-screen (quest popups and auxiliary prompts still pending).
- - **Milestone 9 (Localization and text pipeline):** Completed.
+  - Reward frame migration slice is completed (`UI/MultiBotRewardFrame.lua` + `Features/MultiBotReward.lua` + main-bar integration): native AceGUI host, deduped module API, saved-state-aware popup trigger, and parity close/paging behavior are in place.
+  - Inventory migration slice is completed (`UI/MultiBotInventoryFrame.lua` + `UI/MultiBotInventoryItem.lua` + handler/request integration): native AceGUI host, controller API, hybrid dense-icon grid, inventory-button sync, and final UI/header polish are validated in game.
+  - Quest popups, prompts, hunter family/search windows, and related AceGUI popup migrations are completed;
+- **Milestone 9 (Localization and text pipeline):** Completed.
   - Core locale loader + per-locale payload files are integrated (`Core/MultiBotLocale.lua`, `Locales/MultiBotAceLocale-*.lua`).
   - `Core/MultiBotInit.lua`, `Features/MultiBotRaidus.lua`, `Core/MultiBotEvery.lua`, `Core/MultiBotEngine.lua`, `Core/MultiBotHandler.lua`, `Strategies/MultiBotDruid.lua`, `Strategies/MultiBotPaladin.lua`, `Strategies/MultiBotMage.lua`, `Strategies/MultiBotWarlock.lua`, `Strategies/MultiBotPriest.lua`, `Strategies/MultiBotShaman.lua`, `Strategies/MultiBotHunter.lua`, `Strategies/MultiBotRogue.lua`, `Strategies/MultiBotDeathKnight.lua`, and `Strategies/MultiBotWarrior.lua` migration sweeps are completed for legacy `MultiBot.tips.*` runtime reads.
   - `Core/MultiBot.lua` bootstrap `MultiBot.tips` initialization lines were validated/documented as intentional non-runtime-tooltip compatibility paths.

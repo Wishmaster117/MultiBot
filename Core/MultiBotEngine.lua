@@ -1552,6 +1552,10 @@ end
 -- Rafraîchit l’inventaire du bot actuellement affiché dans la frame Inventory
 -- en rejouant le même flux que le bouton "Inventory" (waitFor = "INVENTORY" + "items").
 MultiBot.RefreshInventory = function(delay)
+	if MultiBot.inventory and MultiBot.inventory.refresh then
+		return MultiBot.inventory:refresh(delay)
+	end
+
 	-- Si la frame d’inventaire n’est pas visible ou pas encore initialisée, on ne fait rien
 	if not MultiBot.inventory or not MultiBot.inventory:IsVisible() then
 		return false

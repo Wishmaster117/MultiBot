@@ -7,6 +7,7 @@ local ruRUValues = {
   ["info.itemdestroyalert"] = "Вы ДЕЙСТВИТЕЛЬНО хотите уничтожить этот предмет?\n%s",
   ["info.keydestroyalert"] = "Я не продаю ключи.",
   ["info.itemsellalert"] = "Я не могу продать этот предмет.",
+  ["info.inventoryvendortarget"] = "Сначала вы должны выбрать продавца.",
   ["info.butttitle"] = "|cffffd100MultiBot|r",
   ["info.buttontoggle"] = "|cff00ff00ЛКМ: переключить интерфейс|r",
   ["info.buttonoptions"] = "|cffff0000ПКМ: настройки|r",
