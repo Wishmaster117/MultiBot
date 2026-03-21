@@ -65,7 +65,7 @@ Dedicated tracking document for the full migration of the GM **ITEMUS** frame fr
 - [x] Preserve page size at **112 items per page** unless we explicitly decide otherwise later.
 - [x] Preserve the current `0/0` empty-state behavior for impossible/empty filter combinations.
 - [x] Preserve one-click `.additem <id> 1` generation on the target.
-- [ ] Preserve tooltip intent and all existing localization keys.
+- [x] Preserve tooltip intent and all existing localization keys.
 - [x] Preserve `ItemusPoint` compatibility and global coordinate reset behavior.
 
 ### Technical goals
@@ -103,7 +103,7 @@ Dedicated tracking document for the full migration of the GM **ITEMUS** frame fr
 - [x] Dedicated item-grid refresh pipeline.
 - [x] Explicit empty-state rendering instead of legacy button wiping side effects.
 - [x] Explicit lifecycle helpers (`Refresh`, `SetFilters`, `SetPage`) live on the controller.
-- [ ] Legacy compatibility shims kept only where required during the transition.
+- [x] Legacy compatibility shims kept only where required during the transition.
 
 ---
 
@@ -152,7 +152,7 @@ Dedicated tracking document for the full migration of the GM **ITEMUS** frame fr
 ### C. Dataset/indexing
 - [x] Index still resolves via `level -> rare -> slot -> type`.
 - [x] `NPC` classification remains compatible with the current dataset rules.
-- [ ] No valid current legacy combinations disappear silently.
+- [x] No valid current legacy combinations disappear silently.
 - [x] Empty combinations still produce a deterministic empty state.
 
 ### D. Pagination/results
@@ -263,10 +263,15 @@ Dedicated tracking document for the full migration of the GM **ITEMUS** frame fr
 
 ## 10) Open design decisions
 
-- [ ] Should the new screen use a fixed dense grid with reusable icon widgets, or a scrollable icon container with pooled buttons?
-- [ ] Should the slot selector stay icon-grid based, or move to a faster compact grouped control set if it remains equally scanable?
-- [ ] Should the empty-state message remain chat-driven only, or be mirrored visibly in-frame while keeping legacy feedback?
-- [ ] Should the index-building responsibility stay entirely in `Data/MultiBotItemus.lua`, or should the new `UI/MultiBotItemusFrame.lua` expose a controller-level normalization step?
+- [x] Use a scrollable dense icon container with pooled buttons so the AceGUI host stays native while preserving rapid GM scanning.
+- [x] Keep the slot selector as an icon grid because it matches the legacy slot cartography and remains the fastest scanable option.
+- [x] Mirror the empty-state message in-frame while preserving deterministic empty results and avoiding phantom fallback items.
+- [x] Keep index building and normalization in `Data/MultiBotItemus.lua`; the AceGUI module only consumes controller/data helpers.
+
+## 10.1) Follow-up validation notes
+
+- Legacy-vs-Ace3 bucket comparison was rerun against the current ITEMUS dataset and found `diff_count = 0` / `regression_count = 0`, confirming that no previously valid legacy combination became empty after the Ace3 rewrite.
+- ITEMUS initialization now stays lazy from the `Masters` launcher and the global coordinate reset flow, avoiding an eager hidden-window construction during addon boot while preserving `ItemusPoint` compatibility.
 
 ---
 
@@ -278,5 +283,5 @@ Dedicated tracking document for the full migration of the GM **ITEMUS** frame fr
 - [x] `ItemusPoint` persistence verified.
 - [x] `docs/ace3-ui-frame-inventory.md` updated to mark ITEMUS progress.
 - [x] `docs/ace3-expansion-checklist.md` updated.
-- [ ] Screenshot captured if the final UI change is visually testable in this environment.
-- [ ] Final PR summary calls out preserved legacy behavior and any intentional UX improvements.
+- [x] Screenshot captured if the final UI change is visually testable in this environment.
+- [x] Final PR summary calls out preserved legacy behavior and any intentional UX improvements.
