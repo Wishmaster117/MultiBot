@@ -29,6 +29,8 @@ local ITEMUS_UI_DEFAULTS = {
     itemSpacingX = 38,
     itemSpacingY = 37,
     itemColumns = 8,
+    minItemColumns = 8,
+    itemMinGapX = 6,
     scrollBarAllowance = 28,
     itemsPanelPadding = 8,
     minCanvasHeight = 240,
@@ -401,10 +403,49 @@ local function ensureButtonPool(itemus, count)
     end
 end
 
-local function updateScrollCanvasHeight(itemus, visibleCount)
-    local totalRows = math.max(1, math.ceil(math.max(visibleCount, 1) / ITEMUS_UI_DEFAULTS.itemColumns))
-    local height = (totalRows - 1) * ITEMUS_UI_DEFAULTS.itemSpacingY + ITEMUS_UI_DEFAULTS.itemButtonSize + 12
+local function getItemusGridMetrics(itemus)
+    local defaultColumns = ITEMUS_UI_DEFAULTS.itemColumns
+    local minColumns = ITEMUS_UI_DEFAULTS.minItemColumns or defaultColumns
+    local buttonSize = ITEMUS_UI_DEFAULTS.itemButtonSize
+    local minStepX = buttonSize + (ITEMUS_UI_DEFAULTS.itemMinGapX or 0)
+    local fallbackWidth = ((defaultColumns - 1) * ITEMUS_UI_DEFAULTS.itemSpacingX) + buttonSize + 8
+    local availableWidth = fallbackWidth
+
+    if itemus and itemus.scrollFrame and itemus.scrollFrame.GetWidth then
+        local measuredWidth = tonumber(itemus.scrollFrame:GetWidth()) or 0
+        if measuredWidth > buttonSize then
+            availableWidth = measuredWidth
+        elseif itemus.scrollChild and itemus.scrollChild.GetWidth then
+            availableWidth = tonumber(itemus.scrollChild:GetWidth()) or fallbackWidth
+        end
+    end
+
+    local columns = math.max(minColumns, math.floor((availableWidth + (ITEMUS_UI_DEFAULTS.itemMinGapX or 0)) / minStepX))
+    if columns < 1 then
+        columns = defaultColumns
+    end
+
+    local stepX = ITEMUS_UI_DEFAULTS.itemSpacingX
+    if columns > 1 then
+        stepX = math.max(minStepX, math.floor((availableWidth - buttonSize) / (columns - 1)))
+    end
+
+    local contentWidth = ((columns - 1) * stepX) + buttonSize + 8
+    return {
+        columns = columns,
+        stepX = stepX,
+        stepY = ITEMUS_UI_DEFAULTS.itemSpacingY,
+        contentWidth = contentWidth,
+    }
+end
+
+local function updateScrollCanvasHeight(itemus, visibleCount, gridMetrics)
+    local metrics = gridMetrics or getItemusGridMetrics(itemus)
+    local totalRows = math.max(1, math.ceil(math.max(visibleCount, 1) / metrics.columns))
+    local height = (totalRows - 1) * metrics.stepY + ITEMUS_UI_DEFAULTS.itemButtonSize + 12
+    itemus.scrollChild:SetWidth(metrics.contentWidth)
     itemus.scrollChild:SetHeight(math.max(height, ITEMUS_UI_DEFAULTS.minCanvasHeight))
+    itemus.gridMetrics = metrics
 end
 
 local function resetItemusScroll(itemus)
@@ -717,10 +758,11 @@ local function renderItemButtonAtIndex(itemus, button, itemData, buttonIndex)
         icon = ITEMUS_ICON_FALLBACK
     end
 
-    local column = (buttonIndex - 1) % ITEMUS_UI_DEFAULTS.itemColumns
-    local row = math.floor((buttonIndex - 1) / ITEMUS_UI_DEFAULTS.itemColumns)
-    local xOffset = column * ITEMUS_UI_DEFAULTS.itemSpacingX
-    local yOffset = -(row * ITEMUS_UI_DEFAULTS.itemSpacingY)
+    local metrics = itemus.gridMetrics or getItemusGridMetrics(itemus)
+    local column = (buttonIndex - 1) % metrics.columns
+    local row = math.floor((buttonIndex - 1) / metrics.columns)
+    local xOffset = column * metrics.stepX
+    local yOffset = -(row * metrics.stepY)
 
     button:ClearAllPoints()
     button:SetPoint("TOPLEFT", itemus.scrollChild, "TOPLEFT", xOffset, yOffset)
@@ -940,8 +982,9 @@ function MultiBot.InitializeItemusFrame()
         self.emptyLabel:Hide()
 
         local visibleCount = #(payload.visibleItems or {})
+        local gridMetrics = getItemusGridMetrics(self)
         ensureButtonPool(self, visibleCount)
-        updateScrollCanvasHeight(self, visibleCount)
+        updateScrollCanvasHeight(self, visibleCount, gridMetrics)
         resetItemusScroll(self)
 
         local buttonIndex = 1
