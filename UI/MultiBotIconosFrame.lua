@@ -1,7 +1,9 @@
 if not MultiBot then return end
 
 local ICONOS_LAYOUT_KEY = "IconosPoint"
-local ICONOS_PAGE_SIZE = 143
+local ICONOS_ICON_COLUMNS = 11
+local ICONOS_ICON_ROWS = 13
+local ICONOS_PAGE_SIZE = ICONOS_ICON_COLUMNS * ICONOS_ICON_ROWS
 local ICONOS_ICON_SIZE = 32
 local ICONOS_ICON_SPACING_X = 38
 local ICONOS_ICON_SPACING_Y = 37
@@ -380,7 +382,7 @@ local function getVisibleIconosEntries(iconos)
 
     local filteredEntries = {}
     for _, entry in ipairs(visibleSourceEntries) do
-        local isMatch = false
+        local isMatch
         if searchMode == "path" then
             isMatch = entry.pathLower:find(searchQuery, 1, true) ~= nil
         else
