@@ -81,6 +81,10 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   Files: `UI/MultiBotItemusFrame.lua`, `Data/MultiBotItemus.lua`, `Core/MultiBotInit.lua`.
   References: `UI/MultiBotItemusFrame.lua:3`, `Data/MultiBotItemus.lua:43881`, `Core/MultiBotInit.lua:1661`.
 
+- [x] **ICONOS frame** (`MultiBot.iconos`) migrated to a native AceGUI host window with a dedicated UI module, legacy shell removal, dense 112-icon grid parity, persistent `IconosPoint` anchoring, ESC close support, in-window path reuse, and a first UX uplift pass with search (`ALL/PATH`) + original/A-Z ordering + selected-icon preview + jump-to-letter.
+  Files: `UI/MultiBotIconosFrame.lua`, `Core/MultiBotInit.lua`, `UI/MultiBotIconos.lua`, `Core/MultiBotHandler.lua`.
+  References: `UI/MultiBotIconosFrame.lua:1`, `Core/MultiBotInit.lua:1675`, `Core/MultiBotInit.lua:3189`, `UI/MultiBotIconos.lua:1`, `Core/MultiBotHandler.lua:265`.
+
 
 ---
 
