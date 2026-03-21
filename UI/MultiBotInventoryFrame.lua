@@ -742,7 +742,7 @@ local function createInventoryContent(window)
     modeValueLabel:SetJustifyV("TOP")
     modeValueLabel:SetHeight(INVENTORY_WINDOW_DEFAULTS.modeValueHeight)
     modeValueLabel:SetText("Sell")
-    
+
     local helperText = leftPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
     helperText:SetPoint("TOPLEFT", modeValueLabel, "BOTTOMLEFT", 0, -INVENTORY_WINDOW_DEFAULTS.helperTextOffsetY)
     helperText:SetPoint("TOPRIGHT", modeValueLabel, "BOTTOMRIGHT", 0, -INVENTORY_WINDOW_DEFAULTS.helperTextOffsetY)

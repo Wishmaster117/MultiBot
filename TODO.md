@@ -9,6 +9,11 @@ TODO
 * Afficher le pognon et les places de sacs dans la frame inventaire
 * La fenêtre inventaire doit se rafraichir par exemple quand on fait le bot bouffer il faut que ce qu'il a bouffé se décompte
 
+* Voir si on garde itemus (fixed grid vs pooled scroll container,)
+en Fixed grid = “j’ai toujours la même grille visible, je change seulement son contenu”.
+ou on bouge vers 
+Pooled scroll container = “j’ai un conteneur scrollable et je réutilise dynamiquement des boutons pour afficher les items”.
+
 
 Ajouter la fonction unequipe à Multibit:
 Oui, beaucoup plus facilement que le déplacement d’items dans les sacs
