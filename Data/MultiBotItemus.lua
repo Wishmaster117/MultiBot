@@ -43878,92 +43878,170 @@ MultiBot.data.itemus = {
 	{ 56806, 0, 3, 0, "Mini Thor" }
 }
 
-for key, value in pairs(MultiBot.data.itemus) do
-	local tLevel
+local ITEMUS_DEFAULT_PAGE_SIZE = 112
+local ITEMUS_DEFAULT_STATE = {
+	level = "L10",
+	rare = "R00",
+	slot = "S00",
+	type = "PC",
+	color = "cff9d9d9d",
+	now = 1,
+	max = 1,
+}
 
-	if(value[2] < 11) then tLevel = "L10"
-	elseif(value[2] < 21) then tLevel = "L20"
-	elseif(value[2] < 31) then tLevel = "L30"
-	elseif(value[2] < 41) then tLevel = "L40"
-	elseif(value[2] < 51) then tLevel = "L50"
-	elseif(value[2] < 61) then tLevel = "L60"
-	elseif(value[2] < 71) then tLevel = "L70"
-	else tLevel = "L80"
+local itemus = MultiBot.itemus or {}
+itemus.index = itemus.index or {}
+MultiBot.itemus = itemus
+
+local function copyItemusStateDefaults()
+	return {
+		level = ITEMUS_DEFAULT_STATE.level,
+		rare = ITEMUS_DEFAULT_STATE.rare,
+		slot = ITEMUS_DEFAULT_STATE.slot,
+		type = ITEMUS_DEFAULT_STATE.type,
+		color = ITEMUS_DEFAULT_STATE.color,
+		now = ITEMUS_DEFAULT_STATE.now,
+		max = ITEMUS_DEFAULT_STATE.max,
+	}
+end
+
+function itemus:getDefaultState()
+	return copyItemusStateDefaults()
+end
+
+function itemus:applyStateDefaults()
+	local defaults = copyItemusStateDefaults()
+	for key, value in pairs(defaults) do
+		if(self[key] == nil) then
+			self[key] = value
+		end
 	end
 
+	return self
+end
+
+local function buildItemusLevelBucket(level)
+	if(level < 11) then return "L10" end
+	if(level < 21) then return "L20" end
+	if(level < 31) then return "L30" end
+	if(level < 41) then return "L40" end
+	if(level < 51) then return "L50" end
+	if(level < 61) then return "L60" end
+	if(level < 71) then return "L70" end
+	return "L80"
+end
+
+for _, value in pairs(MultiBot.data.itemus) do
+	local tLevel = buildItemusLevelBucket(value[2])
 	local tRare = "R" .. MultiBot.IF(value[3] < 10, "0", "") .. value[3]
 	local tSlot = "S" .. MultiBot.IF(value[4] < 10, "0", "") .. value[4]
 
-	if(MultiBot.itemus.index[tLevel] == nil) then MultiBot.itemus.index[tLevel] = {} end
-	if(MultiBot.itemus.index[tLevel][tRare] == nil) then MultiBot.itemus.index[tLevel][tRare] = {} end
-	if(MultiBot.itemus.index[tLevel][tRare][tSlot] == nil) then MultiBot.itemus.index[tLevel][tRare][tSlot] = {} end
+	itemus.index[tLevel] = itemus.index[tLevel] or {}
+	itemus.index[tLevel][tRare] = itemus.index[tLevel][tRare] or {}
+	itemus.index[tLevel][tRare][tSlot] = itemus.index[tLevel][tRare][tSlot] or {}
 
-	if(string.sub(value[5], 1, 3) == "NPC") then
-		if(MultiBot.itemus.index[tLevel][tRare][tSlot]["NPC"] == nil) then MultiBot.itemus.index[tLevel][tRare][tSlot]["NPC"] = {} end
-		table.insert(MultiBot.itemus.index[tLevel][tRare][tSlot]["NPC"], { value[1], value[5] })
-	else
-		if(MultiBot.itemus.index[tLevel][tRare][tSlot]["PC"] == nil) then MultiBot.itemus.index[tLevel][tRare][tSlot]["PC"] = {} end
-		table.insert(MultiBot.itemus.index[tLevel][tRare][tSlot]["PC"], { value[1], value[5] })
-	end
+	local itemType = MultiBot.IF(string.sub(value[5], 1, 3) == "NPC", "NPC", "PC")
+	itemus.index[tLevel][tRare][tSlot][itemType] = itemus.index[tLevel][tRare][tSlot][itemType] or {}
+	table.insert(itemus.index[tLevel][tRare][tSlot][itemType], { value[1], value[5] })
 end
 
-MultiBot.itemus.addItems = function(pNow)
-	local tItems = MultiBot.itemus.frames["Items"]
-	local tTable = MultiBot.itemus.index[MultiBot.itemus.level]
-	if(tTable ~= nil) then tTable = tTable[MultiBot.itemus.rare] end
-	if(tTable ~= nil) then tTable = tTable[MultiBot.itemus.slot] end
-	if(tTable ~= nil) then tTable = tTable[MultiBot.itemus.type] end
+function itemus:getFilteredItems(filterState)
+	self:applyStateDefaults()
 
-	for key, value in pairs(tItems.buttons) do value:Hide() end
-	wipe(tItems.buttons)
+	local filters = filterState or self
+	local tTable = self.index and self.index[filters.level]
+	if(tTable ~= nil) then tTable = tTable[filters.rare] end
+	if(tTable ~= nil) then tTable = tTable[filters.slot] end
+	if(tTable ~= nil) then tTable = tTable[filters.type] end
+	return tTable
+end
 
-	if(tTable == nil) then
-		SendChatMessage(MultiBot.L("info.combination"), "SAY")
-		MultiBot.itemus.setText("Pages", "0/0")
-		MultiBot.itemus.buttons[">"]:Hide()
-		MultiBot.itemus.buttons["<"]:Hide()
-		return
+function itemus:setFilterState(updates)
+	self:applyStateDefaults()
+
+	local nextUpdates = updates or {}
+	if(nextUpdates.level ~= nil) then self.level = nextUpdates.level end
+	if(nextUpdates.rare ~= nil) then self.rare = nextUpdates.rare end
+	if(nextUpdates.slot ~= nil) then self.slot = nextUpdates.slot end
+	if(nextUpdates.type ~= nil) then self.type = nextUpdates.type end
+	if(nextUpdates.color ~= nil) then self.color = nextUpdates.color end
+	if(nextUpdates.now ~= nil) then self.now = tonumber(nextUpdates.now) or self.now end
+
+	return self
+end
+
+function itemus:setPageState(page, pageSize)
+	self:applyStateDefaults()
+
+	local tRequestedPage = tonumber(page)
+	if(tRequestedPage == nil) then
+		return self.now
 	end
 
+	local tPageData = self:getPagedItems(tRequestedPage, pageSize)
+	self.max = tPageData.maxPage or 0
+	self.now = tPageData.currentPage or 0
+	return self.now
+end
+
+function itemus:getPagedItems(pNow, pageSize)
+	self:applyStateDefaults()
+
+	local tTable = self:getFilteredItems() or {}
+	local tPageSize = tonumber(pageSize) or ITEMUS_DEFAULT_PAGE_SIZE
 	local tTotal = #tTable
-	MultiBot.itemus.max = math.ceil(tTotal / 112)
-	MultiBot.itemus.now = MultiBot.IF(pNow ~= nil, pNow, MultiBot.itemus.now)
-	MultiBot.itemus.setText("Pages", MultiBot.itemus.now .. "/" .. MultiBot.itemus.max)
-
-	if(MultiBot.itemus.max > MultiBot.itemus.now)
-	then MultiBot.itemus.buttons[">"]:Show()
-	else MultiBot.itemus.buttons[">"]:Hide()
+	if(tTotal == 0) then
+		self.max = 0
+		self.now = 0
+		return {
+			allItems = tTable,
+			visibleItems = {},
+			total = 0,
+			maxPage = 0,
+			currentPage = 0,
+			fromIndex = 0,
+			toIndex = 0,
+			pageSize = tPageSize,
+		}
 	end
 
-	if(MultiBot.itemus.now == 1)
-	then MultiBot.itemus.buttons["<"]:Hide()
-	else MultiBot.itemus.buttons["<"]:Show()
+	local tMax = math.ceil(tTotal / tPageSize)
+	local tNow = tonumber(MultiBot.IF(pNow ~= nil, pNow, self.now or 1)) or 1
+	if(tNow < 1) then tNow = 1 end
+	if(tNow > tMax) then tNow = tMax end
+
+	local tFrom = ((tNow - 1) * tPageSize) + 1
+	local tTo = math.min(tTotal, tFrom + tPageSize - 1)
+	local tVisibleItems = {}
+	for itemIndex = tFrom, tTo do
+		table.insert(tVisibleItems, tTable[itemIndex])
 	end
 
-	local tIndex = 0
-	local tFrom = (MultiBot.itemus.now - 1) * 112 + 1
-	local tTo = tFrom + 111
+	self.max = tMax
+	self.now = tNow
 
-	if(tTo > tTotal) then tTo = tTotal end
+	return {
+		allItems = tTable,
+		visibleItems = tVisibleItems,
+		total = tTotal,
+		maxPage = tMax,
+		currentPage = tNow,
+		fromIndex = tFrom,
+		toIndex = tTo,
+		pageSize = tPageSize,
+	}
+end
 
-	for i = tFrom, tTo do
-		local tID = tTable[i][1]
-		local tName = tTable[i][2]
-		local tIcon = GetItemIcon(tID)
-        local tLink = "|" .. MultiBot.itemus.color .. "|Hitem:" .. tID .. ":0:0:0:0:0:0:0:0:0:0|h[" .. tName .. "]|h|r"
+function itemus:getRenderPayload(pNow, pageSize)
+	return self:getPagedItems(pNow, pageSize)
+end
 
-		local tX = (tIndex%8) * 38
-		local tY = math.floor(tIndex/8) * -37.25
-
-		if(tIcon == nil) then tIcon = "inv_misc_questionmark" end
-
-		local tButton = tItems.addButton(tID, tX, tY, tIcon, tLink)
-		tButton.id = tID
-
-		tButton.doLeft = function(pButton)
-			MultiBot.doDotWithTarget(".additem", pButton.id .. " 1")
-		end
-
-		tIndex = tIndex + 1
+itemus.addItems = function(pNow)
+	local pageData = itemus:getRenderPayload(pNow, ITEMUS_DEFAULT_PAGE_SIZE)
+	if(itemus.renderItems) then
+		return itemus:renderItems(pageData)
 	end
+
+	itemus.max = pageData.maxPage or 0
+	itemus.now = pageData.currentPage or 0
 end

@@ -77,6 +77,11 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   File: `UI/MultiBotTalentFrame.lua`.
   References: lines `5`, `23`, `119`, `2228`.
 
+- [x] **ITEMUS frame** (`MultiBot.itemus`) migrated to a native AceGUI host window with a dedicated UI module, controller-owned paged payloads, lazy launcher/reset initialization, preserved filter semantics (`Level`/`Rare`/`Slot`/`Type`), dense item grid, and localized in-window guidance based on the existing `tips.game.itemus` text.
+  Files: `UI/MultiBotItemusFrame.lua`, `Data/MultiBotItemus.lua`, `Core/MultiBotInit.lua`.
+  References: `UI/MultiBotItemusFrame.lua:3`, `Data/MultiBotItemus.lua:43881`, `Core/MultiBotInit.lua:1661`.
+
+
 ---
 
 ## 3) Embedded controls inside existing screens (likely migrate with owning screen)
