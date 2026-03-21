@@ -262,7 +262,7 @@ local POINT_FRAME_BINDINGS = {
 	{ saveKey = "InventoryPoint", getFrame = function() return MultiBot.inventory end },
 	{ saveKey = "SpellbookPoint", getFrame = function() return MultiBot.spellbook end },
 	{ saveKey = "ItemusPoint", getFrame = function() return MultiBot.itemus end },
-	{ saveKey = "IconosPoint", getFrame = function() return MultiBot.iconos end },
+	{ saveKey = "IconosPoint", getFrame = function() return MultiBot.iconos and (MultiBot.iconos.frame or MultiBot.iconos) end },
 	{ saveKey = "StatsPoint", getFrame = function() return MultiBot.stats end },
 	{ saveKey = "RewardPoint", getFrame = function() return MultiBot.reward end },
 	{ saveKey = "TalentPoint", getFrame = function() return MultiBot.talent end },

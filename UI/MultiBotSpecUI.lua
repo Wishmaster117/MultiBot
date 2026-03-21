@@ -4,7 +4,16 @@ Adds a “Set talents” button on each bot frame and builds a dynamic dropdown 
 with all spec builds returned by the command  /w <bot> "talents spec list".
 ]]--
 
-local icons = MultiBot.data.iconos or {}
+local function getSpecIcons()
+  local dataProvider = MultiBot.GetIconosEntries
+  local icons = type(dataProvider) == "function" and dataProvider() or (MultiBot.data and MultiBot.data.iconos)
+  if type(icons) ~= "table" then
+    return {}
+  end
+  return icons
+end
+
+local icons = getSpecIcons()
 
 local defaultIcon = "Interface\\Icons\\Achievement_Reputation_08"
 

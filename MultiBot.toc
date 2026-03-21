@@ -65,11 +65,12 @@ UI\MultiBotRewardFrame.lua
 UI\MultiBotInventoryFrame.lua
 UI\MultiBotInventoryItem.lua
 UI\MultiBotItemusFrame.lua
+UI\MultiBotIconosFrame.lua
 UI\MultiBotItem.lua
 UI\MultiBotTalentFrame.lua
 Core\MultiBotInit.lua
-UI\MultiBotIconos.lua
 UI\MultiBotSpecUI.lua
+Data\MultiBotIconos.lua
 Data\MultiBotItemus.lua
 UI\MultiBotTalent.lua
 UI\MultiBotPVPUI.lua
