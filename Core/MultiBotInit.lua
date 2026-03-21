@@ -1,8 +1,8 @@
 -- Minimap config is resolved through MultiBot.GetMinimapConfig().
 
-local MB_INVENTORY_LABEL = INVENTORY_TOOLTIP or BAGSLOT or "Inventory"
+--local MB_INVENTORY_LABEL = INVENTORY_TOOLTIP or BAGSLOT or "Inventory"
 local MB_PAGE_DEFAULT = string.format("%d/%d", 0, 0)
-local MB_TAB_TITLE_DEFAULT = UNKNOWN or ""
+--local MB_TAB_TITLE_DEFAULT = UNKNOWN or ""
 
 -- =====================================================================
 --  MINIMAP BUTTON
@@ -1661,9 +1661,14 @@ function MultiBot.BuildGmUI(tMultiBar)
   local UTIL_BUTTONS = {
     { label="Itemus", y= 68, icon="inv_box_01",        tip=MultiBot.L("tips.game.itemus"),
       click=function()
-        if not MultiBot.itemus then return end
-        if MultiBot.ShowHideSwitch(MultiBot.itemus) and MultiBot.itemus.addItems then
-          MultiBot.itemus.addItems()
+        local itemus = MultiBot.itemus or (MultiBot.InitializeItemusFrame and MultiBot.InitializeItemusFrame())
+        if not itemus then return end
+        if itemus.Toggle then
+          itemus:Toggle()
+          return
+        end
+        if MultiBot.ShowHideSwitch(itemus) and itemus.addItems then
+          itemus.addItems()
         end
       end },
 

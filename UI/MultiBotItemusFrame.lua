@@ -2,6 +2,13 @@ if not MultiBot then return end
 
 local ITEMUS_LAYOUT_KEY = "ItemusPoint"
 local ITEMUS_PAGE_SIZE = 112
+local ITEMUS_ICON_FALLBACK = "Interface\\Icons\\INV_Misc_QuestionMark"
+local ITEMUS_FILTER_FIELD_BY_KIND = {
+    Level = "level",
+    Rare = "rare",
+    Slot = "slot",
+    Type = "type",
+}
 
 local ITEMUS_UI_DEFAULTS = {
     width = 760,
@@ -55,10 +62,43 @@ local function getDefinitionHeadline(definitions, value, fallback)
     return fallback or tostring(value or "")
 end
 
+local function getLocalizedDescription(localeKey, fallback)
+    local raw = MultiBot.L and MultiBot.L(localeKey) or nil
+    local textValue = stripTooltipFormatting(raw or fallback or "")
+    local descriptionLines = {}
+    local lineIndex = 0
+
+    for line in string.gmatch(textValue, "([^\n]+)") do
+        lineIndex = lineIndex + 1
+        local trimmed = line:gsub("^%s+", ""):gsub("%s+$", "")
+        if lineIndex > 1 then
+            if trimmed == "" then
+                break
+            end
+            table.insert(descriptionLines, trimmed)
+        end
+    end
+
+    if #descriptionLines == 0 then
+        return fallback or ""
+    end
+
+    return table.concat(descriptionLines, " ")
+end
+
 local function getItemusCountLabel(total)
     local count = tonumber(total) or 0
     local label = ((count == 1) and (ITEM or nil)) or ITEMS or "items"
     return string.format("%d %s", count, tostring(label))
+end
+
+local function getItemusResultsLabel(total, fromIndex, toIndex)
+    local count = tonumber(total) or 0
+    if count <= 0 or not fromIndex or not toIndex then
+        return getItemusCountLabel(count)
+    end
+
+    return string.format("%d-%d / %s", fromIndex, toIndex, getItemusCountLabel(count))
 end
 
 local function getItemusAceGUI()
@@ -286,7 +326,7 @@ local function createItemButton(parent, itemus)
 
     button.icon = button:CreateTexture(nil, "ARTWORK")
     button.icon:SetAllPoints(button)
-    button.icon:SetTexture(MultiBot.SafeTexturePath("Interface\\Icons\\INV_Misc_QuestionMark"))
+    button.icon:SetTexture(MultiBot.SafeTexturePath(ITEMUS_ICON_FALLBACK))
 
     button.border = button:CreateTexture(nil, "OVERLAY")
     button.border:SetTexture("Interface\\AddOns\\MultiBot\\Icons\\border.blp")
@@ -334,7 +374,18 @@ local function resetItemButton(button)
     button.link = nil
 
     if button.icon then
-        button.icon:SetTexture(MultiBot.SafeTexturePath("Interface\\Icons\\INV_Misc_QuestionMark"))
+        button.icon:SetTexture(MultiBot.SafeTexturePath(ITEMUS_ICON_FALLBACK))
+    end
+end
+
+local function clearItemButtonPool(itemus)
+    if not itemus or not itemus.itemButtons then
+        return
+    end
+
+    for _, button in ipairs(itemus.itemButtons) do
+        resetItemButton(button)
+        button:Hide()
     end
 end
 
@@ -354,6 +405,12 @@ local function updateScrollCanvasHeight(itemus, visibleCount)
     local totalRows = math.max(1, math.ceil(math.max(visibleCount, 1) / ITEMUS_UI_DEFAULTS.itemColumns))
     local height = (totalRows - 1) * ITEMUS_UI_DEFAULTS.itemSpacingY + ITEMUS_UI_DEFAULTS.itemButtonSize + 12
     itemus.scrollChild:SetHeight(math.max(height, ITEMUS_UI_DEFAULTS.minCanvasHeight))
+end
+
+local function resetItemusScroll(itemus)
+    if itemus and itemus.scrollFrame and itemus.scrollFrame.SetVerticalScroll then
+        itemus.scrollFrame:SetVerticalScroll(0)
+    end
 end
 
 local function setPageLabel(itemus, label)
@@ -431,6 +488,11 @@ local SLOT_OPTIONS = {
     { value = "S28", icon = "inv_relics_idolofrejuvenation", tipKey = "tips.itemus.slot.S28" },
 }
 
+local TYPE_OPTIONS = {
+    { value = "PC", icon = "inv_box_01", tipKey = "tips.itemus.type", label = "PC" },
+    { value = "NPC", icon = "inv_misc_head_clockworkgnome_01", tipKey = "tips.itemus.type", label = "NPC" },
+}
+
 local function syncFilterSelectionButtons(itemus)
     local groups = itemus.filterButtons or {}
     for _, button in ipairs(groups.Level or {}) do
@@ -451,24 +513,23 @@ local function syncFilterSelectionButtons(itemus)
     end
 end
 
-local function applyFilter(itemus, kind, value, options)
-    if kind == "Level" then
-        itemus.level = value
-    elseif kind == "Rare" then
-        itemus.rare = value
-        if options and options.color then
-            itemus.color = options.color
+local function applyItemusFilterUpdates(itemus, updates)
+    if not itemus or type(updates) ~= "table" then
+        return
+    end
+
+    for kind, value in pairs(updates) do
+        local field = ITEMUS_FILTER_FIELD_BY_KIND[kind]
+        if field ~= nil and value ~= nil then
+            itemus[field] = value
         end
-    elseif kind == "Slot" then
-        itemus.slot = value
-    elseif kind == "Type" then
-        itemus.type = value
+    end
+
+    if updates.RareColor ~= nil then
+        itemus.color = updates.RareColor
     end
 
     syncFilterSelectionButtons(itemus)
-    if itemus.addItems then
-        itemus.addItems(1)
-    end
 end
 
 local function createButtonGrid(parent, itemus, kind, definitions, config)
@@ -492,7 +553,15 @@ local function createButtonGrid(parent, itemus, kind, definitions, config)
             button:setLabel(definition.label)
         end
         button:SetScript("OnClick", function(self)
-            applyFilter(itemus, kind, self.value, definition)
+            if itemus and itemus.SetFilters then
+                itemus:SetFilters({
+                    [kind] = self.value,
+                    RareColor = definition.color,
+                }, {
+                    page = 1,
+                    refresh = true,
+                })
+            end
         end)
         table.insert(buttons, button)
     end
@@ -550,15 +619,10 @@ local function createItemusContent(window, itemus)
     addSimpleBackdrop(slotPanel, 0.35)
     addSectionTitle(slotPanel, getLocalizedHeadline("tips.itemus.slot.master", "Slot"))
 
-    local typeButtons = {
-        { value = "PC", icon = "inv_box_01", tipKey = "tips.itemus.type", label = "PC" },
-        { value = "NPC", icon = "inv_misc_head_clockworkgnome_01", tipKey = "tips.itemus.type", label = "NPC" },
-    }
-
     itemus.filterButtons = {
         Level = createButtonGrid(levelPanel, itemus, "Level", LEVEL_OPTIONS, { startX = 8, startY = -34, columns = 8, spacing = ITEMUS_UI_DEFAULTS.filterButtonSpacing, size = ITEMUS_UI_DEFAULTS.filterButtonSize }),
         Rare = createButtonGrid(rarePanel, itemus, "Rare", RARE_OPTIONS, { startX = 8, startY = -34, columns = 8, spacing = ITEMUS_UI_DEFAULTS.filterButtonSpacing, size = ITEMUS_UI_DEFAULTS.filterButtonSize }),
-        Type = createButtonGrid(typePanel, itemus, "Type", typeButtons, { startX = 8, startY = -34, columns = 2, spacing = 36, size = ITEMUS_UI_DEFAULTS.filterButtonSize }),
+        Type = createButtonGrid(typePanel, itemus, "Type", TYPE_OPTIONS, { startX = 8, startY = -34, columns = 2, spacing = 36, size = ITEMUS_UI_DEFAULTS.filterButtonSize }),
         Slot = createButtonGrid(slotPanel, itemus, "Slot", SLOT_OPTIONS, { startX = 8, startY = -30, columns = ITEMUS_UI_DEFAULTS.slotColumns, spacing = ITEMUS_UI_DEFAULTS.slotButtonSpacing, size = ITEMUS_UI_DEFAULTS.slotButtonSize }),
     }
 
@@ -576,6 +640,16 @@ local function createItemusContent(window, itemus)
     summaryLabel:SetPoint("TOPRIGHT", itemsPanel, "TOPRIGHT", -12, -30)
     summaryLabel:SetJustifyH("CENTER")
     summaryLabel:SetText("")
+
+    local descriptionLabel = itemsPanel:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    descriptionLabel:SetPoint("TOPLEFT", itemsPanel, "TOPLEFT", 12, -46)
+    descriptionLabel:SetPoint("TOPRIGHT", itemsPanel, "TOPRIGHT", -12, -46)
+    descriptionLabel:SetJustifyH("LEFT")
+    descriptionLabel:SetJustifyV("TOP")
+    if descriptionLabel.SetNonSpaceWrap then
+        descriptionLabel:SetNonSpaceWrap(true)
+    end
+    descriptionLabel:SetText(getLocalizedDescription("tips.game.itemus", "Generate one item at a time on the current target while keeping the legacy filter flow."))
 
     local prevButton = CreateFrame("Button", nil, itemsPanel, "UIPanelButtonTemplate")
     prevButton:SetSize(26, 20)
@@ -595,7 +669,7 @@ local function createItemusContent(window, itemus)
     emptyLabel:Hide()
 
     local scrollFrame = CreateFrame("ScrollFrame", "MultiBotItemusScrollFrame", itemsPanel, "UIPanelScrollFrameTemplate")
-    scrollFrame:SetPoint("TOPLEFT", itemsPanel, "TOPLEFT", ITEMUS_UI_DEFAULTS.itemsPanelPadding, -56)
+    scrollFrame:SetPoint("TOPLEFT", itemsPanel, "TOPLEFT", ITEMUS_UI_DEFAULTS.itemsPanelPadding, -76)
     scrollFrame:SetPoint("BOTTOMRIGHT", itemsPanel, "BOTTOMRIGHT", -ITEMUS_UI_DEFAULTS.scrollBarAllowance, ITEMUS_UI_DEFAULTS.itemsPanelPadding)
 
     local scrollChild = CreateFrame("Frame", nil, scrollFrame)
@@ -606,6 +680,7 @@ local function createItemusContent(window, itemus)
     itemus.pageLabel = pageLabel
     itemus.resultsLabel = resultsLabel
     itemus.summaryLabel = summaryLabel
+    itemus.descriptionLabel = descriptionLabel
     itemus.prevButton = prevButton
     itemus.nextButton = nextButton
     itemus.emptyLabel = emptyLabel
@@ -619,9 +694,9 @@ local function createItemusContent(window, itemus)
     }
 end
 
-local function updateItemusSummary(itemus, total)
+local function updateItemusSummary(itemus, total, fromIndex, toIndex)
     if itemus.resultsLabel then
-        itemus.resultsLabel:SetText(getItemusCountLabel(total))
+        itemus.resultsLabel:SetText(getItemusResultsLabel(total, fromIndex, toIndex))
     end
 
     if itemus.summaryLabel then
@@ -632,6 +707,42 @@ local function updateItemusSummary(itemus, total)
         local rareColor = tostring(itemus.color or "cffffffff")
         itemus.summaryLabel:SetText(levelText .. "  •  |" .. rareColor .. rareText .. "|r  •  " .. slotText .. "  •  " .. typeText)
     end
+end
+
+local function renderItemButtonAtIndex(itemus, button, itemData, buttonIndex)
+    local itemId = itemData and itemData[1] or 0
+    local itemName = itemData and itemData[2] or ""
+    local icon = GetItemIcon(itemId)
+    if not icon then
+        icon = ITEMUS_ICON_FALLBACK
+    end
+
+    local column = (buttonIndex - 1) % ITEMUS_UI_DEFAULTS.itemColumns
+    local row = math.floor((buttonIndex - 1) / ITEMUS_UI_DEFAULTS.itemColumns)
+    local xOffset = column * ITEMUS_UI_DEFAULTS.itemSpacingX
+    local yOffset = -(row * ITEMUS_UI_DEFAULTS.itemSpacingY)
+
+    button:ClearAllPoints()
+    button:SetPoint("TOPLEFT", itemus.scrollChild, "TOPLEFT", xOffset, yOffset)
+    button.itemId = itemId
+    button.itemName = itemName
+    button.link = "item:" .. tostring(itemId)
+    button.icon:SetTexture(MultiBot.SafeTexturePath(icon))
+    button:Show()
+end
+
+local function applyItemusPagePayload(itemus, pageData)
+    local payload = pageData or {}
+    itemus.max = payload.maxPage or 0
+    itemus.now = payload.currentPage or 0
+
+    if itemus.max > 0 then
+        setPageLabel(itemus, itemus.now .. "/" .. itemus.max)
+    else
+        setPageLabel(itemus, "0/0")
+    end
+
+    updateNavigation(itemus)
 end
 
 function MultiBot.InitializeItemusFrame()
@@ -671,13 +782,17 @@ function MultiBot.InitializeItemusFrame()
     itemus.window = window
     itemus.name = itemus.name or UnitName("player") or ""
     itemus.index = itemus.index or {}
-    itemus.color = itemus.color or "cff9d9d9d"
-    itemus.level = itemus.level or "L10"
-    itemus.rare = itemus.rare or "R00"
-    itemus.slot = itemus.slot or "S00"
-    itemus.type = itemus.type or "PC"
-    itemus.max = itemus.max or 1
-    itemus.now = itemus.now or 1
+    if itemus.applyStateDefaults then
+        itemus:applyStateDefaults()
+    else
+        itemus.color = itemus.color or "cff9d9d9d"
+        itemus.level = itemus.level or "L10"
+        itemus.rare = itemus.rare or "R00"
+        itemus.slot = itemus.slot or "S00"
+        itemus.type = itemus.type or "PC"
+        itemus.max = itemus.max or 1
+        itemus.now = itemus.now or 1
+    end
 
     local content = createItemusContent(window, itemus)
     itemus.root = content.root
@@ -714,77 +829,125 @@ function MultiBot.InitializeItemusFrame()
         persistItemusWindowPosition(window.frame)
     end
 
-    function itemus:renderItems(items, pNow)
-        local resultItems = items or {}
-        local total = #resultItems
+    function itemus:GetFilterState()
+        return {
+            level = self.level,
+            rare = self.rare,
+            slot = self.slot,
+            type = self.type,
+            color = self.color,
+        }
+    end
 
-        if total == 0 then
-            self.max = 0
-            self.now = 0
-            setPageLabel(self, "0/0")
-            updateNavigation(self)
-            updateItemusSummary(self, 0)
+    function itemus:Open(page)
+        self:Show()
+        return self:Refresh(page)
+    end
+
+    function itemus:Toggle()
+        if self:IsVisible() then
+            self:Hide()
+            return false
+        end
+
+        self:Open(self.now)
+        return true
+    end
+
+    function itemus:SetFilters(updates, options)
+        local nextUpdates = updates or {}
+        applyItemusFilterUpdates(self, nextUpdates)
+
+        if self.setFilterState then
+            self:setFilterState({
+                level = self.level,
+                rare = self.rare,
+                slot = self.slot,
+                type = self.type,
+                color = self.color,
+            })
+        end
+
+        local config = options or {}
+        if config.page ~= nil then
+            self.now = config.page
+        end
+
+        if config.refresh == false then
+            return self
+        end
+
+        self:Refresh(config.page)
+        return self
+    end
+
+    function itemus:SetPage(page, options)
+        if self.setPageState then
+            self:setPageState(page, ITEMUS_PAGE_SIZE)
+        elseif type(page) == "number" then
+            self.now = page
+        end
+
+        local config = options or {}
+        if config.refresh == false then
+            return self
+        end
+
+        self:Refresh(self.now)
+        return self
+    end
+
+    function itemus:Refresh(page)
+        local targetPage = page
+        if targetPage == nil then
+            targetPage = self.now
+        end
+
+        if self.getRenderPayload then
+            return self:renderItems(self:getRenderPayload(targetPage, ITEMUS_PAGE_SIZE))
+         end
+
+        if self.addItems then
+            return self.addItems(targetPage)
+        end
+
+        return nil
+    end
+
+    function itemus:renderItems(pageData)
+        local payload = pageData or {
+            visibleItems = {},
+            total = 0,
+            maxPage = 0,
+            currentPage = 0,
+            fromIndex = 0,
+            toIndex = 0,
+        }
+        applyItemusPagePayload(self, payload)
+
+        if (payload.total or 0) == 0 then
+            updateItemusSummary(self, 0, payload.fromIndex, payload.toIndex)
             self.emptyLabel:Show()
             ensureButtonPool(self, 0)
-            if self.itemButtons then
-                for _, button in ipairs(self.itemButtons) do
-                    resetItemButton(button)
-                    button:Hide()
-                end
-            end
+            clearItemButtonPool(self)
             updateScrollCanvasHeight(self, 1)
-            if self.scrollFrame and self.scrollFrame.SetVerticalScroll then
-                self.scrollFrame:SetVerticalScroll(0)
-            end
+            resetItemusScroll(self)
             SendChatMessage(MultiBot.L("info.combination"), "SAY")
             return
         end
 
-        self.max = math.ceil(total / ITEMUS_PAGE_SIZE)
-        if type(pNow) == "number" then
-            self.now = pNow
-        end
-        if self.now < 1 then self.now = 1 end
-        if self.now > self.max then self.now = self.max end
-
-        setPageLabel(self, self.now .. "/" .. self.max)
-        updateNavigation(self)
-        updateItemusSummary(self, total)
+        updateItemusSummary(self, payload.total, payload.fromIndex, payload.toIndex)
         self.emptyLabel:Hide()
 
-        local from = ((self.now - 1) * ITEMUS_PAGE_SIZE) + 1
-        local to = math.min(total, from + ITEMUS_PAGE_SIZE - 1)
-        local visibleCount = to - from + 1
+        local visibleCount = #(payload.visibleItems or {})
         ensureButtonPool(self, visibleCount)
         updateScrollCanvasHeight(self, visibleCount)
-        if self.scrollFrame and self.scrollFrame.SetVerticalScroll then
-            self.scrollFrame:SetVerticalScroll(0)
-        end
+        resetItemusScroll(self)
 
         local buttonIndex = 1
-        for itemIndex = from, to do
-            local itemData = resultItems[itemIndex]
+        for _, itemData in ipairs(payload.visibleItems or {}) do
             local button = self.itemButtons[buttonIndex]
-            local itemId = itemData and itemData[1] or 0
-            local itemName = itemData and itemData[2] or ""
-            local icon = GetItemIcon(itemId)
-            if not icon then
-                icon = "Interface\\Icons\\INV_Misc_QuestionMark"
-            end
-
-            local column = (buttonIndex - 1) % ITEMUS_UI_DEFAULTS.itemColumns
-            local row = math.floor((buttonIndex - 1) / ITEMUS_UI_DEFAULTS.itemColumns)
-            local xOffset = column * ITEMUS_UI_DEFAULTS.itemSpacingX
-            local yOffset = -(row * ITEMUS_UI_DEFAULTS.itemSpacingY)
-            local link = "item:" .. tostring(itemId)
-
-            button:ClearAllPoints()
-            button:SetPoint("TOPLEFT", self.scrollChild, "TOPLEFT", xOffset, yOffset)
-            button.itemId = itemId
-            button.itemName = itemName
-            button.link = link
-            button.icon:SetTexture(MultiBot.SafeTexturePath(icon))
-            button:Show()
+            renderItemButtonAtIndex(self, button, itemData, buttonIndex)
             buttonIndex = buttonIndex + 1
         end
 
@@ -798,18 +961,12 @@ function MultiBot.InitializeItemusFrame()
     local nextButton = itemus.nextButton
     prevButton:SetScript("OnClick", function()
         if itemus.now <= 1 then return end
-        itemus.now = itemus.now - 1
-        if itemus.addItems then
-            itemus.addItems()
-        end
+        itemus:SetPage(itemus.now - 1)
     end)
 
     nextButton:SetScript("OnClick", function()
         if itemus.now >= itemus.max then return end
-        itemus.now = itemus.now + 1
-        if itemus.addItems then
-            itemus.addItems()
-        end
+        itemus:SetPage(itemus.now + 1)
     end)
 
     MultiBot.itemus = itemus

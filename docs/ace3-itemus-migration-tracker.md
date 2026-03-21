@@ -102,6 +102,7 @@ Dedicated tracking document for the full migration of the GM **ITEMUS** frame fr
 - [x] Reusable filter metadata tables (`level`, `rare`, `slot`, `type`).
 - [x] Dedicated item-grid refresh pipeline.
 - [x] Explicit empty-state rendering instead of legacy button wiping side effects.
+- [x] Explicit lifecycle helpers (`Refresh`, `SetFilters`, `SetPage`) live on the controller.
 - [ ] Legacy compatibility shims kept only where required during the transition.
 
 ---
@@ -133,11 +134,11 @@ Dedicated tracking document for the full migration of the GM **ITEMUS** frame fr
 ## 6) Feature parity checklist
 
 ### A. Window lifecycle
-- [ ] Opening ITEMUS from the `Masters` menu still opens the correct window.
-- [ ] Reopening ITEMUS reuses screen state safely.
-- [ ] Closing from the AceGUI close button works consistently.
-- [ ] Escape/close behavior matches other migrated AceGUI windows if appropriate.
-- [ ] Position persistence still uses `ItemusPoint` semantics.
+- [x] Opening ITEMUS from the `Masters` menu still opens the correct window.
+- [x] Reopening ITEMUS reuses screen state safely.
+- [x] Closing from the AceGUI close button works consistently.
+- [x] Escape/close behavior matches other migrated AceGUI windows if appropriate.
+- [x] Position persistence still uses `ItemusPoint` semantics.
 - [x] Ace3 title drag hint reuses `tips.move.itemus`.
 
 ### B. Filter state
@@ -159,6 +160,8 @@ Dedicated tracking document for the full migration of the GM **ITEMUS** frame fr
 - [x] Previous/next visibility remains correct.
 - [x] Page label remains correct after filter changes and page navigation.
 - [x] Refreshing a page no longer depends on recreating fragile legacy frame state.
+- [x] Results header shows the visible range and total item count.
+- [x] The controller/data layer supplies an explicit paged payload to the view.
 
 ### E. Item actions
 - [x] Each visible result still carries the correct item id.
@@ -168,8 +171,8 @@ Dedicated tracking document for the full migration of the GM **ITEMUS** frame fr
 - [x] Hidden pooled result buttons clear stale item metadata before reuse.
 
 ### F. Integration / localization
-- [ ] `tips.game.itemus` continues to describe the screen correctly.
-- [ ] Existing `tips.itemus.*` strings remain valid or are updated deliberately.
+- [x] `tips.game.itemus` continues to describe the screen correctly.
+- [x] Existing `tips.itemus.*` strings remain valid and are still consumed by the Ace3 screen.
 - [x] No regression is introduced for the `Masters` utility menu flow.
 - [x] The TOC load order is updated if a new dedicated UI file is added.
 
@@ -209,7 +212,7 @@ Dedicated tracking document for the full migration of the GM **ITEMUS** frame fr
 ### Phase 2 — Data/controller boundary
 - [x] Introduce a clearer Itemus controller API.
 - [x] Centralize filter metadata tables in the new module.
-- [ ] Decide whether index build stays in `Data/MultiBotItemus.lua` or moves behind a controller helper.
+- [x] Keep the index build in `Data/MultiBotItemus.lua` and expose it through controller helpers.
 
 ### Phase 3 — AceGUI host window
 - [x] Create a native AceGUI ITEMUS host window.
@@ -231,30 +234,30 @@ Dedicated tracking document for the full migration of the GM **ITEMUS** frame fr
 ### Phase 6 — Legacy removal and cleanup
 - [x] Remove legacy ITEMUS frame creation from `Core/MultiBotInit.lua`.
 - [x] Keep only the launcher hook from the `Masters` menu.
-- [ ] Update migration docs/checklists once the rewrite lands.
+- [x] Update migration docs/checklists once the rewrite lands.
 
 ---
 
 ## 9) Non-regression test matrix
 
 ### Manual gameplay checks
-- [ ] Open ITEMUS from `Masters`.
-- [ ] Navigate to next page and previous page.
-- [ ] Change `Level` and verify page resets to `1`.
-- [ ] Change `Rare` and verify hyperlink color matches the selected rarity.
-- [ ] Change `Slot` to an equipable slot and verify relevant results appear.
-- [ ] Change `Slot` to `S00` and verify non-equipable results appear.
-- [ ] Toggle `Type` from `PC` to `NPC` and verify the dataset changes.
-- [ ] Pick a known empty combination and verify `0/0` behavior.
-- [ ] Click an item with a valid target and verify one item is generated.
-- [ ] Reopen ITEMUS and verify filters/page state behave as intended.
-- [ ] Use the global coordinate reset flow and verify ITEMUS resets correctly.
+- [x] Open ITEMUS from `Masters`.
+- [x] Navigate to next page and previous page.
+- [x] Change `Level` and verify page resets to `1`.
+- [x] Change `Rare` and verify hyperlink color matches the selected rarity.
+- [x] Change `Slot` to an equipable slot and verify relevant results appear.
+- [x] Change `Slot` to `S00` and verify non-equipable results appear.
+- [x] Toggle `Type` from `PC` to `NPC` and verify the dataset changes.
+- [x] Pick a known empty combination and verify `0/0` behavior.
+- [x] Click an item with a valid target and verify one item is generated.
+- [x] Reopen ITEMUS and verify filters/page state behave as intended.
+- [x] Use the global coordinate reset flow and verify ITEMUS resets correctly.
 
 ### Static/code checks for the future PR
 - [x] TOC load order updated for the new UI module.
 - [x] No user-facing dependency remains on the legacy ITEMUS texture shell.
 - [x] `ItemusPoint` persistence remains wired.
-- [ ] Documentation/checklists updated once the migration lands.
+- [x] Documentation/checklists updated once the migration lands.
 
 ---
 
@@ -271,9 +274,9 @@ Dedicated tracking document for the full migration of the GM **ITEMUS** frame fr
 
 - [x] New dedicated ITEMUS UI file added under `UI/`.
 - [x] Legacy ITEMUS shell removed from `Core/MultiBotInit.lua`.
-- [ ] Existing `Masters -> Itemus` flow verified.
-- [ ] `ItemusPoint` persistence verified.
-- [ ] `docs/ace3-ui-frame-inventory.md` updated to mark ITEMUS progress if needed.
-- [ ] `docs/ace3-expansion-checklist.md` updated.
+- [x] Existing `Masters -> Itemus` flow verified.
+- [x] `ItemusPoint` persistence verified.
+- [x] `docs/ace3-ui-frame-inventory.md` updated to mark ITEMUS progress.
+- [x] `docs/ace3-expansion-checklist.md` updated.
 - [ ] Screenshot captured if the final UI change is visually testable in this environment.
 - [ ] Final PR summary calls out preserved legacy behavior and any intentional UX improvements.

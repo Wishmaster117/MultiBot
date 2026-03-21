@@ -43878,23 +43878,61 @@ MultiBot.data.itemus = {
 	{ 56806, 0, 3, 0, "Mini Thor" }
 }
 
+local ITEMUS_DEFAULT_PAGE_SIZE = 112
+local ITEMUS_DEFAULT_STATE = {
+	level = "L10",
+	rare = "R00",
+	slot = "S00",
+	type = "PC",
+	color = "cff9d9d9d",
+	now = 1,
+	max = 1,
+}
+
 local itemus = MultiBot.itemus or {}
 itemus.index = itemus.index or {}
 MultiBot.itemus = itemus
 
-for _, value in pairs(MultiBot.data.itemus) do
-	local tLevel
+local function copyItemusStateDefaults()
+	return {
+		level = ITEMUS_DEFAULT_STATE.level,
+		rare = ITEMUS_DEFAULT_STATE.rare,
+		slot = ITEMUS_DEFAULT_STATE.slot,
+		type = ITEMUS_DEFAULT_STATE.type,
+		color = ITEMUS_DEFAULT_STATE.color,
+		now = ITEMUS_DEFAULT_STATE.now,
+		max = ITEMUS_DEFAULT_STATE.max,
+	}
+end
 
-	if(value[2] < 11) then tLevel = "L10"
-	elseif(value[2] < 21) then tLevel = "L20"
-	elseif(value[2] < 31) then tLevel = "L30"
-	elseif(value[2] < 41) then tLevel = "L40"
-	elseif(value[2] < 51) then tLevel = "L50"
-	elseif(value[2] < 61) then tLevel = "L60"
-	elseif(value[2] < 71) then tLevel = "L70"
-	else tLevel = "L80"
+function itemus:getDefaultState()
+	return copyItemusStateDefaults()
+end
+
+function itemus:applyStateDefaults()
+	local defaults = copyItemusStateDefaults()
+	for key, value in pairs(defaults) do
+		if(self[key] == nil) then
+			self[key] = value
+		end
 	end
 
+	return self
+end
+
+local function buildItemusLevelBucket(level)
+	if(level < 11) then return "L10" end
+	if(level < 21) then return "L20" end
+	if(level < 31) then return "L30" end
+	if(level < 41) then return "L40" end
+	if(level < 51) then return "L50" end
+	if(level < 61) then return "L60" end
+	if(level < 71) then return "L70" end
+	return "L80"
+end
+
+for _, value in pairs(MultiBot.data.itemus) do
+	local tLevel = buildItemusLevelBucket(value[2])
 	local tRare = "R" .. MultiBot.IF(value[3] < 10, "0", "") .. value[3]
 	local tSlot = "S" .. MultiBot.IF(value[4] < 10, "0", "") .. value[4]
 
@@ -43907,27 +43945,103 @@ for _, value in pairs(MultiBot.data.itemus) do
 	table.insert(itemus.index[tLevel][tRare][tSlot][itemType], { value[1], value[5] })
 end
 
-function itemus:getFilteredItems()
-	local tTable = self.index and self.index[self.level]
-	if(tTable ~= nil) then tTable = tTable[self.rare] end
-	if(tTable ~= nil) then tTable = tTable[self.slot] end
-	if(tTable ~= nil) then tTable = tTable[self.type] end
+function itemus:getFilteredItems(filterState)
+	self:applyStateDefaults()
+
+	local filters = filterState or self
+	local tTable = self.index and self.index[filters.level]
+	if(tTable ~= nil) then tTable = tTable[filters.rare] end
+	if(tTable ~= nil) then tTable = tTable[filters.slot] end
+	if(tTable ~= nil) then tTable = tTable[filters.type] end
 	return tTable
 end
 
-itemus.addItems = function(pNow)
-	local tTable = itemus:getFilteredItems()
-	if(itemus.renderItems) then
-		return itemus:renderItems(tTable or {}, pNow)
+function itemus:setFilterState(updates)
+	self:applyStateDefaults()
+
+	local nextUpdates = updates or {}
+	if(nextUpdates.level ~= nil) then self.level = nextUpdates.level end
+	if(nextUpdates.rare ~= nil) then self.rare = nextUpdates.rare end
+	if(nextUpdates.slot ~= nil) then self.slot = nextUpdates.slot end
+	if(nextUpdates.type ~= nil) then self.type = nextUpdates.type end
+	if(nextUpdates.color ~= nil) then self.color = nextUpdates.color end
+	if(nextUpdates.now ~= nil) then self.now = tonumber(nextUpdates.now) or self.now end
+
+	return self
+end
+
+function itemus:setPageState(page, pageSize)
+	self:applyStateDefaults()
+
+	local tRequestedPage = tonumber(page)
+	if(tRequestedPage == nil) then
+		return self.now
 	end
 
-	local tTotal = tTable and #tTable or 0
+	local tPageData = self:getPagedItems(tRequestedPage, pageSize)
+	self.max = tPageData.maxPage or 0
+	self.now = tPageData.currentPage or 0
+	return self.now
+end
+
+function itemus:getPagedItems(pNow, pageSize)
+	self:applyStateDefaults()
+
+	local tTable = self:getFilteredItems() or {}
+	local tPageSize = tonumber(pageSize) or ITEMUS_DEFAULT_PAGE_SIZE
+	local tTotal = #tTable
 	if(tTotal == 0) then
-		itemus.max = 0
-		itemus.now = 0
-		return
+		self.max = 0
+		self.now = 0
+		return {
+			allItems = tTable,
+			visibleItems = {},
+			total = 0,
+			maxPage = 0,
+			currentPage = 0,
+			fromIndex = 0,
+			toIndex = 0,
+			pageSize = tPageSize,
+		}
 	end
 
-	itemus.max = math.ceil(tTotal / 112)
-	itemus.now = MultiBot.IF(pNow ~= nil, pNow, itemus.now)
+	local tMax = math.ceil(tTotal / tPageSize)
+	local tNow = tonumber(MultiBot.IF(pNow ~= nil, pNow, self.now or 1)) or 1
+	if(tNow < 1) then tNow = 1 end
+	if(tNow > tMax) then tNow = tMax end
+
+	local tFrom = ((tNow - 1) * tPageSize) + 1
+	local tTo = math.min(tTotal, tFrom + tPageSize - 1)
+	local tVisibleItems = {}
+	for itemIndex = tFrom, tTo do
+		table.insert(tVisibleItems, tTable[itemIndex])
+	end
+
+	self.max = tMax
+	self.now = tNow
+
+	return {
+		allItems = tTable,
+		visibleItems = tVisibleItems,
+		total = tTotal,
+		maxPage = tMax,
+		currentPage = tNow,
+		fromIndex = tFrom,
+		toIndex = tTo,
+		pageSize = tPageSize,
+	}
+end
+
+function itemus:getRenderPayload(pNow, pageSize)
+	return self:getPagedItems(pNow, pageSize)
+end
+
+itemus.addItems = function(pNow)
+	local pageData = itemus:getRenderPayload(pNow, ITEMUS_DEFAULT_PAGE_SIZE)
+	if(itemus.renderItems) then
+		return itemus:renderItems(pageData)
+	end
+
+	itemus.max = pageData.maxPage or 0
+	itemus.now = pageData.currentPage or 0
 end
