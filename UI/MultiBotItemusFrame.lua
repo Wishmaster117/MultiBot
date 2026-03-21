@@ -1,7 +1,7 @@
 if not MultiBot then return end
 
 local ITEMUS_LAYOUT_KEY = "ItemusPoint"
-local ITEMUS_PAGE_SIZE = 112
+local ITEMUS_PAGE_SIZE = 162
 local ITEMUS_ICON_FALLBACK = "Interface\\Icons\\INV_Misc_QuestionMark"
 local ITEMUS_FILTER_FIELD_BY_KIND = {
     Level = "level",
@@ -15,15 +15,16 @@ local ITEMUS_UI_DEFAULTS = {
     height = 700,
     pointX = -860,
     pointY = -144,
-    filterPanelHeight = 232,
+    filterPanelHeight = 190,
     panelInset = 8,
     panelGap = 8,
     levelColumns = 8,
     rareColumns = 8,
-    slotColumns = 8,
+    slotColumns = 15,
     filterButtonSize = 28,
     filterButtonSpacing = 32,
     slotButtonSize = 26,
+    typePanelHeight = 96,
     slotButtonSpacing = 30,
     itemButtonSize = 32,
     itemSpacingX = 38,
@@ -86,6 +87,32 @@ local function getLocalizedDescription(localeKey, fallback)
     end
 
     return table.concat(descriptionLines, " ")
+end
+
+local function getItemusEmptyStateMessage()
+    local fallback = "No items found for this combination."
+    local raw = MultiBot.L and MultiBot.L("info.combination") or nil
+    local textValue = stripTooltipFormatting(raw or fallback)
+    textValue = textValue:gsub("^%s+", ""):gsub("%s+$", "")
+
+    local firstSentence = textValue:match("^(.-[%.%!%?])")
+    if not firstSentence then
+        local sentenceEndings = { "。", "！", "？" }
+        for _, ending in ipairs(sentenceEndings) do
+            local stopIndex = string.find(textValue, ending, 1, true)
+            if stopIndex then
+                firstSentence = string.sub(textValue, 1, stopIndex)
+                break
+            end
+        end
+    end
+
+    firstSentence = (firstSentence or textValue or fallback):gsub("^%s+", ""):gsub("%s+$", "")
+    if firstSentence == "" then
+        return fallback
+    end
+
+    return firstSentence
 end
 
 local function getItemusCountLabel(total)
@@ -644,13 +671,12 @@ local function createItemusContent(window, itemus)
 
     local typePanel = CreateFrame("Frame", nil, filterPanel)
     typePanel:SetPoint("TOPLEFT", levelPanel, "BOTTOMLEFT", 0, -8)
-    typePanel:SetSize(150, 130)
+    typePanel:SetSize(150, ITEMUS_UI_DEFAULTS.typePanelHeight)
     addSimpleBackdrop(typePanel, 0.35)
-    addSectionTitle(typePanel, getLocalizedHeadline("tips.itemus.type", "Type"))
 
-    local typeLabel = typePanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    typeLabel:SetPoint("TOPLEFT", typePanel, "TOPLEFT", 8, -24)
-    typeLabel:SetPoint("TOPRIGHT", typePanel, "TOPRIGHT", -8, -24)
+    local typeLabel = typePanel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    typeLabel:SetPoint("TOPLEFT", typePanel, "TOPLEFT", 8, -8)
+    typeLabel:SetPoint("TOPRIGHT", typePanel, "TOPRIGHT", -8, -8)
     typeLabel:SetJustifyH("LEFT")
     itemus.typeLabel = typeLabel
 
@@ -706,7 +732,7 @@ local function createItemusContent(window, itemus)
     emptyLabel:SetPoint("TOPLEFT", itemsPanel, "TOPLEFT", 16, -74)
     emptyLabel:SetPoint("TOPRIGHT", itemsPanel, "TOPRIGHT", -16, -74)
     emptyLabel:SetJustifyH("CENTER")
-    emptyLabel:SetText(MultiBot.L("info.combination") or "No items found for this combination.")
+    emptyLabel:SetText(getItemusEmptyStateMessage())
     emptyLabel:Hide()
 
     local scrollFrame = CreateFrame("ScrollFrame", "MultiBotItemusScrollFrame", itemsPanel, "UIPanelScrollFrameTemplate")
@@ -974,7 +1000,7 @@ function MultiBot.InitializeItemusFrame()
             clearItemButtonPool(self)
             updateScrollCanvasHeight(self, 1)
             resetItemusScroll(self)
-            SendChatMessage(MultiBot.L("info.combination"), "SAY")
+            --SendChatMessage(MultiBot.L("info.combination"), "SAY")
             return
         end
 
