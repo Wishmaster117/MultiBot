@@ -68,6 +68,8 @@ UI\MultiBotItemusFrame.lua
 UI\MultiBotIconosFrame.lua
 UI\MultiBotItem.lua
 UI\MultiBotTalentFrame.lua
+UI\MultiBotHunterQuickFrame.lua
+UI\MultiBotShamanQuickFrame.lua
 Core\MultiBotInit.lua
 UI\MultiBotSpecUI.lua
 Data\MultiBotIconos.lua

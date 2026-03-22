@@ -672,6 +672,44 @@ function MultiBot.SetQuickFramePosition(frameKey, point, relPoint, x, y)
   return position
 end
 
+function MultiBot.GetQuickFrameVisibleConfig(frameKey)
+  if type(frameKey) ~= "string" or frameKey == "" then
+    return true
+  end
+
+  local profile = MultiBot.db and MultiBot.db.profile
+  if not profile then
+    return true
+  end
+
+  profile.ui = profile.ui or {}
+  profile.ui.quickFrameVisibility = profile.ui.quickFrameVisibility or {}
+
+  local value = profile.ui.quickFrameVisibility[frameKey]
+  if type(value) ~= "boolean" then
+    profile.ui.quickFrameVisibility[frameKey] = true
+    return true
+  end
+
+  return value
+end
+
+function MultiBot.SetQuickFrameVisibleConfig(frameKey, visible)
+  if type(frameKey) ~= "string" or frameKey == "" then
+    return true
+  end
+
+  local value = not not visible
+  local profile = MultiBot.db and MultiBot.db.profile
+  if profile then
+    profile.ui = profile.ui or {}
+    profile.ui.quickFrameVisibility = profile.ui.quickFrameVisibility or {}
+    profile.ui.quickFrameVisibility[frameKey] = value
+  end
+
+  return value
+end
+
 local function getLegacyHunterPetStanceStore(createIfMissing)
   local saved = getLegacyCharacterStateRoot(createIfMissing)
   local store = saved and saved.hunterPetStance
