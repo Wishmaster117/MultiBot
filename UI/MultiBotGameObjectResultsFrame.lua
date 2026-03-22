@@ -80,16 +80,16 @@ function MultiBot.InitializeGameObjectResultsFrame()
     if MultiBot.RegisterAceWindowEscapeClose then MultiBot.RegisterAceWindowEscapeClose(window, "GameObjPopup") end
     if MultiBot.BindAceWindowPosition then MultiBot.BindAceWindowPosition(window, "gameobject_popup") end
 
-    local description = aceGUI:Create("Label")
-    description:SetFullWidth(true)
-    description:SetText(MultiBot.L("tips.quests.gobsmaster") or "")
-    window:AddChild(description)
-
     local scroll = aceGUI:Create("ScrollFrame")
     scroll:SetFullWidth(true)
-    scroll:SetHeight(260)
+    scroll:SetHeight(280)
     scroll:SetLayout("List")
     window:AddChild(scroll)
+
+    local buttonSpacer = aceGUI:Create("Label")
+    buttonSpacer:SetFullWidth(true)
+    buttonSpacer:SetText(" ")
+    window:AddChild(buttonSpacer)
 
     local copyButton = aceGUI:Create("Button")
     copyButton:SetText(MultiBot.L("tips.quests.gobselectall"))

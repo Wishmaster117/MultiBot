@@ -120,11 +120,11 @@ function QuestLogFrame:Refresh()
 
             local icon = row:CreateTexture(nil, "ARTWORK")
             icon:SetTexture(Shared.ICON_QUEST)
-            icon:SetSize(18, 18)
+            icon:SetSize(14, 14)
             icon:SetPoint("LEFT", 6, 0)
 
-            local html = Shared.CreateQuestHTML(row, 290, 20, questLink:gsub("%[", "|cff00ff00["):gsub("%]", "]|r"))
-            html:SetPoint("LEFT", 28, 0)
+            local html = Shared.CreateQuestHTML(row, 290, Shared.ROW_HEIGHT, questLink:gsub("%[", "|cff00ff00["):gsub("%]", "]|r"))
+            html:SetPoint("LEFT", icon, "RIGHT", 6, -5)
             attachQuestLogTooltip(html, questIndex)
             attachQuestLogClick(html)
 
@@ -132,7 +132,8 @@ function QuestLogFrame:Refresh()
         end
     end
 
-    local emptyState = visibleCount == 0 and (MultiBot.L("tips.quests.gobnosearchdata") or NO_QUESTS_LABEL) or (QUESTS_LABEL or QUEST_LOG)
+    --local emptyState = visibleCount == 0 and (MultiBot.L("tips.quests.gobnosearchdata") or NO_QUESTS_LABEL) or (QUESTS_LABEL or QUEST_LOG)
+    local emptyState = visibleCount == 0 and (MultiBot.L("tips.quests.gobnosearchdata") or NO_QUESTS_LABEL) or ""
     if self.summaryLabel then
         self.summaryLabel:SetText(emptyState)
     end
@@ -167,7 +168,8 @@ function MultiBot.InitializeQuestLogFrame()
     QuestLogFrame.scrollFrame = scrollFrame
     QuestLogFrame.content = content
     QuestLogFrame.summaryLabel = summaryLabel
-    QuestLogFrame.summaryLabel:SetText(QUESTS_LABEL or QUEST_LOG)
+    --QuestLogFrame.summaryLabel:SetText(QUESTS_LABEL or QUEST_LOG)
+    QuestLogFrame.summaryLabel:SetText("")
 
     return QuestLogFrame
 end

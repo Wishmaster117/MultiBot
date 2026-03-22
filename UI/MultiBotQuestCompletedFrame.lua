@@ -22,11 +22,11 @@ local function renderQuestList(self, entries, summaryText)
 
         local icon = line:CreateTexture(nil, "ARTWORK")
         icon:SetTexture(Shared.ICON_BOT_QUEST)
-        icon:SetSize(18, 18)
+        icon:SetSize(14, 14)
         icon:SetPoint("LEFT", 6, 0)
 
-        local html = Shared.CreateQuestHTML(line, 280, 20, Shared.BuildQuestLink(entry.id, entry.name))
-        html:SetPoint("LEFT", 28, 0)
+        local html = Shared.CreateQuestHTML(line, 280, Shared.ROW_HEIGHT, Shared.BuildQuestLink(entry.id, entry.name))
+        html:SetPoint("LEFT", icon, "RIGHT", 6, -5)
         Shared.BindHyperlinkTooltip(html)
 
         yOffset = yOffset - Shared.ROW_HEIGHT - 4
@@ -56,7 +56,8 @@ function MultiBot.BuildBotCompletedList(botName)
     local frame = MultiBot.InitializeQuestCompletedFrame()
     local entries = Shared.SortQuestEntries(MultiBot.BotQuestsCompleted[botName] or {})
     frame:Show()
-    renderQuestList(frame, entries, botName and ((MultiBot.L("tips.quests.complist") or "Completed Quests") .. ": |cff80ff80" .. botName .. "|r") or nil)
+    --renderQuestList(frame, entries, botName and ((MultiBot.L("tips.quests.complist") or "Completed Quests") .. ": |cff80ff80" .. botName .. "|r") or nil)
+	renderQuestList(frame, entries, botName and ("|cff80ff80" .. botName .. "|r") or nil)
 end
 
 function MultiBot.BuildAggregatedCompletedList()
@@ -64,7 +65,7 @@ function MultiBot.BuildAggregatedCompletedList()
     local entries = Shared.BuildAggregatedQuestEntries(MultiBot.BotQuestsCompleted)
 
     frame:Show()
-    renderQuestList(frame, entries, MultiBot.L("tips.quests.complist") or "")
+    renderQuestList(frame, entries, "")
 end
 
 function QuestCompletedFrame:Show()

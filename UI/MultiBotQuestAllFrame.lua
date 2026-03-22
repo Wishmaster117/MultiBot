@@ -35,11 +35,11 @@ local function renderQuestWithBots(parent, yOffset, entry)
 
     local icon = line:CreateTexture(nil, "ARTWORK")
     icon:SetTexture(Shared.ICON_BOT_QUEST)
-    icon:SetSize(18, 18)
+    icon:SetSize(12, 12)
     icon:SetPoint("LEFT", 6, 0)
 
-    local html = Shared.CreateQuestHTML(line, 320, 20, Shared.BuildQuestLink(entry.id, entry.name))
-    html:SetPoint("LEFT", 28, 0)
+    local html = Shared.CreateQuestHTML(line, 320, Shared.ROW_HEIGHT, Shared.BuildQuestLink(entry.id, entry.name))
+    html:SetPoint("LEFT", icon, "RIGHT", 6, -6)
     Shared.BindHyperlinkTooltip(html)
 
     yOffset = yOffset - 24
@@ -68,11 +68,11 @@ function MultiBot.BuildBotAllList(botName)
 
         local icon = line:CreateTexture(nil, "ARTWORK")
         icon:SetTexture(Shared.ICON_BOT_QUEST)
-        icon:SetSize(18, 18)
+        icon:SetSize(12, 12)
         icon:SetPoint("LEFT", 6, 0)
 
-        local html = Shared.CreateQuestHTML(line, 320, 20, displayLink)
-        html:SetPoint("LEFT", 28, 0)
+        local html = Shared.CreateQuestHTML(line, 320, Shared.ROW_HEIGHT, displayLink)
+        html:SetPoint("LEFT", icon, "RIGHT", 6, -6)
         Shared.BindHyperlinkTooltip(html)
 
         yOffset = yOffset - 24
@@ -108,7 +108,7 @@ function MultiBot.BuildAggregatedAllList()
     end
 
     if frame.summaryLabel then
-        frame.summaryLabel:SetText(MultiBot.L("tips.quests.alllist") or "")
+        frame.summaryLabel:SetText("")
     end
 
     frame.content:SetHeight(math.max(-yOffset + 4, 1))
