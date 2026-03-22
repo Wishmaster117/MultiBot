@@ -806,8 +806,8 @@ function HunterQuick:EnsureSearchFrame()
     editBox:SetPoint("BOTTOMRIGHT", searchBar, "BOTTOMRIGHT", -6, 5)
     editBox:SetFontObject(GameFontHighlightSmall)
     editBox:SetTextInsets(4, 4, 0, 0)
-    editBox:SetScript("OnEscapePressed", function(self)
-        self:ClearFocus()
+    editBox:SetScript("OnEscapePressed", function(editWidget)
+        editWidget:ClearFocus()
     end)
     host.EditBox = editBox
 
@@ -867,16 +867,16 @@ function HunterQuick:EnsureSearchFrame()
         preview:SetUnit("none")
         preview:ClearModel()
         preview:Show()
-        preview:SetScript("OnUpdate", function(self)
-            self:SetScript("OnUpdate", nil)
-            self:SetModelScale(previewScale)
-            self:SetFacing(previewFacing)
+        preview:SetScript("OnUpdate", function(model)
+            model:SetScript("OnUpdate", nil)
+            model:SetModelScale(previewScale)
+            model:SetFacing(previewFacing)
 
             local displayNumber = tonumber(displayId)
-            if displayNumber and displayNumber > 0 and type(self.SetDisplayInfo) == "function" then
-                self:SetDisplayInfo(displayNumber)
+            if displayNumber and displayNumber > 0 and type(model.SetDisplayInfo) == "function" then
+                model:SetDisplayInfo(displayNumber)
             else
-                self:SetCreature(entryId)
+                model:SetCreature(entryId)
             end
         end)
     end
@@ -943,12 +943,12 @@ function HunterQuick:EnsureSearchFrame()
         return "name_en"
     end
 
-    function host:RefreshRows()
+    function host.RefreshRows(hostFrame)
         local listWidth = 320
         for index = 1, visibleRows do
             local dataIndex = index + offset
             local data = results[dataIndex]
-            local row = self.Rows[index]
+            local row = hostFrame.Rows[index]
 
             row:ClearAllPoints()
             row:SetPoint("TOPLEFT", 0, -((index - 1 + offset) * rowHeight))
@@ -980,7 +980,7 @@ function HunterQuick:EnsureSearchFrame()
         end
     end)
 
-    function host:Refresh()
+    function host.Refresh(hostFrame)
         wipe(results)
         local filter = (editBox:GetText() or ""):lower()
         local field = localeField()
@@ -999,7 +999,7 @@ function HunterQuick:EnsureSearchFrame()
         content:SetHeight(#results * rowHeight)
         offset = 0
         scrollFrame:SetVerticalScroll(0)
-        host:RefreshRows()
+        hostFrame:RefreshRows()
     end
 
     editBox:SetScript("OnTextChanged", function()
