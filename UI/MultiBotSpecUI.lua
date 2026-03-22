@@ -697,8 +697,11 @@ local function bindSpecSelection(button, spec, build, tip, bot, className, curre
     end
 
     button:SetScript("OnEnter", function(activeButton)
-        GameTooltip:SetOwner(activeButton, "ANCHOR_RIGHT")
+        GameTooltip:SetOwner(activeButton, "ANCHOR_NONE")
+        GameTooltip:ClearAllPoints()
+        GameTooltip:SetPoint("LEFT", activeButton, "RIGHT", 30, 0)
         GameTooltip:SetText(tip, nil, nil, nil, nil, true)
+        GameTooltip:Show()
     end)
     button:SetScript("OnLeave", GameTooltip_Hide)
 end

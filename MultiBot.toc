@@ -80,9 +80,9 @@ UI\MultiBotGameObjectCopyFrame.lua
 UI\MultiBotGameObjectResultsFrame.lua
 UI\MultiBotQuestsMenu.lua
 Core\MultiBotInit.lua
-UI\MultiBotSpecUI.lua
 Data\MultiBotIconos.lua
 Data\MultiBotItemus.lua
+UI\MultiBotSpecUI.lua
 UI\MultiBotTalent.lua
 UI\MultiBotPVPUI.lua
 Features\MultiBotReward.lua
