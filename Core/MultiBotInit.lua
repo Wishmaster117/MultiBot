@@ -1,7 +1,8 @@
 -- Minimap config is resolved through MultiBot.GetMinimapConfig().
 
 --local MB_INVENTORY_LABEL = INVENTORY_TOOLTIP or BAGSLOT or "Inventory"
-local MB_PAGE_DEFAULT = string.format("%d/%d", 0, 0)
+-- local MB_PAGE_DEFAULT = string.format("%d/%d", 0, 0)
+MultiBot.MB_PAGE_DEFAULT = string.format("%d/%d", 0, 0)
 --local MB_TAB_TITLE_DEFAULT = UNKNOWN or ""
 
 -- =====================================================================
@@ -405,7 +406,7 @@ function MultiBot.BuildFormationUI(tLeft)
   tFormat:Hide()
 
   -- Grid 1 × N (columns) --
-  local COLS     = 1     -- One column
+  --local COLS     = 1     -- One column
   local CELL_W   = 40    -- wide (useless here but we keep the arg.)
   local CELL_H   = 30    -- high/vertival spacing
 

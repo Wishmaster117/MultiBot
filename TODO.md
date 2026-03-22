@@ -1,5 +1,6 @@
 TODO
 
+* Voi si y'a pas d'autres appels à pageLabel:SetText(MB_PAGE_DEFAULT) dans les fichiers et remplacer par : +	pageLabel:SetText(MultiBot.MB_PAGE_DEFAULT or "0/0")
 * Ressortir les UI quetes dans leurs propre fichiers et uniformiser le tempklate de la frame comme celle de Itemus
 * Uniformiser le templste de la frame reward comme celle de itemus
 * Essayer de faire disparaitre la barre multibots au bout d'un temps et la faire apparaitre quand on passe la souris dessus.

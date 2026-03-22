@@ -695,7 +695,8 @@ local function createItemusContent(window, itemus)
 
     local pageLabel = itemsPanel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     pageLabel:SetPoint("TOP", itemsPanel, "TOP", 0, -8)
-    pageLabel:SetText(MB_PAGE_DEFAULT)
+    --pageLabel:SetText(MB_PAGE_DEFAULT)
+    pageLabel:SetText(MultiBot.MB_PAGE_DEFAULT or "0/0")
 
     local resultsLabel = itemsPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     resultsLabel:SetPoint("TOPRIGHT", itemsPanel, "TOPRIGHT", -12, -10)
