@@ -106,7 +106,7 @@ MultiBot.addSpell = function(pInfo, pName)
 end
 
 MultiBot.beginSpellbookCollection = function(pName)
-	local tOverlay = MultiBot.spellbook.frames["Overlay"]
+	--local tOverlay = MultiBot.spellbook.frames["Overlay"]
 	local tSpellbook = MultiBot.spellbook
     local tWindowTitle = MultiBot.doReplace(MultiBot.L("info.spellbook"), "NAME", pName)
 
@@ -144,7 +144,8 @@ MultiBot.isSpellbookHeaderLine = function(pLine)
 		return false
 	end
 
-	return MultiBot.isInside(pLine, SPELLBOOK, "Spells", "法术", "Магия")
+	--return MultiBot.isInside(pLine, SPELLBOOK, "Spells", "法术", "Магия")
+    return MultiBot.isInside(pLine, unpack(getSpellbookHeaderTokens()))
 end
 
 MultiBot.isSpellbookFooterLine = function(pLine)
