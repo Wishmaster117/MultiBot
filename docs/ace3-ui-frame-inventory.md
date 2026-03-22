@@ -13,13 +13,15 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
 
 ## 1) Interface Options / Configuration
 
-- [x] **Options panel** (`/mbopt`, Interface Options category) — AceGUI path in place with temporary legacy fallback.  
-  Files: `UI/MultiBotOptions.lua` (panel + sliders/dropdowns/buttons).  
+- [x] **Options panel** (`/mbopt`, Interface Options category) — AceGUI path in place with temporary legacy fallback.
+  Files: `UI/MultiBotOptions.lua` (panel + sliders/dropdowns/buttons)..  
   References: `UI/MultiBotOptions.lua:234`, `UI/MultiBotOptions.lua:268`.
 
 ---
 
 ## 2) Dedicated top-level windows/popups (user-facing)
+
+> Follow-up note: the Quest/GameObject slice already has AceGUI hosts, but its implementation still lives mainly in `Core/MultiBotInit.lua`. The extraction/rewrite plan is tracked in `docs/ace3-quests-gobjects-migration-tracker.md`.
 
 - [x] **PVP window** (`MultiBotPVPFrame`) with tabs and dropdown (AceGUI widgets for tab group + bot dropdown, with legacy fallback).
   File: `UI/MultiBotPVPUI.lua`.  
@@ -33,32 +35,32 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   File: `Features/MultiBotRaidus.lua`.
   References: lines `119`, `164`, `599`, `1372`.
   
-- [x] **Quest summary popup** (`MB_QuestPopup`) migrated to AceGUI host window path (no legacy frame fallback) while preserving dynamic rows/html content rendering.  
+- [x] **Quest summary popup** (`MB_QuestPopup`) migrated to an AceGUI host window path, but the screen implementation is still in `Core/MultiBotInit.lua`; dedicated `UI/` extraction + full native rewrite plan is tracked in `docs/ace3-quests-gobjects-migration-tracker.md`.
   File: `Core/MultiBotInit.lua`.  
   References: lines `1760`, `1787`, `1845`.
 
-- [x] **Bot quest popup** (`MB_BotQuestPopup`) migrated to AceGUI host window path (no legacy frame fallback) while preserving dynamic quest rows/html content rendering.  
+- [x] **Bot quest popup** (`MB_BotQuestPopup`) migrated to an AceGUI host window path, but the screen implementation is still in `Core/MultiBotInit.lua`; dedicated `UI/` extraction + full native rewrite plan is tracked in `docs/ace3-quests-gobjects-migration-tracker.md`.
   File: `Core/MultiBotInit.lua`.  
   References: lines `1942`, `1966`, `1995`.
 
-- [x] **Bot quest complete popup** (`MB_BotQuestCompPopup`) migrated to AceGUI host window path (no legacy frame fallback) while preserving dynamic rows/html content rendering.  
+- [x] **Bot quest complete popup** (`MB_BotQuestCompPopup`) migrated to an AceGUI host window path, but the screen implementation is still in `Core/MultiBotInit.lua`; dedicated `UI/` extraction + full native rewrite plan is tracked in `docs/ace3-quests-gobjects-migration-tracker.md`.
   File: `Core/MultiBotInit.lua`.  
   References: lines `2161`, `2185`, `2215`.
 
-- [x] **Bot quest all popup** (`MB_BotQuestAllPopup`) migrated to AceGUI host window path (no legacy frame fallback) while preserving dynamic rows/html content rendering.  
+- [x] **Bot quest all popup** (`MB_BotQuestAllPopup`) migrated to an AceGUI host window path, but the screen implementation is still in `Core/MultiBotInit.lua`; dedicated `UI/` extraction + full native rewrite plan is tracked in `docs/ace3-quests-gobjects-migration-tracker.md`.
   File: `Core/MultiBotInit.lua`.  
   References: lines `2387`, `2416`, `2467`
 
-- [x] **GameObject popup/copy box** (`MB_GameObjPopup`, `MB_GameObjCopyBox`) migrated to AceGUI windows/widgets path (no legacy frame fallback).  
-  File: `Core/MultiBotInit.lua`.  
+- [x] **GameObject popup/copy box** (`MB_GameObjPopup`, `MB_GameObjCopyBox`) migrated to AceGUI windows/widgets paths, but the implementation is still coupled to `Core/MultiBotInit.lua`; dedicated `UI/` extraction + Itemus-style harmonization plan is tracked in `docs/ace3-quests-gobjects-migration-tracker.md`.
+  File: `Core/MultiBotInit.lua`. 
   References: lines `2745`, `2789`
 
-- [x] **Universal prompt dialog** (`MBUniversalPrompt`) migrated to AceGUI window+widgets path (no legacy frame fallback).  
+- [x] **Universal prompt dialog** (`MBUniversalPrompt`) migrated to AceGUI window+widgets path (no legacy frame fallback).
   File: `Core/MultiBotInit.lua`.  
   References: line `2893`.
 
-- [x] **Hunter prompt/search/family windows** (`MBHunterPrompt`, `MBHunterPetSearch`, `MBHunterPetFamily`) migrated to AceGUI host/prompt paths (no legacy frame fallback for prompt/search/family hosts; preview model retained).  
-  File: `Core/MultiBotInit.lua`.  
+- [x] **Hunter prompt/search/family windows** (`MBHunterPrompt`, `MBHunterPetSearch`, `MBHunterPetFamily`) migrated to AceGUI host/prompt paths (no legacy frame fallback for prompt/search/family hosts; preview model retained).
+  File: `Core/MultiBotInit.lua`. 
   References: lines `5505`, `5551`, `5730`, `5588`.
 
 - [x] **SpellBook window** (`MultiBot.spellbook`) migrated to AceGUI host window path with programmatic slot/check generation and stateful chat-collection handling (replacing legacy hardcoded slot blocks and inline footer-only stop logic).
@@ -97,11 +99,11 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   File: `Features/MultiBotRaidus.lua`.
   References: lines `415`, `945`, `989`, `1021`.
 
-- [-] **Quest/localization tooltip frame** (`MB_LocalizeQuestTooltip`) kept as native tooltip; creation is now centralized via hidden-tooltip helper.  
+- [-] **Quest/localization tooltip frame** (`MB_LocalizeQuestTooltip`) kept as native tooltip; creation is now centralized via hidden-tooltip helper.
   File: `Core/MultiBotInit.lua`.  
   Reference: line `1730`.
 
-- [-] **Hidden glyph tooltip** (`MBHiddenTip`) kept as native tooltip; now reuses the same hidden-tooltip helper.   
+- [-] **Hidden glyph tooltip** (`MBHiddenTip`) kept as native tooltip; now reuses the same hidden-tooltip helper.
   File: `Core/MultiBotInit.lua`.  
   Reference: line `4701`.
 
@@ -109,13 +111,13 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
 
 ## 4) Runtime/utility frames (not direct Milestone 8 AceGUI screens)
 
-- [-] **Minimap button** (`MultiBot_MinimapButton`) keep native frame.  
+- [-] **Minimap button** (`MultiBot_MinimapButton`) keep native frame.
   File: `Core/MultiBotInit.lua`.
 
-- [-] **Event/timer/dispatch helper frames** (`CreateFrame("Frame")` without visible UI).  
+- [-] **Event/timer/dispatch helper frames** (`CreateFrame("Frame")` without visible UI).
   Files: `Core/MultiBot.lua`, `Core/MultiBotThrottle.lua`, `Core/MultiBotHandler.lua`, `UI/MultiBotSpecUI.lua` (timer frame), `Core/MultiBotInit.lua` (misc helper frame usages).
 
-- [-] **Engine widget factory primitives** in `Core/MultiBotEngine.lua` (button/check/model constructors for core UI system).  
+- [-] **Engine widget factory primitives** in `Core/MultiBotEngine.lua` (button/check/model constructors for core UI system).
   These are shared low-level primitives and should be migrated only when the owning screen is migrated.
 
 ---

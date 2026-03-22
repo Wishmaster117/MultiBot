@@ -1,0 +1,80 @@
+if not MultiBot then return end
+
+local Shared = MultiBot.QuestUIShared or {}
+local PROMPT
+local PROMPT_WINDOW_WIDTH = 280
+local PROMPT_WINDOW_HEIGHT = 108
+local PROMPT_OK_BUTTON_WIDTH = 100
+
+function ShowPrompt(title, onOk, defaultText)
+    local aceGUI = Shared.ResolveAceGUI and Shared.ResolveAceGUI("AceGUI-3.0 is required for MBUniversalPrompt") or nil
+    if not aceGUI then
+        return
+    end
+
+    if not PROMPT then
+        local window = aceGUI:Create("Window")
+        if not window then
+            return
+        end
+
+        window:SetTitle(title or "Enter Value")
+        window:SetWidth(PROMPT_WINDOW_WIDTH)
+        window:SetHeight(PROMPT_WINDOW_HEIGHT)
+        window:EnableResize(false)
+        window:SetLayout("Flow")
+        window.frame:SetFrameStrata("DIALOG")
+        if MultiBot.SetAceWindowCloseToHide then MultiBot.SetAceWindowCloseToHide(window) end
+        if MultiBot.RegisterAceWindowEscapeClose then MultiBot.RegisterAceWindowEscapeClose(window, "UniversalPrompt") end
+        if MultiBot.BindAceWindowPosition then MultiBot.BindAceWindowPosition(window, "universal_prompt") end
+
+        local edit = aceGUI:Create("EditBox")
+        edit:SetLabel("")
+        edit:SetFullWidth(true)
+        edit:DisableButton(true)
+        if Shared.ApplyEditBoxStyle then
+            Shared.ApplyEditBoxStyle(edit)
+        end
+        window:AddChild(edit)
+
+        local okButton = aceGUI:Create("Button")
+        okButton:SetText(OKAY)
+        okButton:SetWidth(PROMPT_OK_BUTTON_WIDTH)
+        window:AddChild(okButton)
+
+        PROMPT = {
+            window = window,
+            edit = edit,
+            okButton = okButton,
+        }
+    end
+
+    PROMPT.window:SetTitle(title or "Enter Value")
+    PROMPT.window:Show()
+    PROMPT.edit:SetText(defaultText or "")
+
+    local editBox = PROMPT.edit and PROMPT.edit.editbox
+    if editBox and editBox.SetFocus then
+        editBox:SetFocus()
+    end
+
+    PROMPT.okButton:SetCallback("OnClick", function()
+        local value = PROMPT.edit:GetText()
+        if not value or value == "" then
+            UIErrorsFrame:AddMessage(MultiBot.L("tips.quests.gobsnameerror"), 1, 0.2, 0.2, 1)
+            return
+        end
+
+        onOk(value)
+        PROMPT.window:Hide()
+    end)
+
+    PROMPT.edit:SetCallback("OnEnterPressed", function()
+        local button = PROMPT.okButton and PROMPT.okButton.button
+        if button and button.Click then
+            button:Click()
+        end
+    end)
+end
+
+MultiBot.ShowPrompt = ShowPrompt
