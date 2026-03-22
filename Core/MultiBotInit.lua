@@ -1537,7 +1537,7 @@ tMain.addButton("Actions", 0, 374, "inv_helmet_02", MultiBot.L("tips.main.action
 	MultiBot.ActionToTargetOrGroup("reset")
 end
 
--- [ADDED] Options button (opens/closes the sliders panel).
+--[[ [ADDED] Options button (opens/closes the sliders panel).
 local tBtnOptions = tMain.addButton("Options", 0, 404, "inv_misc_gear_02", MultiBot.L("tips.main.options"))
 tBtnOptions._active = false
 
@@ -1567,7 +1567,7 @@ tBtnOptions.doLeft = function(pButton)
     local tex = f:GetRegions()
     if tex and tex.SetDesaturated then tex:SetDesaturated(not opened) end
   end
-end
+end ]]--
 
 --  GAMEMASTER REFORGED --
 function MultiBot.BuildGmUI(tMultiBar)
@@ -3003,6 +3003,52 @@ local PROMPT_WINDOW_WIDTH = 280
 local PROMPT_WINDOW_HEIGHT = 108
 local PROMPT_OK_BUTTON_WIDTH = 100
 
+local function stylePromptEditBox(widget)
+    if not widget or not widget.frame or not widget.editbox then
+        return
+    end
+
+    local frame = widget.frame
+    local editbox = widget.editbox
+
+    if frame.SetBackdrop then
+        frame:SetBackdrop({
+            bgFile = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            tile = true,
+            tileSize = 16,
+            edgeSize = 14,
+            insets = { left = 3, right = 3, top = 3, bottom = 3 },
+        })
+        if frame.SetBackdropColor then
+            frame:SetBackdropColor(0.06, 0.06, 0.08, 0.92)
+        end
+        if frame.SetBackdropBorderColor then
+            frame:SetBackdropBorderColor(0.35, 0.35, 0.35, 0.95)
+        end
+    end
+
+    if editbox.GetRegions then
+        local regions = { editbox:GetRegions() }
+        for _, region in ipairs(regions) do
+            if region and region.GetObjectType and region:GetObjectType() == "Texture" and region.SetAlpha then
+                region:SetAlpha(0)
+            end
+        end
+    end
+
+    editbox:ClearAllPoints()
+    editbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 8, -4)
+    editbox:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -8, 4)
+    editbox:SetFontObject(ChatFontNormal)
+    editbox:SetTextInsets(4, 4, 3, 3)
+
+    widget:SetHeight(32)
+    if frame.SetHeight then
+        frame:SetHeight(32)
+    end
+end
+
 function ShowPrompt(title, onOk, defaultText)
     local aceGUI = resolveAceGUI("AceGUI-3.0 is required for MBUniversalPrompt")
     if not aceGUI then
@@ -3028,6 +3074,8 @@ function ShowPrompt(title, onOk, defaultText)
         local edit = aceGUI:Create("EditBox")
         edit:SetLabel("")
         edit:SetFullWidth(true)
+        edit:DisableButton(true)
+        stylePromptEditBox(edit)
         window:AddChild(edit)
 
         local okButton = aceGUI:Create("Button")

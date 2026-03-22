@@ -85,9 +85,9 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   Files: `UI/MultiBotIconosFrame.lua`, `Core/MultiBotInit.lua`, `UI/MultiBotIconos.lua`, `Core/MultiBotHandler.lua`.
   References: `UI/MultiBotIconosFrame.lua:1`, `Core/MultiBotInit.lua:1675`, `Core/MultiBotInit.lua:3189`, `UI/MultiBotIconos.lua:1`, `Core/MultiBotHandler.lua:265`.
 
-- [x] **Quick Hunter / Quick Shaman bars** (`MultiBot.HunterQuick`, `MultiBot.ShamanQuick`) migrated out of `Core/MultiBotInit.lua` into dedicated UI modules with native AceGUI-hosted quick frames, preserved position/state persistence, and legacy wrapper removal for both class-specific mini bars.
-  Files: `UI/MultiBotHunterQuickFrame.lua`, `UI/MultiBotShamanQuickFrame.lua`, `Core/MultiBotInit.lua`, `Core/MultiBot.lua`.
-  References: `UI/MultiBotHunterQuickFrame.lua:1`, `UI/MultiBotShamanQuickFrame.lua:1`, `Core/MultiBotInit.lua:1916`, `Core/MultiBotInit.lua:3437`, `Core/MultiBotInit.lua:3440`, `Core/MultiBot.lua:613`, `Core/MultiBot.lua:858`
+- [x] **Quick Hunter / Quick Shaman bars** (`MultiBot.HunterQuick`, `MultiBot.ShamanQuick`) migrated out of `Core/MultiBotInit.lua` into dedicated UI modules with native AceGUI-hosted quick frames, preserved position/state persistence, validated gameplay parity, and a compact persisted show/hide handle for both class-specific mini bars without reintroducing legacy shells.
+   Files: `UI/MultiBotHunterQuickFrame.lua`, `UI/MultiBotShamanQuickFrame.lua`, `Core/MultiBotInit.lua`, `Core/MultiBot.lua`.
+   References: `UI/MultiBotHunterQuickFrame.lua:1`, `UI/MultiBotShamanQuickFrame.lua:1`, `Core/MultiBotInit.lua:1916`, `Core/MultiBotInit.lua:3437`, `Core/MultiBotInit.lua:3440`, `Core/MultiBot.lua:613`, `Core/MultiBot.lua:858`.
 
 ---
 

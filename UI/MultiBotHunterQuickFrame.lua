@@ -12,6 +12,11 @@ local WINDOW_PADDING_Y = 0
 local WINDOW_TITLE = "Quick Hunter"
 local WINDOW_DEFAULT_POINT = { point = "CENTER", relPoint = "CENTER", x = -820, y = 300 }
 local ICON_FALLBACK = "Interface\\Icons\\INV_Misc_QuestionMark"
+local HANDLE_WIDTH = 12
+local HANDLE_HEIGHT = 18
+local HANDLE_ALPHA = 0.45
+local HANDLE_HOVER_ALPHA = 0.85
+--local HANDLE_ICON = "Interface\\AddOns\\MultiBot\\Icons\\class_hunter.blp"
 
 local PET_STANCE_DEFINITIONS = {
     { key = "aggressive", icon = "ability_Racial_BloodRage", tip = "tips.hunter.pet.aggressive", persistent = true },
@@ -49,6 +54,29 @@ local function getAceGUI()
     return nil
 end
 
+local function addPopupBackdrop(frame, bgAlpha)
+    if not frame or not frame.SetBackdrop then
+        return
+    end
+
+    frame:SetBackdrop({
+        bgFile = "Interface\\Buttons\\WHITE8x8",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true,
+        tileSize = 16,
+        edgeSize = 14,
+        insets = { left = 3, right = 3, top = 3, bottom = 3 },
+    })
+
+    if frame.SetBackdropColor then
+        frame:SetBackdropColor(0.06, 0.06, 0.08, bgAlpha or 0.92)
+    end
+
+    if frame.SetBackdropBorderColor then
+        frame:SetBackdropBorderColor(0.35, 0.35, 0.35, 0.95)
+    end
+end
+
 local function getPopupHost(title, width, height, missingDepMessage, persistenceKey)
     if type(MultiBot.CreateAceQuestPopupHost) == "function" then
         return MultiBot.CreateAceQuestPopupHost(title, width, height, missingDepMessage, persistenceKey)
@@ -75,9 +103,16 @@ local function getPopupHost(title, width, height, missingDepMessage, persistence
     end)
     window:Hide()
 
-    local host = CreateFrame("Frame", nil, window.content)
-    host:SetAllPoints(window.content)
+    local root = CreateFrame("Frame", nil, window.content)
+    root:SetPoint("TOPLEFT", window.content, "TOPLEFT", 8, -8)
+    root:SetPoint("BOTTOMRIGHT", window.content, "BOTTOMRIGHT", -8, 8)
+    addPopupBackdrop(root, 0.92)
+
+    local host = CreateFrame("Frame", nil, root)
+    host:SetPoint("TOPLEFT", root, "TOPLEFT", 8, -8)
+    host:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -8, 8)
     host.window = window
+    host.root = root
     host.Show = function(self)
         self.window:Show()
     end
@@ -110,29 +145,6 @@ local function setTooltip(owner, text)
     GameTooltip:SetOwner(owner, "ANCHOR_RIGHT")
     GameTooltip:SetText(text, 1, 1, 1, true)
     GameTooltip:Show()
-end
-
-local function addInputBackdrop(frame)
-    if not frame or not frame.SetBackdrop then
-        return
-    end
-
-    frame:SetBackdrop({
-        bgFile = "Interface\\Buttons\\WHITE8x8",
-        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-        tile = true,
-        tileSize = 16,
-        edgeSize = 12,
-        insets = { left = 3, right = 3, top = 3, bottom = 3 },
-    })
-
-    if frame.SetBackdropColor then
-        frame:SetBackdropColor(0.05, 0.05, 0.06, 0.92)
-    end
-
-    if frame.SetBackdropBorderColor then
-        frame:SetBackdropBorderColor(0.35, 0.35, 0.35, 0.95)
-    end
 end
 
 local function createIconButton(parent, name, iconPath, tooltipText, size)
@@ -319,7 +331,81 @@ local function updateWindowTitle(service, count)
     end
 end
 
-local function persistWindowPosition(frame)
+local persistWindowPosition
+
+local function createCollapseHandle(service)
+    if not service.window or not service.window.frame or service.toggleHandle then
+        return service.toggleHandle
+    end
+
+    local handle = CreateFrame("Button", nil, service.window.frame)
+    handle:SetFrameStrata("DIALOG")
+    handle:SetMovable(false)
+    handle:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    handle:RegisterForDrag("RightButton")
+
+    handle:SetBackdrop({
+        bgFile = "Interface\\Buttons\\WHITE8x8",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true,
+        tileSize = 8,
+        edgeSize = 10,
+        insets = { left = 2, right = 2, top = 2, bottom = 2 },
+    })
+    handle:SetBackdropColor(0.04, 0.04, 0.05, HANDLE_ALPHA)
+    handle:SetBackdropBorderColor(0.55, 0.55, 0.55, 0.85)
+
+    local label = handle:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    label:SetPoint("CENTER", 0, 0)
+    label:SetText("×")
+    label:SetTextColor(0.92, 0.92, 0.92, 0.95)
+    handle.label = label
+
+    handle:SetScript("OnEnter", function(self)
+        self:SetAlpha(HANDLE_HOVER_ALPHA)
+        if self.label and self.label.SetTextColor then
+            self.label:SetTextColor(1, 1, 1, 1)
+        end
+        setTooltip(self, "Left click : Show / Hide Right Click :  Move Quick Hunter")
+    end)
+    handle:SetScript("OnLeave", function(self)
+        self:SetAlpha(HANDLE_ALPHA)
+        if self.label and self.label.SetTextColor then
+            self.label:SetTextColor(0.92, 0.92, 0.92, 0.95)
+        end
+        if GameTooltip and GameTooltip.Hide then
+            GameTooltip:Hide()
+        end
+    end)
+    handle:SetScript("OnClick", function(_, mouseButton)
+        if mouseButton == "LeftButton" and service.ToggleManualVisibility then
+            service:ToggleManualVisibility()
+        end
+    end)
+    handle:SetScript("OnDragStart", function()
+        local frame = service.window and service.window.frame
+        if not frame then
+            return
+        end
+        frame:StartMoving()
+        frame.__mbRightDragging = true
+    end)
+    handle:SetScript("OnDragStop", function()
+        local frame = service.window and service.window.frame
+        if not frame then
+            return
+        end
+        frame.__mbRightDragging = nil
+        frame:StopMovingOrSizing()
+        persistWindowPosition(frame)
+    end)
+    handle:SetAlpha(HANDLE_ALPHA)
+
+    service.toggleHandle = handle
+    return handle
+end
+
+persistWindowPosition = function(frame)
     if not frame or not MultiBot.SetQuickFramePosition then
         return
     end
@@ -381,7 +467,9 @@ local function bindWindowDrag(service)
 end
 
 function HunterQuick:RestorePosition()
-    self:EnsureWindow()
+    if not self:EnsureWindow() then
+        return
+    end
 
     local frame = self.window and self.window.frame
     if not frame then
@@ -461,6 +549,121 @@ function HunterQuick:SetSavedStance(name, stance)
     end
 end
 
+function HunterQuick:IsManuallyVisible()
+    if self.manualVisible == nil then
+        if MultiBot.GetQuickFrameVisibleConfig then
+            self.manualVisible = MultiBot.GetQuickFrameVisibleConfig(HUNTER_QUICK_FRAME_KEY)
+        else
+            self.manualVisible = true
+        end
+    end
+
+    return self.manualVisible ~= false
+end
+
+function HunterQuick:SetManualVisibility(visible)
+    self.manualVisible = visible ~= false
+    if MultiBot.SetQuickFrameVisibleConfig then
+        MultiBot.SetQuickFrameVisibleConfig(HUNTER_QUICK_FRAME_KEY, self.manualVisible)
+    end
+end
+
+function HunterQuick:ApplyCollapsedState()
+    if not self.window or not self.window.frame then
+        return
+    end
+
+    if self.canvas then
+        self.canvas:Hide()
+    end
+
+    for _, row in pairs(self.entries or {}) do
+        row:Hide()
+    end
+
+    self.window:SetWidth(HANDLE_WIDTH)
+    self.window:SetHeight(HANDLE_HEIGHT)
+    self:UpdateToggleHandleLayout(true)
+
+    self.window:Show()
+    self:RestorePosition()
+end
+
+function HunterQuick:GetVisibleContentWidth()
+    local width = BUTTON_SIZE
+    local spacing = self:GetRowSpacing()
+    local index = 0
+
+    for _ in pairs(self.entries or {}) do
+        index = index + 1
+    end
+
+    if index == 0 then
+        return width
+    end
+
+    local orderedNames = self:CollectHunterBots()
+    for orderedIndex, name in ipairs(orderedNames) do
+        local row = self.entries[name]
+        local rowWidth = BUTTON_SIZE
+        if row then
+            if row.modesStrip and row.modesStrip:IsShown() and row.modesStrip.GetWidth then
+                rowWidth = math.max(rowWidth, BUTTON_SIZE + BUTTON_GAP + row.modesStrip:GetWidth())
+            end
+            if row.utilsStrip and row.utilsStrip:IsShown() and row.utilsStrip.GetWidth then
+                rowWidth = math.max(rowWidth, BUTTON_SIZE + BUTTON_GAP + row.utilsStrip:GetWidth())
+            end
+        end
+        width = math.max(width, ((orderedIndex - 1) * spacing) + rowWidth)
+    end
+
+    return width
+end
+
+function HunterQuick:UpdateToggleHandleLayout(collapsed)
+    local handle = createCollapseHandle(self)
+    if not handle or not self.window or not self.window.frame then
+        return
+    end
+
+    handle:ClearAllPoints()
+    if collapsed then
+        handle:SetPoint("TOPLEFT", self.window.frame, "TOPLEFT", 0, 0)
+        handle:SetPoint("BOTTOMRIGHT", self.window.frame, "BOTTOMRIGHT", 0, 0)
+    else
+        local visibleWidth = self:GetVisibleContentWidth()
+        handle:SetPoint("TOPLEFT", self.window.frame, "TOPLEFT", visibleWidth + BUTTON_GAP, 0)
+        handle:SetSize(HANDLE_WIDTH, HANDLE_HEIGHT)
+    end
+
+    handle:Show()
+    handle:SetAlpha(HANDLE_ALPHA)
+end
+
+function HunterQuick:ApplyExpandedState(count)
+    if not self.window or not self.window.frame then
+        return
+    end
+
+    self:UpdateWindowGeometry(count)
+
+    if self.canvas then
+        self.canvas:Show()
+    end
+
+    self:UpdateToggleHandleLayout(false)
+
+    self.window:Show()
+    self:RestorePosition()
+    self:UpdateAllPetPresence()
+end
+
+function HunterQuick:ToggleManualVisibility()
+    local currentlyVisible = self:IsManuallyVisible()
+    self:SetManualVisibility(not currentlyVisible)
+    self:Rebuild()
+end
+
 function HunterQuick:ApplyStanceVisual(row, stance)
     row.stanceButtons = row.stanceButtons or {}
     for _, button in pairs(row.stanceButtons) do
@@ -535,6 +738,10 @@ function HunterQuick:ToggleRow(row)
         row.modesStrip:Hide()
         row.utilsStrip:Hide()
     end
+
+    if self:IsManuallyVisible() then
+        self:UpdateToggleHandleLayout(false)
+    end
 end
 
 function HunterQuick:ToggleStrip(row, stripKey)
@@ -558,6 +765,10 @@ function HunterQuick:ToggleStrip(row, stripKey)
 
     if showModes then
         self:ApplyStanceVisual(row, row.activeStance)
+    end
+
+    if self:IsManuallyVisible() then
+        self:UpdateToggleHandleLayout(false)
     end
 end
 
@@ -586,7 +797,7 @@ function HunterQuick:EnsureSearchFrame()
     local searchBar = CreateFrame("Frame", nil, host)
     searchBar:SetPoint("TOP", host, "TOP", 0, -18)
     searchBar:SetSize(248, 26)
-    addInputBackdrop(searchBar)
+    addPopupBackdrop(searchBar, 0.92)
     host.SearchBar = searchBar
 
     local editBox = CreateFrame("EditBox", nil, searchBar)
@@ -684,9 +895,14 @@ function HunterQuick:EnsureSearchFrame()
         return MultiBot.PET_FAMILY[familyId] or "?"
     end
 
-    local scrollFrame = CreateFrame("ScrollFrame", "MBHunterPetScroll", host, "UIPanelScrollFrameTemplate")
-    scrollFrame:SetPoint("TOPLEFT", host, "TOPLEFT", 10, -58)
-    scrollFrame:SetPoint("BOTTOMRIGHT", host, "BOTTOMRIGHT", -30, 10)
+    local resultsPanel = CreateFrame("Frame", nil, host)
+    resultsPanel:SetPoint("TOPLEFT", host, "TOPLEFT", 0, -56)
+    resultsPanel:SetPoint("BOTTOMRIGHT", host, "BOTTOMRIGHT", 0, 0)
+    addPopupBackdrop(resultsPanel, 0.95)
+
+    local scrollFrame = CreateFrame("ScrollFrame", "MBHunterPetScroll", resultsPanel, "UIPanelScrollFrameTemplate")
+    scrollFrame:SetPoint("TOPLEFT", resultsPanel, "TOPLEFT", 8, -8)
+    scrollFrame:SetPoint("BOTTOMRIGHT", resultsPanel, "BOTTOMRIGHT", -32, 8)
 
     local content = CreateFrame("Frame", nil, scrollFrame)
     content:SetSize(1, 1)
@@ -705,7 +921,7 @@ function HunterQuick:EnsureSearchFrame()
 
         local previewButton = CreateFrame("Button", nil, row)
         previewButton:SetSize(16, 16)
-        previewButton:SetPoint("RIGHT", -22, 0)
+        previewButton:SetPoint("RIGHT", -32, 0)
         previewButton:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-UP")
         previewButton:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-DOWN")
         previewButton:SetHighlightTexture("Interface\\Buttons\\UI-PlusButton-Hilight")
@@ -806,9 +1022,14 @@ function HunterQuick:ShowFamilyFrame(targetName)
     self.FAMILY_FRAME = frame
     frame.TargetName = targetName
 
-    local scrollFrame = CreateFrame("ScrollFrame", "MBHunterFamilyScroll", frame, "UIPanelScrollFrameTemplate")
-    scrollFrame:SetPoint("TOPLEFT", 8, -10)
-    scrollFrame:SetPoint("BOTTOMRIGHT", -28, 8)
+    local listPanel = CreateFrame("Frame", nil, frame)
+    listPanel:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
+    listPanel:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 0)
+    addPopupBackdrop(listPanel, 0.95)
+
+    local scrollFrame = CreateFrame("ScrollFrame", "MBHunterFamilyScroll", listPanel, "UIPanelScrollFrameTemplate")
+    scrollFrame:SetPoint("TOPLEFT", listPanel, "TOPLEFT", 8, -8)
+    scrollFrame:SetPoint("BOTTOMRIGHT", listPanel, "BOTTOMRIGHT", -32, 8)
 
     local listWidth = 320
     local content = CreateFrame("Frame", nil, scrollFrame)
@@ -909,7 +1130,9 @@ function HunterQuick:BuildStanceAction(row, definition, index)
 end
 
 function HunterQuick:BuildRow(ownerName)
-    self:EnsureWindow()
+    if not self:EnsureWindow() then
+        return nil
+    end
 
     local root = CreateFrame("Frame", string.format("MultiBotHunterQuickRow_%s", sanitizeName(ownerName)), self.canvas)
     root:SetSize(ROW_WIDTH, ROW_HEIGHT)
@@ -995,7 +1218,9 @@ function HunterQuick:BuildRow(ownerName)
 end
 
 function HunterQuick:UpdateWindowGeometry(count)
-    self:EnsureWindow()
+    if not self:EnsureWindow() then
+        return
+    end
 
     count = math.max(tonumber(count) or 0, 1)
     local width = (WINDOW_PADDING_X * 2) + ROW_WIDTH + ((count - 1) * self:GetRowSpacing())
@@ -1048,6 +1273,7 @@ function HunterQuick:EnsureWindow()
     self.canvas = canvas
     self.__aceInitialized = true
 
+    createCollapseHandle(self)
     bindWindowDrag(self)
     self:RestorePosition()
 
@@ -1055,7 +1281,9 @@ function HunterQuick:EnsureWindow()
 end
 
 function HunterQuick:Rebuild()
-    self:EnsureWindow()
+    if not self:EnsureWindow() then
+        return
+    end
 
     local desiredNames = self:CollectHunterBots()
     local desiredLookup = {}
@@ -1077,21 +1305,27 @@ function HunterQuick:Rebuild()
         end
     end
 
+    local manuallyVisible = self:IsManuallyVisible()
     for index, name in ipairs(desiredNames) do
         local row = self.entries[name]
         if row then
             row:ClearAllPoints()
             row:SetPoint("TOPLEFT", self.canvas, "TOPLEFT", (index - 1) * self:GetRowSpacing(), 0)
             row:SetFrameLevel((self.window.frame:GetFrameLevel() or 0) + 2)
-            row:Show()
+            if manuallyVisible then
+                row:Show()
+            else
+                row:Hide()
+            end
         end
     end
 
     if #desiredNames > 0 then
-        self:UpdateWindowGeometry(#desiredNames)
-        self.window:Show()
-        self:RestorePosition()
-        self:UpdateAllPetPresence()
+        if manuallyVisible then
+            self:ApplyExpandedState(#desiredNames)
+        else
+            self:ApplyCollapsedState()
+        end
     elseif self.window then
         updateWindowTitle(self, 0)
         self.window:Hide()

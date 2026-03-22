@@ -12,6 +12,11 @@ local WINDOW_PADDING_Y = 0
 local WINDOW_TITLE = "Quick Shaman"
 local WINDOW_DEFAULT_POINT = { point = "CENTER", relPoint = "CENTER", x = -420, y = 240 }
 local ICON_FALLBACK = "Interface\\Icons\\INV_Misc_QuestionMark"
+local HANDLE_WIDTH = 12
+local HANDLE_HEIGHT = 18
+local HANDLE_ALPHA = 0.45
+local HANDLE_HOVER_ALPHA = 0.85
+--local HANDLE_ICON = "Interface\\AddOns\\MultiBot\\Icons\\class_shaman.blp"
 
 local ELEMENT_DEFINITIONS = {
     {
@@ -278,7 +283,81 @@ local function updateWindowTitle(service, count)
     end
 end
 
-local function persistWindowPosition(frame)
+local persistWindowPosition
+
+local function createCollapseHandle(service)
+    if not service.window or not service.window.frame or service.toggleHandle then
+        return service.toggleHandle
+    end
+
+    local handle = CreateFrame("Button", nil, service.window.frame)
+    handle:SetFrameStrata("DIALOG")
+    handle:SetMovable(false)
+    handle:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    handle:RegisterForDrag("RightButton")
+
+    handle:SetBackdrop({
+        bgFile = "Interface\\Buttons\\WHITE8x8",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true,
+        tileSize = 8,
+        edgeSize = 10,
+        insets = { left = 2, right = 2, top = 2, bottom = 2 },
+    })
+    handle:SetBackdropColor(0.04, 0.04, 0.05, HANDLE_ALPHA)
+    handle:SetBackdropBorderColor(0.55, 0.55, 0.55, 0.85)
+
+    local label = handle:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    label:SetPoint("CENTER", 0, 0)
+    label:SetText("×")
+    label:SetTextColor(0.92, 0.92, 0.92, 0.95)
+    handle.label = label
+
+    handle:SetScript("OnEnter", function(self)
+        self:SetAlpha(HANDLE_HOVER_ALPHA)
+        if self.label and self.label.SetTextColor then
+            self.label:SetTextColor(1, 1, 1, 1)
+        end
+        setTooltip(self, "Left click : Show / Hide Right Click :  Move Quick Shaman")
+    end)
+    handle:SetScript("OnLeave", function(self)
+        self:SetAlpha(HANDLE_ALPHA)
+        if self.label and self.label.SetTextColor then
+            self.label:SetTextColor(0.92, 0.92, 0.92, 0.95)
+        end
+        if GameTooltip and GameTooltip.Hide then
+            GameTooltip:Hide()
+        end
+    end)
+    handle:SetScript("OnClick", function(_, mouseButton)
+        if mouseButton == "LeftButton" and service.ToggleManualVisibility then
+            service:ToggleManualVisibility()
+        end
+    end)
+    handle:SetScript("OnDragStart", function()
+        local frame = service.window and service.window.frame
+        if not frame then
+            return
+        end
+        frame:StartMoving()
+        frame.__mbRightDragging = true
+    end)
+    handle:SetScript("OnDragStop", function()
+        local frame = service.window and service.window.frame
+        if not frame then
+            return
+        end
+        frame.__mbRightDragging = nil
+        frame:StopMovingOrSizing()
+        persistWindowPosition(frame)
+    end)
+    handle:SetAlpha(HANDLE_ALPHA)
+
+    service.toggleHandle = handle
+    return handle
+end
+
+persistWindowPosition = function(frame)
     if not frame or not MultiBot.SetQuickFramePosition then
         return
     end
@@ -340,7 +419,9 @@ local function bindWindowDrag(service)
 end
 
 function ShamanQuick:RestorePosition()
-    self:EnsureWindow()
+    if not self:EnsureWindow() then
+        return
+    end
 
     local frame = self.window and self.window.frame
     if not frame then
@@ -386,6 +467,114 @@ function ShamanQuick:CollectShamanBots()
     return names
 end
 
+function ShamanQuick:IsManuallyVisible()
+    if self.manualVisible == nil then
+        if MultiBot.GetQuickFrameVisibleConfig then
+            self.manualVisible = MultiBot.GetQuickFrameVisibleConfig(SHAMAN_QUICK_FRAME_KEY)
+        else
+            self.manualVisible = true
+        end
+    end
+
+    return self.manualVisible ~= false
+end
+
+function ShamanQuick:SetManualVisibility(visible)
+    self.manualVisible = visible ~= false
+    if MultiBot.SetQuickFrameVisibleConfig then
+        MultiBot.SetQuickFrameVisibleConfig(SHAMAN_QUICK_FRAME_KEY, self.manualVisible)
+    end
+end
+
+function ShamanQuick:ApplyCollapsedState()
+    if not self.window or not self.window.frame then
+        return
+    end
+
+    if self.canvas then
+        self.canvas:Hide()
+    end
+
+    for _, row in pairs(self.entries or {}) do
+        row:Hide()
+    end
+
+    self.window:SetWidth(HANDLE_WIDTH)
+    self.window:SetHeight(HANDLE_HEIGHT)
+    self:UpdateToggleHandleLayout(true)
+
+    self.window:Show()
+    self:RestorePosition()
+end
+
+function ShamanQuick:GetVisibleContentWidth()
+    local width = BUTTON_SIZE
+    local spacing = self:GetRowSpacing()
+    local orderedNames = self:CollectShamanBots()
+
+    if #orderedNames == 0 then
+        return width
+    end
+
+    for orderedIndex, name in ipairs(orderedNames) do
+        local row = self.entries[name]
+        local rowWidth = BUTTON_SIZE
+        if row and row.groupFrames then
+            for _, groupFrame in pairs(row.groupFrames) do
+                if groupFrame and groupFrame.IsShown and groupFrame:IsShown() and groupFrame.GetWidth then
+                    rowWidth = math.max(rowWidth, BUTTON_SIZE + BUTTON_GAP + groupFrame:GetWidth())
+                end
+            end
+        end
+        width = math.max(width, ((orderedIndex - 1) * spacing) + rowWidth)
+    end
+
+    return width
+end
+
+function ShamanQuick:UpdateToggleHandleLayout(collapsed)
+    local handle = createCollapseHandle(self)
+    if not handle or not self.window or not self.window.frame then
+        return
+    end
+
+    handle:ClearAllPoints()
+    if collapsed then
+        handle:SetPoint("TOPLEFT", self.window.frame, "TOPLEFT", 0, 0)
+        handle:SetPoint("BOTTOMRIGHT", self.window.frame, "BOTTOMRIGHT", 0, 0)
+    else
+        local visibleWidth = self:GetVisibleContentWidth()
+        handle:SetPoint("TOPLEFT", self.window.frame, "TOPLEFT", visibleWidth + BUTTON_GAP, 0)
+        handle:SetSize(HANDLE_WIDTH, HANDLE_HEIGHT)
+    end
+
+    handle:Show()
+    handle:SetAlpha(HANDLE_ALPHA)
+end
+
+function ShamanQuick:ApplyExpandedState(count)
+    if not self.window or not self.window.frame then
+        return
+    end
+
+    self:UpdateWindowGeometry(count)
+
+    if self.canvas then
+        self.canvas:Show()
+    end
+
+    self:UpdateToggleHandleLayout(false)
+
+    self.window:Show()
+    self:RestorePosition()
+end
+
+function ShamanQuick:ToggleManualVisibility()
+    local currentlyVisible = self:IsManuallyVisible()
+    self:SetManualVisibility(not currentlyVisible)
+    self:RefreshFromGroup()
+end
+
 function ShamanQuick:CloseAllExcept(keepRow)
     for _, row in pairs(self.entries or {}) do
         if row ~= keepRow then
@@ -415,6 +604,10 @@ function ShamanQuick:ToggleRow(row)
             groupFrame:Hide()
         end
     end
+
+    if self:IsManuallyVisible() then
+        self:UpdateToggleHandleLayout(false)
+    end
 end
 
 function ShamanQuick:ToggleElementGroup(row, elementKey)
@@ -442,6 +635,10 @@ function ShamanQuick:ToggleElementGroup(row, elementKey)
         targetGroup:Show()
     else
         targetGroup:Hide()
+    end
+
+    if self:IsManuallyVisible() then
+        self:UpdateToggleHandleLayout(false)
     end
 end
 
@@ -564,7 +761,9 @@ function ShamanQuick:CreateElementButton(row, elementDefinition, index)
 end
 
 function ShamanQuick:BuildRow(ownerName)
-    self:EnsureWindow()
+    if not self:EnsureWindow() then
+        return nil
+    end
 
     local row = CreateFrame("Frame", string.format("MultiBotShamanQuickRow_%s", sanitizeName(ownerName)), self.canvas)
     row:SetSize(ROW_WIDTH, ROW_HEIGHT)
@@ -638,7 +837,9 @@ function ShamanQuick:BuildRow(ownerName)
 end
 
 function ShamanQuick:UpdateWindowGeometry(count)
-    self:EnsureWindow()
+    if not self:EnsureWindow() then
+        return
+    end
 
     count = math.max(tonumber(count) or 0, 1)
     local width = (WINDOW_PADDING_X * 2) + ROW_WIDTH + ((count - 1) * self:GetRowSpacing())
@@ -691,6 +892,7 @@ function ShamanQuick:EnsureWindow()
     self.canvas = canvas
     self.__aceInitialized = true
 
+    createCollapseHandle(self)
     bindWindowDrag(self)
     self:RestorePosition()
 
@@ -698,7 +900,9 @@ function ShamanQuick:EnsureWindow()
 end
 
 function ShamanQuick:RefreshFromGroup()
-    self:EnsureWindow()
+    if not self:EnsureWindow() then
+        return
+    end
 
     local desiredNames = self:CollectShamanBots()
     local desiredLookup = {}
@@ -720,20 +924,27 @@ function ShamanQuick:RefreshFromGroup()
         end
     end
 
+    local manuallyVisible = self:IsManuallyVisible()
     for index, name in ipairs(desiredNames) do
         local row = self.entries[name]
         if row then
             row:ClearAllPoints()
             row:SetPoint("TOPLEFT", self.canvas, "TOPLEFT", (index - 1) * self:GetRowSpacing(), 0)
             row:SetFrameLevel((self.window.frame:GetFrameLevel() or 0) + 2)
-            row:Show()
+            if manuallyVisible then
+                row:Show()
+            else
+                row:Hide()
+            end
         end
     end
 
     if #desiredNames > 0 then
-        self:UpdateWindowGeometry(#desiredNames)
-        self.window:Show()
-        self:RestorePosition()
+        if manuallyVisible then
+            self:ApplyExpandedState(#desiredNames)
+        else
+            self:ApplyCollapsedState()
+        end
     elseif self.window then
         updateWindowTitle(self, 0)
         self.window:Hide()

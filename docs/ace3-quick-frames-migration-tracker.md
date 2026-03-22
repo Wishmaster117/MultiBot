@@ -47,11 +47,11 @@ Document de suivi dédié à la migration complète des mini frames **Quick Hunt
 - [x] Le code gère déjà un mini-contrôleur implicite (`entries`, `Rebuild`, `CollectHunterBots`, `UpdatePetPresence`) mais sans séparation formelle modèle/vue/contrôleur.
 
 ### Risques spécifiques Hunter
-- [ ] Régression sur l’apparition conditionnelle selon la composition du groupe.
-- [ ] Régression sur la persistance des stances par nom de bot.
-- [ ] Régression sur le drag & drop / restauration de position.
-- [ ] Régression sur les popups déjà migrés (search/family/prompt) si on modifie mal les points d’appel.
-- [ ] Régression sur la désactivation du menu des stances quand aucun pet n’est disponible.
+- [x] Régression sur l’apparition conditionnelle selon la composition du groupe. **Validation OK en jeu.**
+- [x] Régression sur la persistance des stances par nom de bot. **Validation OK en jeu.**
+- [x] Régression sur le drag & drop / restauration de position. **Validation OK en jeu.**
+- [x] Régression sur les popups déjà migrés (search/family/prompt) si on modifie mal les points d’appel. **Validation OK en jeu.**
+- [x] Régression sur la désactivation du menu des stances quand aucun pet n’est disponible. **Validation OK en jeu.**
 
 ---
 
@@ -77,11 +77,11 @@ Document de suivi dédié à la migration complète des mini frames **Quick Hunt
 - [x] Un appel legacy parasite subsiste dans `OnDragStop` (`_MB_GetOrCreateShamanPos()`), alors que la persistance AceDB est désormais prise en charge par `MultiBot.SetQuickFramePosition(...)`.
 
 ### Risques spécifiques Shaman
-- [ ] Régression sur l’exclusivité visuelle d’un totem par élément.
-- [ ] Régression sur la restauration des icônes choisies après reload/relog.
-- [ ] Régression sur les commandes `co +/-<totem>,?` si le mapping données/UI diverge.
-- [ ] Régression sur le comportement d’expansion/fermeture des groupes Earth/Fire/Water/Air.
-- [ ] Régression sur l’apparition conditionnelle selon la présence de shamans bots.
+- [x] Régression sur l’exclusivité visuelle d’un totem par élément. **Validation OK en jeu.**
+- [x] Régression sur la restauration des icônes choisies après reload/relog. **Validation OK en jeu.**
+- [x] Régression sur les commandes `co +/-<totem>,?` si le mapping données/UI diverge. **Validation OK en jeu.**
+- [x] Régression sur le comportement d’expansion/fermeture des groupes Earth/Fire/Water/Air. **Validation OK en jeu.**
+- [x] Régression sur l’apparition conditionnelle selon la présence de shamans bots. **Validation OK en jeu.**
 
 ---
 
@@ -106,13 +106,13 @@ Document de suivi dédié à la migration complète des mini frames **Quick Hunt
 ## 5) Objectif de migration
 
 ### Contraintes fonctionnelles à respecter
-- [ ] Ne pas encapsuler les anciennes frames legacy dans une fenêtre AceGUI.
-- [ ] Refaire les quick frames comme de vraies fenêtres/conteneurs Ace3/AceGUI.
-- [ ] Conserver les mêmes commandes envoyées aux bots.
-- [ ] Conserver l’apparition conditionnelle selon la présence de hunters/shamans bots dans le groupe.
-- [ ] Conserver la persistance de position existante (`HunterQuick`, `ShamanQuick`).
-- [ ] Conserver la persistance des stances pet Hunter et des totems Shaman.
-- [ ] Conserver les popups Hunter déjà migrés sans les régresser.
+- [x] Ne pas encapsuler les anciennes frames legacy dans une fenêtre AceGUI.
+- [x] Refaire les quick frames comme de vraies fenêtres/conteneurs Ace3/AceGUI.
+- [x] Conserver les mêmes commandes envoyées aux bots.
+- [x] Conserver l’apparition conditionnelle selon la présence de hunters/shamans bots dans le groupe.
+- [x] Conserver la persistance de position existante (`HunterQuick`, `ShamanQuick`).
+- [x] Conserver la persistance des stances pet Hunter et des totems Shaman.
+- [x] Conserver les popups Hunter déjà migrés sans les régresser.
 
 ### Cible de structure recommandée
 - [x] `UI/MultiBotHunterQuickFrame.lua`
@@ -150,34 +150,34 @@ Document de suivi dédié à la migration complète des mini frames **Quick Hunt
 - [x] Supprimer les dépendances aux bordures/contours legacy de ces deux quick frames.
 
 ### Phase 4 — Parité fonctionnelle
-- [ ] Valider la présence conditionnelle en groupe/raid.
-- [ ] Valider la persistance de position des deux quick frames.
-- [ ] Valider la persistance des stances Hunter.
-- [ ] Valider la persistance des totems Shaman.
-- [ ] Valider les flows Hunter prompt/search/family.
-- [ ] Valider l’exclusivité visuelle et l’icône d’élément côté Shaman.
+- [x] Valider la présence conditionnelle en groupe/raid.
+- [x] Valider la persistance de position des deux quick frames.
+- [x] Valider la persistance des stances Hunter.
+- [x] Valider la persistance des totems Shaman.
+- [x] Valider les flows Hunter prompt/search/family.
+- [x] Valider l’exclusivité visuelle et l’icône d’élément côté Shaman.
 
 ---
 
 ## 7) Checklist de validation ciblée
 
 ### Hunter Quick
-- [ ] Un hunter bot seul fait apparaître la frame.
-- [ ] Plusieurs hunters bots produisent plusieurs rows stables et triées.
-- [ ] Le drag déplace bien la frame et la position revient après reload.
-- [ ] Les stances `aggressive/passive/defensive` restent exclusives visuellement.
-- [ ] L’absence de pet désactive correctement le sous-menu des stances.
-- [ ] `Name`, `Id`, `Family`, `Rename`, `Abandon` continuent d’envoyer les bonnes commandes.
-- [ ] Les popups search/family/prompt restent fonctionnels.
+- [x] Un hunter bot seul fait apparaître la frame.
+- [x] Plusieurs hunters bots produisent plusieurs rows stables et triées.
+- [x] Le drag déplace bien la frame et la position revient après reload.
+- [x] Les stances `aggressive/passive/defensive` restent exclusives visuellement.
+- [x] L’absence de pet désactive correctement le sous-menu des stances.
+- [x] `Name`, `Id`, `Family`, `Rename`, `Abandon` continuent d’envoyer les bonnes commandes.
+- [x] Les popups search/family/prompt restent fonctionnels.
 
 ### Shaman Quick
-- [ ] Un shaman bot seul fait apparaître la frame.
-- [ ] Plusieurs shamans bots produisent plusieurs rows stables.
-- [ ] Le drag déplace bien la frame et la position revient après reload.
-- [ ] Chaque élément affiche bien le totem choisi sur son bouton principal.
-- [ ] La sélection d’un nouveau totem d’un même élément remplace bien l’ancien visuellement.
-- [ ] Désélectionner un totem rétablit l’icône par défaut du bouton d’élément.
-- [ ] Les choix persisted reviennent correctement après reload.
+- [x] Un shaman bot seul fait apparaître la frame.
+- [x] Plusieurs shamans bots produisent plusieurs rows stables.
+- [x] Le drag déplace bien la frame et la position revient après reload.
+- [x] Chaque élément affiche bien le totem choisi sur son bouton principal.
+- [x] La sélection d’un nouveau totem d’un même élément remplace bien l’ancien visuellement.
+- [x] Désélectionner un totem rétablit l’icône par défaut du bouton d’élément.
+- [x] Les choix persisted reviennent correctement après reload.
 
 ---
 
@@ -187,3 +187,11 @@ Document de suivi dédié à la migration complète des mini frames **Quick Hunt
 - [x] **Architecture commune** : garder deux modules dédiés (`UI/MultiBotHunterQuickFrame.lua` et `UI/MultiBotShamanQuickFrame.lua`) et n’extraire que de petits utilitaires communs ciblés (position, drag, registre de rows, helpers de refresh), sans base abstraite prématurée.
 - [x] **Granularité des boutons** : ne pas figer la migration sur la valeur legacy `36px`, mais conserver la même densité d’usage et la même vitesse de scan/clic, avec un léger ajustement possible si le layout AceGUI est plus lisible et plus confortable.
 - [x] **Collecte des bots présents** : introduire un petit contrôleur partagé purement runtime/data pour la découverte des bots de groupe/raid par classe, afin d’éviter de dupliquer la logique de collecte Hunter/Shaman sans coupler ce contrôleur au rendu UI.
+
+---
+
+## 9) Clôture du slice
+
+- [x] **Statut final** : la migration Quick Hunter / Quick Shaman est finalisée.
+- [x] **Validation fonctionnelle** : tous les points de la checklist Hunter/Shaman ont été validés en jeu.
+- [x] **UX additionnelle** : les quick frames disposent désormais d’une poignée de masquage/réaffichage semi-visible, persistée après reload, sans réintroduire de wrapper legacy.
