@@ -124,12 +124,12 @@ end
 MultiBot.addSpell = function(pInfo, pName)
 	local tID = MultiBot.getSpellID(pInfo)
 	-- if(tID == 0) then return false end // Moded to DEBUG
-	
+
 	-- DEBUG --
 	if(tID == 0) then
 		debugSpellbookCapture("IGNORED", pName, pInfo, 0)
 		return false
-	end	
+	end
 	-- DEBUG END --
 
 	local tName, tRank, tIcon = GetSpellInfo(tID)
@@ -232,7 +232,7 @@ MultiBot.handleSpellbookChatLine = function(pButton, pLine, pSender)
 
 	if(pButton.waitFor == "SPELLBOOK" and MultiBot.isSpellbookHeaderLine and MultiBot.isSpellbookHeaderLine(pLine)) then
 	-- DEBUG --
-		debugSpellbookCapture("HEADER", pSender, pLine, 0)	
+		debugSpellbookCapture("HEADER", pSender, pLine, 0)
 	-- DEBUG END --
 		if(MultiBot.beginSpellbookCollection) then
 			MultiBot.beginSpellbookCollection(pSender)
@@ -249,7 +249,7 @@ MultiBot.handleSpellbookChatLine = function(pButton, pLine, pSender)
 
 		if(shouldFinishSpellbookCollection(pLine, tCollectionState)) then
 		-- DEBUG --
-			debugSpellbookCapture("FOOTER", pSender, pLine, 0)		
+			debugSpellbookCapture("FOOTER", pSender, pLine, 0)
 		-- DEBUG END --
 			if(MultiBot.finishSpellbookCollection) then
 				MultiBot.finishSpellbookCollection()
