@@ -1,4 +1,5 @@
 local SPELLBOOK_PAGE_SIZE = 18
+local SPELLBOOK_FOOTER_REQUEST_DELAY = 0.35
 
 local function getSpellBookUI()
 	return MultiBot.SpellBookUISettings or {}
@@ -19,7 +20,9 @@ local function ensureSpellbookCollectionState(pButton)
 	if(type(pButton.spellbookCollectionState) ~= "table") then
 		pButton.spellbookCollectionState = {
 			hasCollectedSpell = false,
-			nonSpellStreak = 0,
+			--nonSpellStreak = 0,
+			footerRequestToken = 0,
+			hasRequestedFooter = false,
 		}
 	end
 
@@ -43,15 +46,55 @@ local function shouldFinishSpellbookCollection(pLine, pCollectionState)
 		return true
 	end
 
-	local tNonSpellStreak = tonumber(pCollectionState.nonSpellStreak) or 0
-	local tNonSpellThreshold = tonumber(SPELLBOOK_END_NON_SPELL_STREAK) or 4
-	if(pCollectionState.hasCollectedSpell and tNonSpellStreak >= tNonSpellThreshold) then
-		return true
-	end
-
 	return false
 end
 
+
+local function scheduleSpellbookFooterRequest(pButton, pSender)
+	if(type(pButton) ~= "table" or type(pSender) ~= "string" or pSender == "") then
+		return
+	end
+
+	local tCollectionState = ensureSpellbookCollectionState(pButton)
+	tCollectionState.footerRequestToken = (tonumber(tCollectionState.footerRequestToken) or 0) + 1
+	local tToken = tCollectionState.footerRequestToken
+
+	local function requestFooter()
+		local tCurrentState = pButton and pButton.spellbookCollectionState
+		if(tCurrentState ~= tCollectionState) then return end
+		if((tonumber(tCurrentState.footerRequestToken) or 0) ~= tToken) then return end
+		if(pButton.waitFor ~= "SPELL") then return end
+		if(tCurrentState.hasRequestedFooter) then return end
+
+		tCurrentState.hasRequestedFooter = true
+		SendChatMessage("stats", "WHISPER", nil, pSender)
+	end
+
+	if(type(MultiBot.TimerAfter) == "function") then
+		MultiBot.TimerAfter(SPELLBOOK_FOOTER_REQUEST_DELAY, requestFooter)
+	else
+		requestFooter()
+	end
+end
+
+-- DEBUG --
+local function debugSpellbookCapture(pKind, pSender, pLine, pSpellID)
+	if(type(MultiBot) ~= "table" or type(MultiBot.dprint) ~= "function") then
+		return
+	end
+
+	local tSender = tostring(pSender or "?")
+	local tLine = tostring(pLine or "")
+	local tSpellIDText = ""
+
+	if(type(pSpellID) == "number" and pSpellID > 0) then
+		tSpellIDText = " spellID=" .. pSpellID
+	end
+
+	MultiBot.dprint("SPELLBOOK", "[" .. tostring(pKind) .. "]", "sender=" .. tSender .. tSpellIDText, "line=" .. tLine)
+end
+
+-- END DEBUG --
 MultiBot.getSpellID = function(pInfo)
 	if(type(pInfo) ~= "string" or pInfo == "") then
 		return 0
@@ -80,7 +123,14 @@ end
 
 MultiBot.addSpell = function(pInfo, pName)
 	local tID = MultiBot.getSpellID(pInfo)
-	if(tID == 0) then return false end
+	-- if(tID == 0) then return false end // Moded to DEBUG
+	
+	-- DEBUG --
+	if(tID == 0) then
+		debugSpellbookCapture("IGNORED", pName, pInfo, 0)
+		return false
+	end	
+	-- DEBUG END --
 
 	local tName, tRank, tIcon = GetSpellInfo(tID)
 	local tLink = GetSpellLink(tID)
@@ -102,6 +152,9 @@ MultiBot.addSpell = function(pInfo, pName)
 		MultiBot.setSpell(MultiBot.spellbook.index, tSpell, pName)
 	end
 
+-- DEBUG --
+	debugSpellbookCapture("CAPTURED", pName, pInfo, tID)
+-- DEBUG END --
 	return true
 end
 
@@ -178,28 +231,26 @@ MultiBot.handleSpellbookChatLine = function(pButton, pLine, pSender)
 	end
 
 	if(pButton.waitFor == "SPELLBOOK" and MultiBot.isSpellbookHeaderLine and MultiBot.isSpellbookHeaderLine(pLine)) then
+	-- DEBUG --
+		debugSpellbookCapture("HEADER", pSender, pLine, 0)	
+	-- DEBUG END --
 		if(MultiBot.beginSpellbookCollection) then
 			MultiBot.beginSpellbookCollection(pSender)
 		end
 		resetSpellbookCollectionState(pButton)
 		ensureSpellbookCollectionState(pButton)
 		pButton.waitFor = "SPELL"
-		SendChatMessage("stats", "WHISPER", nil, pSender)
+		scheduleSpellbookFooterRequest(pButton, pSender)
 		return true
 	end
 
 	if(pButton.waitFor == "SPELL") then
 		local tCollectionState = ensureSpellbookCollectionState(pButton)
-		local tAddedSpell = MultiBot.addSpell(pLine, pSender)
 
-		if(tAddedSpell) then
-			tCollectionState.hasCollectedSpell = true
-			tCollectionState.nonSpellStreak = 0
-			return true
-		end
-
-		tCollectionState.nonSpellStreak = (tonumber(tCollectionState.nonSpellStreak) or 0) + 1
 		if(shouldFinishSpellbookCollection(pLine, tCollectionState)) then
+		-- DEBUG --
+			debugSpellbookCapture("FOOTER", pSender, pLine, 0)		
+		-- DEBUG END --
 			if(MultiBot.finishSpellbookCollection) then
 				MultiBot.finishSpellbookCollection()
 			end
@@ -209,6 +260,15 @@ MultiBot.handleSpellbookChatLine = function(pButton, pLine, pSender)
 			return true
 		end
 
+		local tAddedSpell = MultiBot.addSpell(pLine, pSender)
+		if(tAddedSpell) then
+			tCollectionState.hasCollectedSpell = true
+			--tCollectionState.nonSpellStreak = 0
+		--else
+			--tCollectionState.nonSpellStreak = (tonumber(tCollectionState.nonSpellStreak) or 0) + 1
+		end
+
+		scheduleSpellbookFooterRequest(pButton, pSender)
 		return true
 	end
 
@@ -220,12 +280,15 @@ MultiBot.setSpell = function(pIndex, pSpell, pName)
 	local tOverlay = MultiBot.spellbook.frames["Overlay"]
 
 	if(pSpell ~= nil) then
+		--local tTitle = MultiBot.IF(string.len(pSpell[2]) > 16, string.sub(pSpell[2], 1, 16) .. "...", pSpell[2])
 		tOverlay.setButton("S" .. tIndex, pSpell[4], pSpell[5])
+		--tOverlay.setText("T" .. tIndex, "|cffffcc00" .. tTitle .. "|r")
 		tOverlay.setText("R" .. tIndex, "|cff" .. (getSpellBookUI().RANK_TEXT_COLOR_HEX or "ffcc00") .. pSpell[3] .. "|r")
 		tOverlay.buttons["S" .. tIndex].spell = pSpell[1]
 		tOverlay.buttons["C" .. tIndex].spell = pSpell[1]
 		tOverlay.buttons["S" .. tIndex].doShow()
 		tOverlay.buttons["C" .. tIndex].doShow()
+		--tOverlay.texts["T" .. tIndex]:Show()
 		tOverlay.texts["R" .. tIndex]:Show()
 		tOverlay.buttons["C" .. tIndex]:SetChecked(MultiBot.spells[pName][pSpell[1]])
 		tOverlay.buttons["C" .. tIndex].doClick = function(pButton)
