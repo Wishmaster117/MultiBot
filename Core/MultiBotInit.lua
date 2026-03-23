@@ -317,37 +317,8 @@ end
 MultiBot.BuildFormationUI(tLeft)
 
 -- BEASTMASTER --
-tLeft.addButton("Beast", -0, 0, "ability_mount_swiftredwindrider", MultiBot.L("tips.beast.master")).doHide()
-.doLeft = function(pButton)
-	MultiBot.ShowHideSwitch(pButton.parent.frames["Beast"])
-end
-
-local tBeast = tLeft.addFrame("Beast", -2, 34)
-tBeast:Hide()
-
-tBeast.addButton("Release", 0, 0, "spell_nature_spiritwolf", MultiBot.L("tips.beast.release"))
-.doLeft = function(pButton)
-	MultiBot.ActionToTargetOrGroup("cast 2641")
-end
-
-tBeast.addButton("Revive", 0, 30, "ability_hunter_beastsoothe", MultiBot.L("tips.beast.revive"))
-.doLeft = function(pButton)
-	MultiBot.ActionToTargetOrGroup("cast 982")
-end
-
-tBeast.addButton("Heal", 0, 60, "ability_hunter_mendpet", MultiBot.L("tips.beast.heal"))
-.doLeft = function(pButton)
-	MultiBot.ActionToTargetOrGroup("cast 48990")
-end
-
-tBeast.addButton("Feed", 0, 90, "ability_hunter_beasttraining", MultiBot.L("tips.beast.feed"))
-.doLeft = function(pButton)
-	MultiBot.ActionToTargetOrGroup("cast 6991")
-end
-
-tBeast.addButton("Call", 0, 120, "ability_hunter_beastcall", MultiBot.L("tips.beast.call"))
-.doLeft = function(pButton)
-	MultiBot.ActionToTargetOrGroup("cast 883")
+if MultiBot.InitializeBeastUI then
+	MultiBot.InitializeBeastUI(tLeft)
 end
 
 --  CREATOR --
