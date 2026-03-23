@@ -214,10 +214,10 @@ local function refreshUnitsDisplay(unitsButton, requestedRoster, requestedFilter
 end
 
 local function configureRosterRetry(button, isGuildRetry, retryCount, needGuildRetry)
-    if (not isGuildRetry) and needGuildRetry and type(TimerAfter) == "function" and retryCount < UNITS_GUILD_RETRY_LIMIT then
+    if (not isGuildRetry) and needGuildRetry and retryCount < UNITS_GUILD_RETRY_LIMIT then
         button._guildRosterRetryCount = retryCount + 1
         button._guildRosterRetrying = true
-        TimerAfter(UNITS_GUILD_RETRY_DELAY, function()
+        MultiBot.TimerAfter(UNITS_GUILD_RETRY_DELAY, function()
             if button and button.doRight then
                 button.doRight(button)
             end
@@ -427,17 +427,15 @@ local function onUnitsButtonRightClick(button)
 
     button.doLeft(button, button.roster, button.filter)
 
-    if type(TimerAfter) == "function" then
-        TimerAfter(UNITS_GUILD_RETRY_DELAY, function()
-            local unitsButton = MultiBot.frames
-                and MultiBot.frames["MultiBar"]
-                and MultiBot.frames["MultiBar"].buttons
-                and MultiBot.frames["MultiBar"].buttons[UNITS_BUTTON_NAME]
-            if unitsButton and unitsButton.doLeft then
-                unitsButton.doLeft(unitsButton, unitsButton.roster, unitsButton.filter)
-            end
-        end)
-    end
+    MultiBot.TimerAfter(UNITS_GUILD_RETRY_DELAY, function()
+        local unitsButton = MultiBot.frames
+            and MultiBot.frames["MultiBar"]
+            and MultiBot.frames["MultiBar"].buttons
+            and MultiBot.frames["MultiBar"].buttons[UNITS_BUTTON_NAME]
+        if unitsButton and unitsButton.doLeft then
+            unitsButton.doLeft(unitsButton, unitsButton.roster, unitsButton.filter)
+        end
+    end)
 end
 
 local function createFactionBanner(unitsFrame)

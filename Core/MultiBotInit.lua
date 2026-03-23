@@ -141,29 +141,6 @@ do
   end
 end
 
--- ------------------------------------------------------------------
---  Helper universel : TimerAfter
--- ------------------------------------------------------------------
-if not TimerAfter then
-    function TimerAfter(delay, callback)
-        if C_Timer and C_Timer.After then
-            return C_Timer.After(delay, callback)
-        end
-        local f = CreateFrame("Frame")
-        f.elapsed = 0
-        f:SetScript("OnUpdate", function(self, dt)
-            self.elapsed = self.elapsed + dt
-            if self.elapsed >= delay then
-                self:SetScript("OnUpdate", nil)
-                if callback then pcall(callback) end
-            end
-        end)
-    end
-    -- rendez-la accessible ailleurs
-    MultiBot    = _G.MultiBot or {}
-    MultiBot.TimerAfter = TimerAfter
-end
-
 -- MULTIBAR --
 local tMultiBar = MultiBot.addFrame("MultiBar", -322, 144, 36)
 MultiBot.PromoteFrame(tMultiBar)

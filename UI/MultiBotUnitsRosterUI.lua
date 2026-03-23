@@ -21,11 +21,7 @@ local function resolveRosterTexture(definition)
 end
 
 local function scheduleDefaultRosterSelection(tControl)
-    if type(TimerAfter) ~= "function" then
-        return
-    end
-
-    TimerAfter(0.05, function()
+    MultiBot.TimerAfter(0.05, function()
         local unitsButton = MultiBot.frames
             and MultiBot.frames.MultiBar
             and MultiBot.frames.MultiBar.buttons

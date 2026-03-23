@@ -30,6 +30,7 @@ Core\MultiBotLocale.lua
 Core\MultiBotDebug.lua
 UI\MultiBotOptions.lua
 Core\MultiBotThrottle.lua
+Core\MultiBotAsync.lua
 
 Locales\MultiBotAceLocale.lua
 Locales\MultiBotAceLocale-enUS.lua

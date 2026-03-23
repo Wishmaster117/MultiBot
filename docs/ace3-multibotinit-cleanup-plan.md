@@ -276,7 +276,7 @@ Le nettoyage pourra être considéré comme réussi quand :
 - [x] Extraire `Main`
 - [x] Extraire `RTSC`
 - [ ] Rationaliser le bloc `Units` restant
-- [ ] Réévaluer la place finale de `TimerAfter`
+- [x] Extraire `TimerAfter` dans `Core/MultiBotAsync.lua` et basculer les usages partagés sur `MultiBot.TimerAfter`
 
 ---
 

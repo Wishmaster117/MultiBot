@@ -230,24 +230,6 @@ local specIconMap = {
   },
 }
 
----------------------------------------------------------------------
--- Helper TimerAfter
----------------------------------------------------------------------
-local function TimerAfter(delay, callback)
-    if C_Timer and C_Timer.After then
-        return C_Timer.After(delay, callback)
-    end
-    local f = CreateFrame("Frame")
-    f.elapsed = 0
-    f:SetScript("OnUpdate", function(frame, dt)
-        frame.elapsed = frame.elapsed + dt
-        if frame.elapsed >= delay then
-            frame:SetScript("OnUpdate", nil)
-            if callback then pcall(callback) end
-        end
-    end)
-end
-
 -- renvoie le premier champ userdata trouvé dans un wrapper
 local function unwrapFrame(obj)
     if type(obj) == "userdata" then return obj end
@@ -492,11 +474,11 @@ function MultiBot.HandleSpecWhisper(msg, sender)
                     MultiBot.talent.name  = sender
                     MultiBot.talent.class = MultiBot.toClass(token)
                 end
-                TimerAfter(0.6, function()
+                MultiBot.TimerAfter(0.6, function()
                     MultiBot.auto.talent = true
                     InspectUnit(unit)
                     if InspectFrame then HideUIPanel(InspectFrame) end
-                    TimerAfter(0.1, function()
+                    MultiBot.TimerAfter(0.1, function()
                         if MultiBot.talent:IsShown() then MultiBot.talent:Hide() end
                     end)
                 end)
@@ -656,14 +638,14 @@ local function bindSpecSelection(button, spec, build, tip, bot, className, curre
             local slot = (btn == "RightButton") and 2 or 1
             SendChatMessage("talents switch " .. slot, "WHISPER", nil, bot)
 
-            TimerAfter(0.4, function()
+            MultiBot.TimerAfter(0.4, function()
                 SendChatMessage("talents spec " .. spec, "WHISPER", nil, bot)
             end)
 
             Spec.pendingRefresh = bot
             Spec:HideDropdown()
 
-            TimerAfter(1.3, function()
+            MultiBot.TimerAfter(1.3, function()
                 if Spec.pendingRefresh and Spec.pendingRefresh == bot then
                     local unit = MultiBot.toUnit(bot)
 
@@ -673,7 +655,7 @@ local function bindSpecSelection(button, spec, build, tip, bot, className, curre
                             MultiBot.talent.class = className
                         end
 
-                        TimerAfter(0.6, function()
+                        MultiBot.TimerAfter(0.6, function()
                             MultiBot.auto.talent = true
                             InspectUnit(unit)
 
@@ -681,7 +663,7 @@ local function bindSpecSelection(button, spec, build, tip, bot, className, curre
                                 HideUIPanel(InspectFrame)
                             end
 
-                            TimerAfter(0.1, function()
+                            MultiBot.TimerAfter(0.1, function()
                                 if MultiBot.talent:IsShown() then
                                     MultiBot.talent:Hide()
                                 end

@@ -960,7 +960,7 @@ function MultiBot.InitializeInventoryFrame()
             return prepareInventoryForBot(targetBotName)
         end
 
-        if type(delay) == "number" and delay > 0 and MultiBot.TimerAfter then
+        if type(delay) == "number" and delay > 0 then
             MultiBot.TimerAfter(delay, doRefresh)
             return true
         end
