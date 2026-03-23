@@ -214,7 +214,8 @@ function MultiBot.InitializeRewardFrame()
 
 	local pageLabel = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	pageLabel:SetPoint("TOP", content, "TOP", 0, -2)
-	pageLabel:SetText(MB_PAGE_DEFAULT)
+	--pageLabel:SetText(MB_PAGE_DEFAULT)
+	pageLabel:SetText(MultiBot.MB_PAGE_DEFAULT or "0/0")
 
 	local prevButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
 	prevButton:SetSize(26, 20)

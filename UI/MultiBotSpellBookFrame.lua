@@ -73,7 +73,8 @@ local function getSpellBookUI()
 end
 
 local function getSpellBookDefaultPageLabel()
-	local tDefault = MB_PAGE_DEFAULT
+	--local tDefault = MB_PAGE_DEFAULT
+	local tDefault = MultiBot.MB_PAGE_DEFAULT
 	if(type(tDefault) ~= "string" or tDefault == "") then
 		return "1/1"
 	end
