@@ -87,6 +87,7 @@ UI\MultiBotUnitsFilterUI.lua
 UI\MultiBotUnitsRosterUI.lua
 UI\MultiBotBeastUI.lua
 UI\MultiBotCreatorUI.lua
+UI\MultiBotMainUI.lua
 UI\MultiBotGmUI.lua
 Core\MultiBotInit.lua
 Data\MultiBotIconos.lua

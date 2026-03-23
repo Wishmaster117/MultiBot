@@ -267,7 +267,7 @@ Le nettoyage pourra être considéré comme réussi quand :
 - [x] Extraire `Creator`
 - [x] Extraire `BuildGmUI`
 - [x] Extraire `ShowDeleteSVPrompt`
-- [ ] Extraire `Main`
+- [x] Extraire `Main`
 - [ ] Extraire `RTSC`
 - [ ] Rationaliser le bloc `Units` restant
 - [ ] Réévaluer la place finale de `TimerAfter`
