@@ -264,7 +264,7 @@ Le nettoyage pourra être considéré comme réussi quand :
 - [x] Extraire `BuildFilterUI`
 - [x] Extraire `BuildRosterUI`
 - [x] Extraire `Beast`
-- [ ] Extraire `Creator`
+- [x] Extraire `Creator`
 - [ ] Extraire `BuildGmUI`
 - [ ] Extraire `ShowDeleteSVPrompt`
 - [ ] Extraire `Main`
