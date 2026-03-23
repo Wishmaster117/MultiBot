@@ -252,13 +252,13 @@ Le nettoyage pourra être considéré comme réussi quand :
 ## Checklist de suivi
 
 ### Milestone 8 — Quests / GameObjects
-- [ ] Extraire les helpers Quests/Ace3 de `Core/MultiBotInit.lua`
-- [ ] Garder `UI/MultiBotQuestUIShared.lua` centré sur le rendu partagé, pas sur le host Ace3
+- [x] Extraire les helpers Quests/Ace3 de `Core/MultiBotInit.lua`
+- [x] Garder `UI/MultiBotQuestUIShared.lua` centré sur le rendu partagé, pas sur le host Ace3
 - [ ] Vérifier qu’aucune frame legacy n’est ré-embarquée dans une fenêtre AceGUI
 - [ ] Vérifier la parité visuelle et fonctionnelle en jeu
 
 ### Nettoyage structurel de `Init`
-- [ ] Extraire `GroupActions`
+- [x] Extraire `GroupActions`
 - [ ] Extraire `BuildAttackUI`
 - [ ] Extraire `BuildFleeUI`
 - [ ] Extraire `BuildFilterUI`

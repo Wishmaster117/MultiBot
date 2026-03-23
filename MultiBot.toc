@@ -70,6 +70,7 @@ UI\MultiBotItem.lua
 UI\MultiBotTalentFrame.lua
 UI\MultiBotHunterQuickFrame.lua
 UI\MultiBotShamanQuickFrame.lua
+UI\MultiBotAceUI.lua
 UI\MultiBotQuestUIShared.lua
 UI\MultiBotPromptDialog.lua
 UI\MultiBotQuestLogFrame.lua
@@ -79,6 +80,7 @@ UI\MultiBotQuestAllFrame.lua
 UI\MultiBotGameObjectCopyFrame.lua
 UI\MultiBotGameObjectResultsFrame.lua
 UI\MultiBotQuestsMenu.lua
+UI\MultiBotGroupActionsUI.lua
 Core\MultiBotInit.lua
 Data\MultiBotIconos.lua
 Data\MultiBotItemus.lua

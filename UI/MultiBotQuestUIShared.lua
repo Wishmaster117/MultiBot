@@ -10,26 +10,6 @@ Shared.SUBPANEL_ALPHA = 0.72
 Shared.ICON_QUEST = "Interface\\Icons\\inv_misc_note_01"
 Shared.ICON_BOT_QUEST = "Interface\\Icons\\inv_misc_note_02"
 
-local function getAceGUI()
-    if MultiBot.GetAceGUI then
-        local ace = MultiBot.GetAceGUI()
-        if type(ace) == "table" and type(ace.Create) == "function" then
-            return ace
-        end
-    end
-
-    if type(LibStub) == "table" then
-        local ok, aceGUI = pcall(LibStub.GetLibrary, LibStub, "AceGUI-3.0", true)
-        if ok and type(aceGUI) == "table" and type(aceGUI.Create) == "function" then
-            return aceGUI
-        end
-    end
-
-    return nil
-end
-
-Shared.GetAceGUI = Shared.GetAceGUI or getAceGUI
-
 function Shared.ApplyPanelStyle(frame, bgAlpha)
     if not frame or not frame.SetBackdrop then
         return
@@ -302,16 +282,4 @@ function Shared.BuildGameObjectCopyText(bots)
     end
 
     return table.concat(lines, "\n")
-end
-
-function Shared.ResolveAceGUI(message)
-    if MultiBot.ResolveAceGUI then
-        return MultiBot.ResolveAceGUI(message)
-    end
-
-    local aceGUI = Shared.GetAceGUI()
-    if not aceGUI and message then
-        UIErrorsFrame:AddMessage(message, 1, 0.2, 0.2, 1)
-    end
-    return aceGUI
 end
