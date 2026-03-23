@@ -261,7 +261,7 @@ Le nettoyage pourra être considéré comme réussi quand :
 - [x] Extraire `GroupActions`
 - [x] Extraire `BuildAttackUI`
 - [x] Extraire `BuildFleeUI`
-- [ ] Extraire `BuildFilterUI`
+- [x] Extraire `BuildFilterUI`
 - [ ] Extraire `BuildRosterUI`
 - [ ] Extraire `Beast`
 - [ ] Extraire `Creator`

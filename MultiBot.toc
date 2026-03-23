@@ -83,6 +83,7 @@ UI\MultiBotQuestsMenu.lua
 UI\MultiBotGroupActionsUI.lua
 UI\MultiBotAttackUI.lua
 UI\MultiBotFleeUI.lua
+UI\MultiBotUnitsFilterUI.lua
 Core\MultiBotInit.lua
 Data\MultiBotIconos.lua
 Data\MultiBotItemus.lua
