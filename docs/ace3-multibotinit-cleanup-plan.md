@@ -259,8 +259,8 @@ Le nettoyage pourra être considéré comme réussi quand :
 
 ### Nettoyage structurel de `Init`
 - [x] Extraire `GroupActions`
-- [ ] Extraire `BuildAttackUI`
-- [ ] Extraire `BuildFleeUI`
+- [x] Extraire `BuildAttackUI`
+- [x] Extraire `BuildFleeUI`
 - [ ] Extraire `BuildFilterUI`
 - [ ] Extraire `BuildRosterUI`
 - [ ] Extraire `Beast`

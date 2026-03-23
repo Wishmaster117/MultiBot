@@ -181,58 +181,6 @@ tLeft.addButton("Tanker", -170, 0, "ability_warrior_shieldbash", MultiBot.L("tip
 	if(MultiBot.isTarget()) then MultiBot.ActionToGroup("@tank do attack my target") end
 end
 
---  UI ATTACK
-function MultiBot.BuildAttackUI(tLeft)
-
-  -- 1. Table
-  local ATTACK_BUTTONS = {
-    { name="Attack",  icon="Interface\\AddOns\\MultiBot\\Icons\\attack.blp",         cmd="do attack my target",        tip="attack" },
-    { name="Ranged",  icon="Interface\\AddOns\\MultiBot\\Icons\\attack_ranged.blp",  cmd="@ranged do attack my target",tip="ranged" },
-    { name="Melee",   icon="Interface\\AddOns\\MultiBot\\Icons\\attack_melee.blp",   cmd="@melee do attack my target", tip="melee"  },
-    { name="Healer",  icon="Interface\\AddOns\\MultiBot\\Icons\\attack_healer.blp",  cmd="@healer do attack my target",tip="healer" },
-    { name="Dps",     icon="Interface\\AddOns\\MultiBot\\Icons\\attack_dps.blp",     cmd="@dps do attack my target",   tip="dps"    },
-    { name="Tank",    icon="Interface\\AddOns\\MultiBot\\Icons\\attack_tank.blp",    cmd="@tank do attack my target",  tip="tank"   },
-  }
-
-  -- 2. Helper
-  local function AddAttackButton(frame, info, index, cellH)
-    local btn = frame.addButton(info.name,
-                                0,                          -- x
-                                (index-1)*cellH,            -- y
-                                info.icon,
-                                MultiBot.L("tips.attack." .. info.tip))
-
-    -- Left Click shoot the command only if target exist
-    btn.doLeft  = function()
-      if MultiBot.isTarget() then
-        MultiBot.ActionToGroup(info.cmd)
-      end
-    end
-
-    -- Right click : select as default
-    btn.doRight = function(b)
-      MultiBot.SelectToGroupButtonWithTarget(b.parent.parent, "Attack", b.texture, info.cmd)
-    end
-  end
-
-  -- 3. Main Button
-  local mainBtn = tLeft.addButton("Attack", -136, 0,
-                                  "Interface\\AddOns\\MultiBot\\Icons\\attack.blp",
-                                  MultiBot.L("tips.attack.master"))
-
-  mainBtn.doLeft  = function() if MultiBot.isTarget() then MultiBot.ActionToGroup("do attack my target") end end
-  mainBtn.doRight = function(b) MultiBot.ShowHideSwitch(b.parent.frames["Attack"]) end
-
-  -- 4. Internal Frame with Buttons
-  local tAttack = tLeft.addFrame("Attack", -138, 34)
-  tAttack:Hide()
-
-  local CELL_H = 30
-  for idx, data in ipairs(ATTACK_BUTTONS) do
-    AddAttackButton(tAttack, data, idx, CELL_H)
-  end
-end
-
 --  We call it when tLeft are ready
 MultiBot.BuildAttackUI(tLeft)
 
@@ -311,58 +259,6 @@ tLeft.addButton("ExpandFollow", -102, 0, "Interface\\AddOns\\MultiBot\\Icons\\co
 	MultiBot.ActionToGroup("follow")
 	pButton.parent.buttons["ExpandStay"].setDisable()
 	pButton.setEnable()
-end
-
---  UI FLEE --
-function MultiBot.BuildFleeUI(tLeft)
-
-  -- 1. Table
-  local FLEE_BUTTONS = {
-    -- label          icon                                                            cmd / taget          tip-key (MultiBot.L("tips.flee." .. <key>))
-    { name="Flee",    icon="Interface\\AddOns\\MultiBot\\Icons\\flee.blp",            cmd="flee",          tip="flee",     scope="group"  },
-    { name="Ranged",  icon="Interface\\AddOns\\MultiBot\\Icons\\flee_ranged.blp",     cmd="@ranged flee",  tip="ranged",   scope="group"  },
-    { name="Melee",   icon="Interface\\AddOns\\MultiBot\\Icons\\flee_melee.blp",      cmd="@melee flee",   tip="melee",    scope="group"  },
-    { name="Healer",  icon="Interface\\AddOns\\MultiBot\\Icons\\flee_healer.blp",     cmd="@healer flee",  tip="healer",   scope="group"  },
-    { name="Dps",     icon="Interface\\AddOns\\MultiBot\\Icons\\flee_dps.blp",        cmd="@dps flee",     tip="dps",      scope="group"  },
-    { name="Tank",    icon="Interface\\AddOns\\MultiBot\\Icons\\flee_tank.blp",       cmd="@tank flee",    tip="tank",     scope="group"  },
-    { name="Target",  icon="Interface\\AddOns\\MultiBot\\Icons\\flee_target.blp",     cmd="flee",          tip="target",   scope="target" },
-  }
-
-  -- 2. Helper to create vertival buttons
-  local function AddFleeButton(frame, info, index, cellH)
-    local btn = frame.addButton(info.name,
-                                0,                           -- x
-                                (index-1)*cellH,             -- y
-                                info.icon,
-                                MultiBot.L("tips.flee." .. info.tip))
-
-    if info.scope == "target" then
-      -- Left click action, right click action
-      btn.doLeft  = function() MultiBot.ActionToTarget(info.cmd) end
-      btn.doRight = function(b) MultiBot.SelectToTargetButton(b.parent.parent,"Flee",b.texture,info.cmd) end
-    else
-      -- scope group/role
-      btn.doLeft  = function() MultiBot.ActionToGroup(info.cmd) end
-      btn.doRight = function(b) MultiBot.SelectToGroupButton(b.parent.parent,"Flee",b.texture,info.cmd) end
-    end
-  end
-
-  -- 3. Maint Button
-  local mainBtn = tLeft.addButton("Flee", -34, 0,
-                                  "Interface\\AddOns\\MultiBot\\Icons\\flee.blp",
-                                  MultiBot.L("tips.flee.master"))
-
-  mainBtn.doLeft  = function() MultiBot.ActionToGroup("flee") end
-  mainBtn.doRight = function(b) MultiBot.ShowHideSwitch(b.parent.frames["Flee"]) end
-
-  -- 4. Internal Frame + vertical buttons
-  local tFlee = tLeft.addFrame("Flee", -36, 34)
-  tFlee:Hide()
-
-  local CELL_H = 30   -- space between buttons
-  for idx, data in ipairs(FLEE_BUTTONS) do
-    AddFleeButton(tFlee, data, idx, CELL_H)
-  end
 end
 
 --  We call it when tLeft are ready
