@@ -202,6 +202,12 @@ Le bloc `Units` ne doit probablement pas finir dans un seul très gros fichier. 
 - `UnitsRoster`
 - `UnitsBrowse` / `UnitsCommands`
 
+Statut actuel :
+- [x] `UnitsRoot` (bouton principal, frame racine, bannière, contrôle, PvP stats, AllBotsCommands, Invite, browse/pagination)
+- [x] `UnitsFilter`
+- [x] `UnitsRoster`
+- [ ] `UnitsBrowse` / `UnitsCommands` raffinés davantage si un second module dédié apporte un vrai gain de lisibilité
+
 ### 5. Conserver la parité fonctionnelle
 Chaque extraction doit préserver :
 - les commandes envoyées ;
