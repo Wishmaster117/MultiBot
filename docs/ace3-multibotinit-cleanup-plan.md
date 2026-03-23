@@ -265,8 +265,8 @@ Le nettoyage pourra être considéré comme réussi quand :
 - [x] Extraire `BuildRosterUI`
 - [x] Extraire `Beast`
 - [x] Extraire `Creator`
-- [ ] Extraire `BuildGmUI`
-- [ ] Extraire `ShowDeleteSVPrompt`
+- [x] Extraire `BuildGmUI`
+- [x] Extraire `ShowDeleteSVPrompt`
 - [ ] Extraire `Main`
 - [ ] Extraire `RTSC`
 - [ ] Rationaliser le bloc `Units` restant
