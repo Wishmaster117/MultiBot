@@ -8,151 +8,184 @@ MultiBot.BotQuestsAll = MultiBot.BotQuestsAll or {}
 MultiBot.BotQuestsCompleted = MultiBot.BotQuestsCompleted or {}
 MultiBot.BotQuestsIncompleted = MultiBot.BotQuestsIncompleted or {}
 
-local function clearContent(self)
-    Shared.ClearFrameChildren(self.content, true)
-    if self.content and self.content.text then
-        self.content.text:SetText("")
+local function clearList(self)
+    if self.scroll then
+        self.scroll:ReleaseChildren()
     end
 end
 
 function MultiBot.ClearAllContent()
     local frame = MultiBot.InitializeQuestAllFrame()
-    clearContent(frame)
+    clearList(frame)
 end
 
-local function createHeader(parent, text, yOffset)
-    local header = parent:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    header:SetPoint("TOPLEFT", 0, yOffset)
-    header:SetText(text or "")
-    return header
+local function createQuestLabel(self, questID, text)
+    local label = self.aceGUI:Create("InteractiveLabel")
+    label:SetWidth(340)
+    label:SetText(text)
+
+    if questID then
+        label:SetCallback("OnEnter", function(widget)
+            GameTooltip:SetOwner(widget.frame, "ANCHOR_CURSOR")
+            GameTooltip:SetHyperlink("quest:" .. tostring(questID))
+            GameTooltip:Show()
+        end)
+    end
+
+    label:SetCallback("OnLeave", function()
+        GameTooltip_Hide()
+    end)
+
+    return label
 end
 
-local function renderQuestWithBots(parent, yOffset, entry)
-    local line = CreateFrame("Frame", nil, parent)
-    line:SetSize(360, 20)
-    line:SetPoint("TOPLEFT", 0, yOffset)
-    Shared.ApplyPanelStyle(line, 0.34)
+local function createQuestRow(self, questID, text)
+    local row = self.aceGUI:Create("SimpleGroup")
+    row:SetFullWidth(true)
+    row:SetLayout("Flow")
 
-    local icon = line:CreateTexture(nil, "ARTWORK")
-    icon:SetTexture(Shared.ICON_BOT_QUEST)
-    icon:SetSize(12, 12)
-    icon:SetPoint("LEFT", 6, 0)
+    local icon = self.aceGUI:Create("Icon")
+    icon:SetImage(Shared.ICON_BOT_QUEST or "Interface\\Icons\\inv_misc_note_02")
+    icon:SetImageSize(12, 12)
+    icon:SetWidth(20)
+    row:AddChild(icon)
 
-    local html = Shared.CreateQuestHTML(line, 320, Shared.ROW_HEIGHT, Shared.BuildQuestLink(entry.id, entry.name))
-    html:SetPoint("LEFT", icon, "RIGHT", 6, -6)
-    Shared.BindHyperlinkTooltip(html)
+    row:AddChild(createQuestLabel(self, questID, text))
+    self.scroll:AddChild(row)
+end
 
-    yOffset = yOffset - 24
+local function createQuestRowWithBots(self, entry)
+    createQuestRow(self, entry.id, Shared.BuildQuestLink(entry.id, entry.name))
 
-    local botsLine = parent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    botsLine:SetPoint("TOPLEFT", 28, yOffset)
-    botsLine:SetText(Shared.FormatBotsLabel(entry.bots))
+    if entry.bots and #entry.bots > 0 then
+        local botsLine = self.aceGUI:Create("Label")
+        botsLine:SetFullWidth(true)
+        botsLine:SetText("    " .. Shared.FormatBotsLabel(entry.bots))
+        self.scroll:AddChild(botsLine)
+    end
+end
 
-    return yOffset - 18
+local function createSectionHeader(self, text)
+    local heading = self.aceGUI:Create("Heading")
+    heading:SetFullWidth(true)
+    heading:SetText(text or "")
+    self.scroll:AddChild(heading)
 end
 
 function MultiBot.BuildBotAllList(botName)
     local frame = MultiBot.InitializeQuestAllFrame()
-    clearContent(frame)
+    clearList(frame)
 
-    local yOffset = -4
     for _, link in ipairs(MultiBot.BotQuestsAll[botName] or {}) do
         local questID = tonumber(link:match("|Hquest:(%d+):"))
         local localizedName = questID and Shared.GetLocalizedQuestName(questID, link) or link
         local displayLink = link:gsub("%[[^%]]+%]", "|cff00ff00[" .. localizedName .. "]|r")
 
-        local line = CreateFrame("Frame", nil, frame.content)
-        line:SetSize(360, 20)
-        line:SetPoint("TOPLEFT", 0, yOffset)
-        Shared.ApplyPanelStyle(line, 0.34)
-
-        local icon = line:CreateTexture(nil, "ARTWORK")
-        icon:SetTexture(Shared.ICON_BOT_QUEST)
-        icon:SetSize(12, 12)
-        icon:SetPoint("LEFT", 6, 0)
-
-        local html = Shared.CreateQuestHTML(line, 320, Shared.ROW_HEIGHT, displayLink)
-        html:SetPoint("LEFT", icon, "RIGHT", 6, -6)
-        Shared.BindHyperlinkTooltip(html)
-
-        yOffset = yOffset - 24
+        createQuestRow(frame, questID, displayLink)
     end
 
-    if frame.summaryLabel then
-        frame.summaryLabel:SetText(botName and ((MultiBot.L("tips.quests.alllist") or "All Quests") .. ": |cff80ff80" .. botName .. "|r") or (MultiBot.L("tips.quests.alllist") or ""))
+    if frame.summary then
+        frame.summary:SetText(botName and ((MultiBot.L("tips.quests.alllist") or "All Quests") .. ": |cff80ff80" .. botName .. "|r") or (MultiBot.L("tips.quests.alllist") or ""))
     end
-
-    frame.content:SetHeight(math.max(-yOffset + 4, 1))
-    frame.scrollFrame:SetVerticalScroll(0)
 end
 
 function MultiBot.BuildAggregatedAllList()
     local frame = MultiBot.InitializeQuestAllFrame()
-    clearContent(frame)
+    clearList(frame)
 
-    local yOffset = -4
     local completeEntries = Shared.BuildAggregatedQuestEntries(MultiBot.BotQuestsCompleted)
     local incompleteEntries = Shared.BuildAggregatedQuestEntries(MultiBot.BotQuestsIncompleted)
 
-    createHeader(frame.content, MultiBot.L("tips.quests.compheader"), yOffset)
-    yOffset = yOffset - 30
+    createSectionHeader(frame, MultiBot.L("tips.quests.compheader"))
     for _, entry in ipairs(completeEntries) do
-        yOffset = renderQuestWithBots(frame.content, yOffset, entry)
+        createQuestRowWithBots(frame, entry)
     end
 
-    yOffset = yOffset - 12
-    createHeader(frame.content, MultiBot.L("tips.quests.incompheader"), yOffset)
-    yOffset = yOffset - 30
+    createSectionHeader(frame, MultiBot.L("tips.quests.incompheader"))
     for _, entry in ipairs(incompleteEntries) do
-        yOffset = renderQuestWithBots(frame.content, yOffset, entry)
+        createQuestRowWithBots(frame, entry)
     end
 
-    if frame.summaryLabel then
-        frame.summaryLabel:SetText("")
+    if frame.summary then
+        frame.summary:SetText("")
     end
-
-    frame.content:SetHeight(math.max(-yOffset + 4, 1))
-    frame.scrollFrame:SetVerticalScroll(0)
 end
 
 function QuestAllFrame:SetLoading()
-    clearContent(self)
-    self.content.text = self.content.text or self.content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    self.content.text:SetPoint("TOPLEFT", 8, -8)
-    self.content.text:SetText(LOADING)
-    self.content:SetHeight(40)
-    self.scrollFrame:SetVerticalScroll(0)
+    clearList(self)
+
+    local loading = self.aceGUI:Create("Label")
+    loading:SetFullWidth(true)
+    loading:SetText(LOADING or "Loading...")
+    self.scroll:AddChild(loading)
+
+    if self.summary then
+        self.summary:SetText("")
+    end
 end
 
 function QuestAllFrame:Show()
-    self.host:Show()
+    if self.window then
+        self.window:Show()
+    end
 end
 
 function MultiBot.InitializeQuestAllFrame()
-    if QuestAllFrame.host then
+    if QuestAllFrame.window then
         return QuestAllFrame
     end
 
-    local host = MultiBot.CreateAceQuestPopupHost and MultiBot.CreateAceQuestPopupHost(MultiBot.L("tips.quests.alllist"), 420, 460, "AceGUI-3.0 is required for MB_BotQuestAllPopup", "bot_quest_all_popup") or nil
-    assert(host, "AceGUI-3.0 is required for MB_BotQuestAllPopup")
+    local aceGUI = MultiBot.ResolveAceGUI and MultiBot.ResolveAceGUI("AceGUI-3.0 is required for MB_BotQuestAllPopup") or nil
+    assert(aceGUI, "AceGUI-3.0 is required for MB_BotQuestAllPopup")
 
-    local panel, scrollFrame, content, summaryLabel = Shared.CreateStyledScrollArea(host, "MB_BotQuestAllScroll", { left = 10, right = -28, top = -34, bottom = 10 })
-    Shared.CreateSectionTitle(panel, MultiBot.L("tips.quests.alllist"))
+    local window = aceGUI:Create("Window")
+    assert(window, "AceGUI-3.0 is required for MB_BotQuestAllPopup")
 
-    QuestAllFrame.host = host
-    QuestAllFrame.panel = panel
-    QuestAllFrame.scrollFrame = scrollFrame
-    QuestAllFrame.content = content
-    QuestAllFrame.summaryLabel = summaryLabel
+    window:SetTitle(MultiBot.L("tips.quests.alllist"))
+    window:SetWidth(420)
+    window:SetHeight(460)
+    window:EnableResize(false)
+    window:SetLayout("Fill")
+    window.frame:SetFrameStrata("DIALOG")
 
-    host.content = content
-    host:SetScript("OnHide", function()
+    if MultiBot.SetAceWindowCloseToHide then MultiBot.SetAceWindowCloseToHide(window) end
+    if MultiBot.RegisterAceWindowEscapeClose then MultiBot.RegisterAceWindowEscapeClose(window, "BotQuestAll") end
+    if MultiBot.BindAceWindowPosition then MultiBot.BindAceWindowPosition(window, "bot_quest_all_popup") end
+
+    local content = aceGUI:Create("SimpleGroup")
+    content:SetFullWidth(true)
+    content:SetFullHeight(true)
+    content:SetLayout("List")
+    window:AddChild(content)
+
+    local heading = aceGUI:Create("Heading")
+    heading:SetFullWidth(true)
+    heading:SetText(MultiBot.L("tips.quests.alllist"))
+    content:AddChild(heading)
+
+    local summary = aceGUI:Create("Label")
+    summary:SetFullWidth(true)
+    summary:SetText("")
+    content:AddChild(summary)
+
+    local scroll = aceGUI:Create("ScrollFrame")
+    scroll:SetFullWidth(true)
+    scroll:SetFullHeight(true)
+    scroll:SetLayout("List")
+    content:AddChild(scroll)
+
+    window.frame:HookScript("OnHide", function()
         MultiBot.BotQuestsAll = {}
         MultiBot.BotQuestsCompleted = {}
         MultiBot.BotQuestsIncompleted = {}
-        clearContent(QuestAllFrame)
+        clearList(QuestAllFrame)
     end)
 
-    MultiBot.tBotAllPopup = host
+    QuestAllFrame.window = window
+    QuestAllFrame.aceGUI = aceGUI
+    QuestAllFrame.scroll = scroll
+    QuestAllFrame.summary = summary
+
+    MultiBot.tBotAllPopup = window
     return QuestAllFrame
 end

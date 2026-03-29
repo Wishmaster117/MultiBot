@@ -4,54 +4,52 @@ local Shared = MultiBot.QuestUIShared or {}
 local ResultsFrame = MultiBot.GameObjectResultsFrame or {}
 MultiBot.GameObjectResultsFrame = ResultsFrame
 
+local function clearResults(frame)
+    if frame and frame.scroll then
+        frame.scroll:ReleaseChildren()
+    end
+end
+
+local function addLabel(aceGUI, parent, text)
+    local label = aceGUI:Create("Label")
+    label:SetFullWidth(true)
+    label:SetText(text or "")
+    parent:AddChild(label)
+    return label
+end
+
+local function renderGameObjectResults(frame)
+    clearResults(frame)
+
+    local aceGUI = frame.aceGUI
+    local bots = Shared.CollectSortedGameObjectBots and Shared.CollectSortedGameObjectBots() or {}
+
+    for _, bot in ipairs(bots) do
+        addLabel(aceGUI, frame.scroll, "Bot: |cff80ff80" .. bot .. "|r")
+
+        for _, textLine in ipairs(Shared.GetGameObjectEntries(bot) or {}) do
+            if Shared.IsDashedSectionHeader(textLine) then
+                addLabel(aceGUI, frame.scroll, "|cffffff66" .. textLine .. "|r")
+            else
+                addLabel(aceGUI, frame.scroll, "   " .. textLine)
+            end
+        end
+
+        addLabel(aceGUI, frame.scroll, " ")
+    end
+
+    if #bots == 0 then
+        addLabel(aceGUI, frame.scroll, MultiBot.L("tips.quests.gobnosearchdata") or "")
+    end
+end
+
 function MultiBot.ShowGameObjectPopup()
     local frame = MultiBot.InitializeGameObjectResultsFrame()
     if not frame then
         return
     end
 
-    if frame.window:IsShown() then
-        frame.window:Hide()
-    end
-
-    frame.scroll:ReleaseChildren()
-
-    local aceGUI = MultiBot.ResolveAceGUI and MultiBot.ResolveAceGUI("AceGUI-3.0 is required for MB_GameObjPopup") or nil
-    if not aceGUI then
-        return
-    end
-
-    local bots = Shared.CollectSortedGameObjectBots and Shared.CollectSortedGameObjectBots() or {}
-    for _, bot in ipairs(bots) do
-        local botLabel = aceGUI:Create("Label")
-        botLabel:SetFullWidth(true)
-        botLabel:SetText("Bot: |cff80ff80" .. bot .. "|r")
-        frame.scroll:AddChild(botLabel)
-
-        for _, textLine in ipairs(Shared.GetGameObjectEntries(bot) or {}) do
-            local line = aceGUI:Create("Label")
-            line:SetFullWidth(true)
-            if Shared.IsDashedSectionHeader(textLine) then
-                line:SetText("|cffffff66" .. textLine .. "|r")
-            else
-                line:SetText("   " .. textLine)
-            end
-            frame.scroll:AddChild(line)
-        end
-
-        local spacer = aceGUI:Create("Label")
-        spacer:SetFullWidth(true)
-        spacer:SetText(" ")
-        frame.scroll:AddChild(spacer)
-    end
-
-    if #bots == 0 then
-        local noData = aceGUI:Create("Label")
-        noData:SetFullWidth(true)
-        noData:SetText(MultiBot.L("tips.quests.gobnosearchdata"))
-        frame.scroll:AddChild(noData)
-    end
-
+    renderGameObjectResults(frame)
     frame.window:Show()
 end
 
@@ -74,8 +72,9 @@ function MultiBot.InitializeGameObjectResultsFrame()
     window:SetWidth(420)
     window:SetHeight(380)
     window:EnableResize(false)
-    window:SetLayout("Flow")
+    window:SetLayout("List")
     window.frame:SetFrameStrata("DIALOG")
+
     if MultiBot.SetAceWindowCloseToHide then MultiBot.SetAceWindowCloseToHide(window) end
     if MultiBot.RegisterAceWindowEscapeClose then MultiBot.RegisterAceWindowEscapeClose(window, "GameObjPopup") end
     if MultiBot.BindAceWindowPosition then MultiBot.BindAceWindowPosition(window, "gameobject_popup") end
@@ -85,11 +84,6 @@ function MultiBot.InitializeGameObjectResultsFrame()
     scroll:SetHeight(280)
     scroll:SetLayout("List")
     window:AddChild(scroll)
-
-    local buttonSpacer = aceGUI:Create("Label")
-    buttonSpacer:SetFullWidth(true)
-    buttonSpacer:SetText(" ")
-    window:AddChild(buttonSpacer)
 
     local copyButton = aceGUI:Create("Button")
     copyButton:SetText(MultiBot.L("tips.quests.gobselectall"))
@@ -104,6 +98,7 @@ function MultiBot.InitializeGameObjectResultsFrame()
     ResultsFrame.window = window
     ResultsFrame.scroll = scroll
     ResultsFrame.copyButton = copyButton
+    ResultsFrame.aceGUI = aceGUI
     MultiBot.GameObjPopup = ResultsFrame
     return ResultsFrame
 end

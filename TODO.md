@@ -16,6 +16,7 @@ TODO
 * Voir si il y'a pas d'autres option que l'on peut ajouter à la frame options de multibot
 * Faire en sorte que le strata soit appliqué a vraiment toutes les frames de multibot
 * creer le multilangue pour le tooltip: setTooltip(self, "Show / Hide / Move Quick Shaman") des fichiers quickshaman et quickhunter
+* Livres des sorts: faire en sorte que l'icone de regrise quand on le ferme avec la croix de la frame
 
 
  Ajouter la fonction unequipe à Multibit:

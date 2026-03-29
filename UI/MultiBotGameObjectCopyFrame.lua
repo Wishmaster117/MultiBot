@@ -4,6 +4,16 @@ local Shared = MultiBot.QuestUIShared or {}
 local CopyFrame = MultiBot.GameObjectCopyFrame or {}
 MultiBot.GameObjectCopyFrame = CopyFrame
 
+local function focusAndSelect(editor)
+    local editBox = editor and editor.editBox
+    if editBox and editBox.SetFocus then
+        editBox:SetFocus()
+    end
+    if editBox and editBox.HighlightText then
+        editBox:HighlightText()
+    end
+end
+
 function MultiBot.ShowGameObjectCopyBox()
     local frame = MultiBot.InitializeGameObjectCopyFrame()
     if not frame then
@@ -18,14 +28,7 @@ function MultiBot.ShowGameObjectCopyBox()
     local text = Shared.BuildGameObjectCopyText and Shared.BuildGameObjectCopyText(bots) or ""
     frame.editor:SetText(text)
     frame.window:Show()
-
-    local editBox = frame.editor and frame.editor.editBox
-    if editBox and editBox.SetFocus then
-        editBox:SetFocus()
-    end
-    if editBox and editBox.HighlightText then
-        editBox:HighlightText()
-    end
+    focusAndSelect(frame.editor)
 end
 
 function MultiBot.InitializeGameObjectCopyFrame()
@@ -49,6 +52,7 @@ function MultiBot.InitializeGameObjectCopyFrame()
     window:EnableResize(false)
     window:SetLayout("Fill")
     window.frame:SetFrameStrata("DIALOG")
+
     if MultiBot.SetAceWindowCloseToHide then MultiBot.SetAceWindowCloseToHide(window) end
     if MultiBot.RegisterAceWindowEscapeClose then MultiBot.RegisterAceWindowEscapeClose(window, "GameObjCopy") end
     if MultiBot.BindAceWindowPosition then MultiBot.BindAceWindowPosition(window, "gameobject_copy") end
@@ -65,14 +69,10 @@ function MultiBot.InitializeGameObjectCopyFrame()
     if editor.editBox and editor.editBox.SetTextInsets then
         editor.editBox:SetTextInsets(6, 6, 6, 6)
     end
-    if editor.scrollBG and Shared.ApplyPanelStyle then
-        Shared.ApplyPanelStyle(editor.scrollBG, 0.92)
-    elseif editor.frame and Shared.ApplyPanelStyle then
-        Shared.ApplyPanelStyle(editor.frame, 0.92)
-    end
 
     CopyFrame.window = window
     CopyFrame.editor = editor
+    CopyFrame.aceGUI = aceGUI
     MultiBot.GameObjCopyBox = CopyFrame
     return CopyFrame
 end
