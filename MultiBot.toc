@@ -81,6 +81,7 @@ UI\MultiBotQuestAllFrame.lua
 UI\MultiBotGameObjectCopyFrame.lua
 UI\MultiBotGameObjectResultsFrame.lua
 UI\MultiBotQuestsMenu.lua
+UI\MultiBotMinimap.lua
 UI\MultiBotGroupActionsUI.lua
 UI\MultiBotAttackUI.lua
 UI\MultiBotFleeUI.lua

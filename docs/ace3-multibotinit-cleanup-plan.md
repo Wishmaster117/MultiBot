@@ -272,6 +272,7 @@ Le nettoyage pourra être considéré comme réussi quand :
 - [x] Extraire `Beast`
 - [x] Extraire `Creator`
 - [x] Extraire `BuildGmUI`
+- [x] Extraire `Minimap_Create` / `Minimap_Refresh`
 - [x] Extraire `ShowDeleteSVPrompt`
 - [x] Extraire `Main`
 - [x] Extraire `RTSC`
