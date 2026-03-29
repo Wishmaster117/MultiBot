@@ -33,7 +33,7 @@ function MultiBot.InitializeGameObjectCopyFrame()
         return CopyFrame
     end
 
-    local aceGUI = Shared.ResolveAceGUI and Shared.ResolveAceGUI("AceGUI-3.0 is required for MB_GameObjCopyBox") or nil
+    local aceGUI = MultiBot.ResolveAceGUI and MultiBot.ResolveAceGUI("AceGUI-3.0 is required for MB_GameObjCopyBox") or nil
     if not aceGUI then
         return nil
     end

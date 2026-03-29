@@ -2,6 +2,23 @@ local function shortLabel(key, fallback)
 	return MultiBot.L("info.shorts." .. key, fallback)
 end
 
+local STATS_ROOT_X = -60
+local STATS_ROOT_Y = 560
+local STATS_ROOT_SIZE = 32
+local STATS_MOVE_BUTTON_X = 0
+local STATS_MOVE_BUTTON_Y = -80
+local STATS_MOVE_BUTTON_WIDTH = 160
+local STATS_PARTY_SLOTS = {
+	{ index = "party1", y = 0 },
+	{ index = "party2", y = -60 },
+	{ index = "party3", y = -120 },
+	{ index = "party4", y = -180 },
+}
+local STATS_SLOT_X = 0
+local STATS_SLOT_SIZE = 32
+local STATS_SLOT_WIDTH = 192
+local STATS_SLOT_HEIGHT = 96
+
 MultiBot.addStats = function(pFrame, pIndex, pX, pY, pSize, pWidth, pHeight)
 	local tFrame = pFrame.addFrame(pIndex, pX, pY, pSize, pWidth, pHeight)
 	local tAddon = tFrame.addFrame("Addon", -2, 46, 48)
@@ -141,4 +158,42 @@ MultiBot.addStats = function(pFrame, pIndex, pX, pY, pSize, pWidth, pHeight)
 		statsFrame:Show()
 		return
 	end
+end
+
+function MultiBot.InitializeStatsUI()
+	if MultiBot.stats then
+		return MultiBot.stats
+	end
+
+	local statsFrame = MultiBot.newFrame(MultiBot, STATS_ROOT_X, STATS_ROOT_Y, STATS_ROOT_SIZE)
+	statsFrame:SetMovable(true)
+	statsFrame:Hide()
+	statsFrame.movButton("Move", STATS_MOVE_BUTTON_X, STATS_MOVE_BUTTON_Y, STATS_MOVE_BUTTON_WIDTH, MultiBot.L("tips.move.stats"))
+
+	for _, slot in ipairs(STATS_PARTY_SLOTS) do
+		MultiBot.addStats(
+			statsFrame,
+			slot.index,
+			STATS_SLOT_X,
+			slot.y,
+			STATS_SLOT_SIZE,
+			STATS_SLOT_WIDTH,
+			STATS_SLOT_HEIGHT
+		)
+	end
+
+	MultiBot.stats = statsFrame
+	return statsFrame
+end
+
+function MultiBot.EnsureStatsUI()
+	if MultiBot.stats then
+		return MultiBot.stats
+	end
+
+	if type(MultiBot.InitializeStatsUI) == "function" then
+		return MultiBot.InitializeStatsUI()
+	end
+
+	return nil
 end

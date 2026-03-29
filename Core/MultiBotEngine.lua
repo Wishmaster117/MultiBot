@@ -1593,7 +1593,7 @@ MultiBot.RefreshInventory = function(delay)
 	end
 
 	-- Si on a un délai > 0 et TimerAfter dispo, on planifie le refresh un peu plus tard
-	if type(delay) == "number" and delay > 0 and MultiBot.TimerAfter then
+	if type(delay) == "number" and delay > 0 then
 		MultiBot.TimerAfter(delay, doRefresh)
 	else
 		-- Sinon on rafraîchit immédiatement (comportement d’origine)

@@ -535,26 +535,19 @@ local function showPopupIfHidden(popup)
 	end
 end
 
-local function scheduleQuestListBuild(delay, modeValue, groupedMode, groupedBuilder, singleBuilder, author)
-	if type(MultiBot.TimerAfter) ~= "function" then
-		if modeValue == groupedMode then
-			if type(groupedBuilder) == "function" then
-				groupedBuilder()
-			end
-		elseif type(singleBuilder) == "function" then
-			singleBuilder(author)
+local function runQuestListBuild(modeValue, groupedMode, groupedBuilder, singleBuilder, author)
+	if modeValue == groupedMode then
+		if type(groupedBuilder) == "function" then
+			groupedBuilder()
 		end
-		return
+	elseif type(singleBuilder) == "function" then
+		singleBuilder(author)
 	end
+end
 
+local function scheduleQuestListBuild(delay, modeValue, groupedMode, groupedBuilder, singleBuilder, author)
 	MultiBot.TimerAfter(delay, function()
-		if modeValue == groupedMode then
-			if type(groupedBuilder) == "function" then
-				groupedBuilder()
-			end
-		elseif type(singleBuilder) == "function" then
-			singleBuilder(author)
-		end
+		runQuestListBuild(modeValue, groupedMode, groupedBuilder, singleBuilder, author)
 	end)
 end
 
@@ -909,13 +902,9 @@ function MultiBot.HandleMultiBotEvent(event, ...)
         SendChatMessage(".account", "SAY")
         if(MultiBot.init == nil) then
             MultiBot.init = true
-            if type(TimerAfter) == "function" then
-                TimerAfter(0.5, function()
-					MultiBot.dprint("SEND", ".playerbot bot list"); SendChatMessage(".playerbot bot list", "SAY")--Debug
-                end)
-            else
-                SendChatMessage(".playerbot bot list", "SAY")
-            end
+            MultiBot.TimerAfter(0.5, function()
+				MultiBot.dprint("SEND", ".playerbot bot list"); SendChatMessage(".playerbot bot list", "SAY")--Debug
+            end)
             return
         end
         return
@@ -998,19 +987,7 @@ function MultiBot.HandleMultiBotEvent(event, ...)
                     end
                 end
 
-                if type(TimerAfter) == "function" then
-                    TimerAfter(0.2, ReDispatchRoster)
-                else
-                    local df = CreateFrame("Frame")
-                    df.t = 0
-                    df:SetScript("OnUpdate", function(self, elapsed)
-                        self.t = self.t + elapsed
-                        if self.t > 0.2 then
-                            self:SetScript("OnUpdate", nil)
-                            ReDispatchRoster()
-                        end
-                    end)
-                end
+                MultiBot.TimerAfter(0.2, ReDispatchRoster)
                 return
             end
 
@@ -1081,18 +1058,16 @@ function MultiBot.HandleMultiBotEvent(event, ...)
           end
         end
         -- Retry différé : couvre le cas où l’UI n’est pas encore prête (timing au login)
-        if type(TimerAfter) == "function" then
-          TimerAfter(0.05, function()
-            local unitsBtn = MultiBot.frames
-                            and MultiBot.frames["MultiBar"]
-                            and MultiBot.frames["MultiBar"].buttons
-                            and MultiBot.frames["MultiBar"].buttons["Units"]
-            if unitsBtn and unitsBtn.doLeft then
-              local roster = unitsBtn.roster or "players"
-              unitsBtn.doLeft(unitsBtn, roster, unitsBtn.filter)
-            end
-          end)
-        end
+        MultiBot.TimerAfter(0.05, function()
+          local unitsBtn = MultiBot.frames
+                          and MultiBot.frames["MultiBar"]
+                          and MultiBot.frames["MultiBar"].buttons
+                          and MultiBot.frames["MultiBar"].buttons["Units"]
+          if unitsBtn and unitsBtn.doLeft then
+            local roster = unitsBtn.roster or "players"
+            unitsBtn.doLeft(unitsBtn, roster, unitsBtn.filter)
+          end
+        end)
 
 			-- MEMBERBOTS --
 			local tGuildCount = 0
@@ -1345,8 +1320,16 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		end
 
 		if(MultiBot.isInside(arg1, "StatsOfPlayer")) then
+			local statsFrame = MultiBot.EnsureStatsUI and MultiBot.EnsureStatsUI() or MultiBot.stats
+			if not statsFrame then
+				return
+			end
+
 			local tUnit = MultiBot.toUnit(arg2)
-			MultiBot.stats.frames[tUnit].setStats(arg2, UnitLevel(tUnit), arg1, true)
+			local unitStats = statsFrame.frames[tUnit]
+			if unitStats and unitStats.setStats then
+				unitStats.setStats(arg2, UnitLevel(tUnit), arg1, true)
+			end
 		end
 
 		if(arg1 == "stats" and arg2 ~= UnitName("player")) then
@@ -1495,9 +1478,19 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		end
 
 		if(tButton.waitFor ~= "ITEM" and tButton.waitFor ~= "SPELL" and MultiBot.auto.stats and MultiBot.isInside(arg1, "Bag")) then
+			local statsFrame = MultiBot.EnsureStatsUI and MultiBot.EnsureStatsUI() or MultiBot.stats
+			if not statsFrame then
+				return
+			end
+
 			local tUnit = MultiBot.toUnit(arg2)
-			if(MultiBot.stats.frames[tUnit] == nil) then MultiBot.addStats(MultiBot.stats, "party1", 0, 0, 32, 192, 96) end
-			MultiBot.stats.frames[tUnit].setStats(arg2, UnitLevel(tUnit), arg1)
+			if(statsFrame.frames[tUnit] == nil) then
+				MultiBot.addStats(statsFrame, tUnit, 0, 0, 32, 192, 96)
+			end
+
+			if statsFrame.frames[tUnit] and statsFrame.frames[tUnit].setStats then
+				statsFrame.frames[tUnit].setStats(arg2, UnitLevel(tUnit), arg1)
+			end
 			return
 		end
 

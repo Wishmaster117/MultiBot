@@ -1642,7 +1642,7 @@ function MultiBot.InitializeTalentFrameModule()
         end
 
         if options.retryAfter and options.retryAction then
-            TimerAfter(options.retryAfter, options.retryAction)
+            MultiBot.TimerAfter(options.retryAfter, options.retryAction)
             return true
         end
 
@@ -2191,7 +2191,7 @@ function MultiBot.InitializeTalentFrameModule()
             end
 
             flashes = flashes + 1
-            TimerAfter(pulseDelay, pulse)
+            MultiBot.TimerAfter(pulseDelay, pulse)
         end
 
         pulse()
