@@ -959,13 +959,11 @@ function MultiBot.InitShamanQuick()
     ShamanQuick.__moduleReady = true
     ShamanQuick:EnsureWindow()
 
-    if MultiBot.TimerAfter then
-        MultiBot.TimerAfter(0.5, function()
-            if MultiBot and MultiBot.ShamanQuick and MultiBot.ShamanQuick.RefreshFromGroup then
-                MultiBot.ShamanQuick:RefreshFromGroup()
-            end
-        end)
-    end
+    MultiBot.TimerAfter(0.5, function()
+        if MultiBot and MultiBot.ShamanQuick and MultiBot.ShamanQuick.RefreshFromGroup then
+            MultiBot.ShamanQuick:RefreshFromGroup()
+        end
+    end)
 
     return ShamanQuick
 end

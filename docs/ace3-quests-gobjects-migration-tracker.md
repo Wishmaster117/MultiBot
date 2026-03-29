@@ -11,12 +11,13 @@ Document de suivi dédié à la migration complète de la tranche **Quests** + *
 ### Statut global
 - **Extraction UI réalisée** : les frames Quests/GameObjects ne sont plus construites inline dans `Core/MultiBotInit.lua`.
 - **Découpage par écran réalisé** : chaque écran important dispose maintenant de son propre fichier `UI/`.
-- **Socle partagé en place** : le styling, le tri, les helpers de liens de quête, l’agrégation des bots et le prompt GameObject ont maintenant des helpers communs.
+- **Socle partagé en place** : le styling, le tri, les helpers de liens de quête, l’agrégation des bots, le prompt GameObject et le host Ace3 partagé sont maintenant factorisés.
 - **Reste à faire** : validation fonctionnelle complète en jeu + harmonisation visuelle plus poussée avec la référence `Itemus`.
 
 ### Source of truth actuelle
 - `Core/MultiBotInit.lua`
 - `Core/MultiBotHandler.lua`
+- `UI/MultiBotAceUI.lua`
 - `UI/MultiBotQuestUIShared.lua`
 - `UI/MultiBotPromptDialog.lua`
 - `UI/MultiBotQuestLogFrame.lua`
@@ -47,6 +48,8 @@ Document de suivi dédié à la migration complète de la tranche **Quests** + *
   - Fenêtre de copie/export.
 - `UI/MultiBotPromptDialog.lua`
   - Prompt AceGUI réutilisable pour le flux `u <name>`.
+- `UI/MultiBotAceUI.lua`
+  - Résolution AceGUI, popup host, ESC, close=>hide, persistance de position et tooltip caché de localisation des quêtes.
 - `UI/MultiBotQuestUIShared.lua`
   - Helpers communs de style, tri, agrégation et rendu.
 - `UI/MultiBotQuestsMenu.lua`
@@ -75,6 +78,7 @@ Document de suivi dédié à la migration complète de la tranche **Quests** + *
 - [x] Conserver la logique de parsing/agrégation asynchrone côté `Core/MultiBotHandler.lua`.
 - [x] Introduire un tri déterministe pour les listes de quêtes agrégées.
 - [x] Mutualiser le formatage “Bots: …” et l’agrégation multi-bots.
+- [x] Extraire le socle Ace3/tooltip partagé hors de `Core/MultiBotInit.lua` dans `UI/MultiBotAceUI.lua`.
 
 ### Réécriture par écran
 - [x] `MB_QuestPopup` → `UI/MultiBotQuestLogFrame.lua`
@@ -102,7 +106,7 @@ Document de suivi dédié à la migration complète de la tranche **Quests** + *
 - Le prompt GameObject n’utilise plus d’ancienne frame séparée inline.
 - Les listes agrégées sont triées de façon déterministe.
 - Les fenêtres de quêtes partagent désormais un socle de style/backdrop commun.
-- Le comportement close/hide, ESC et persistance de position réutilise les helpers partagés existants.
+- Le comportement close/hide, ESC et persistance de position réutilise désormais un module partagé dédié (`UI/MultiBotAceUI.lua`).
 
 ### Ce qui reste principalement à confirmer
 - Le rendu exact en client WoW avec toutes les localisations/cas limites.

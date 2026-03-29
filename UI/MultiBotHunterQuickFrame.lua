@@ -1340,13 +1340,11 @@ function MultiBot.InitHunterQuick()
     HunterQuick.__moduleReady = true
     HunterQuick:EnsureWindow()
 
-    if MultiBot.TimerAfter then
-        MultiBot.TimerAfter(0.5, function()
-            if MultiBot and MultiBot.HunterQuick and MultiBot.HunterQuick.Rebuild then
-                MultiBot.HunterQuick:Rebuild()
-            end
-        end)
-    end
+    MultiBot.TimerAfter(0.5, function()
+        if MultiBot and MultiBot.HunterQuick and MultiBot.HunterQuick.Rebuild then
+            MultiBot.HunterQuick:Rebuild()
+        end
+    end)
 
     return HunterQuick
 end

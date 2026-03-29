@@ -16,7 +16,7 @@ function MultiBot.ShowGameObjectPopup()
 
     frame.scroll:ReleaseChildren()
 
-    local aceGUI = Shared.ResolveAceGUI and Shared.ResolveAceGUI("AceGUI-3.0 is required for MB_GameObjPopup") or nil
+    local aceGUI = MultiBot.ResolveAceGUI and MultiBot.ResolveAceGUI("AceGUI-3.0 is required for MB_GameObjPopup") or nil
     if not aceGUI then
         return
     end
@@ -60,7 +60,7 @@ function MultiBot.InitializeGameObjectResultsFrame()
         return ResultsFrame
     end
 
-    local aceGUI = Shared.ResolveAceGUI and Shared.ResolveAceGUI("AceGUI-3.0 is required for MB_GameObjPopup") or nil
+    local aceGUI = MultiBot.ResolveAceGUI and MultiBot.ResolveAceGUI("AceGUI-3.0 is required for MB_GameObjPopup") or nil
     if not aceGUI then
         return nil
     end
