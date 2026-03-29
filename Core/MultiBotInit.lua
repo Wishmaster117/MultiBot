@@ -13,91 +13,12 @@ tMultiBar:SetClampedToScreen(true)
 local tLeft = tMultiBar.addFrame("Left", -76, 2, 32)
 MultiBot.PromoteFrame(tLeft)
 
--- TANKER --
-tLeft.addButton("Tanker", -170, 0, "ability_warrior_shieldbash", MultiBot.L("tips.tanker.master"))
-.doLeft = function(pButton)
-	if(MultiBot.isTarget()) then MultiBot.ActionToGroup("@tank do attack my target") end
+if MultiBot.InitializeLeftCoreUI then
+	MultiBot.InitializeLeftCoreUI(tLeft)
 end
 
 --  We call it when tLeft are ready
 MultiBot.BuildAttackUI(tLeft)
-
--- MODE --
-local tButton = tLeft.addButton("Mode", -102, 0, "Interface\\AddOns\\MultiBot\\Icons\\mode_passive.blp", MultiBot.L("tips.mode.master")).setDisable()
-tButton.doRight = function(pButton)
-	MultiBot.ShowHideSwitch(pButton.parent.frames["Mode"])
-end
-tButton.doLeft = function(pButton)
-	if(MultiBot.OnOffSwitch(pButton)) then
-		MultiBot.ActionToGroup("co +passive,?")
-	else
-		MultiBot.ActionToGroup("co -passive,?")
-	end
-end
-
-local tMode = tLeft.addFrame("Mode", -104, 34)
-tMode:Hide()
-
-tMode.addButton("Passive", 0, 0, "Interface\\AddOns\\MultiBot\\Icons\\mode_passive.blp", MultiBot.L("tips.mode.passive"))
-.doLeft = function(pButton)
-	if(MultiBot.SelectToGroup(pButton.parent.parent, "Mode", pButton.texture, "co +passive,?")) then
-		pButton.parent.parent.buttons["Mode"].setEnable().doLeft = function(pButton)
-			if(MultiBot.OnOffSwitch(pButton)) then
-				MultiBot.ActionToGroup("co +passive,?")
-			else
-				MultiBot.ActionToGroup("co -passive,?")
-			end
-		end
-	end
-end
-
-tMode.addButton("Grind", 0, 30, "Interface\\AddOns\\MultiBot\\Icons\\mode_grind.blp", MultiBot.L("tips.mode.grind"))
-.doLeft = function(pButton)
-	if(MultiBot.SelectToGroup(pButton.parent.parent, "Mode", pButton.texture, "grind")) then
-		pButton.parent.parent.buttons["Mode"].setEnable().doLeft = function(pButton)
-			if(MultiBot.OnOffSwitch(pButton)) then
-				MultiBot.ActionToGroup("grind")
-			else
-				MultiBot.ActionToGroup("follow")
-			end
-		end
-	end
-end
-
--- STAY|FOLLOW --
-tLeft.addButton("Stay", -68, 0, "Interface\\AddOns\\MultiBot\\Icons\\command_follow.blp", MultiBot.L("tips.stallow.stay"))
-.doLeft = function(pButton)
-	if(MultiBot.ActionToGroup("stay")) then
-		pButton.parent.buttons["Follow"].doShow()
-		pButton.parent.buttons["ExpandFollow"].setDisable()
-		pButton.parent.buttons["ExpandStay"].setEnable()
-		pButton.doHide()
-	end
-end
-
-tLeft.addButton("Follow", -68, 0, "Interface\\AddOns\\MultiBot\\Icons\\command_stay.blp", MultiBot.L("tips.stallow.follow")).doHide()
-.doLeft = function(pButton)
-	if(MultiBot.ActionToGroup("follow")) then
-		pButton.parent.buttons["Stay"].doShow()
-		pButton.parent.buttons["ExpandFollow"].setEnable()
-		pButton.parent.buttons["ExpandStay"].setDisable()
-		pButton.doHide()
-	end
-end
-
-tLeft.addButton("ExpandStay", -68, 0, "Interface\\AddOns\\MultiBot\\Icons\\command_stay.blp", MultiBot.tips.expand.stay).doHide().setDisable()
-.doLeft = function(pButton)
-	MultiBot.ActionToGroup("stay")
-	pButton.parent.buttons["ExpandFollow"].setDisable()
-	pButton.setEnable()
-end
-
-tLeft.addButton("ExpandFollow", -102, 0, "Interface\\AddOns\\MultiBot\\Icons\\command_follow.blp", MultiBot.tips.expand.follow).doHide()
-.doLeft = function(pButton)
-	MultiBot.ActionToGroup("follow")
-	pButton.parent.buttons["ExpandStay"].setDisable()
-	pButton.setEnable()
-end
 
 --  We call it when tLeft are ready
 MultiBot.BuildFleeUI(tLeft)

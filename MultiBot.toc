@@ -84,6 +84,7 @@ UI\MultiBotQuestsMenu.lua
 UI\MultiBotMinimap.lua
 UI\MultiBotGroupActionsUI.lua
 UI\MultiBotAttackUI.lua
+UI\MultiBotLeftCoreUI.lua
 UI\MultiBotFormationUI.lua
 UI\MultiBotFleeUI.lua
 UI\MultiBotUnitsFilterUI.lua
