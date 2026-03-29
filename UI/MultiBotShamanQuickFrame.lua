@@ -291,7 +291,10 @@ local function createCollapseHandle(service)
     end
 
     local handle = CreateFrame("Button", nil, service.window.frame)
-    handle:SetFrameStrata("DIALOG")
+    local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+    if strataLevel then
+        handle:SetFrameStrata(strataLevel)
+    end
     handle:SetMovable(false)
     handle:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     handle:RegisterForDrag("RightButton")
@@ -867,7 +870,10 @@ function ShamanQuick:EnsureWindow()
     window:SetLayout("Manual")
     window:SetWidth((WINDOW_PADDING_X * 2) + ROW_WIDTH)
     window:SetHeight(WINDOW_HEIGHT)
-    window.frame:SetFrameStrata("HIGH")
+    local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+    if strataLevel then
+        window.frame:SetFrameStrata(strataLevel)
+    end
     window.frame:SetClampedToScreen(true)
     window.frame:SetPoint(WINDOW_DEFAULT_POINT.point, UIParent, WINDOW_DEFAULT_POINT.relPoint, WINDOW_DEFAULT_POINT.x, WINDOW_DEFAULT_POINT.y)
     window:SetCallback("OnClose", function(widget)
