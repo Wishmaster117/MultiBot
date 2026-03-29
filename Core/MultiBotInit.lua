@@ -1,9 +1,4 @@
--- Minimap config is resolved through MultiBot.GetMinimapConfig().
-
---local MB_INVENTORY_LABEL = INVENTORY_TOOLTIP or BAGSLOT or "Inventory"
--- local MB_PAGE_DEFAULT = string.format("%d/%d", 0, 0)
 MultiBot.MB_PAGE_DEFAULT = string.format("%d/%d", 0, 0)
---local MB_TAB_TITLE_DEFAULT = UNKNOWN or ""
 
 -- Minimap config and button logic moved to UI/MultiBotMinimap.lua.
 
@@ -168,17 +163,6 @@ end
 MultiBot.InitializeInventoryFrame()
 
 -- STATS --
-
-MultiBot.stats = MultiBot.newFrame(MultiBot, -60, 560, 32)
-MultiBot.stats:SetMovable(true)
-MultiBot.stats:Hide()
-
-MultiBot.stats.movButton("Move", 0, -80, 160, MultiBot.L("tips.move.stats"))
-
-MultiBot.addStats(MultiBot.stats, "party1", 0,    0, 32, 192, 96)
-MultiBot.addStats(MultiBot.stats, "party2", 0,  -60, 32, 192, 96)
-MultiBot.addStats(MultiBot.stats, "party3", 0, -120, 32, 192, 96)
-MultiBot.addStats(MultiBot.stats, "party4", 0, -180, 32, 192, 96)
 
 -- ITEMUS ACE3 --
 MultiBot.InitializeItemusFrame()

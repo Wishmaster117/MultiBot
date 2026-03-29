@@ -277,6 +277,7 @@ Le nettoyage pourra être considéré comme réussi quand :
 - [x] Extraire `ShowDeleteSVPrompt`
 - [x] Extraire `Main`
 - [x] Extraire `RTSC`
+- [x] Extraire le bootstrap `stats`
 - [ ] Rationaliser le bloc `Units` restant
 - [x] Extraire `TimerAfter` dans `Core/MultiBotAsync.lua` et basculer les usages partagés sur `MultiBot.TimerAfter`
 

@@ -1320,8 +1320,16 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		end
 
 		if(MultiBot.isInside(arg1, "StatsOfPlayer")) then
+			local statsFrame = MultiBot.EnsureStatsUI and MultiBot.EnsureStatsUI() or MultiBot.stats
+			if not statsFrame then
+				return
+			end
+
 			local tUnit = MultiBot.toUnit(arg2)
-			MultiBot.stats.frames[tUnit].setStats(arg2, UnitLevel(tUnit), arg1, true)
+			local unitStats = statsFrame.frames[tUnit]
+			if unitStats and unitStats.setStats then
+				unitStats.setStats(arg2, UnitLevel(tUnit), arg1, true)
+			end
 		end
 
 		if(arg1 == "stats" and arg2 ~= UnitName("player")) then
@@ -1470,9 +1478,19 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		end
 
 		if(tButton.waitFor ~= "ITEM" and tButton.waitFor ~= "SPELL" and MultiBot.auto.stats and MultiBot.isInside(arg1, "Bag")) then
+			local statsFrame = MultiBot.EnsureStatsUI and MultiBot.EnsureStatsUI() or MultiBot.stats
+			if not statsFrame then
+				return
+			end
+
 			local tUnit = MultiBot.toUnit(arg2)
-			if(MultiBot.stats.frames[tUnit] == nil) then MultiBot.addStats(MultiBot.stats, "party1", 0, 0, 32, 192, 96) end
-			MultiBot.stats.frames[tUnit].setStats(arg2, UnitLevel(tUnit), arg1)
+			if(statsFrame.frames[tUnit] == nil) then
+				MultiBot.addStats(statsFrame, tUnit, 0, 0, 32, 192, 96)
+			end
+
+			if statsFrame.frames[tUnit] and statsFrame.frames[tUnit].setStats then
+				statsFrame.frames[tUnit].setStats(arg2, UnitLevel(tUnit), arg1)
+			end
 			return
 		end
 

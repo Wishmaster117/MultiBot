@@ -55,7 +55,10 @@ local function resetDefaultWindowPositions()
     MultiBot.reward.setPoint(-754, 238)
     MultiBot.itemus.setPoint(-860, -144)
     MultiBot.iconos.setPoint(-860, -144)
-    MultiBot.stats.setPoint(-60, 560)
+    local statsFrame = MultiBot.EnsureStatsUI and MultiBot.EnsureStatsUI() or MultiBot.stats
+    if statsFrame and statsFrame.setPoint then
+        statsFrame.setPoint(-60, 560)
+    end
 end
 
 local function toggleMasters(button)
@@ -157,6 +160,11 @@ local function toggleRelease(button)
 end
 
 local function toggleStats(button)
+    local statsFrame = MultiBot.EnsureStatsUI and MultiBot.EnsureStatsUI() or MultiBot.stats
+    if not statsFrame then
+        return
+    end
+
     if GetNumRaidMembers() > 0 then
         SendChatMessage(MultiBot.L("info.stats"), "SAY")
         return
@@ -167,15 +175,15 @@ local function toggleStats(button)
         for index = 1, GetNumPartyMembers() do
             SendChatMessage("stats", "WHISPER", nil, UnitName("party" .. index))
         end
-        MultiBot.stats:Show()
+        statsFrame:Show()
         return
     end
 
     MultiBot.auto.stats = false
-    for _, value in pairs(MultiBot.stats.frames) do
+    for _, value in pairs(statsFrame.frames) do
         value:Hide()
     end
-    MultiBot.stats:Hide()
+    statsFrame:Hide()
 end
 
 local function createRewardButton(mainFrame)
