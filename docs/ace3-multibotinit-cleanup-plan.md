@@ -267,6 +267,7 @@ Le nettoyage pourra être considéré comme réussi quand :
 - [x] Extraire `GroupActions`
 - [x] Extraire `BuildAttackUI`
 - [x] Extraire `BuildFleeUI`
+- [x] Extraire `BuildFormationUI`
 - [x] Extraire `BuildFilterUI`
 - [x] Extraire `BuildRosterUI`
 - [x] Extraire `Beast`
@@ -284,6 +285,9 @@ Le nettoyage pourra être considéré comme réussi quand :
 ## Résumé décisionnel
 
 ### À faire tout de suite
+- Extraire BuildFormationUI (le plus net).
+- Extraire le bootstrap stats.
+- Sortir le bloc Left/Mode/Stay/Follow pour arriver à un Init presque 100% composition.
 - sortir le socle partagé Quests/Ace3 de `Core/MultiBotInit.lua` ;
 - garder les écrans Quests en modules Ace3 natifs dédiés ;
 - poursuivre le nettoyage sans jamais réintroduire de wrappers legacy.

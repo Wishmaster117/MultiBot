@@ -107,57 +107,12 @@ end
 --  We call it when tLeft are ready
 MultiBot.BuildFleeUI(tLeft)
 
---  UI FORMATION --
-function MultiBot.BuildFormationUI(tLeft)
-  -- 1. Formation Table
-  local FORMATION_BUTTONS = {
-    { name = "Arrow",  icon = "Interface\\AddOns\\MultiBot\\Icons\\formation_arrow.blp",  cmd = "formation arrow"  },
-    { name = "Queue",  icon = "Interface\\AddOns\\MultiBot\\Icons\\formation_queue.blp",  cmd = "formation queue"  },
-    { name = "Near",   icon = "Interface\\AddOns\\MultiBot\\Icons\\formation_near.blp",   cmd = "formation near"   },
-    { name = "Melee",  icon = "Interface\\AddOns\\MultiBot\\Icons\\formation_melee.blp",  cmd = "formation melee"  },
-    { name = "Line",   icon = "Interface\\AddOns\\MultiBot\\Icons\\formation_line.blp",   cmd = "formation line"   },
-    { name = "Circle", icon = "Interface\\AddOns\\MultiBot\\Icons\\formation_circle.blp", cmd = "formation circle" },
-    { name = "Chaos",  icon = "Interface\\AddOns\\MultiBot\\Icons\\formation_chaos.blp",  cmd = "formation chaos"  },
-    { name = "Shield", icon = "Interface\\AddOns\\MultiBot\\Icons\\formation_shield.blp", cmd = "formation shield" },
-  }
-
-  local function AddFormationButton(frame, info, col, row, cellW, cellH)
-    frame.addButton(info.name,
-                    (col-1)*cellW,
-                    (row-1)*cellH,
-                    info.icon,
-                    MultiBot.L("tips.format." .. string.lower(info.name)))
-      .doLeft = function(btn)
-        MultiBot.SelectToGroup(btn.parent.parent, "Format", btn.texture, info.cmd)
-      end
-  end
-
-  -- Main Button --
-  local fBtn = tLeft.addButton("Format", 0, 0,
-                               "Interface\\AddOns\\MultiBot\\Icons\\formation_near.blp",
-                               MultiBot.L("tips.format.master"))
-
-  fBtn.doLeft  = function(btn)  MultiBot.ShowHideSwitch(btn.parent.frames["Format"]) end
-  fBtn.doRight = function()     MultiBot.ActionToGroup("formation")                 end
-
-  -- Internal Frame --
-  local tFormat = tLeft.addFrame("Format", -2, 34)
-  tFormat:Hide()
-
-  -- Grid 1 × N (columns) --
-  --local COLS     = 1     -- One column
-  local CELL_W   = 40    -- wide (useless here but we keep the arg.)
-  local CELL_H   = 30    -- high/vertival spacing
-
-  for idx, data in ipairs(FORMATION_BUTTONS) do
-  local col = 1                                    -- toujours 1
-  local row = idx                                   -- 1,2,3…
-  AddFormationButton(tFormat, data, col, row, CELL_W, CELL_H)
-  end
-end
-
 -- We call it, when tLeft are ready
-MultiBot.BuildFormationUI(tLeft)
+if MultiBot.BuildFormationUI then
+	MultiBot.BuildFormationUI(tLeft)
+elseif MultiBot.dprint then
+	MultiBot.dprint("INIT", "BuildFormationUI missing at init time")
+end
 
 -- BEASTMASTER --
 if MultiBot.InitializeBeastUI then
