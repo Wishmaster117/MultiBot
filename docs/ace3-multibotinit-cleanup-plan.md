@@ -290,11 +290,9 @@ Le nettoyage pourra être considéré comme réussi quand :
 - Extraire BuildFormationUI (le plus net).
 - Extraire le bootstrap stats.
 - Sortir le bloc Left/Mode/Stay/Follow pour arriver à un Init presque 100% composition.
-- sortir le socle partagé Quests/Ace3 de `Core/MultiBotInit.lua` ;
-- garder les écrans Quests en modules Ace3 natifs dédiés ;
-- poursuivre le nettoyage sans jamais réintroduire de wrappers legacy.
+- finaliser la validation en jeu du slice Quests/GameObjects (parité fonctionnelle + visuelle) ;
+- conserver la règle “pas de wrapper legacy dans une fenêtre AceGUI”.
 
 ### À faire ensuite
-- sortir les fonctions déjà encapsulées ;
-- extraire les gros blocs top-level ;
-- réduire `Core/MultiBotInit.lua` à un vrai rôle de bootstrap.
+- **TODO (plus tard)** : Rationaliser le bloc `Units` restant (découpage Browse/Commands/refresh) ;
+- reprendre les éventuels raffinements de style/structure non bloquants après validation Milestone 8.

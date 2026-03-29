@@ -5,20 +5,9 @@ local MAIN_BUTTON_NAME = "Main"
 local MAIN_BUTTON_ICON = "inv_gizmo_02"
 local MAIN_FRAME_X = -2
 local MAIN_FRAME_Y = 38
+local LEFT_LAYOUT_SHIFT = 34
 
-local LEFT_REPOS_KEYS = {
-    "Tanker",
-    "Attack",
-    "Mode",
-    "Stay",
-    "Follow",
-    "ExpandStay",
-    "ExpandFollow",
-    "Flee",
-    "Format",
-}
-
-local LEFT_REPOS_KEYS_WITH_BEAST = {
+local LEFT_LAYOUT_NAMES = {
     "Tanker",
     "Attack",
     "Mode",
@@ -31,11 +20,7 @@ local LEFT_REPOS_KEYS_WITH_BEAST = {
     "Beast",
 }
 
-local function shiftButtons(buttonNames, delta)
-    for _, buttonName in ipairs(buttonNames) do
-        MultiBot.doRepos(buttonName, delta)
-    end
-end
+local leftLayoutBase = nil
 
 local function withLeftRoot(callback)
     local multibar = MultiBot.frames and MultiBot.frames["MultiBar"]
@@ -45,6 +30,120 @@ local function withLeftRoot(callback)
     end
 
     callback(leftRoot, multibar)
+end
+
+local function getMainToggleState(name)
+    local multibar = MultiBot.frames and MultiBot.frames["MultiBar"]
+    local mainFrame = multibar and multibar.frames and multibar.frames["Main"]
+    local button = mainFrame and mainFrame.buttons and mainFrame.buttons[name]
+    return button and button.state == true
+end
+
+local function captureLeftLayoutBase(leftRoot)
+    if leftLayoutBase then
+        return
+    end
+
+    leftLayoutBase = {
+        buttons = {},
+        frames = {},
+    }
+
+    for _, name in ipairs(LEFT_LAYOUT_NAMES) do
+        local button = leftRoot.buttons and leftRoot.buttons[name]
+        if button then
+            leftLayoutBase.buttons[name] = { x = button.x, y = button.y }
+        end
+
+        local frame = leftRoot.frames and leftRoot.frames[name]
+        if frame then
+            leftLayoutBase.frames[name] = { x = frame.x, y = frame.y }
+        end
+    end
+end
+
+local function setLeftElementX(leftRoot, name, x)
+    local button = leftRoot.buttons and leftRoot.buttons[name]
+    if button then
+        button.setPoint(x, button.y)
+    end
+
+    local frame = leftRoot.frames and leftRoot.frames[name]
+    if frame then
+        local baseButton = leftLayoutBase and leftLayoutBase.buttons and leftLayoutBase.buttons[name]
+        local baseFrame = leftLayoutBase and leftLayoutBase.frames and leftLayoutBase.frames[name]
+        local frameOffset = -2
+        if baseButton and baseFrame then
+            frameOffset = baseFrame.x - baseButton.x
+        end
+        frame.setPoint(x + frameOffset, frame.y)
+    end
+end
+
+local function getLeftBaseX(leftRoot, name)
+    local baseButton = leftLayoutBase and leftLayoutBase.buttons and leftLayoutBase.buttons[name]
+    if baseButton then
+        return baseButton.x
+    end
+
+    local button = leftRoot.buttons and leftRoot.buttons[name]
+    if button then
+        return button.x
+    end
+
+    return 0
+end
+
+local function refreshLeftLayout()
+    withLeftRoot(function(leftRoot)
+        captureLeftLayoutBase(leftRoot)
+
+        if not leftLayoutBase then
+            return
+        end
+
+        local creatorEnabled = getMainToggleState("Creator")
+        local beastEnabled = getMainToggleState("Beast")
+        local expandEnabled = getMainToggleState("Expand")
+
+        local commonShift = 0
+        if creatorEnabled then
+            commonShift = commonShift - LEFT_LAYOUT_SHIFT
+        end
+        if beastEnabled then
+            commonShift = commonShift - LEFT_LAYOUT_SHIFT
+        end
+
+        local heavyShift = commonShift
+        if expandEnabled then
+            heavyShift = heavyShift - LEFT_LAYOUT_SHIFT
+        end
+
+        setLeftElementX(leftRoot, "Tanker", getLeftBaseX(leftRoot, "Tanker") + heavyShift)
+        setLeftElementX(leftRoot, "Attack", getLeftBaseX(leftRoot, "Attack") + heavyShift)
+        setLeftElementX(leftRoot, "Mode", getLeftBaseX(leftRoot, "Mode") + heavyShift)
+
+        setLeftElementX(leftRoot, "Stay", getLeftBaseX(leftRoot, "Stay") + commonShift)
+        setLeftElementX(leftRoot, "Follow", getLeftBaseX(leftRoot, "Follow") + commonShift)
+        setLeftElementX(leftRoot, "ExpandStay", getLeftBaseX(leftRoot, "ExpandStay") + commonShift)
+        setLeftElementX(leftRoot, "ExpandFollow", getLeftBaseX(leftRoot, "ExpandFollow") + commonShift)
+        setLeftElementX(leftRoot, "Flee", getLeftBaseX(leftRoot, "Flee") + commonShift)
+        setLeftElementX(leftRoot, "Format", getLeftBaseX(leftRoot, "Format") + commonShift)
+
+        setLeftElementX(leftRoot, "Beast", getLeftBaseX(leftRoot, "Beast") + (creatorEnabled and -LEFT_LAYOUT_SHIFT or 0))
+
+        if expandEnabled then
+            leftRoot.buttons["ExpandFollow"]:Show()
+            leftRoot.buttons["ExpandStay"]:Show()
+            leftRoot.buttons["Follow"]:Hide()
+            leftRoot.buttons["Stay"]:Hide()
+        else
+            leftRoot.buttons["ExpandFollow"]:Hide()
+            leftRoot.buttons["ExpandStay"]:Hide()
+            leftRoot.buttons["Follow"]:Show()
+            leftRoot.buttons["Stay"]:Show()
+        end
+    end)
 end
 
 local function resetDefaultWindowPositions()
@@ -105,54 +204,34 @@ end
 local function toggleCreator(button)
     withLeftRoot(function(leftRoot)
         if MultiBot.OnOffSwitch(button) then
-            shiftButtons(LEFT_REPOS_KEYS_WITH_BEAST, -34)
             leftRoot.frames["Creator"]:Hide()
             leftRoot.buttons["Creator"]:Show()
-            return
+        else
+            leftRoot.frames["Creator"]:Hide()
+            leftRoot.buttons["Creator"]:Hide()
         end
 
-        shiftButtons(LEFT_REPOS_KEYS_WITH_BEAST, 34)
-        leftRoot.frames["Creator"]:Hide()
-        leftRoot.buttons["Creator"]:Hide()
+        refreshLeftLayout()
     end)
 end
 
 local function toggleBeast(button)
     withLeftRoot(function(leftRoot)
         if MultiBot.OnOffSwitch(button) then
-            shiftButtons(LEFT_REPOS_KEYS, -34)
             leftRoot.frames["Beast"]:Hide()
             leftRoot.buttons["Beast"]:Show()
-            return
+        else
+            leftRoot.frames["Beast"]:Hide()
+            leftRoot.buttons["Beast"]:Hide()
         end
 
-        shiftButtons(LEFT_REPOS_KEYS, 34)
-        leftRoot.frames["Beast"]:Hide()
-        leftRoot.buttons["Beast"]:Hide()
+        refreshLeftLayout()
     end)
 end
 
 local function toggleExpand(button)
-    withLeftRoot(function(leftRoot)
-        if MultiBot.OnOffSwitch(button) then
-            MultiBot.doRepos("Tanker", -34)
-            MultiBot.doRepos("Attack", -34)
-            MultiBot.doRepos("Mode", -34)
-            leftRoot.buttons["ExpandFollow"]:Show()
-            leftRoot.buttons["ExpandStay"]:Show()
-            leftRoot.buttons["Follow"]:Hide()
-            leftRoot.buttons["Stay"]:Hide()
-            return
-        end
-
-        MultiBot.doRepos("Tanker", 34)
-        MultiBot.doRepos("Attack", 34)
-        MultiBot.doRepos("Mode", 34)
-        leftRoot.buttons["ExpandFollow"]:Hide()
-        leftRoot.buttons["ExpandStay"]:Hide()
-        leftRoot.buttons["Follow"]:Show()
-        leftRoot.buttons["Stay"]:Show()
-    end)
+    MultiBot.OnOffSwitch(button)
+    refreshLeftLayout()
 end
 
 local function toggleRelease(button)
@@ -352,6 +431,8 @@ function MultiBot.InitializeMainUI(tMultiBar)
     })
 
     local rewardButton = createRewardButton(mainFrame)
+
+    refreshLeftLayout()
 
     createMainActionButton(mainFrame, {
         name = "Reset",
