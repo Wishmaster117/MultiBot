@@ -840,7 +840,10 @@ function MultiBot.InitializeInventoryFrame()
     window:SetHeight(INVENTORY_WINDOW_DEFAULTS.height)
     window:EnableResize(false)
     window.frame:SetClampedToScreen(true)
-    window.frame:SetFrameStrata("HIGH")
+    local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+    if strataLevel then
+        window.frame:SetFrameStrata(strataLevel)
+    end
     window.frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", INVENTORY_WINDOW_DEFAULTS.pointX, INVENTORY_WINDOW_DEFAULTS.pointY)
     window:SetCallback("OnClose", function(widget)
         closeInventoryWindow()

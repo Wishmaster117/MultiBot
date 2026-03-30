@@ -142,7 +142,10 @@ function AceUI.CreatePopupHost(title, width, height, missingDepMessage, persiste
     window:SetHeight(height)
     window:EnableResize(false)
     window:SetLayout("Fill")
-    window.frame:SetFrameStrata("DIALOG")
+    local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+    if strataLevel then
+        window.frame:SetFrameStrata(strataLevel)
+    end
 
     AceUI.SetWindowCloseToHide(window)
     AceUI.RegisterWindowEscapeClose(window, escapePrefix or "PopupHost")

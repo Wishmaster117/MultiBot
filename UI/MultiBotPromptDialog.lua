@@ -23,7 +23,10 @@ function ShowPrompt(title, onOk, defaultText)
         window:SetHeight(PROMPT_WINDOW_HEIGHT)
         window:EnableResize(false)
         window:SetLayout("Flow")
-        window.frame:SetFrameStrata("DIALOG")
+        local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+        if strataLevel then
+            window.frame:SetFrameStrata(strataLevel)
+        end
         if MultiBot.SetAceWindowCloseToHide then MultiBot.SetAceWindowCloseToHide(window) end
         if MultiBot.RegisterAceWindowEscapeClose then MultiBot.RegisterAceWindowEscapeClose(window, "UniversalPrompt") end
         if MultiBot.BindAceWindowPosition then MultiBot.BindAceWindowPosition(window, "universal_prompt") end

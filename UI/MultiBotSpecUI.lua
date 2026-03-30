@@ -278,7 +278,7 @@ function Spec:RequestList(bot, wrapper)
         specs   = {},
         builds  = {},
     }
-
+    self.activeWrapper = wrapper
     -- 1) on demande d'abord la spé courante
     SendChatMessage("talents", "WHISPER", nil, bot)
     -- 2) on attend ~0.2s puis on enchaîne sur la liste
@@ -527,11 +527,24 @@ end
 
 local function debugSpecPath(path)
     if MultiBot and MultiBot.Debug and type(MultiBot.Debug.Once) == "function" then
-        MultiBot.Debug.Once("spec.dropdown.path", "MultiBot Spec: using " .. tostring(path) .. " path", "33ccff")
+        --MultiBot.Debug.Once("spec.dropdown.path", "MultiBot Spec: using " .. tostring(path) .. " path", "33ccff")
+    end
+end
+
+local function disableSetTalentsToggle(wrapper)
+    if type(wrapper) ~= "table" then
+        return
+    end
+
+    if type(wrapper.setDisable) == "function" then
+        wrapper:setDisable()
     end
 end
 
 function Spec:HideDropdown()
+    disableSetTalentsToggle(self.activeWrapper)
+    self.activeWrapper = nil
+
     if self.dropdownWidget and type(self.dropdownWidget.Release) == "function" then
         self.dropdownWidget:Release()
         self.dropdownWidget = nil
@@ -559,11 +572,17 @@ local function ensureDropdownFrame(specObject, parentFrame, isEmbedded)
     frame = CreateFrame("Frame", nil, parentFrame or UIParent)
 
     if isEmbedded then
-        frame:SetFrameStrata("TOOLTIP")
+        local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+        if strataLevel then
+            frame:SetFrameStrata(strataLevel)
+        end
         frame:SetFrameLevel((parentFrame and parentFrame:GetFrameLevel() or 1) + 5)
         frame:SetAllPoints(parentFrame)
     else
-        frame:SetFrameStrata("DIALOG")
+        local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+        if strataLevel then
+            frame:SetFrameStrata(strataLevel)
+        end
         if frame.SetBackdrop then
             frame:SetBackdrop({
                 bgFile   = "Interface/Tooltips/UI-Tooltip-Background",
@@ -720,7 +739,10 @@ function Spec:BuildDropdown()
             widget:SetWidth(92)
             widget:SetHeight((#pending.specs * 37) + 40)
             widget:EnableResize(false)
-            widget.frame:SetFrameStrata("TOOLTIP")
+            local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+            if strataLevel then
+                widget.frame:SetFrameStrata(strataLevel)
+            end
 
             local function saveWindowPosition()
                 local cx, cy = widget.frame:GetCenter()
@@ -779,7 +801,10 @@ function Spec:BuildDropdown()
         button:SetSize(32, 32)
         button:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress")
         button:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square")
-        button:SetFrameStrata("TOOLTIP")
+        local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+        if strataLevel then
+            button:SetFrameStrata(strataLevel)
+        end
         table.insert(self.buttons, button)
     end
 

@@ -56,7 +56,7 @@ local SPELLBOOK_UI_DEFAULTS = {
     -- Surélévation du FrameLevel pour les textes (rang/titre) afin de rester visibles au-dessus des icônes.
     TEXT_FRAMELEVEL_BOOST = 60,
     -- Strata du layer texte (laisser DIALOG pour rester au-dessus de la zone SpellBook).
-    TEXT_FRAMESTRATA = "DIALOG",
+    TEXT_FRAMESTRATA = nil,
     -- Sous-couche de rendu pour les textes (FontString draw layer sublevel, 0..7).
     TEXT_DRAW_SUBLEVEL = 5,
 }
@@ -206,6 +206,47 @@ local function createSpellIgnoreCheck(parent, x, y)
 	return check
 end
 
+local function getUnitsRootFrame()
+	local frames = MultiBot.frames
+	local multiBar = frames and frames["MultiBar"]
+	return multiBar and multiBar.frames and multiBar.frames["Units"]
+end
+
+local function setSpellbookButtonEnabled(botName, isEnabled)
+	if(type(botName) ~= "string" or botName == "") then
+		return
+	end
+
+	local unitsRoot = getUnitsRootFrame()
+	local unitFrame = unitsRoot and unitsRoot.frames and unitsRoot.frames[botName]
+	if(not unitFrame or not unitFrame.getButton) then
+		return
+	end
+
+	local button = unitFrame.getButton("Spellbook")
+	if(not button) then
+		return
+	end
+
+	if(isEnabled and button.setEnable) then
+		button.setEnable()
+		return
+	end
+
+	if(button.setDisable) then
+		button.setDisable()
+	end
+end
+
+local function syncSpellbookButtonStateOnHide()
+	local spellbook = MultiBot.spellbook
+	if(not spellbook) then
+		return
+	end
+
+	setSpellbookButtonEnabled(spellbook.name, false)
+end
+
 local function createSpellbookContent(window)
 	local root = CreateFrame("Frame", nil, window.content)
 	root:SetAllPoints(window.content)
@@ -342,11 +383,15 @@ function MultiBot.InitializeSpellBookFrame()
 	window:EnableResize(false)
 	window:SetLayout("Fill")
 	window.frame:SetClampedToScreen(true)
-	window.frame:SetFrameStrata("DIALOG")
+	local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+	if strataLevel then
+		window.frame:SetFrameStrata(strataLevel)
+	end
 	window:SetCallback("OnClose", function(widget)
 		widget:Hide()
 	end)
 	window:Hide()
+	window.frame:HookScript("OnHide", syncSpellbookButtonStateOnHide)
 
 	local root, overlay = createSpellbookContent(window)
 

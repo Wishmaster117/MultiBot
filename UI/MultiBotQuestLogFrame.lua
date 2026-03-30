@@ -147,17 +147,24 @@ function QuestLogFrame:Refresh()
 end
 
 function QuestLogFrame:Toggle()
-    if not self.window then
+    local window = self.window
+    if not window then
         return
     end
 
-    if self.window:IsShown() then
-    self.window:Show()
+    if window:IsShown() then
+        window:Hide()
         return
     end
 
-    self.window:Show()
+    window:Show()
     self:Refresh()
+end
+
+function QuestLogFrame:Hide()
+    if self.window then
+        self.window:Hide()
+    end
 end
 
 function MultiBot.InitializeQuestLogFrame()
@@ -176,7 +183,10 @@ function MultiBot.InitializeQuestLogFrame()
     window:SetHeight(470)
     window:EnableResize(false)
     window:SetLayout("Fill")
-    window.frame:SetFrameStrata("DIALOG")
+    local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+    if strataLevel then
+        window.frame:SetFrameStrata(strataLevel)
+    end
 
     if MultiBot.SetAceWindowCloseToHide then MultiBot.SetAceWindowCloseToHide(window) end
     if MultiBot.RegisterAceWindowEscapeClose then MultiBot.RegisterAceWindowEscapeClose(window, "QuestLog") end

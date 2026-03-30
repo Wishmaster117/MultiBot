@@ -72,16 +72,28 @@ local function createSectionHeader(self, text)
     self.scroll:AddChild(heading)
 end
 
+local function createEmptySectionHint(self, text)
+    local hint = self.aceGUI:Create("Label")
+    hint:SetFullWidth(true)
+    hint:SetText("    " .. (text or MultiBot.L("tips.quests.gobnosearchdata") or "No quests"))
+    self.scroll:AddChild(hint)
+end
+
 function MultiBot.BuildBotAllList(botName)
     local frame = MultiBot.InitializeQuestAllFrame()
     clearList(frame)
 
-    for _, link in ipairs(MultiBot.BotQuestsAll[botName] or {}) do
+    local quests = MultiBot.BotQuestsAll[botName] or {}
+    for _, link in ipairs(quests) do
         local questID = tonumber(link:match("|Hquest:(%d+):"))
         local localizedName = questID and Shared.GetLocalizedQuestName(questID, link) or link
         local displayLink = link:gsub("%[[^%]]+%]", "|cff00ff00[" .. localizedName .. "]|r")
 
         createQuestRow(frame, questID, displayLink)
+    end
+
+    if #quests == 0 then
+        createEmptySectionHint(frame)
     end
 
     if frame.summary then
@@ -97,13 +109,21 @@ function MultiBot.BuildAggregatedAllList()
     local incompleteEntries = Shared.BuildAggregatedQuestEntries(MultiBot.BotQuestsIncompleted)
 
     createSectionHeader(frame, MultiBot.L("tips.quests.compheader"))
-    for _, entry in ipairs(completeEntries) do
-        createQuestRowWithBots(frame, entry)
+    if #completeEntries == 0 then
+        createEmptySectionHint(frame)
+    else
+        for _, entry in ipairs(completeEntries) do
+            createQuestRowWithBots(frame, entry)
+        end
     end
 
     createSectionHeader(frame, MultiBot.L("tips.quests.incompheader"))
-    for _, entry in ipairs(incompleteEntries) do
-        createQuestRowWithBots(frame, entry)
+    if #incompleteEntries == 0 then
+        createEmptySectionHint(frame)
+    else
+        for _, entry in ipairs(incompleteEntries) do
+            createQuestRowWithBots(frame, entry)
+        end
     end
 
     if frame.summary then
@@ -146,7 +166,10 @@ function MultiBot.InitializeQuestAllFrame()
     window:SetHeight(460)
     window:EnableResize(false)
     window:SetLayout("Fill")
-    window.frame:SetFrameStrata("DIALOG")
+    local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+    if strataLevel then
+        window.frame:SetFrameStrata(strataLevel)
+    end
 
     if MultiBot.SetAceWindowCloseToHide then MultiBot.SetAceWindowCloseToHide(window) end
     if MultiBot.RegisterAceWindowEscapeClose then MultiBot.RegisterAceWindowEscapeClose(window, "BotQuestAll") end
