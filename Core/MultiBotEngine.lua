@@ -1378,15 +1378,6 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 		end
 	end
 
-	local function findEntry(name)
-		for _, entry in ipairs(state.entries) do
-			if(entry.name == name) then
-				return entry
-			end
-		end
-		return nil
-	end
-
 	local function swapButtons(entryA, entryB)
 		local buttonA = entryA and entryA.button
 		local buttonB = entryB and entryB.button

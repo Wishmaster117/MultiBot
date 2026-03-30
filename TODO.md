@@ -13,8 +13,31 @@ TODO
 * Mettre une option pour choisir la tailles des icones de la main barre et des quickhunter/shaman
 * Voir si il y'a pas d'autres option que l'on peut ajouter à la frame options de multibot
 * creer le multilangue pour le tooltip: setTooltip(self, "Show / Hide / Move Quick Shaman") des fichiers quickshaman et quickhunter
-* faire de la main barre + droite et gauche une barre de boutons ou l'on peux disposer les bouton changer l'orde etc...
 * Ajouter des emplacements de sacs à la fenêtre inventaire
+* Creator a l'air de planter et apparait même quand il est desactivé.
+* Faire les tootips multi dans la fonction:
+		local originalDoRight = button.doRight
+		button.doRight = function(btn)
+			if(IsShiftKeyDown()) then
+				if(state.selected == nil) then
+					state.selected = entryRec
+					if(UIErrorsFrame) then
+						UIErrorsFrame:AddMessage("Swap source: " .. (entryRec.id or entryRec.name), 1, 0.82, 0, 1)
+					end
+					return
+				end
+
+				if(state.selected == entryRec) then
+					state.selected = nil
+					if(UIErrorsFrame) then
+						UIErrorsFrame:AddMessage("Swap annulé.", 1, 0.25, 0.25, 1)
+					end
+					return
+				end
+De MultiboEngine
+* Finir les options de déplacement des boutons
+* Debuguer le blocage de la barre principale en déplacement ça a l'air de ne pas persister apres une deco reco
+* Améliorer le panneau options avec des onglets
 
 
  Ajouter la fonction unequipe à Multibit:
