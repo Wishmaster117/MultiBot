@@ -104,7 +104,10 @@ function MultiBot.InitializeQuestIncompleteFrame()
     window:SetHeight(420)
     window:EnableResize(false)
     window:SetLayout("Fill")
-    window.frame:SetFrameStrata("DIALOG")
+    local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+    if strataLevel then
+        window.frame:SetFrameStrata(strataLevel)
+    end
 
     if MultiBot.SetAceWindowCloseToHide then MultiBot.SetAceWindowCloseToHide(window) end
     if MultiBot.RegisterAceWindowEscapeClose then MultiBot.RegisterAceWindowEscapeClose(window, "BotQuestIncomplete") end

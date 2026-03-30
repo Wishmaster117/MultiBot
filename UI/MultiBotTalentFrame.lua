@@ -823,7 +823,10 @@ function MultiBot.InitializeTalentFrameModule()
         window:SetHeight(hostDefaultHeight)
         window:EnableResize(false)
         window:SetLayout("Fill")
-        window.frame:SetFrameStrata("DIALOG")
+        local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+        if strataLevel then
+            window.frame:SetFrameStrata(strataLevel)
+        end
         registerTalentFrameEscapeClose(window, "TalentGlyphHost")
         bindTalentFramePosition(window, "talent_glyph_host")
         setTalentFrameCloseToHide(window)

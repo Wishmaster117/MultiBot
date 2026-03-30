@@ -198,7 +198,10 @@ function MultiBot.InitializeRewardFrame()
 	window.frame:SetClampedToScreen(true)
 	window.frame:SetMovable(true)
 	window.frame:EnableMouse(true)
-	window.frame:SetFrameStrata("HIGH")
+	local strataLevel = MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()
+	if strataLevel then
+		window.frame:SetFrameStrata(strataLevel)
+	end
 	window.frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -754, 238)
 	window:Hide()
 	window:SetCallback("OnClose", function(widget)
