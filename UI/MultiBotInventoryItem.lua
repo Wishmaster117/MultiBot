@@ -164,6 +164,10 @@ local function sendInventoryItemCommand(command, button, botName, options)
         requestInventoryRefresh()
     end
 
+    if options.followupRefreshDelay ~= nil then
+        requestInventoryRefresh(options.followupRefreshDelay)
+    end
+
     return true
 end
 
@@ -199,8 +203,16 @@ local function handleInventoryItemClick(button)
         return
     end
 
-    if action == "e" or action == "u" or action == "give" then
+    if action == "e" or action == "give" then
         sendInventoryItemCommand(action, button, botName)
+        return
+    end
+
+    if action == "u" then
+        sendInventoryItemCommand(action, button, botName, {
+            refreshDelay = 0.12,
+            followupRefreshDelay = 0.45,
+        })
         return
     end
 

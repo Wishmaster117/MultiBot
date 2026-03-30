@@ -7,14 +7,14 @@ TODO
 * Quand on deplace ou fait quelque chose dans l'ui il faudrait que ça se sauvegarde tout de suite dans les variables dans deco reco
 * Raidus doit se rafraichir à l'ouverture et fermeture
 * dans la liste des quêtes des fois c'est l'ID de la queête qui apparait et pas le tritre
-* Afficher le pognon et les places de sacs dans la frame inventaire
-* La fenêtre inventaire doit se rafraichir par exemple quand on fait le bot bouffer il faut que ce qu'il a bouffé se décompte
-* Iconos ne mémorise pas sa position
+* Afficher le pognon et les places de sacs dans la frame inventaire.
+* Iconos ne mémorise pas sa position et n'a pas de strata
 * Revoir le positionnement des fleches et pages de Iconos
 * Mettre une option pour choisir la tailles des icones de la main barre et des quickhunter/shaman
 * Voir si il y'a pas d'autres option que l'on peut ajouter à la frame options de multibot
 * creer le multilangue pour le tooltip: setTooltip(self, "Show / Hide / Move Quick Shaman") des fichiers quickshaman et quickhunter
 * faire de la main barre + droite et gauche une barre de boutons ou l'on peux disposer les bouton changer l'orde etc...
+* Ajouter des emplacements de sacs à la fenêtre inventaire
 
 
  Ajouter la fonction unequipe à Multibit:
