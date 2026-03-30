@@ -67,6 +67,13 @@ function MultiBot.InitializeGroupActionsUI(tRight)
 
     local summonButton = createGroupCommand(tRight, SUMMON_BUTTON)
 
+    if MultiBot.BindShiftRightSwapButtons then
+        MultiBot.BindShiftRightSwapButtons(tRight, "RightRoot", {
+            { name = "GroupActions", frameName = "GroupActionsMenu" },
+            { name = "Summon" },
+        })
+    end
+
     GroupActionsUI.initialized = true
     GroupActionsUI.mainButton = mainButton
     GroupActionsUI.menu = menu

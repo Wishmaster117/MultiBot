@@ -12,7 +12,10 @@ Rendre la barre principale configurable et sûre à manipuler, avec une approche
 - Déplacement autorisé uniquement si :
   - touche **Ctrl** enfoncée ;
   - **clic gauche** maintenu sur un bouton.
+  - **clic droit** maintenu sur le bouton Main (déplacement de la barre).
 - Bénéfice : éviter les déplacements accidentels.
+
+✅ Implémenté (lock persistant + Ctrl + clic droit).
 
 #### Pourquoi c’est simple à intégrer
 - La base drag existe déjà (barre principale en drag + infra drag générique).
@@ -29,6 +32,10 @@ Rendre la barre principale configurable et sûre à manipuler, avec une approche
   - `GetSavedLayoutValue`
   - `SetSavedLayoutValue`
 
+✅ Implémenté pour :
+- position de la barre ;
+- layouts de swap boutons (par contexte).
+
 ---
 
 ### 3) Boutons `Save` / `Export` / `Import` / `Reset`
@@ -42,23 +49,64 @@ Rendre la barre principale configurable et sûre à manipuler, avec une approche
 
 ---
 
-### 4) Import A -> B (cas d’usage principal)
+### 4) Réorganisation des boutons de la Main Bar (nouvelle fonctionnalité)
+#### Objectif
+Permettre de **déplacer/réordonner les boutons de la barre principale** pour adapter l’ergonomie :
+- exemple : inverser `Attack` et `Control` (ou tout autre bouton principal).
+
+#### Interaction utilisateur
+- Entrer en mode réorganisation via **Shift + clic droit** sur un bouton de la Main Bar.
+- Sélection source puis cible via **Shift + clic droit** pour échanger leurs positions (swap).
+- Afficher un feedback visuel minimal :
+  - slot source/survol;
+  - aperçu de permutation;
+  - confirmation à la fin du drop.
+
+#### Persistance
+- Sauvegarder l’ordre des boutons dans la sauvegarde de layout par profil.
+- Format actuel : mapping sérialisé `buttonId -> x,y` par contexte (`ButtonLayout:<context>`).
+- Compatibilité : fallback automatique sur l’ordre par défaut si une clé manque.
+
+#### Contraintes
+- Ne pas casser les callbacks existants (`doLeft`, `doRight`, états toggle, disable).
+- Préserver les tooltips et icônes.
+- Garder le comportement de déplacement de la **barre elle-même** séparé (Ctrl + clic droit selon lock).
+
+✅ Implémenté partiellement :
+- swap actif sur les groupes de boutons configurés ;
+- les frames de menus verticaux liées suivent leur bouton principal ;
+- bouton **Main** reste fixe ;
+- bouton **Units** laissé fixe (pas de swap) pour stabilité.
+
+---
+
+### 5) Import A -> B (cas d’usage principal)
 - Sur perso A : `Export` → copier la string.
 - Sur perso B : `Import` → coller la string → `Apply` → `Save`.
 - Optionnel : checksum/version pour valider la compatibilité de la string.
+- Le payload doit inclure :
+  - position de la barre;
+  - ordre personnalisé des boutons;
+  - visibilité/flags nécessaires au rendu.
+
+⏳ À faire (Export/Import applicatif pas encore branché).
 
 ---
 
-### 5) UX minimale mais propre
+### 6) UX minimale mais propre
 - Message visuel :
   - `Locked` par défaut ;
   - `Hold Ctrl + Left Click to move`.
+  - `Hold Ctrl + Right Click to move bar`.
+  - `Hold Shift + Right Click to move buttons`.
 - Pendant drag : afficher les coordonnées.
 - Fin de drag : autosave (ou save manuel, selon choix final).
 
+✅ Partiellement implémenté (messages de swap + autosave layout).
+
 ---
 
-### 6) Checkbox `Verrouiller déplacement barre`
+### 7) Checkbox `Verrouiller déplacement barre`
 #### Objectif
 Ajouter dans le panneau Options une case simple :
 - **Cochée** → barre principale verrouillée ;
@@ -102,5 +150,10 @@ Cette partie touche :
 ---
 
 ## Statut
-- [ ] Phase 1 — Non démarrée
+- [~] Phase 1 — En cours
+  - [x] lock déplacement barre (Ctrl + clic droit)
+  - [x] checkbox options lock/unlock
+  - [x] persistance layout de déplacement
+  - [x] swap boutons Shift + clic droit (avec suivi des menus verticaux liés)
+  - [ ] export/import des layouts entre personnages
 - [ ] Phase 2 — Non démarrée

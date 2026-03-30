@@ -118,6 +118,7 @@ local function buildLegacyOptionsContent(panel)
   scrollFrame:SetScrollChild(scrollChild)
 
   local minimapConfig = MultiBot.GetMinimapConfig and MultiBot.GetMinimapConfig() or { hide = false }
+  local mainBarMoveLocked = MultiBot.GetMainBarMoveLocked and MultiBot.GetMainBarMoveLocked() or true
 
   local strataDropDown = CreateFrame("Frame", "MultiBotStrataDropDown", scrollChild, "UIDropDownMenuTemplate")
 
@@ -141,14 +142,27 @@ local function buildLegacyOptionsContent(panel)
     end
   end)
 
+  local chkMainBarMoveLocked = CreateFrame("CheckButton", "MultiBot_MainBarMoveLockedCheck", scrollChild, "InterfaceOptionsCheckButtonTemplate")
+  chkMainBarMoveLocked:SetPoint("TOPLEFT", chkMinimapHide, "BOTTOMLEFT", 0, -8)
+  _G[chkMainBarMoveLocked:GetName() .. "Text"]:SetText("Verrouiller déplacement barre principale")
+  chkMainBarMoveLocked.tooltipText = "Cochée: Ctrl + clic droit pour déplacer la barre.\nDécochée: clic droit suffit."
+  chkMainBarMoveLocked:SetChecked(mainBarMoveLocked and true or false)
+  chkMainBarMoveLocked:SetScript("OnClick", function(btn)
+    if MultiBot.SetMainBarMoveLocked then
+      MultiBot.SetMainBarMoveLocked(btn:GetChecked() and true or false)
+    end
+  end)
+
   strataDropDown:ClearAllPoints()
-  strataDropDown:SetPoint("TOPLEFT", chkMinimapHide, "BOTTOMLEFT", -14, -18)
+  strataDropDown:SetPoint("TOPLEFT", chkMainBarMoveLocked, "BOTTOMLEFT", -14, -18)
 
   local strataLabel = scrollChild:CreateFontString(nil, "OVERLAY", "GameFontNormal")
   strataLabel:SetPoint("BOTTOMLEFT", strataDropDown, "TOPLEFT", 16, 3)
   strataLabel:SetText(MultiBot.L("options.frame_strata"))
 
+
   panel.chkMinimapHide = chkMinimapHide
+  panel.chkMainBarMoveLocked = chkMainBarMoveLocked
 
   local current = (MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()) or "HIGH"
   local strataLevels = { "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "TOOLTIP" }
@@ -276,6 +290,7 @@ function MultiBot.BuildOptionsPanel()
     root:AddChild(scroll)
 
     local minimapConfig = MultiBot.GetMinimapConfig and MultiBot.GetMinimapConfig() or { hide = false }
+    local mainBarMoveLocked = MultiBot.GetMainBarMoveLocked and MultiBot.GetMainBarMoveLocked() or true
     local chkMinimapHide = AceGUI:Create("CheckBox")
     chkMinimapHide:SetLabel(optL("info.buttonoptionshide"))
     chkMinimapHide:SetValue(minimapConfig.hide and true or false)
@@ -295,6 +310,21 @@ function MultiBot.BuildOptionsPanel()
     end)
     scroll:AddChild(chkMinimapHide)
     panel.chkMinimapHide = chkMinimapHide
+
+    local chkMainBarMoveLocked = AceGUI:Create("CheckBox")
+    chkMainBarMoveLocked:SetLabel("Verrouiller déplacement barre principale")
+    if chkMainBarMoveLocked.SetDescription then
+      chkMainBarMoveLocked:SetDescription("Cochée: Ctrl + clic droit pour déplacer la barre. Décochée: clic droit suffit.")
+    end
+    chkMainBarMoveLocked:SetValue(mainBarMoveLocked and true or false)
+    chkMainBarMoveLocked:SetFullWidth(true)
+    chkMainBarMoveLocked:SetCallback("OnValueChanged", function(_, _, value)
+      if MultiBot.SetMainBarMoveLocked then
+        MultiBot.SetMainBarMoveLocked(value and true or false)
+      end
+    end)
+    scroll:AddChild(chkMainBarMoveLocked)
+    panel.chkMainBarMoveLocked = chkMainBarMoveLocked
 
     local strata = AceGUI:Create("Dropdown")
     strata:SetLabel(MultiBot.L("options.frame_strata"))

@@ -93,5 +93,14 @@ function MultiBot.InitializeLeftCoreUI(tLeft)
     createModeUI(tLeft)
     createStayFollowUI(tLeft)
 
+    if MultiBot.BindShiftRightSwapButtons then
+        MultiBot.BindShiftRightSwapButtons(tLeft, "LeftRoot", {
+            { name = "Tanker" },
+            { name = "Mode", frameName = "Mode" },
+            { name = "Stay" },
+            { name = "Follow" },
+        })
+    end
+
     return tLeft
 end

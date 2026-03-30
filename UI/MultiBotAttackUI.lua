@@ -61,6 +61,12 @@ function MultiBot.BuildAttackUI(tLeft)
         addAttackButton(attackFrame, definition, index)
     end
 
+    if MultiBot.BindShiftRightSwapButtons then
+        MultiBot.BindShiftRightSwapButtons(tLeft, "LeftRoot", {
+            { name = "Attack", frameName = ATTACK_FRAME_NAME },
+        })
+    end
+
     return {
         mainButton = mainButton,
         frame = attackFrame,
