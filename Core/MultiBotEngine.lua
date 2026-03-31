@@ -1380,6 +1380,48 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 		end
 	end
 
+	local function paintEntry(entryRec, r, g, b, a)
+		local button = entryRec and entryRec.button
+		if(not button) then
+			return
+		end
+
+		if(button.icon and button.icon.SetVertexColor) then
+			button.icon:SetVertexColor(r or 1, g or 1, b or 1)
+		end
+		if(button.SetAlpha) then
+			button:SetAlpha(a or 1)
+		end
+	end
+
+	local function clearVisualState(entryRec)
+		paintEntry(entryRec, 1, 1, 1, 1)
+	end
+
+	local function applySelectionVisuals()
+		for _, entryRec in ipairs(state.entries or {}) do
+			clearVisualState(entryRec)
+		end
+
+		if(state.selected) then
+			paintEntry(state.selected, 1, 0.85, 0.35, 1)
+		end
+
+		if(state.hovered and state.hovered ~= state.selected) then
+			paintEntry(state.hovered, 0.6, 1, 0.6, 1)
+			if(state.selected) then
+				paintEntry(state.selected, 1, 0.85, 0.35, 0.9)
+			end
+		end
+	end
+
+	local function clearSelectionState()
+		state.selected = nil
+		state.hovered = nil
+		state.previewTarget = nil
+		applySelectionVisuals()
+	end
+
 	local function swapButtons(entryA, entryB)
 		local buttonA = entryA and entryA.button
 		local buttonB = entryB and entryB.button
@@ -1426,6 +1468,9 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 			if(IsShiftKeyDown()) then
 				if(state.selected == nil) then
 					state.selected = entryRec
+					state.hovered = nil
+					state.previewTarget = nil
+					applySelectionVisuals()
 					if(UIErrorsFrame) then
 						UIErrorsFrame:AddMessage("Swap source: " .. (entryRec.id or entryRec.name), 1, 0.82, 0, 1)
 					end
@@ -1433,7 +1478,7 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 				end
 
 				if(state.selected == entryRec) then
-					state.selected = nil
+					clearSelectionState()
 					if(UIErrorsFrame) then
 						UIErrorsFrame:AddMessage("Swap annulé.", 1, 0.25, 0.25, 1)
 					end
@@ -1441,7 +1486,7 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 				end
 
 				local sourceEntry = state.selected
-				state.selected = nil
+				clearSelectionState()
 				swapButtons(sourceEntry, entryRec)
 				if(UIErrorsFrame) then
 					UIErrorsFrame:AddMessage((sourceEntry.id or sourceEntry.name) .. " <-> " .. (entryRec.id or entryRec.name), 0.25, 1, 0.25, 1)
@@ -1455,6 +1500,22 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 		end
 
 		button._mbSwapWrapped = true
+		button:HookScript("OnEnter", function()
+			if(state.selected and state.selected ~= entryRec) then
+				state.hovered = entryRec
+				applySelectionVisuals()
+				if(UIErrorsFrame and state.previewTarget ~= entryRec) then
+					state.previewTarget = entryRec
+					UIErrorsFrame:AddMessage("Aperçu swap: " .. (state.selected.id or state.selected.name) .. " <-> " .. (entryRec.id or entryRec.name), 1, 1, 0.4, 1)
+				end
+			end
+		end)
+		button:HookScript("OnLeave", function()
+			if(state.hovered == entryRec) then
+				state.hovered = nil
+				applySelectionVisuals()
+			end
+		end)
 	end
 
 	for _, entry in ipairs(entries) do

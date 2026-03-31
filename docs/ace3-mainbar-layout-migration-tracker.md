@@ -46,6 +46,12 @@ Rendre la barre principale configurable et sûre à manipuler, avec une approche
 #### Cohérence existante
 - Les positions par défaut existent déjà dans `resetDefaultWindowPositions`.
 
+✅ Implémenté :
+- export/import fonctionnels via bibliothèque globale + payload ;
+- reset des clés layout (`MultiBarPoint` + `ButtonLayout:*`) avec remise en position par défaut de la barre principale ;
+- actions exposées en Options (legacy + Ace3) et via slash (`/mblreset`).
+
+
 ---
 
 ### 4) Réorganisation des boutons de la Main Bar (nouvelle fonctionnalité)
@@ -73,6 +79,7 @@ Permettre de **déplacer/réordonner les boutons de la barre principale** pour a
 
 ✅ Implémenté partiellement :
 - swap actif sur les groupes de boutons configurés ;
+- état visuel source/survol + message d’aperçu léger avant validation ;
 - les frames de menus verticaux liées suivent leur bouton principal ;
 - bouton **Main** reste fixe ;
 - bouton **Units** laissé fixe (pas de swap) pour stabilité.
@@ -95,9 +102,6 @@ Permettre de **déplacer/réordonner les boutons de la barre principale** pour a
 - stockage global dans `MultiBotGlobalSave.savedLayoutsByPlayer` (scope compte, pas par personnage) ;
 - import via **liste déroulante** des layouts sauvegardés (Options legacy + Ace3) ;
 - actions exposées dans Options (legacy + Ace3) et slash commands (`/mblx`, `/mbll`, `/mblio <owner>`, `/mbli <payload>`, `/mblp [owner]`, `/mbldel <owner>`, `/mblreset`).
-- export/import fonctionnels via bibliothèque globale + payload ;
-- reset des clés layout (`MultiBarPoint` + `ButtonLayout:*`) avec remise en position par défaut de la barre principale ;
-- actions exposées en Options (legacy + Ace3) et via slash (`/mblreset`).
 
 ---
 
@@ -109,7 +113,7 @@ Permettre de **déplacer/réordonner les boutons de la barre principale** pour a
 - Pendant drag : afficher les coordonnées.
 - Fin de drag : autosave (ou save manuel, selon choix final).
 
-✅ Partiellement implémenté (messages de swap + autosave layout).
+✅ Implémenté (messages lock/swap + aperçu + hint explicite si drag refusé + autosave layout).
 
 ---
 
@@ -157,7 +161,7 @@ Cette partie touche :
 ---
 
 ## Statut
-- [~] Phase 1 — En cours
+- [x] Phase 1 — Finalisée
   - [x] lock déplacement barre (Ctrl + clic droit)
   - [x] checkbox options lock/unlock
   - [x] persistance layout de déplacement

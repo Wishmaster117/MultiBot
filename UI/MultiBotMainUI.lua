@@ -412,6 +412,9 @@ function MultiBot.InitializeMainUI(tMultiBar)
     mainButton:RegisterForDrag("RightButton")
     mainButton:SetScript("OnDragStart", function()
         if not isMainBarMoveAllowed() then
+            if UIErrorsFrame then
+                UIErrorsFrame:AddMessage("Barre verrouillée: maintiens Ctrl + clic droit pour déplacer.", 1, 0.25, 0.25, 1)
+            end
             return
         end
 
