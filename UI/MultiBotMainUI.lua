@@ -5,6 +5,9 @@ local MAIN_BUTTON_NAME = "Main"
 local MAIN_BUTTON_ICON = "inv_gizmo_02"
 local MAIN_FRAME_X = -2
 local MAIN_FRAME_Y = 38
+local MULTIBAR_LAYOUT_KEY = "MultiBarPoint"
+local MAINBAR_BUTTON_ORDER_LAYOUT_KEY = "MainBarButtonsOrder"
+local MAINBAR_BUTTON_STEP_Y = 34
 local LEFT_LAYOUT_SHIFT = 34
 
 local LEFT_LAYOUT_NAMES = {
@@ -312,6 +315,94 @@ local function createMainActionButton(mainFrame, definition)
     return button
 end
 
+local function isMainBarMoveAllowed()
+    local moveLocked = MultiBot.GetMainBarMoveLocked and MultiBot.GetMainBarMoveLocked()
+    if moveLocked == nil then
+        moveLocked = true
+    end
+
+    if moveLocked then
+        return IsControlKeyDown()
+    end
+
+    return true
+end
+
+local function saveMultiBarPosition()
+    local multiBar = MultiBot.frames and MultiBot.frames["MultiBar"]
+    if not multiBar or not MultiBot.SetSavedLayoutValue or not MultiBot.toPoint then
+        return
+    end
+
+    local offsetX, offsetY = MultiBot.toPoint(multiBar)
+    MultiBot.SetSavedLayoutValue(MULTIBAR_LAYOUT_KEY, offsetX .. ", " .. offsetY)
+end
+
+local function splitCsv(value)
+    if type(value) ~= "string" or value == "" then
+        return {}
+    end
+
+    local result = {}
+    for token in string.gmatch(value, "([^,]+)") do
+        local trimmed = string.gsub(token, "^%s*(.-)%s*$", "%1")
+        if trimmed ~= "" then
+            table.insert(result, trimmed)
+        end
+    end
+    return result
+end
+
+local function findOrderIndex(order, name)
+    for index, value in ipairs(order) do
+        if value == name then
+            return index
+        end
+    end
+    return nil
+end
+
+local function buildResolvedOrder(defaultOrder, savedOrder)
+    local resolved = {}
+    local seen = {}
+
+    for _, name in ipairs(savedOrder) do
+        if findOrderIndex(defaultOrder, name) and not seen[name] then
+            table.insert(resolved, name)
+            seen[name] = true
+        end
+    end
+
+    for _, name in ipairs(defaultOrder) do
+        if not seen[name] then
+            table.insert(resolved, name)
+        end
+    end
+
+    return resolved
+end
+
+local function applyMainButtonOrder(mainFrame, order)
+    if not mainFrame or not mainFrame.buttons then
+        return
+    end
+
+    for index, name in ipairs(order) do
+        local button = mainFrame.buttons[name]
+        if button and button.setPoint then
+            button.setPoint(0, (index - 1) * MAINBAR_BUTTON_STEP_Y)
+        end
+    end
+end
+
+local function saveMainButtonOrder(order)
+    if not MultiBot.SetSavedLayoutValue then
+        return
+    end
+
+    MultiBot.SetSavedLayoutValue(MAINBAR_BUTTON_ORDER_LAYOUT_KEY, table.concat(order, ","))
+end
+
 function MultiBot.InitializeMainUI(tMultiBar)
     if not tMultiBar or not tMultiBar.addButton or not tMultiBar.addFrame then
         return nil
@@ -320,10 +411,18 @@ function MultiBot.InitializeMainUI(tMultiBar)
     local mainButton = tMultiBar.addButton(MAIN_BUTTON_NAME, 0, 0, MAIN_BUTTON_ICON, MultiBot.L("tips.main.master"))
     mainButton:RegisterForDrag("RightButton")
     mainButton:SetScript("OnDragStart", function()
+        if not isMainBarMoveAllowed() then
+            if UIErrorsFrame then
+                UIErrorsFrame:AddMessage("Barre verrouillée: maintiens Ctrl + clic droit pour déplacer.", 1, 0.25, 0.25, 1)
+            end
+            return
+        end
+
         MultiBot.frames["MultiBar"]:StartMoving()
     end)
     mainButton:SetScript("OnDragStop", function()
         MultiBot.frames["MultiBar"]:StopMovingOrSizing()
+        saveMultiBarPosition()
     end)
     mainButton.doLeft = function(button)
         MultiBot.ShowHideSwitch(button.parent.frames[MAIN_FRAME_NAME])
@@ -331,6 +430,76 @@ function MultiBot.InitializeMainUI(tMultiBar)
 
     local mainFrame = tMultiBar.addFrame(MAIN_FRAME_NAME, MAIN_FRAME_X, MAIN_FRAME_Y)
     mainFrame:Hide()
+
+    local defaultMainButtonOrder = {
+        "Coords",
+        "Masters",
+        "RTSC",
+        "Raidus",
+        "Creator",
+        "Beast",
+        "Expand",
+        "Release",
+        "Stats",
+        "Reward",
+        "Reset",
+        "Actions",
+    }
+    local savedOrderValue = MultiBot.GetSavedLayoutValue and MultiBot.GetSavedLayoutValue(MAINBAR_BUTTON_ORDER_LAYOUT_KEY) or nil
+    local currentMainButtonOrder = buildResolvedOrder(defaultMainButtonOrder, splitCsv(savedOrderValue))
+    local selectedSwapButtonName = nil
+
+    local function swapMainButtons(buttonName)
+        if not buttonName then
+            return
+        end
+
+        if not selectedSwapButtonName then
+            selectedSwapButtonName = buttonName
+            UIErrorsFrame:AddMessage("MainBar: source = " .. buttonName, 1, 0.82, 0, 1)
+            return
+        end
+
+        if selectedSwapButtonName == buttonName then
+            selectedSwapButtonName = nil
+            UIErrorsFrame:AddMessage("MainBar: permutation annulée.", 1, 0.25, 0.25, 1)
+            return
+        end
+
+        local fromIndex = findOrderIndex(currentMainButtonOrder, selectedSwapButtonName)
+        local toIndex = findOrderIndex(currentMainButtonOrder, buttonName)
+        if not fromIndex or not toIndex then
+            selectedSwapButtonName = nil
+            return
+        end
+
+        currentMainButtonOrder[fromIndex], currentMainButtonOrder[toIndex] =
+            currentMainButtonOrder[toIndex], currentMainButtonOrder[fromIndex]
+
+        applyMainButtonOrder(mainFrame, currentMainButtonOrder)
+        saveMainButtonOrder(currentMainButtonOrder)
+
+        UIErrorsFrame:AddMessage("MainBar: " .. selectedSwapButtonName .. " <-> " .. buttonName, 0.25, 1, 0.25, 1)
+        selectedSwapButtonName = nil
+    end
+
+    local function wireShiftRightSwap(button, buttonName)
+        if not button or not buttonName then
+            return
+        end
+
+        local originalDoRight = button.doRight
+        button.doRight = function(btn)
+            if IsShiftKeyDown() then
+                swapMainButtons(buttonName)
+                return
+            end
+
+            if originalDoRight then
+                originalDoRight(btn)
+            end
+        end
+    end
 
     createMainActionButton(mainFrame, {
         name = "Coords",
@@ -341,6 +510,7 @@ function MultiBot.InitializeMainUI(tMultiBar)
             resetDefaultWindowPositions()
         end,
     })
+    wireShiftRightSwap(mainFrame.buttons["Coords"], "Coords")
 
     createMainActionButton(mainFrame, {
         name = "Masters",
@@ -352,6 +522,7 @@ function MultiBot.InitializeMainUI(tMultiBar)
             toggleMasters(button)
         end,
     })
+    wireShiftRightSwap(mainFrame.buttons["Masters"], "Masters")
 
     createMainActionButton(mainFrame, {
         name = "RTSC",
@@ -363,6 +534,7 @@ function MultiBot.InitializeMainUI(tMultiBar)
             toggleRTSC(button)
         end,
     })
+    wireShiftRightSwap(mainFrame.buttons["RTSC"], "RTSC")
 
     createMainActionButton(mainFrame, {
         name = "Raidus",
@@ -374,6 +546,7 @@ function MultiBot.InitializeMainUI(tMultiBar)
             toggleRaidus(button)
         end,
     })
+    wireShiftRightSwap(mainFrame.buttons["Raidus"], "Raidus")
 
     createMainActionButton(mainFrame, {
         name = "Creator",
@@ -385,6 +558,7 @@ function MultiBot.InitializeMainUI(tMultiBar)
             toggleCreator(button)
         end,
     })
+    wireShiftRightSwap(mainFrame.buttons["Creator"], "Creator")
 
     createMainActionButton(mainFrame, {
         name = "Beast",
@@ -396,6 +570,7 @@ function MultiBot.InitializeMainUI(tMultiBar)
             toggleBeast(button)
         end,
     })
+    wireShiftRightSwap(mainFrame.buttons["Beast"], "Beast")
 
     createMainActionButton(mainFrame, {
         name = "Expand",
@@ -407,6 +582,7 @@ function MultiBot.InitializeMainUI(tMultiBar)
             toggleExpand(button)
         end,
     })
+    wireShiftRightSwap(mainFrame.buttons["Expand"], "Expand")
 
     createMainActionButton(mainFrame, {
         name = "Release",
@@ -418,6 +594,7 @@ function MultiBot.InitializeMainUI(tMultiBar)
             toggleRelease(button)
         end,
     })
+    wireShiftRightSwap(mainFrame.buttons["Release"], "Release")
 
     createMainActionButton(mainFrame, {
         name = "Stats",
@@ -429,8 +606,10 @@ function MultiBot.InitializeMainUI(tMultiBar)
             toggleStats(button)
         end,
     })
+    wireShiftRightSwap(mainFrame.buttons["Stats"], "Stats")
 
     local rewardButton = createRewardButton(mainFrame)
+    wireShiftRightSwap(rewardButton, "Reward")
 
     refreshLeftLayout()
 
@@ -443,6 +622,7 @@ function MultiBot.InitializeMainUI(tMultiBar)
             MultiBot.ActionToTargetOrGroup("reset botAI")
         end,
     })
+    wireShiftRightSwap(mainFrame.buttons["Reset"], "Reset")
 
     createMainActionButton(mainFrame, {
         name = "Actions",
@@ -453,6 +633,9 @@ function MultiBot.InitializeMainUI(tMultiBar)
             MultiBot.ActionToTargetOrGroup("reset")
         end,
     })
+    wireShiftRightSwap(mainFrame.buttons["Actions"], "Actions")
+
+    applyMainButtonOrder(mainFrame, currentMainButtonOrder)
 
     return {
         mainButton = mainButton,

@@ -60,6 +60,80 @@ function Shared.ApplyEditBoxStyle(widget)
     end
 end
 
+local function setQuestTooltip(widget, questID)
+    if not questID then
+        return
+    end
+
+    GameTooltip:SetOwner(widget.frame, "ANCHOR_CURSOR")
+    GameTooltip:SetHyperlink("quest:" .. tostring(questID))
+    GameTooltip:Show()
+end
+
+function Shared.CreateQuestEntryRow(self, entry, opts)
+    if not self or not self.aceGUI or not self.scroll or type(entry) ~= "table" then
+        return
+    end
+
+    opts = opts or {}
+
+    local row = self.aceGUI:Create("SimpleGroup")
+    row:SetFullWidth(true)
+    row:SetLayout("Flow")
+
+    local icon = self.aceGUI:Create("Icon")
+    icon:SetImage(opts.iconPath or Shared.ICON_BOT_QUEST or "Interface\\Icons\\inv_misc_note_02")
+    icon:SetImageSize(opts.iconSize or 14, opts.iconSize or 14)
+    icon:SetWidth(opts.iconWidth or 20)
+    row:AddChild(icon)
+
+    local label = self.aceGUI:Create("InteractiveLabel")
+    label:SetWidth(opts.labelWidth or 320)
+    label:SetText(Shared.BuildQuestLink(entry.id, entry.name))
+    label:SetCallback("OnEnter", function(widget)
+        setQuestTooltip(widget, entry.id)
+    end)
+    label:SetCallback("OnLeave", GameTooltip_Hide)
+    row:AddChild(label)
+
+    self.scroll:AddChild(row)
+
+    if opts.showBots ~= false and entry.bots and #entry.bots > 0 then
+        local botsLabel = self.aceGUI:Create("Label")
+        botsLabel:SetFullWidth(true)
+        botsLabel:SetText((opts.botsPrefix or "    ") .. Shared.FormatBotsLabel(entry.bots))
+        self.scroll:AddChild(botsLabel)
+    end
+end
+
+function Shared.RenderQuestEntries(self, entries, opts)
+    if not self then
+        return
+    end
+
+    if self.scroll then
+        self.scroll:ReleaseChildren()
+    end
+
+    opts = opts or {}
+    local questEntries = entries or {}
+
+    for _, entry in ipairs(questEntries) do
+        Shared.CreateQuestEntryRow(self, entry, opts.rowOptions)
+    end
+
+    if #questEntries == 0 and self.aceGUI and self.scroll then
+        local noData = self.aceGUI:Create("Label")
+        noData:SetFullWidth(true)
+        noData:SetText(opts.emptyText or MultiBot.L("tips.quests.gobnosearchdata") or "No quests")
+        self.scroll:AddChild(noData)
+    end
+
+    if self.summary then
+        self.summary:SetText(opts.summaryText or "")
+    end
+end
+
 function Shared.GetLocalizedQuestName(questID, fallback)
     if MultiBot.GetLocalizedQuestName then
         return MultiBot.GetLocalizedQuestName(questID) or fallback or tostring(questID)

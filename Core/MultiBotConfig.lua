@@ -17,6 +17,12 @@ local THROTTLE_DEFAULTS = {
   burst = 8,
 }
 
+local UI_DEFAULTS = {
+  mainBar = {
+    moveLocked = true,
+  },
+}
+
 local DB_DEFAULTS = {
   profile = {
     timers = {
@@ -28,6 +34,11 @@ local DB_DEFAULTS = {
     throttle = {
       rate = THROTTLE_DEFAULTS.rate,
       burst = THROTTLE_DEFAULTS.burst,
+    },
+    ui = {
+      mainBar = {
+        moveLocked = UI_DEFAULTS.mainBar.moveLocked,
+      },
     },
   },
 }
@@ -61,6 +72,12 @@ local function migrateLegacyConfigIntoProfile(profile)
     elseif type(profile.throttle[key]) ~= "number" or profile.throttle[key] <= 0 then
       profile.throttle[key] = defaultValue
     end
+  end
+
+  profile.ui = profile.ui or {}
+  profile.ui.mainBar = profile.ui.mainBar or {}
+  if type(profile.ui.mainBar.moveLocked) ~= "boolean" then
+    profile.ui.mainBar.moveLocked = UI_DEFAULTS.mainBar.moveLocked
   end
 end
 
@@ -116,6 +133,12 @@ function MultiBot.Config_Ensure()
   end
   if type(config.throttle.burst) ~= "number" or config.throttle.burst <= 0 then
     config.throttle.burst = THROTTLE_DEFAULTS.burst
+  end
+
+  config.ui = config.ui or {}
+  config.ui.mainBar = config.ui.mainBar or {}
+  if type(config.ui.mainBar.moveLocked) ~= "boolean" then
+    config.ui.mainBar.moveLocked = UI_DEFAULTS.mainBar.moveLocked
   end
 end
 
@@ -211,4 +234,22 @@ function MultiBot.SetThrottleBurst(value)
   if MultiBot._ThrottleStats then
     MultiBot._ThrottleStats(MultiBot.GetThrottleRate(), config.throttle.burst)
   end
+end
+
+function MultiBot.GetMainBarMoveLocked()
+  local config = getConfigStore(false)
+  local value = config and config.ui and config.ui.mainBar and config.ui.mainBar.moveLocked
+  if type(value) == "boolean" then
+    return value
+  end
+
+  return UI_DEFAULTS.mainBar.moveLocked
+end
+
+function MultiBot.SetMainBarMoveLocked(value)
+  local config = getConfigStore(true)
+  config.ui = config.ui or {}
+  config.ui.mainBar = config.ui.mainBar or {}
+  config.ui.mainBar.moveLocked = value and true or false
+  return config.ui.mainBar.moveLocked
 end
