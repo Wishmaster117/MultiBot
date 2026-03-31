@@ -464,282 +464,322 @@ function MultiBot.BuildOptionsPanel()
     root.frame:SetPoint("BOTTOMRIGHT", -8, 8)
     self._aceRoot = root
 
-    local scroll = AceGUI:Create("ScrollFrame")
-    scroll:SetLayout("List")
-    root:AddChild(scroll)
-
-    local minimapConfig = MultiBot.GetMinimapConfig and MultiBot.GetMinimapConfig() or { hide = false }
-    local mainBarMoveLocked = MultiBot.GetMainBarMoveLocked and MultiBot.GetMainBarMoveLocked() or true
-    local chkMinimapHide = AceGUI:Create("CheckBox")
-    chkMinimapHide:SetLabel(optL("info.buttonoptionshide"))
-    chkMinimapHide:SetValue(minimapConfig.hide and true or false)
-    chkMinimapHide:SetFullWidth(true)
-    chkMinimapHide:SetCallback("OnValueChanged", function(_, _, hide)
-      if MultiBot.SetMinimapConfig then
-        MultiBot.SetMinimapConfig("hide", hide and true or false)
-      end
-      if MultiBot.Minimap_Refresh then
-        MultiBot.Minimap_Refresh()
-      else
-        local b = _G["MultiBot_MinimapButton"] or MultiBot.MinimapButton
-        if b then
-          if hide then b:Hide() else b:Show() end
-        end
-      end
-    end)
-    scroll:AddChild(chkMinimapHide)
-    panel.chkMinimapHide = chkMinimapHide
-
-    local chkMainBarMoveLocked = AceGUI:Create("CheckBox")
-    chkMainBarMoveLocked:SetLabel("Verrouiller déplacement barre principale")
-    if chkMainBarMoveLocked.SetDescription then
-      chkMainBarMoveLocked:SetDescription("Cochée: Ctrl + clic droit pour déplacer la barre. Décochée: clic droit suffit.")
-    end
-    chkMainBarMoveLocked:SetValue(mainBarMoveLocked and true or false)
-    chkMainBarMoveLocked:SetFullWidth(true)
-    chkMainBarMoveLocked:SetCallback("OnValueChanged", function(_, _, value)
-      if MultiBot.SetMainBarMoveLocked then
-        MultiBot.SetMainBarMoveLocked(value and true or false)
-      end
-    end)
-    scroll:AddChild(chkMainBarMoveLocked)
-    panel.chkMainBarMoveLocked = chkMainBarMoveLocked
-
-    local layoutActions = AceGUI:Create("SimpleGroup")
-    layoutActions:SetLayout("Flow")
-    layoutActions:SetFullWidth(true)
-
     local selectedOwnerKey = nil
-
-    local ownerDropDown = AceGUI:Create("Dropdown")
-    ownerDropDown:SetLabel("Layout joueur à importer")
-    ownerDropDown:SetWidth(280)
-    local function refreshOwnerList()
-      local owners = getSavedLayoutOwners()
-      local options = {}
-      for _, owner in ipairs(owners) do
-        options[owner] = owner
-      end
-      ownerDropDown:SetList(options)
-      if #owners > 0 then
-        selectedOwnerKey = selectedOwnerKey or owners[1]
-        ownerDropDown:SetValue(selectedOwnerKey)
-      else
-        selectedOwnerKey = nil
-        ownerDropDown:SetValue(nil)
-      end
-    end
-    ownerDropDown:SetCallback("OnValueChanged", function(_, _, value)
-      selectedOwnerKey = value
-    end)
-    refreshOwnerList()
-    layoutActions:AddChild(ownerDropDown)
-
-    local exportBtn = AceGUI:Create("Button")
-    exportBtn:SetText("Export layout")
-    exportBtn:SetWidth(150)
-    exportBtn:SetCallback("OnClick", function()
-      if MultiBot.SaveMainBarLayoutForCurrentPlayer then
-        local ok, ownerKey = MultiBot.SaveMainBarLayoutForCurrentPlayer()
-        if UIErrorsFrame then
-          if ok then
-            UIErrorsFrame:AddMessage(("Layout sauvegardé: %s"):format(ownerKey), 0.25, 1, 0.25, 1)
-          else
-            UIErrorsFrame:AddMessage(("Export échoué: %s"):format(tostring(ownerKey)), 1, 0.25, 0.25, 1)
-          end
-        end
-      end
-      refreshOwnerList()
-    end)
-    layoutActions:AddChild(exportBtn)
-
-    local importBtn = AceGUI:Create("Button")
-    importBtn:SetText("Import layout")
-    importBtn:SetWidth(150)
-    importBtn:SetCallback("OnClick", function()
-      if selectedOwnerKey then
-        local ok, detail = importLayoutOwner(selectedOwnerKey)
-        if UIErrorsFrame then
-          if ok then
-            UIErrorsFrame:AddMessage(("Layout importé: %s (%s entrées)"):format(selectedOwnerKey, tostring(detail)), 0.25, 1, 0.25, 1)
-          else
-            UIErrorsFrame:AddMessage(("Import échoué: %s"):format(tostring(detail)), 1, 0.25, 0.25, 1)
-          end
-        end
-        return
-      end
-      if UIErrorsFrame then
-        UIErrorsFrame:AddMessage("Aucun layout enregistré à importer.", 1, 0.25, 0.25, 1)
-      end
-    end)
-    layoutActions:AddChild(importBtn)
-
-    local deleteBtn = AceGUI:Create("Button")
-    deleteBtn:SetText("Suppr layout")
-    deleteBtn:SetWidth(150)
-    deleteBtn:SetCallback("OnClick", function()
-      if not selectedOwnerKey then
-        if UIErrorsFrame then
-          UIErrorsFrame:AddMessage("Aucun layout sélectionné à supprimer.", 1, 0.25, 0.25, 1)
-        end
-        return
-      end
-      if not MultiBot.DeleteSavedMainBarLayout then
-        if UIErrorsFrame then
-          UIErrorsFrame:AddMessage("Suppression indisponible.", 1, 0.25, 0.25, 1)
-        end
-        return
-      end
-      local ok, detail = MultiBot.DeleteSavedMainBarLayout(selectedOwnerKey)
-      if UIErrorsFrame then
-        if ok then
-          UIErrorsFrame:AddMessage(("Layout supprimé: %s"):format(selectedOwnerKey), 1, 0.82, 0, 1)
-        else
-          UIErrorsFrame:AddMessage(("Suppression échouée: %s"):format(tostring(detail)), 1, 0.25, 0.25, 1)
-        end
-      end
-      refreshOwnerList()
-    end)
-    layoutActions:AddChild(deleteBtn)
-
-    local refreshBtn = AceGUI:Create("Button")
-    refreshBtn:SetText("Refresh liste")
-    refreshBtn:SetWidth(150)
-    refreshBtn:SetCallback("OnClick", function()
-      refreshOwnerList()
-      if UIErrorsFrame then
-        UIErrorsFrame:AddMessage("Liste layouts rafraîchie.", 0.25, 1, 0.25, 1)
-      end
-    end)
-    layoutActions:AddChild(refreshBtn)
-
-    local resetBtn = AceGUI:Create("Button")
-    resetBtn:SetText("Reset layout")
-    resetBtn:SetWidth(150)
-    resetBtn:SetCallback("OnClick", function()
-      if not MultiBot.ResetMainBarLayoutState then
-        if UIErrorsFrame then
-          UIErrorsFrame:AddMessage("Reset layout indisponible.", 1, 0.25, 0.25, 1)
-        end
-        return
-      end
-      local ok, removed = MultiBot.ResetMainBarLayoutState()
-      if UIErrorsFrame then
-        if ok then
-          UIErrorsFrame:AddMessage(("Layout reset (%s clés)."):format(tostring(removed)), 1, 0.82, 0, 1)
-        else
-          UIErrorsFrame:AddMessage("Reset layout échoué.", 1, 0.25, 0.25, 1)
-        end
-      end
-      refreshOwnerList()
-    end)
-    layoutActions:AddChild(resetBtn)
-
-    scroll:AddChild(layoutActions)
-
-    local strata = AceGUI:Create("Dropdown")
-    strata:SetLabel(MultiBot.L("options.frame_strata"))
-    strata:SetWidth(240)
     local strataLevels = { "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "TOOLTIP" }
-    local strataList = {}
-    for _, v in ipairs(strataLevels) do strataList[v] = v end
-    strata:SetList(strataList)
-    strata:SetValue((MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()) or "HIGH")
-    strata:SetCallback("OnValueChanged", function(_, _, value)
-      if MultiBot.SetGlobalStrataLevel then
-        MultiBot.SetGlobalStrataLevel(value)
-      end
-      if MultiBot.ApplyGlobalStrata then
-        MultiBot.ApplyGlobalStrata()
-      end
-    end)
-    scroll:AddChild(strata)
 
-    local spacer = AceGUI:Create("Label")
-    spacer:SetText(" ")
-    spacer:SetFullWidth(true)
-    scroll:AddChild(spacer)
-
-    local sub = AceGUI:Create("Label")
-    sub:SetText(optL("tips.sliders.actionsinter"))
-    sub:SetFullWidth(true)
-    scroll:AddChild(sub)
-
-    local sliderRefs = {}
-
-    local function buildTimerSlider(key, label, minV, maxV, step)
-      local slider = AceGUI:Create("Slider")
-      slider:SetFullWidth(true)
-      slider:SetSliderValues(minV, maxV, step)
-      slider:SetLabel(label)
-      slider:SetCallback("OnValueChanged", function(widget, _, value)
-        value = round(value, step)
-        MultiBot.SetTimer(key, value)
-        widget:SetLabel(formatSliderLabel(label, secondsLabel(value)))
-        widget:SetValue(value)
-      end)
-      slider._refresh = function()
-        local value = MultiBot.GetTimer(key)
-        slider:SetValue(value)
-        slider:SetLabel(formatSliderLabel(label, secondsLabel(value)))
-      end
-      sliderRefs[#sliderRefs + 1] = slider
-      scroll:AddChild(slider)
-      return slider
+    local function addTabScroll(tabGroup)
+      local scroll = AceGUI:Create("ScrollFrame")
+      scroll:SetLayout("List")
+      tabGroup:AddChild(scroll)
+      return scroll
     end
 
-    local function buildThrottleSlider(key, label, minV, maxV, step)
-      local getValue = (key == "thr_rate") and MultiBot.GetThrottleRate or MultiBot.GetThrottleBurst
-      local setValue = (key == "thr_rate") and MultiBot.SetThrottleRate or MultiBot.SetThrottleBurst
-      local slider = AceGUI:Create("Slider")
-      slider:SetFullWidth(true)
-      slider:SetSliderValues(minV, maxV, step)
-      slider:SetLabel(label)
-      slider:SetCallback("OnValueChanged", function(widget, _, value)
-        value = round(value, step)
-        setValue(value)
-        widget:SetLabel(formatSliderLabel(label, tostring(value)))
-        widget:SetValue(value)
+    local function buildMinimapTab(tabGroup)
+      local scroll = addTabScroll(tabGroup)
+      local minimapConfig = MultiBot.GetMinimapConfig and MultiBot.GetMinimapConfig() or { hide = false }
+      local chkMinimapHide = AceGUI:Create("CheckBox")
+      chkMinimapHide:SetLabel(optL("info.buttonoptionshide"))
+      chkMinimapHide:SetValue(minimapConfig.hide and true or false)
+      chkMinimapHide:SetFullWidth(true)
+      chkMinimapHide:SetCallback("OnValueChanged", function(_, _, hide)
+        if MultiBot.SetMinimapConfig then
+          MultiBot.SetMinimapConfig("hide", hide and true or false)
+        end
+        if MultiBot.Minimap_Refresh then
+          MultiBot.Minimap_Refresh()
+        else
+          local b = _G["MultiBot_MinimapButton"] or MultiBot.MinimapButton
+          if b then
+            if hide then b:Hide() else b:Show() end
+          end
+        end
       end)
-      slider._refresh = function()
-        local value = getValue()
-        slider:SetValue(value)
-        slider:SetLabel(formatSliderLabel(label, tostring(value)))
-      end
-      sliderRefs[#sliderRefs + 1] = slider
-      scroll:AddChild(slider)
-      return slider
+      scroll:AddChild(chkMinimapHide)
+      panel.chkMinimapHide = chkMinimapHide
     end
 
-    local s_stats = buildTimerSlider("stats", optL("tips.sliders.statsinter"), 5, 300, 1)
-    local s_talent = buildTimerSlider("talent", optL("tips.sliders.talentsinter"), 1, 30, 0.5)
-    local s_invite = buildTimerSlider("invite", optL("tips.sliders.invitsinter"), 1, 60, 1)
-    local s_sort = buildTimerSlider("sort", optL("tips.sliders.sortinter"), 0.2, 10, 0.2)
-    local s_thr_rate = buildThrottleSlider("thr_rate", optL("tips.sliders.messpersec"), 1, 20, 1)
-    local s_thr_burst = buildThrottleSlider("thr_burst", optL("tips.sliders.maxburst"), 1, 50, 1)
+    local function buildLayoutTab(tabGroup)
+      local scroll = addTabScroll(tabGroup)
+      local mainBarMoveLocked = MultiBot.GetMainBarMoveLocked and MultiBot.GetMainBarMoveLocked() or true
 
-    local btn = AceGUI:Create("Button")
-    btn:SetText(optL("tips.sliders.rstbutn"))
-    btn:SetWidth(180)
-    btn:SetCallback("OnClick", function()
-      MultiBot.SetTimer("stats", 45)
-      MultiBot.SetTimer("talent", 3)
-      MultiBot.SetTimer("invite", 5)
-      MultiBot.SetTimer("sort", 1)
-      MultiBot.SetThrottleRate(5)
-      MultiBot.SetThrottleBurst(8)
-      for _, slider in ipairs(sliderRefs) do
-        slider._refresh()
+      local chkMainBarMoveLocked = AceGUI:Create("CheckBox")
+      chkMainBarMoveLocked:SetLabel("Verrouiller déplacement barre principale")
+      if chkMainBarMoveLocked.SetDescription then
+        chkMainBarMoveLocked:SetDescription("Cochée: Ctrl + clic droit pour déplacer la barre. Décochée: clic droit suffit.")
+      end
+      chkMainBarMoveLocked:SetValue(mainBarMoveLocked and true or false)
+      chkMainBarMoveLocked:SetFullWidth(true)
+      chkMainBarMoveLocked:SetCallback("OnValueChanged", function(_, _, value)
+        if MultiBot.SetMainBarMoveLocked then
+          MultiBot.SetMainBarMoveLocked(value and true or false)
+        end
+      end)
+      scroll:AddChild(chkMainBarMoveLocked)
+      panel.chkMainBarMoveLocked = chkMainBarMoveLocked
+
+      local ownerDropDown = AceGUI:Create("Dropdown")
+      ownerDropDown:SetLabel("Layout joueur à importer")
+      ownerDropDown:SetWidth(320)
+      ownerDropDown:SetCallback("OnValueChanged", function(_, _, value)
+        selectedOwnerKey = value
+      end)
+
+      local function refreshOwnerList()
+        local owners = getSavedLayoutOwners()
+        local options = {}
+        for _, owner in ipairs(owners) do
+          options[owner] = owner
+        end
+        ownerDropDown:SetList(options)
+        if #owners == 0 then
+          selectedOwnerKey = nil
+          ownerDropDown:SetValue(nil)
+          return
+        end
+        if not selectedOwnerKey or not options[selectedOwnerKey] then
+          selectedOwnerKey = owners[1]
+        end
+        ownerDropDown:SetValue(selectedOwnerKey)
+      end
+
+      refreshOwnerList()
+      scroll:AddChild(ownerDropDown)
+
+      local layoutActions = AceGUI:Create("SimpleGroup")
+      layoutActions:SetLayout("Flow")
+      layoutActions:SetFullWidth(true)
+
+      local exportBtn = AceGUI:Create("Button")
+      exportBtn:SetText("Export layout")
+      exportBtn:SetWidth(150)
+      exportBtn:SetCallback("OnClick", function()
+        if MultiBot.SaveMainBarLayoutForCurrentPlayer then
+          local ok, ownerKey = MultiBot.SaveMainBarLayoutForCurrentPlayer()
+          if UIErrorsFrame then
+            if ok then
+              UIErrorsFrame:AddMessage(("Layout sauvegardé: %s"):format(ownerKey), 0.25, 1, 0.25, 1)
+            else
+              UIErrorsFrame:AddMessage(("Export échoué: %s"):format(tostring(ownerKey)), 1, 0.25, 0.25, 1)
+            end
+          end
+        end
+        refreshOwnerList()
+      end)
+      layoutActions:AddChild(exportBtn)
+
+      local importBtn = AceGUI:Create("Button")
+      importBtn:SetText("Import layout")
+      importBtn:SetWidth(150)
+      importBtn:SetCallback("OnClick", function()
+        if selectedOwnerKey then
+          local ok, detail = importLayoutOwner(selectedOwnerKey)
+          if UIErrorsFrame then
+            if ok then
+              UIErrorsFrame:AddMessage(("Layout importé: %s (%s entrées)"):format(selectedOwnerKey, tostring(detail)), 0.25, 1, 0.25, 1)
+            else
+              UIErrorsFrame:AddMessage(("Import échoué: %s"):format(tostring(detail)), 1, 0.25, 0.25, 1)
+            end
+          end
+          return
+        end
+        if UIErrorsFrame then
+          UIErrorsFrame:AddMessage("Aucun layout enregistré à importer.", 1, 0.25, 0.25, 1)
+        end
+      end)
+      layoutActions:AddChild(importBtn)
+
+      local deleteBtn = AceGUI:Create("Button")
+      deleteBtn:SetText("Suppr layout")
+      deleteBtn:SetWidth(150)
+      deleteBtn:SetCallback("OnClick", function()
+        if not selectedOwnerKey then
+          if UIErrorsFrame then
+            UIErrorsFrame:AddMessage("Aucun layout sélectionné à supprimer.", 1, 0.25, 0.25, 1)
+          end
+          return		  
+        end
+        if not MultiBot.DeleteSavedMainBarLayout then
+          if UIErrorsFrame then
+            UIErrorsFrame:AddMessage("Suppression indisponible.", 1, 0.25, 0.25, 1)
+          end
+          return
+        end
+        local ok, detail = MultiBot.DeleteSavedMainBarLayout(selectedOwnerKey)
+        if UIErrorsFrame then
+          if ok then
+            UIErrorsFrame:AddMessage(("Layout supprimé: %s"):format(selectedOwnerKey), 1, 0.82, 0, 1)
+          else
+            UIErrorsFrame:AddMessage(("Suppression échouée: %s"):format(tostring(detail)), 1, 0.25, 0.25, 1)
+          end
+        end
+        refreshOwnerList()
+      end)
+      layoutActions:AddChild(deleteBtn)
+
+      local refreshBtn = AceGUI:Create("Button")
+      refreshBtn:SetText("Refresh liste")
+      refreshBtn:SetWidth(150)
+      refreshBtn:SetCallback("OnClick", function()
+        refreshOwnerList()
+        if UIErrorsFrame then
+          UIErrorsFrame:AddMessage("Liste layouts rafraîchie.", 0.25, 1, 0.25, 1)
+        end
+      end)
+      layoutActions:AddChild(refreshBtn)
+
+      local resetBtn = AceGUI:Create("Button")
+      resetBtn:SetText("Reset layout")
+      resetBtn:SetWidth(150)
+      resetBtn:SetCallback("OnClick", function()
+        if not MultiBot.ResetMainBarLayoutState then
+          if UIErrorsFrame then
+            UIErrorsFrame:AddMessage("Reset layout indisponible.", 1, 0.25, 0.25, 1)
+          end
+          return
+        end
+        local ok, removed = MultiBot.ResetMainBarLayoutState()
+        if UIErrorsFrame then
+          if ok then
+            UIErrorsFrame:AddMessage(("Layout reset (%s clés)."):format(tostring(removed)), 1, 0.82, 0, 1)
+          else
+            UIErrorsFrame:AddMessage("Reset layout échoué.", 1, 0.25, 0.25, 1)
+          end
+        end
+        refreshOwnerList()
+      end)
+      layoutActions:AddChild(resetBtn)
+      scroll:AddChild(layoutActions)
+    end
+
+    local function buildStrataTab(tabGroup)
+      local scroll = addTabScroll(tabGroup)
+      local strata = AceGUI:Create("Dropdown")
+      strata:SetLabel(MultiBot.L("options.frame_strata"))
+      strata:SetWidth(240)
+      local strataList = {}
+      for _, strataLevel in ipairs(strataLevels) do
+        strataList[strataLevel] = strataLevel
+      end
+      strata:SetList(strataList)
+      strata:SetValue((MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()) or "HIGH")
+      strata:SetCallback("OnValueChanged", function(_, _, value)
+        if MultiBot.SetGlobalStrataLevel then
+          MultiBot.SetGlobalStrataLevel(value)
+        end
+        if MultiBot.ApplyGlobalStrata then
+          MultiBot.ApplyGlobalStrata()
+        end
+      end)
+      scroll:AddChild(strata)
+    end
+
+    local function buildIntervalsTab(tabGroup)
+      local scroll = addTabScroll(tabGroup)
+
+      local sub = AceGUI:Create("Label")
+      sub:SetText(optL("tips.sliders.actionsinter"))
+      sub:SetFullWidth(true)
+      scroll:AddChild(sub)
+
+      local sliderRefs = {}
+
+      local function buildTimerSlider(key, label, minV, maxV, step)
+        local slider = AceGUI:Create("Slider")
+        slider:SetFullWidth(true)
+        slider:SetSliderValues(minV, maxV, step)
+        slider:SetLabel(label)
+        slider:SetCallback("OnValueChanged", function(widget, _, value)
+          value = round(value, step)
+          MultiBot.SetTimer(key, value)
+          widget:SetLabel(formatSliderLabel(label, secondsLabel(value)))
+          widget:SetValue(value)
+        end)
+        slider._refresh = function()
+          local value = MultiBot.GetTimer(key)
+          slider:SetValue(value)
+          slider:SetLabel(formatSliderLabel(label, secondsLabel(value)))
+        end
+        sliderRefs[#sliderRefs + 1] = slider
+        scroll:AddChild(slider)
+        return slider
+      end
+
+      local function buildThrottleSlider(key, label, minV, maxV, step)
+        local getValue = (key == "thr_rate") and MultiBot.GetThrottleRate or MultiBot.GetThrottleBurst
+        local setValue = (key == "thr_rate") and MultiBot.SetThrottleRate or MultiBot.SetThrottleBurst
+        local slider = AceGUI:Create("Slider")
+        slider:SetFullWidth(true)
+        slider:SetSliderValues(minV, maxV, step)
+        slider:SetLabel(label)
+        slider:SetCallback("OnValueChanged", function(widget, _, value)
+          value = round(value, step)
+          setValue(value)
+          widget:SetLabel(formatSliderLabel(label, tostring(value)))
+          widget:SetValue(value)
+        end)
+        slider._refresh = function()
+          local value = getValue()
+          slider:SetValue(value)
+          slider:SetLabel(formatSliderLabel(label, tostring(value)))
+        end
+        sliderRefs[#sliderRefs + 1] = slider
+        scroll:AddChild(slider)
+        return slider
+      end
+
+      local s_stats = buildTimerSlider("stats", optL("tips.sliders.statsinter"), 5, 300, 1)
+      local s_talent = buildTimerSlider("talent", optL("tips.sliders.talentsinter"), 1, 30, 0.5)
+      local s_invite = buildTimerSlider("invite", optL("tips.sliders.invitsinter"), 1, 60, 1)
+      local s_sort = buildTimerSlider("sort", optL("tips.sliders.sortinter"), 0.2, 10, 0.2)
+      local s_thr_rate = buildThrottleSlider("thr_rate", optL("tips.sliders.messpersec"), 1, 20, 1)
+      local s_thr_burst = buildThrottleSlider("thr_burst", optL("tips.sliders.maxburst"), 1, 50, 1)
+
+      local btn = AceGUI:Create("Button")
+      btn:SetText(optL("tips.sliders.rstbutn"))
+      btn:SetWidth(180)
+      btn:SetCallback("OnClick", function()
+        MultiBot.SetTimer("stats", 45)
+        MultiBot.SetTimer("talent", 3)
+        MultiBot.SetTimer("invite", 5)
+        MultiBot.SetTimer("sort", 1)
+        MultiBot.SetThrottleRate(5)
+        MultiBot.SetThrottleBurst(8)
+        for _, slider in ipairs(sliderRefs) do
+          slider._refresh()
+        end
+      end)
+      scroll:AddChild(btn)
+
+      s_stats._refresh()
+      s_talent._refresh()
+      s_invite._refresh()
+      s_sort._refresh()
+      s_thr_rate._refresh()
+      s_thr_burst._refresh()
+    end
+
+    local tabGroup = AceGUI:Create("TabGroup")
+    tabGroup:SetLayout("Fill")
+    tabGroup:SetTabs({
+      { text = "Minimap", value = "minimap" },
+      { text = "Layout", value = "layout" },
+      { text = "Strata", value = "strata" },
+      { text = "Intervals", value = "intervals" },
+    })
+    tabGroup:SetCallback("OnGroupSelected", function(widget, _, group)
+      widget:ReleaseChildren()
+      if group == "minimap" then
+        buildMinimapTab(widget)
+      elseif group == "layout" then
+        buildLayoutTab(widget)
+      elseif group == "strata" then
+        buildStrataTab(widget)
+      elseif group == "intervals" then
+        buildIntervalsTab(widget)
       end
     end)
-    scroll:AddChild(btn)
-
-    s_stats._refresh()
-    s_talent._refresh()
-    s_invite._refresh()
-    s_sort._refresh()
-    s_thr_rate._refresh()
-    s_thr_burst._refresh()
+    root:AddChild(tabGroup)
+    tabGroup:SelectTab("minimap")
   end)
 
   if type(InterfaceOptions_AddCategory) == "function" then
