@@ -466,6 +466,10 @@ function MultiBot.BuildOptionsPanel()
 
     local selectedOwnerKey = nil
     local strataLevels = { "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "TOOLTIP" }
+    local minimapHelpText = optL("options.minimap.explainer")
+    local mainBarMoveLockLabel = optL("options.layout.lock_mainbar")
+    local mainBarMoveLockDesc = optL("options.layout.lock_mainbar_desc")
+    local layoutOwnerLabel = optL("options.layout.owner_import")
 
     local function addTabScroll(tabGroup)
       local scroll = AceGUI:Create("ScrollFrame")
@@ -477,6 +481,17 @@ function MultiBot.BuildOptionsPanel()
     local function buildMinimapTab(tabGroup)
       local scroll = addTabScroll(tabGroup)
       local minimapConfig = MultiBot.GetMinimapConfig and MultiBot.GetMinimapConfig() or { hide = false }
+
+      local explainer = AceGUI:Create("Label")
+      explainer:SetFullWidth(true)
+      explainer:SetText(minimapHelpText)
+      scroll:AddChild(explainer)
+
+      local explainerSpacer = AceGUI:Create("Label")
+      explainerSpacer:SetFullWidth(true)
+      explainerSpacer:SetText(" ")
+      scroll:AddChild(explainerSpacer)
+
       local chkMinimapHide = AceGUI:Create("CheckBox")
       chkMinimapHide:SetLabel(optL("info.buttonoptionshide"))
       chkMinimapHide:SetValue(minimapConfig.hide and true or false)
@@ -503,9 +518,9 @@ function MultiBot.BuildOptionsPanel()
       local mainBarMoveLocked = MultiBot.GetMainBarMoveLocked and MultiBot.GetMainBarMoveLocked() or true
 
       local chkMainBarMoveLocked = AceGUI:Create("CheckBox")
-      chkMainBarMoveLocked:SetLabel("Verrouiller déplacement barre principale")
+      chkMainBarMoveLocked:SetLabel(mainBarMoveLockLabel)
       if chkMainBarMoveLocked.SetDescription then
-        chkMainBarMoveLocked:SetDescription("Cochée: Ctrl + clic droit pour déplacer la barre. Décochée: clic droit suffit.")
+        chkMainBarMoveLocked:SetDescription(mainBarMoveLockDesc)
       end
       chkMainBarMoveLocked:SetValue(mainBarMoveLocked and true or false)
       chkMainBarMoveLocked:SetFullWidth(true)
@@ -517,8 +532,18 @@ function MultiBot.BuildOptionsPanel()
       scroll:AddChild(chkMainBarMoveLocked)
       panel.chkMainBarMoveLocked = chkMainBarMoveLocked
 
+      local ownerTitle = AceGUI:Create("Label")
+      ownerTitle:SetFullWidth(true)
+      ownerTitle:SetText(layoutOwnerLabel)
+      scroll:AddChild(ownerTitle)
+
+      local ownerTopSpacer = AceGUI:Create("Label")
+      ownerTopSpacer:SetFullWidth(true)
+      ownerTopSpacer:SetText(" ")
+      scroll:AddChild(ownerTopSpacer)
+
       local ownerDropDown = AceGUI:Create("Dropdown")
-      ownerDropDown:SetLabel("Layout joueur à importer")
+      ownerDropDown:SetLabel(" ")
       ownerDropDown:SetWidth(320)
       ownerDropDown:SetCallback("OnValueChanged", function(_, _, value)
         selectedOwnerKey = value
@@ -544,6 +569,11 @@ function MultiBot.BuildOptionsPanel()
 
       refreshOwnerList()
       scroll:AddChild(ownerDropDown)
+
+      local ownerBottomSpacer = AceGUI:Create("Label")
+      ownerBottomSpacer:SetFullWidth(true)
+      ownerBottomSpacer:SetText(" ")
+      scroll:AddChild(ownerBottomSpacer)
 
       local layoutActions = AceGUI:Create("SimpleGroup")
       layoutActions:SetLayout("Flow")
@@ -653,8 +683,18 @@ function MultiBot.BuildOptionsPanel()
 
     local function buildStrataTab(tabGroup)
       local scroll = addTabScroll(tabGroup)
+      local strataTitle = AceGUI:Create("Label")
+      strataTitle:SetFullWidth(true)
+      strataTitle:SetText(MultiBot.L("options.frame_strata"))
+      scroll:AddChild(strataTitle)
+
+      local strataSpacer = AceGUI:Create("Label")
+      strataSpacer:SetFullWidth(true)
+      strataSpacer:SetText(" ")
+      scroll:AddChild(strataSpacer)
+
       local strata = AceGUI:Create("Dropdown")
-      strata:SetLabel(MultiBot.L("options.frame_strata"))
+      strata:SetLabel(" ")
       strata:SetWidth(240)
       local strataList = {}
       for _, strataLevel in ipairs(strataLevels) do
@@ -680,6 +720,11 @@ function MultiBot.BuildOptionsPanel()
       sub:SetText(optL("tips.sliders.actionsinter"))
       sub:SetFullWidth(true)
       scroll:AddChild(sub)
+
+      local intervalsTopSpacer = AceGUI:Create("Label")
+      intervalsTopSpacer:SetFullWidth(true)
+      intervalsTopSpacer:SetText(" ")
+      scroll:AddChild(intervalsTopSpacer)
 
       local sliderRefs = {}
 
@@ -748,6 +793,12 @@ function MultiBot.BuildOptionsPanel()
           slider._refresh()
         end
       end)
+
+      local resetTopSpacer = AceGUI:Create("Label")
+      resetTopSpacer:SetFullWidth(true)
+      resetTopSpacer:SetText(" ")
+      scroll:AddChild(resetTopSpacer)
+
       scroll:AddChild(btn)
 
       s_stats._refresh()
