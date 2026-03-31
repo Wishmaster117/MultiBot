@@ -11,7 +11,6 @@ Rendre la barre principale configurable et sûre à manipuler, avec une approche
 - Par défaut : **tous les boutons sont verrouillés**.
 - Déplacement autorisé uniquement si :
   - touche **Ctrl** enfoncée ;
-  - **clic gauche** maintenu sur un bouton.
   - **clic droit** maintenu sur le bouton Main (déplacement de la barre).
 - Bénéfice : éviter les déplacements accidentels.
 
@@ -89,14 +88,22 @@ Permettre de **déplacer/réordonner les boutons de la barre principale** pour a
   - ordre personnalisé des boutons;
   - visibilité/flags nécessaires au rendu.
 
-⏳ À faire (Export/Import applicatif pas encore branché).
+✅ Implémenté :
+- export d’un payload versionné (`MBLAYOUT1`) incluant lock déplacement + position barre + layouts `ButtonLayout:*` ;
+- import avec application immédiate (barre principale + layouts de swap déjà enregistrés) ;
+- sauvegarde **globale** des layouts exportés indexés par `NomJoueur-Royaume` ;
+- stockage global dans `MultiBotGlobalSave.savedLayoutsByPlayer` (scope compte, pas par personnage) ;
+- import via **liste déroulante** des layouts sauvegardés (Options legacy + Ace3) ;
+- actions exposées dans Options (legacy + Ace3) et slash commands (`/mblx`, `/mbll`, `/mblio <owner>`, `/mbli <payload>`, `/mblp [owner]`, `/mbldel <owner>`, `/mblreset`).
+- export/import fonctionnels via bibliothèque globale + payload ;
+- reset des clés layout (`MultiBarPoint` + `ButtonLayout:*`) avec remise en position par défaut de la barre principale ;
+- actions exposées en Options (legacy + Ace3) et via slash (`/mblreset`).
 
 ---
 
 ### 6) UX minimale mais propre
 - Message visuel :
   - `Locked` par défaut ;
-  - `Hold Ctrl + Left Click to move`.
   - `Hold Ctrl + Right Click to move bar`.
   - `Hold Shift + Right Click to move buttons`.
 - Pendant drag : afficher les coordonnées.
@@ -155,5 +162,5 @@ Cette partie touche :
   - [x] checkbox options lock/unlock
   - [x] persistance layout de déplacement
   - [x] swap boutons Shift + clic droit (avec suivi des menus verticaux liés)
-  - [ ] export/import des layouts entre personnages
+  - [x] export/import des layouts entre personnages
 - [ ] Phase 2 — Non démarrée

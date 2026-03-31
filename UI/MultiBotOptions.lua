@@ -31,6 +31,40 @@ local function debugCall(method, ...)
   end
 end
 
+local function getSavedLayoutOwners()
+  if not MultiBot.GetSavedMainBarLayoutOwners then
+    return {}
+  end
+  local owners = MultiBot.GetSavedMainBarLayoutOwners()
+  local currentPlayer = UnitName and UnitName("player") or nil
+  local currentRealm = GetRealmName and GetRealmName() or nil
+  local currentOwner = currentPlayer
+  if type(currentPlayer) == "string" and currentPlayer ~= "" and type(currentRealm) == "string" and currentRealm ~= "" then
+    currentOwner = currentPlayer .. "-" .. currentRealm
+  end
+
+  if type(currentOwner) ~= "string" or currentOwner == "" then
+    return owners
+  end
+
+  local ordered = {}
+  for _, owner in ipairs(owners) do
+    if owner == currentOwner then
+      table.insert(ordered, 1, owner)
+    else
+      table.insert(ordered, owner)
+    end
+  end
+  return ordered
+end
+
+local function importLayoutOwner(ownerKey)
+  if not MultiBot.ImportSavedMainBarLayout then
+    return false, "import_indisponible"
+  end
+  return MultiBot.ImportSavedMainBarLayout(ownerKey)
+end
+
 local function makeSlider(parent, key, label, minV, maxV, step, y)
   local name = PANEL_NAME .. "_" .. key .. "_Slider"
   local s = CreateFrame("Slider", name, parent, "OptionsSliderTemplate")
@@ -153,16 +187,161 @@ local function buildLegacyOptionsContent(panel)
     end
   end)
 
+  panel.chkMinimapHide = chkMinimapHide
+  panel.chkMainBarMoveLocked = chkMainBarMoveLocked
+
+  local selectedOwnerKey = nil
+  local refreshOwnerDropdown
+
+  local exportBtn = CreateFrame("Button", nil, scrollChild, "UIPanelButtonTemplate")
+  exportBtn:SetSize(110, 22)
+  exportBtn:SetPoint("TOPLEFT", chkMainBarMoveLocked, "BOTTOMLEFT", 0, -14)
+  exportBtn:SetText("Export layout")
+  exportBtn:SetScript("OnClick", function()
+    if MultiBot.SaveMainBarLayoutForCurrentPlayer then
+      local ok, ownerKey, payloadOrError = MultiBot.SaveMainBarLayoutForCurrentPlayer()
+      if UIErrorsFrame then
+        if ok then
+          UIErrorsFrame:AddMessage(("Layout sauvegardé: %s"):format(ownerKey), 0.25, 1, 0.25, 1)
+          selectedOwnerKey = ownerKey
+          if refreshOwnerDropdown then
+            refreshOwnerDropdown()
+          end
+        else
+          UIErrorsFrame:AddMessage(("Export échoué: %s"):format(tostring(ownerKey or payloadOrError)), 1, 0.25, 0.25, 1)
+        end
+      end
+    end
+  end)
+
+  local importBtn = CreateFrame("Button", nil, scrollChild, "UIPanelButtonTemplate")
+  importBtn:SetSize(110, 22)
+  importBtn:SetPoint("LEFT", exportBtn, "RIGHT", 8, 0)
+  importBtn:SetText("Import layout")
+  importBtn:SetScript("OnClick", function()
+    if selectedOwnerKey then
+      local ok, detail = importLayoutOwner(selectedOwnerKey)
+      if UIErrorsFrame then
+        if ok then
+          UIErrorsFrame:AddMessage(("Layout importé: %s (%s entrées)"):format(selectedOwnerKey, tostring(detail)), 0.25, 1, 0.25, 1)
+        else
+          UIErrorsFrame:AddMessage(("Import échoué: %s"):format(tostring(detail)), 1, 0.25, 0.25, 1)
+        end
+      end
+      return
+    end
+    if UIErrorsFrame then
+      UIErrorsFrame:AddMessage("Aucun layout enregistré à importer.", 1, 0.25, 0.25, 1)
+    end
+  end)
+
+  local deleteBtn = CreateFrame("Button", nil, scrollChild, "UIPanelButtonTemplate")
+  deleteBtn:SetSize(110, 22)
+  deleteBtn:SetPoint("TOPLEFT", importBtn, "BOTTOMLEFT", 0, -6)
+  deleteBtn:SetText("Suppr layout")
+  deleteBtn:SetScript("OnClick", function()
+    if not selectedOwnerKey then
+      if UIErrorsFrame then
+        UIErrorsFrame:AddMessage("Aucun layout sélectionné à supprimer.", 1, 0.25, 0.25, 1)
+      end
+      return
+    end
+
+    if not MultiBot.DeleteSavedMainBarLayout then
+      if UIErrorsFrame then
+        UIErrorsFrame:AddMessage("Suppression indisponible.", 1, 0.25, 0.25, 1)
+      end
+      return
+    end
+
+    local ok, detail = MultiBot.DeleteSavedMainBarLayout(selectedOwnerKey)
+    if UIErrorsFrame then
+      if ok then
+        UIErrorsFrame:AddMessage(("Layout supprimé: %s"):format(selectedOwnerKey), 1, 0.82, 0, 1)
+      else
+        UIErrorsFrame:AddMessage(("Suppression échouée: %s"):format(tostring(detail)), 1, 0.25, 0.25, 1)
+      end
+    end
+    refreshOwnerDropdown()
+  end)
+
+  local refreshBtn = CreateFrame("Button", nil, scrollChild, "UIPanelButtonTemplate")
+  refreshBtn:SetSize(110, 22)
+  refreshBtn:SetPoint("LEFT", deleteBtn, "RIGHT", 8, 0)
+  refreshBtn:SetText("Refresh liste")
+  refreshBtn:SetScript("OnClick", function()
+    refreshOwnerDropdown()
+    if UIErrorsFrame then
+      UIErrorsFrame:AddMessage("Liste layouts rafraîchie.", 0.25, 1, 0.25, 1)
+    end
+  end)
+
+  local resetBtn = CreateFrame("Button", nil, scrollChild, "UIPanelButtonTemplate")
+  resetBtn:SetSize(110, 22)
+  resetBtn:SetPoint("TOPLEFT", refreshBtn, "BOTTOMLEFT", 0, -6)
+  resetBtn:SetText("Reset layout")
+  resetBtn:SetScript("OnClick", function()
+    if not MultiBot.ResetMainBarLayoutState then
+      if UIErrorsFrame then
+        UIErrorsFrame:AddMessage("Reset layout indisponible.", 1, 0.25, 0.25, 1)
+      end
+      return
+    end
+    local ok, removed = MultiBot.ResetMainBarLayoutState()
+    if UIErrorsFrame then
+      if ok then
+        UIErrorsFrame:AddMessage(("Layout reset (%s clés)."):format(tostring(removed)), 1, 0.82, 0, 1)
+      else
+        UIErrorsFrame:AddMessage("Reset layout échoué.", 1, 0.25, 0.25, 1)
+      end
+    end
+    refreshOwnerDropdown()
+  end)
+
+  local ownerDropDown = CreateFrame("Frame", "MultiBotLayoutOwnerDropDown", scrollChild, "UIDropDownMenuTemplate")
+  ownerDropDown:SetPoint("TOPLEFT", exportBtn, "BOTTOMLEFT", -14, -8)
+  local ownerLabel = scrollChild:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+  ownerLabel:SetPoint("BOTTOMLEFT", ownerDropDown, "TOPLEFT", 16, 3)
+  ownerLabel:SetText("Layout joueur à importer")
+
+  refreshOwnerDropdown = function()
+    local owners = getSavedLayoutOwners()
+    UIDropDownMenu_Initialize(ownerDropDown, function(_, level)
+      for idx, ownerKey in ipairs(owners) do
+        local info = UIDropDownMenu_CreateInfo()
+        info.text = ownerKey
+        info.value = ownerKey
+        info.func = function(button)
+          selectedOwnerKey = owners[button:GetID()]
+          UIDropDownMenu_SetSelectedID(ownerDropDown, button:GetID())
+        end
+        UIDropDownMenu_AddButton(info, level)
+      end
+    end)
+    if #owners > 0 then
+      selectedOwnerKey = selectedOwnerKey or owners[1]
+      local selectedIndex = 1
+      for idx, ownerKey in ipairs(owners) do
+        if ownerKey == selectedOwnerKey then
+          selectedIndex = idx
+          break
+        end
+      end
+      UIDropDownMenu_SetSelectedID(ownerDropDown, selectedIndex)
+      UIDropDownMenu_SetText(ownerDropDown, selectedOwnerKey)
+    else
+      selectedOwnerKey = nil
+      UIDropDownMenu_SetText(ownerDropDown, "Aucun layout")
+    end
+  end
+  refreshOwnerDropdown()
+
   strataDropDown:ClearAllPoints()
-  strataDropDown:SetPoint("TOPLEFT", chkMainBarMoveLocked, "BOTTOMLEFT", -14, -18)
+  strataDropDown:SetPoint("TOPLEFT", resetBtn, "BOTTOMLEFT", -14, -12)
 
   local strataLabel = scrollChild:CreateFontString(nil, "OVERLAY", "GameFontNormal")
   strataLabel:SetPoint("BOTTOMLEFT", strataDropDown, "TOPLEFT", 16, 3)
   strataLabel:SetText(MultiBot.L("options.frame_strata"))
-
-
-  panel.chkMinimapHide = chkMinimapHide
-  panel.chkMainBarMoveLocked = chkMainBarMoveLocked
 
   local current = (MultiBot.GetGlobalStrataLevel and MultiBot.GetGlobalStrataLevel()) or "HIGH"
   local strataLevels = { "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "TOOLTIP" }
@@ -325,6 +504,138 @@ function MultiBot.BuildOptionsPanel()
     end)
     scroll:AddChild(chkMainBarMoveLocked)
     panel.chkMainBarMoveLocked = chkMainBarMoveLocked
+
+    local layoutActions = AceGUI:Create("SimpleGroup")
+    layoutActions:SetLayout("Flow")
+    layoutActions:SetFullWidth(true)
+
+    local selectedOwnerKey = nil
+
+    local ownerDropDown = AceGUI:Create("Dropdown")
+    ownerDropDown:SetLabel("Layout joueur à importer")
+    ownerDropDown:SetWidth(280)
+    local function refreshOwnerList()
+      local owners = getSavedLayoutOwners()
+      local options = {}
+      for _, owner in ipairs(owners) do
+        options[owner] = owner
+      end
+      ownerDropDown:SetList(options)
+      if #owners > 0 then
+        selectedOwnerKey = selectedOwnerKey or owners[1]
+        ownerDropDown:SetValue(selectedOwnerKey)
+      else
+        selectedOwnerKey = nil
+        ownerDropDown:SetValue(nil)
+      end
+    end
+    ownerDropDown:SetCallback("OnValueChanged", function(_, _, value)
+      selectedOwnerKey = value
+    end)
+    refreshOwnerList()
+    layoutActions:AddChild(ownerDropDown)
+
+    local exportBtn = AceGUI:Create("Button")
+    exportBtn:SetText("Export layout")
+    exportBtn:SetWidth(150)
+    exportBtn:SetCallback("OnClick", function()
+      if MultiBot.SaveMainBarLayoutForCurrentPlayer then
+        local ok, ownerKey = MultiBot.SaveMainBarLayoutForCurrentPlayer()
+        if UIErrorsFrame then
+          if ok then
+            UIErrorsFrame:AddMessage(("Layout sauvegardé: %s"):format(ownerKey), 0.25, 1, 0.25, 1)
+          else
+            UIErrorsFrame:AddMessage(("Export échoué: %s"):format(tostring(ownerKey)), 1, 0.25, 0.25, 1)
+          end
+        end
+      end
+      refreshOwnerList()
+    end)
+    layoutActions:AddChild(exportBtn)
+
+    local importBtn = AceGUI:Create("Button")
+    importBtn:SetText("Import layout")
+    importBtn:SetWidth(150)
+    importBtn:SetCallback("OnClick", function()
+      if selectedOwnerKey then
+        local ok, detail = importLayoutOwner(selectedOwnerKey)
+        if UIErrorsFrame then
+          if ok then
+            UIErrorsFrame:AddMessage(("Layout importé: %s (%s entrées)"):format(selectedOwnerKey, tostring(detail)), 0.25, 1, 0.25, 1)
+          else
+            UIErrorsFrame:AddMessage(("Import échoué: %s"):format(tostring(detail)), 1, 0.25, 0.25, 1)
+          end
+        end
+        return
+      end
+      if UIErrorsFrame then
+        UIErrorsFrame:AddMessage("Aucun layout enregistré à importer.", 1, 0.25, 0.25, 1)
+      end
+    end)
+    layoutActions:AddChild(importBtn)
+
+    local deleteBtn = AceGUI:Create("Button")
+    deleteBtn:SetText("Suppr layout")
+    deleteBtn:SetWidth(150)
+    deleteBtn:SetCallback("OnClick", function()
+      if not selectedOwnerKey then
+        if UIErrorsFrame then
+          UIErrorsFrame:AddMessage("Aucun layout sélectionné à supprimer.", 1, 0.25, 0.25, 1)
+        end
+        return
+      end
+      if not MultiBot.DeleteSavedMainBarLayout then
+        if UIErrorsFrame then
+          UIErrorsFrame:AddMessage("Suppression indisponible.", 1, 0.25, 0.25, 1)
+        end
+        return
+      end
+      local ok, detail = MultiBot.DeleteSavedMainBarLayout(selectedOwnerKey)
+      if UIErrorsFrame then
+        if ok then
+          UIErrorsFrame:AddMessage(("Layout supprimé: %s"):format(selectedOwnerKey), 1, 0.82, 0, 1)
+        else
+          UIErrorsFrame:AddMessage(("Suppression échouée: %s"):format(tostring(detail)), 1, 0.25, 0.25, 1)
+        end
+      end
+      refreshOwnerList()
+    end)
+    layoutActions:AddChild(deleteBtn)
+
+    local refreshBtn = AceGUI:Create("Button")
+    refreshBtn:SetText("Refresh liste")
+    refreshBtn:SetWidth(150)
+    refreshBtn:SetCallback("OnClick", function()
+      refreshOwnerList()
+      if UIErrorsFrame then
+        UIErrorsFrame:AddMessage("Liste layouts rafraîchie.", 0.25, 1, 0.25, 1)
+      end
+    end)
+    layoutActions:AddChild(refreshBtn)
+
+    local resetBtn = AceGUI:Create("Button")
+    resetBtn:SetText("Reset layout")
+    resetBtn:SetWidth(150)
+    resetBtn:SetCallback("OnClick", function()
+      if not MultiBot.ResetMainBarLayoutState then
+        if UIErrorsFrame then
+          UIErrorsFrame:AddMessage("Reset layout indisponible.", 1, 0.25, 0.25, 1)
+        end
+        return
+      end
+      local ok, removed = MultiBot.ResetMainBarLayoutState()
+      if UIErrorsFrame then
+        if ok then
+          UIErrorsFrame:AddMessage(("Layout reset (%s clés)."):format(tostring(removed)), 1, 0.82, 0, 1)
+        else
+          UIErrorsFrame:AddMessage("Reset layout échoué.", 1, 0.25, 0.25, 1)
+        end
+      end
+      refreshOwnerList()
+    end)
+    layoutActions:AddChild(resetBtn)
+
+    scroll:AddChild(layoutActions)
 
     local strata = AceGUI:Create("Dropdown")
     strata:SetLabel(MultiBot.L("options.frame_strata"))

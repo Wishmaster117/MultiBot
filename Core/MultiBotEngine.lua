@@ -1358,6 +1358,8 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 	end
 
 	MultiBot._mbShiftSwapGlobal = MultiBot._mbShiftSwapGlobal or {}
+	MultiBot._mbRegisteredButtonLayoutKeys = MultiBot._mbRegisteredButtonLayoutKeys or {}
+	MultiBot._mbRegisteredButtonLayoutKeys["ButtonLayout:" .. contextKey] = true
 	local state = MultiBot._mbShiftSwapGlobal[contextKey]
 	if(not state) then
 		local saveKey = "ButtonLayout:" .. contextKey
@@ -1462,13 +1464,15 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 
 			local button = host.buttons and host.buttons[entry.name]
 			local frame = entry.frameName and host.frames and host.frames[entry.frameName] or nil
-			local entryRec = {
-				id = id,
-				name = entry.name,
-				frameName = entry.frameName,
-				button = button,
-				frame = frame,
-			}
+				local entryRec = {
+					id = id,
+					name = entry.name,
+					frameName = entry.frameName,
+					button = button,
+					frame = frame,
+					defaultX = button and button.x or nil,
+					defaultY = button and button.y or nil,
+				}
 			table.insert(state.entries, entryRec)
 
 			if(button and frame and type(frame.x) == "number" and type(frame.y) == "number") then
@@ -1486,6 +1490,61 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 	end
 
 	return state
+end
+
+function MultiBot.ResetButtonLayoutContext(contextKey, clearPersistedValue)
+	if(not contextKey or not MultiBot._mbShiftSwapGlobal) then
+		return false
+	end
+
+	local state = MultiBot._mbShiftSwapGlobal[contextKey]
+	if(not state) then
+		return false
+	end
+
+	for _, entryRec in ipairs(state.entries or {}) do
+		local button = entryRec and entryRec.button
+		local defaultX = entryRec and entryRec.defaultX
+		local defaultY = entryRec and entryRec.defaultY
+		if(button and button.setPoint and type(defaultX) == "number" and type(defaultY) == "number") then
+			button.setPoint(defaultX, defaultY)
+		end
+		_mbApplyLinkedFrameOffset(entryRec)
+	end
+
+	if(clearPersistedValue and MultiBot.SetSavedLayoutValue) then
+		MultiBot.SetSavedLayoutValue(state.saveKey, nil)
+	end
+
+	state.parsed = {}
+	state.selected = nil
+	return true
+end
+
+function MultiBot.ApplySavedButtonLayout(contextKey)
+	if(not contextKey or not MultiBot._mbShiftSwapGlobal) then
+		return false
+	end
+
+	local state = MultiBot._mbShiftSwapGlobal[contextKey]
+	if(not state) then
+		return false
+	end
+
+	local raw = MultiBot.GetSavedLayoutValue and MultiBot.GetSavedLayoutValue(state.saveKey) or nil
+	state.parsed = _mbParseButtonLayout(raw)
+
+	for _, entryRec in ipairs(state.entries or {}) do
+		local button = entryRec and entryRec.button
+		local id = entryRec and (entryRec.id or entryRec.name)
+		local savedPoint = id and state.parsed and state.parsed[id] or nil
+		if(button and savedPoint and button.setPoint) then
+			button.setPoint(savedPoint.x, savedPoint.y)
+		end
+		_mbApplyLinkedFrameOffset(entryRec)
+	end
+
+	return true
 end
 
 -- BUTTON:CAT --
