@@ -489,7 +489,7 @@ local function createPvpStatsControls(controlFrame)
     whisperButton.doLeft = function()
         local bot = UnitName("target")
         if not bot or not UnitIsPlayer("target") then
-            UIErrorsFrame:AddMessage("Sélectionne un bot (cible) d'abord.", 1, 0.2, 0.2, 1)
+            UIErrorsFrame:AddMessage(MultiBot.L("pvp.stats.error_select_bot"), 1, 0.2, 0.2, 1)
             return
         end
         SendChatMessage("pvp stats", "WHISPER", nil, bot)
@@ -498,7 +498,7 @@ local function createPvpStatsControls(controlFrame)
 
     partyButton.doLeft = function()
         if GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0 then
-            UIErrorsFrame:AddMessage("Tu n'es pas en groupe.", 1, 0.2, 0.2, 1)
+            UIErrorsFrame:AddMessage(MultiBot.L("pvp.stats.error_not_in_group"), 1, 0.2, 0.2, 1)
             return
         end
         SendChatMessage("pvp stats", "PARTY")
@@ -507,7 +507,7 @@ local function createPvpStatsControls(controlFrame)
 
     raidButton.doLeft = function()
         if GetNumRaidMembers() == 0 then
-            UIErrorsFrame:AddMessage("Tu n'es pas en raid.", 1, 0.2, 0.2, 1)
+            UIErrorsFrame:AddMessage(MultiBot.L("pvp.stats.error_not_in_raid"), 1, 0.2, 0.2, 1)
             return
         end
         SendChatMessage("pvp stats", "RAID")

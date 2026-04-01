@@ -75,7 +75,7 @@ end
 local function createEmptySectionHint(self, text)
     local hint = self.aceGUI:Create("Label")
     hint:SetFullWidth(true)
-    hint:SetText("    " .. (text or MultiBot.L("tips.quests.gobnosearchdata") or "No quests"))
+    hint:SetText("    " .. (text or MultiBot.L("tips.quests.gobnosearchdata") or MultiBot.L("quests.none")))
     self.scroll:AddChild(hint)
 end
 

@@ -1531,7 +1531,7 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 			-- On ne traite que les réponses commençant par "Glyphs:" ou "No glyphs"
 			if not rawMsg:match("^[Gg]lyphs:") and not rawMsg:match("^[Nn]o glyphs") then
-				DEFAULT_CHAT_FRAME:AddMessage("|cff66ccff[ERROR]|r Ignored non-glyphs msg")
+				DEFAULT_CHAT_FRAME:AddMessage("|cff66ccff[ERROR]|r " .. MultiBot.L("talent.glyphs.error_ignored_non_glyph"))
 				return
 			end
 

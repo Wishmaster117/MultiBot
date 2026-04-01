@@ -526,9 +526,8 @@ local function getAceGUI()
 end
 
 local function debugSpecPath(path)
-    if MultiBot and MultiBot.Debug and type(MultiBot.Debug.Once) == "function" then
-        --MultiBot.Debug.Once("spec.dropdown.path", "MultiBot Spec: using " .. tostring(path) .. " path", "33ccff")
-    end
+    -- Debug volontairement désactivé : helper conservé pour ne pas toucher les callsites.
+    return path
 end
 
 local function disableSetTalentsToggle(wrapper)

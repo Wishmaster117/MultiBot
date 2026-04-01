@@ -347,13 +347,13 @@ local function createSpellbookContent(window)
 		local rank = textLayer:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 		rank:SetPoint("TOPLEFT", textLayer, "TOPLEFT", tRankX, tRankY)
 		rank:SetDrawLayer("OVERLAY", getSafeTextDrawSubLevel())
-		rank:SetText("|cff" .. (getSpellBookUI().RANK_TEXT_COLOR_HEX or "ffcc00") .. "Rank|r")
+		rank:SetText("|cff" .. (getSpellBookUI().RANK_TEXT_COLOR_HEX or "ffcc00") .. MultiBot.L("spellbook.rank") .. "|r")
 		tOverlay.texts["R" .. tIndex] = rank
 
 		local titleText = textLayer:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 		titleText:SetPoint("TOPLEFT", textLayer, "TOPLEFT", tTitleX, tTextY)
 		titleText:SetDrawLayer("OVERLAY", getSafeTextDrawSubLevel())
-		titleText:SetText("|cffffcc00Title|r")
+		titleText:SetText("|cffffcc00" .. MultiBot.L("spellbook.title") .. "|r")
 		titleText:Hide()
 		tOverlay.texts["T" .. tIndex] = titleText
 
