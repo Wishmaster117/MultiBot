@@ -121,7 +121,7 @@ function MultiBot.InitializeTalentFrameModule()
         return
     end
 
-    if not MultiBot.talent then
+    if not MultiBot.talent or type(MultiBot.talent.addFrame) ~= "function" then
         MultiBot.TalentHostContentLayout = MultiBot.TalentHostContentLayout or DEFAULT_TALENT_HOST_CONTENT_LAYOUT
         local layout = MultiBot.TalentHostContentLayout
 
@@ -996,7 +996,7 @@ function MultiBot.InitializeTalentFrameModule()
 
         local rec = MultiBot.receivedGlyphs and MultiBot.receivedGlyphs[botName]
         if not rec then
-            DEFAULT_CHAT_FRAME:AddMessage("|cff00ff00[MultiBot]|r Waiting for glyphs…")
+            DEFAULT_CHAT_FRAME:AddMessage("|cff00ff00[MultiBot]|r " .. MultiBot.L("talent.glyphs.waiting"))
             return
         end
 
@@ -1080,7 +1080,7 @@ function MultiBot.InitializeTalentFrameModule()
             ids[i] = (socket and socket.item) or 0
         end
         local payload = "glyph equip " .. table.concat(ids, " ")
-        DEFAULT_CHAT_FRAME:AddMessage("|cff66ccff[DBG]|r " ..
+        DEFAULT_CHAT_FRAME:AddMessage("|cff66ccff[DBG]|r " .. MultiBot.L("talent.glyphs.debug_prefix") ..
             (MultiBot.talent.name or "?") .. " : " .. payload)
         SendChatMessage(payload, "WHISPER", nil, MultiBot.talent.name)
     end

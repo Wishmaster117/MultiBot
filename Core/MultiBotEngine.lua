@@ -267,13 +267,18 @@ MultiBot.toTip = function(pClass, pLevel, pName)
 end
 
 MultiBot.toPoint = function(pFrame)
-    -- Mesurer par rapport au parent global stable et arrondir à l’unité.
-    local uiRight = (UIParent and UIParent:GetRight()) or GetScreenWidth()
-    local xRight  = pFrame:GetRight() or 0
-    local yBottom = pFrame:GetBottom() or 0
-    -- Offset vers BOTTOMRIGHT (négatif ou nul)
-    local offX = xRight - uiRight
-    local offY = yBottom
+	    if not pFrame then
+	        return 0, 0
+	    end
+	    -- Mesurer par rapport au parent global stable et arrondir à l’unité.
+	    local uiRight = (UIParent and UIParent:GetRight()) or GetScreenWidth()
+	    local getRight = pFrame.GetRight or pFrame.getRight
+	    local getBottom = pFrame.GetBottom or pFrame.getBottom
+	    local xRight  = (type(getRight) == "function" and getRight(pFrame)) or 0
+	    local yBottom = (type(getBottom) == "function" and getBottom(pFrame)) or 0
+	    -- Offset vers BOTTOMRIGHT (négatif ou nul)
+	    local offX = xRight - uiRight
+	    local offY = yBottom
     -- Arrondi au plus proche pour éviter la dérive cumulée
     return math.floor(offX + 0.5), math.floor(offY + 0.5)
 end
@@ -1472,7 +1477,7 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 					state.previewTarget = nil
 					applySelectionVisuals()
 					if(UIErrorsFrame) then
-						UIErrorsFrame:AddMessage("Swap source: " .. (entryRec.id or entryRec.name), 1, 0.82, 0, 1)
+						UIErrorsFrame:AddMessage(MultiBot.L("ui.swap.source_prefix") .. (entryRec.id or entryRec.name), 1, 0.82, 0, 1)
 					end
 					return
 				end
@@ -1480,7 +1485,7 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 				if(state.selected == entryRec) then
 					clearSelectionState()
 					if(UIErrorsFrame) then
-						UIErrorsFrame:AddMessage("Swap annulé.", 1, 0.25, 0.25, 1)
+						UIErrorsFrame:AddMessage(MultiBot.L("ui.swap.cancelled"), 1, 0.25, 0.25, 1)
 					end
 					return
 				end
@@ -1506,7 +1511,7 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 				applySelectionVisuals()
 				if(UIErrorsFrame and state.previewTarget ~= entryRec) then
 					state.previewTarget = entryRec
-					UIErrorsFrame:AddMessage("Aperçu swap: " .. (state.selected.id or state.selected.name) .. " <-> " .. (entryRec.id or entryRec.name), 1, 1, 0.4, 1)
+					UIErrorsFrame:AddMessage(MultiBot.L("ui.swap.preview_prefix") .. (state.selected.id or state.selected.name) .. " <-> " .. (entryRec.id or entryRec.name), 1, 1, 0.4, 1)
 				end
 			end
 		end)

@@ -413,7 +413,7 @@ function MultiBot.InitializeMainUI(tMultiBar)
     mainButton:SetScript("OnDragStart", function()
         if not isMainBarMoveAllowed() then
             if UIErrorsFrame then
-                UIErrorsFrame:AddMessage("Barre verrouillée: maintiens Ctrl + clic droit pour déplacer.", 1, 0.25, 0.25, 1)
+                UIErrorsFrame:AddMessage(MultiBot.L("mainbar.swap.locked"), 1, 0.25, 0.25, 1)
             end
             return
         end
@@ -456,13 +456,13 @@ function MultiBot.InitializeMainUI(tMultiBar)
 
         if not selectedSwapButtonName then
             selectedSwapButtonName = buttonName
-            UIErrorsFrame:AddMessage("MainBar: source = " .. buttonName, 1, 0.82, 0, 1)
+            UIErrorsFrame:AddMessage(MultiBot.L("mainbar.swap.source_prefix") .. buttonName, 1, 0.82, 0, 1)
             return
         end
 
         if selectedSwapButtonName == buttonName then
             selectedSwapButtonName = nil
-            UIErrorsFrame:AddMessage("MainBar: permutation annulée.", 1, 0.25, 0.25, 1)
+            UIErrorsFrame:AddMessage(MultiBot.L("mainbar.swap.cancelled"), 1, 0.25, 0.25, 1)
             return
         end
 
@@ -479,7 +479,7 @@ function MultiBot.InitializeMainUI(tMultiBar)
         applyMainButtonOrder(mainFrame, currentMainButtonOrder)
         saveMainButtonOrder(currentMainButtonOrder)
 
-        UIErrorsFrame:AddMessage("MainBar: " .. selectedSwapButtonName .. " <-> " .. buttonName, 0.25, 1, 0.25, 1)
+        UIErrorsFrame:AddMessage(MultiBot.L("mainbar.swap.preview_prefix") .. selectedSwapButtonName .. " <-> " .. buttonName, 0.25, 1, 0.25, 1)
         selectedSwapButtonName = nil
     end
 
