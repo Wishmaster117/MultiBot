@@ -12,66 +12,14 @@ local function clearList(self)
     end
 end
 
-local function createQuestEntryRow(self, entry)
-    local row = self.aceGUI:Create("SimpleGroup")
-    row:SetFullWidth(true)
-    row:SetLayout("Flow")
-
-    local icon = self.aceGUI:Create("Icon")
-    icon:SetImage(Shared.ICON_BOT_QUEST or "Interface\\Icons\\inv_misc_note_02")
-    icon:SetImageSize(14, 14)
-    icon:SetWidth(20)
-    row:AddChild(icon)
-
-    local label = self.aceGUI:Create("InteractiveLabel")
-    label:SetWidth(320)
-    label:SetText(Shared.BuildQuestLink(entry.id, entry.name))
-    label:SetCallback("OnEnter", function(widget)
-        GameTooltip:SetOwner(widget.frame, "ANCHOR_CURSOR")
-        GameTooltip:SetHyperlink("quest:" .. tostring(entry.id))
-        GameTooltip:Show()
-    end)
-    label:SetCallback("OnLeave", function()
-        GameTooltip_Hide()
-    end)
-    row:AddChild(label)
-
-    self.scroll:AddChild(row)
-
-    if entry.bots and #entry.bots > 0 then
-        local botsLabel = self.aceGUI:Create("Label")
-        botsLabel:SetFullWidth(true)
-        botsLabel:SetText("    " .. Shared.FormatBotsLabel(entry.bots))
-        self.scroll:AddChild(botsLabel)
-    end
-end
-
-local function renderQuestList(self, entries, summaryText)
-    clearList(self)
-
-    local questEntries = entries or {}
-    for _, entry in ipairs(questEntries) do
-        createQuestEntryRow(self, entry)
-    end
-
-    if #questEntries == 0 then
-        local noData = self.aceGUI:Create("Label")
-        noData:SetFullWidth(true)
-        noData:SetText(MultiBot.L("tips.quests.gobnosearchdata") or "No quests")
-        self.scroll:AddChild(noData)
-    end
-
-    if self.summary then
-        self.summary:SetText(summaryText or MultiBot.L("tips.quests.complist") or "")
-    end
-end
-
 function MultiBot.BuildBotCompletedList(botName)
     local frame = MultiBot.InitializeQuestCompletedFrame()
     local entries = Shared.SortQuestEntries(MultiBot.BotQuestsCompleted[botName] or {})
 
     frame:Show()
-    renderQuestList(frame, entries, botName and ("|cff80ff80" .. botName .. "|r") or nil)
+    Shared.RenderQuestEntries(frame, entries, {
+        summaryText = botName and ("|cff80ff80" .. botName .. "|r") or (MultiBot.L("tips.quests.complist") or ""),
+    })
 end
 
 function MultiBot.BuildAggregatedCompletedList()
@@ -79,7 +27,9 @@ function MultiBot.BuildAggregatedCompletedList()
     local entries = Shared.BuildAggregatedQuestEntries(MultiBot.BotQuestsCompleted)
 
     frame:Show()
-    renderQuestList(frame, entries, "")
+    Shared.RenderQuestEntries(frame, entries, {
+        summaryText = "",
+    })
 end
 
 function QuestCompletedFrame:Show()

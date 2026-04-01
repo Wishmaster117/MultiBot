@@ -70,6 +70,12 @@ function MultiBot.BuildFleeUI(tLeft)
         addFleeButton(fleeFrame, definition, index)
     end
 
+    if MultiBot.BindShiftRightSwapButtons then
+        MultiBot.BindShiftRightSwapButtons(tLeft, "LeftRoot", {
+            { name = "Flee", frameName = FLEE_FRAME_NAME },
+        })
+    end
+
     return {
         mainButton = mainButton,
         frame = fleeFrame,

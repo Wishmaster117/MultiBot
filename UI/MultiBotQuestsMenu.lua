@@ -233,6 +233,12 @@ function MultiBot.InitializeQuestsMenu(tRight)
     tRight.buttons["BotUseGOBName"] = gobNameButton
     tRight.buttons["BotUseGOBSearch"] = gobSearchButton
 
+    if MultiBot.BindShiftRightSwapButtons then
+        MultiBot.BindShiftRightSwapButtons(tRight, "RightRoot", {
+            { name = "Quests Menu", frameName = "QuestMenu" },
+        })
+    end
+
     QuestsMenu.initialized = true
     QuestsMenu.button = button
     QuestsMenu.menu = menu

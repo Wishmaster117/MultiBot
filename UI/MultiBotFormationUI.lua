@@ -59,6 +59,12 @@ function MultiBot.BuildFormationUI(tLeft)
         addFormationButton(formatFrame, definition, 1, index)
     end
 
+    if MultiBot.BindShiftRightSwapButtons then
+        MultiBot.BindShiftRightSwapButtons(tLeft, "LeftRoot", {
+            { name = FORMATION_BUTTON_NAME, frameName = FORMATION_FRAME_NAME },
+        })
+    end
+
     return {
         rootButton = formatButton,
         frame = formatFrame,

@@ -267,13 +267,18 @@ MultiBot.toTip = function(pClass, pLevel, pName)
 end
 
 MultiBot.toPoint = function(pFrame)
-    -- Mesurer par rapport au parent global stable et arrondir à l’unité.
-    local uiRight = (UIParent and UIParent:GetRight()) or GetScreenWidth()
-    local xRight  = pFrame:GetRight() or 0
-    local yBottom = pFrame:GetBottom() or 0
-    -- Offset vers BOTTOMRIGHT (négatif ou nul)
-    local offX = xRight - uiRight
-    local offY = yBottom
+	    if not pFrame then
+	        return 0, 0
+	    end
+	    -- Mesurer par rapport au parent global stable et arrondir à l’unité.
+	    local uiRight = (UIParent and UIParent:GetRight()) or GetScreenWidth()
+	    local getRight = pFrame.GetRight or pFrame.getRight
+	    local getBottom = pFrame.GetBottom or pFrame.getBottom
+	    local xRight  = (type(getRight) == "function" and getRight(pFrame)) or 0
+	    local yBottom = (type(getBottom) == "function" and getBottom(pFrame)) or 0
+	    -- Offset vers BOTTOMRIGHT (négatif ou nul)
+	    local offX = xRight - uiRight
+	    local offY = yBottom
     -- Arrondi au plus proche pour éviter la dérive cumulée
     return math.floor(offX + 0.5), math.floor(offY + 0.5)
 end
@@ -1305,6 +1310,307 @@ MultiBot.boxButton = function(pParent, pX, pY, pSize, pState)
 	end)
 
 	return button;
+end
+
+-- BUTTON REORDER (SHIFT + RIGHT CLICK) --
+
+local function _mbParseButtonLayout(raw)
+	local parsed = {}
+	if(type(raw) ~= "string" or raw == "") then
+		return parsed
+	end
+
+	for token in string.gmatch(raw, "([^;]+)") do
+		local name, x, y = string.match(token, "^([^:]+):(-?%d+),(-?%d+)$")
+		if(name and x and y) then
+			parsed[name] = { x = tonumber(x), y = tonumber(y) }
+		end
+	end
+
+	return parsed
+end
+
+local function _mbSerializeButtonLayout(entries)
+	local chunks = {}
+	for _, entry in ipairs(entries) do
+		local button = entry.button
+		if(button and type(button.x) == "number" and type(button.y) == "number") then
+			table.insert(chunks, string.format("%s:%d,%d", entry.id or entry.name, button.x, button.y))
+		end
+	end
+	return table.concat(chunks, ";")
+end
+
+local function _mbApplyLinkedFrameOffset(entry)
+	if(not entry or not entry.frameName) then
+		return
+	end
+
+	local button = entry.button
+	local frame = entry.frame
+	if(not button or not frame or not frame.setPoint) then
+		return
+	end
+
+	local offsetX = entry.frameOffsetX or 0
+	local offsetY = entry.frameOffsetY or 0
+	frame.setPoint(button.x + offsetX, button.y + offsetY)
+end
+
+function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
+	if(not host or not contextKey or type(entries) ~= "table") then
+		return nil
+	end
+
+	MultiBot._mbShiftSwapGlobal = MultiBot._mbShiftSwapGlobal or {}
+	MultiBot._mbRegisteredButtonLayoutKeys = MultiBot._mbRegisteredButtonLayoutKeys or {}
+	MultiBot._mbRegisteredButtonLayoutKeys["ButtonLayout:" .. contextKey] = true
+	local state = MultiBot._mbShiftSwapGlobal[contextKey]
+	if(not state) then
+		local saveKey = "ButtonLayout:" .. contextKey
+		local saved = MultiBot.GetSavedLayoutValue and MultiBot.GetSavedLayoutValue(saveKey) or nil
+		state = {
+			selected = nil,
+			saveKey = saveKey,
+			parsed = _mbParseButtonLayout(saved),
+			entries = {},
+			byName = {},
+		}
+		MultiBot._mbShiftSwapGlobal[contextKey] = state
+	end
+
+	local function persist()
+		if(MultiBot.SetSavedLayoutValue) then
+			MultiBot.SetSavedLayoutValue(state.saveKey, _mbSerializeButtonLayout(state.entries))
+		end
+	end
+
+	local function paintEntry(entryRec, r, g, b, a)
+		local button = entryRec and entryRec.button
+		if(not button) then
+			return
+		end
+
+		if(button.icon and button.icon.SetVertexColor) then
+			button.icon:SetVertexColor(r or 1, g or 1, b or 1)
+		end
+		if(button.SetAlpha) then
+			button:SetAlpha(a or 1)
+		end
+	end
+
+	local function clearVisualState(entryRec)
+		paintEntry(entryRec, 1, 1, 1, 1)
+	end
+
+	local function applySelectionVisuals()
+		for _, entryRec in ipairs(state.entries or {}) do
+			clearVisualState(entryRec)
+		end
+
+		if(state.selected) then
+			paintEntry(state.selected, 1, 0.85, 0.35, 1)
+		end
+
+		if(state.hovered and state.hovered ~= state.selected) then
+			paintEntry(state.hovered, 0.6, 1, 0.6, 1)
+			if(state.selected) then
+				paintEntry(state.selected, 1, 0.85, 0.35, 0.9)
+			end
+		end
+	end
+
+	local function clearSelectionState()
+		state.selected = nil
+		state.hovered = nil
+		state.previewTarget = nil
+		applySelectionVisuals()
+	end
+
+	local function swapButtons(entryA, entryB)
+		local buttonA = entryA and entryA.button
+		local buttonB = entryB and entryB.button
+		if(not buttonA or not buttonB or not buttonA.setPoint or not buttonB.setPoint) then
+			return
+		end
+
+		local absARight, absABottom = buttonA:GetRight(), buttonA:GetBottom()
+		local absBRight, absBBottom = buttonB:GetRight(), buttonB:GetBottom()
+		if(not absARight or not absABottom or not absBRight or not absBBottom) then
+			return
+		end
+
+		local parentA = buttonA:GetParent()
+		local parentB = buttonB:GetParent()
+		if(not parentA or not parentB) then
+			return
+		end
+
+		local parentARight, parentABottom = parentA:GetRight(), parentA:GetBottom()
+		local parentBRight, parentBBottom = parentB:GetRight(), parentB:GetBottom()
+		if(not parentARight or not parentABottom or not parentBRight or not parentBBottom) then
+			return
+		end
+
+		local newAX, newAY = absBRight - parentARight, absBBottom - parentABottom
+		local newBX, newBY = absARight - parentBRight, absABottom - parentBBottom
+		buttonA.setPoint(newAX, newAY)
+		buttonB.setPoint(newBX, newBY)
+
+		_mbApplyLinkedFrameOffset(entryA)
+		_mbApplyLinkedFrameOffset(entryB)
+		persist()
+	end
+
+	local function wrapButton(entryRec)
+		local button = entryRec and entryRec.button
+		if(not button) then
+			return
+		end
+
+		local originalDoRight = button.doRight
+		button.doRight = function(btn)
+			if(IsShiftKeyDown()) then
+				if(state.selected == nil) then
+					state.selected = entryRec
+					state.hovered = nil
+					state.previewTarget = nil
+					applySelectionVisuals()
+					if(UIErrorsFrame) then
+						UIErrorsFrame:AddMessage(MultiBot.L("ui.swap.source_prefix") .. (entryRec.id or entryRec.name), 1, 0.82, 0, 1)
+					end
+					return
+				end
+
+				if(state.selected == entryRec) then
+					clearSelectionState()
+					if(UIErrorsFrame) then
+						UIErrorsFrame:AddMessage(MultiBot.L("ui.swap.cancelled"), 1, 0.25, 0.25, 1)
+					end
+					return
+				end
+
+				local sourceEntry = state.selected
+				clearSelectionState()
+				swapButtons(sourceEntry, entryRec)
+				if(UIErrorsFrame) then
+					UIErrorsFrame:AddMessage((sourceEntry.id or sourceEntry.name) .. " <-> " .. (entryRec.id or entryRec.name), 0.25, 1, 0.25, 1)
+				end
+				return
+			end
+
+			if(originalDoRight) then
+				originalDoRight(btn)
+			end
+		end
+
+		button._mbSwapWrapped = true
+		button:HookScript("OnEnter", function()
+			if(state.selected and state.selected ~= entryRec) then
+				state.hovered = entryRec
+				applySelectionVisuals()
+				if(UIErrorsFrame and state.previewTarget ~= entryRec) then
+					state.previewTarget = entryRec
+					UIErrorsFrame:AddMessage(MultiBot.L("ui.swap.preview_prefix") .. (state.selected.id or state.selected.name) .. " <-> " .. (entryRec.id or entryRec.name), 1, 1, 0.4, 1)
+				end
+			end
+		end)
+		button:HookScript("OnLeave", function()
+			if(state.hovered == entryRec) then
+				state.hovered = nil
+				applySelectionVisuals()
+			end
+		end)
+	end
+
+	for _, entry in ipairs(entries) do
+		local id = entry and (entry.id or entry.name) or nil
+		if(id and not state.byName[id]) then
+			state.byName[id] = true
+
+			local button = host.buttons and host.buttons[entry.name]
+			local frame = entry.frameName and host.frames and host.frames[entry.frameName] or nil
+				local entryRec = {
+					id = id,
+					name = entry.name,
+					frameName = entry.frameName,
+					button = button,
+					frame = frame,
+					defaultX = button and button.x or nil,
+					defaultY = button and button.y or nil,
+				}
+			table.insert(state.entries, entryRec)
+
+			if(button and frame and type(frame.x) == "number" and type(frame.y) == "number") then
+				entryRec.frameOffsetX = frame.x - button.x
+				entryRec.frameOffsetY = frame.y - button.y
+			end
+
+			local savedPoint = state.parsed and state.parsed[id]
+			if(button and savedPoint and button.setPoint) then
+				button.setPoint(savedPoint.x, savedPoint.y)
+			end
+			_mbApplyLinkedFrameOffset(entryRec)
+			wrapButton(entryRec)
+		end
+	end
+
+	return state
+end
+
+function MultiBot.ResetButtonLayoutContext(contextKey, clearPersistedValue)
+	if(not contextKey or not MultiBot._mbShiftSwapGlobal) then
+		return false
+	end
+
+	local state = MultiBot._mbShiftSwapGlobal[contextKey]
+	if(not state) then
+		return false
+	end
+
+	for _, entryRec in ipairs(state.entries or {}) do
+		local button = entryRec and entryRec.button
+		local defaultX = entryRec and entryRec.defaultX
+		local defaultY = entryRec and entryRec.defaultY
+		if(button and button.setPoint and type(defaultX) == "number" and type(defaultY) == "number") then
+			button.setPoint(defaultX, defaultY)
+		end
+		_mbApplyLinkedFrameOffset(entryRec)
+	end
+
+	if(clearPersistedValue and MultiBot.SetSavedLayoutValue) then
+		MultiBot.SetSavedLayoutValue(state.saveKey, nil)
+	end
+
+	state.parsed = {}
+	state.selected = nil
+	return true
+end
+
+function MultiBot.ApplySavedButtonLayout(contextKey)
+	if(not contextKey or not MultiBot._mbShiftSwapGlobal) then
+		return false
+	end
+
+	local state = MultiBot._mbShiftSwapGlobal[contextKey]
+	if(not state) then
+		return false
+	end
+
+	local raw = MultiBot.GetSavedLayoutValue and MultiBot.GetSavedLayoutValue(state.saveKey) or nil
+	state.parsed = _mbParseButtonLayout(raw)
+
+	for _, entryRec in ipairs(state.entries or {}) do
+		local button = entryRec and entryRec.button
+		local id = entryRec and (entryRec.id or entryRec.name)
+		local savedPoint = id and state.parsed and state.parsed[id] or nil
+		if(button and savedPoint and button.setPoint) then
+			button.setPoint(savedPoint.x, savedPoint.y)
+		end
+		_mbApplyLinkedFrameOffset(entryRec)
+	end
+
+	return true
 end
 
 -- BUTTON:CAT --

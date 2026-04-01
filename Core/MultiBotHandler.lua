@@ -254,6 +254,286 @@ MultiBot.SetSavedLayoutValue = function(key, value)
 	return setSavedLayoutValue(key, value)
 end
 
+local LAYOUT_EXPORT_VERSION = "MBLAYOUT1"
+
+local function getPlayerLayoutOwnerKey()
+	local playerName = UnitName and UnitName("player") or nil
+	local realmName = GetRealmName and GetRealmName() or nil
+	if type(playerName) ~= "string" or playerName == "" then
+		playerName = "UnknownPlayer"
+	end
+	if type(realmName) ~= "string" or realmName == "" then
+		return playerName
+	end
+	return playerName .. "-" .. realmName
+end
+
+local function getGlobalLayoutLibrary(createIfMissing)
+	local globalSave = _G.MultiBotGlobalSave
+	if type(globalSave) ~= "table" then
+		if not createIfMissing then
+			return nil
+		end
+		globalSave = {}
+		_G.MultiBotGlobalSave = globalSave
+	end
+
+	if createIfMissing then
+		globalSave.savedLayoutsByPlayer = globalSave.savedLayoutsByPlayer or {}
+
+		local db = MultiBot.db
+		local legacyStore = db and db.global and db.global.ui and db.global.ui.savedLayoutsByPlayer or nil
+		if type(legacyStore) == "table" then
+			for ownerKey, payload in pairs(legacyStore) do
+				if type(ownerKey) == "string" and type(payload) == "string" and payload ~= "" and globalSave.savedLayoutsByPlayer[ownerKey] == nil then
+					globalSave.savedLayoutsByPlayer[ownerKey] = payload
+				end
+			end
+		end
+	end
+	return globalSave.savedLayoutsByPlayer
+end
+
+local function encodePayloadValue(value)
+	return (tostring(value):gsub(".", function(ch)
+		return string.format("%02X", string.byte(ch))
+	end))
+end
+
+local function decodePayloadValue(value)
+	if type(value) ~= "string" or value == "" or (string.len(value) % 2) ~= 0 then
+		return nil
+	end
+
+	local chunks = {}
+	for i = 1, string.len(value), 2 do
+		local byteHex = string.sub(value, i, i + 1)
+		local byte = tonumber(byteHex, 16)
+		if not byte then
+			return nil
+		end
+		chunks[#chunks + 1] = string.char(byte)
+	end
+	return table.concat(chunks)
+end
+
+local function shouldExportLayoutKey(key)
+	return type(key) == "string" and (key == "MultiBarPoint" or string.find(key, "^ButtonLayout:") ~= nil)
+end
+
+local function collectLayoutExportEntries()
+	local entries = {}
+	local profileStore = getLayoutProfileStore()
+	if profileStore then
+		migrateLegacyLayoutStateIfNeeded(profileStore)
+		for key, value in pairs(profileStore) do
+			if shouldExportLayoutKey(key) and type(value) == "string" and value ~= "" then
+				entries[key] = value
+			end
+		end
+	end
+
+	local registered = MultiBot._mbRegisteredButtonLayoutKeys or {}
+	for key in pairs(registered) do
+		if shouldExportLayoutKey(key) and entries[key] == nil then
+			local value = getSavedLayoutValue(key)
+			if type(value) == "string" and value ~= "" then
+				entries[key] = value
+			end
+		end
+	end
+
+	if entries["MultiBarPoint"] == nil then
+		local pointValue = getSavedLayoutValue("MultiBarPoint")
+		if type(pointValue) == "string" and pointValue ~= "" then
+			entries["MultiBarPoint"] = pointValue
+		end
+	end
+
+	return entries
+end
+
+local function sortedKeysOf(map)
+	local keys = {}
+	for key in pairs(map or {}) do
+		keys[#keys + 1] = key
+	end
+	table.sort(keys)
+	return keys
+end
+
+function MultiBot.ExportMainBarLayoutPayload()
+	local payloadParts = { LAYOUT_EXPORT_VERSION }
+	local moveLocked = MultiBot.GetMainBarMoveLocked and MultiBot.GetMainBarMoveLocked() and "1" or "0"
+	payloadParts[#payloadParts + 1] = "mainBarMoveLocked=" .. encodePayloadValue(moveLocked)
+
+	local entries = collectLayoutExportEntries()
+	for _, key in ipairs(sortedKeysOf(entries)) do
+		payloadParts[#payloadParts + 1] = encodePayloadValue(key) .. "=" .. encodePayloadValue(entries[key])
+	end
+
+	return table.concat(payloadParts, "|")
+end
+
+function MultiBot.SaveMainBarLayoutForCurrentPlayer()
+	local payload = MultiBot.ExportMainBarLayoutPayload()
+	local ownerKey = getPlayerLayoutOwnerKey()
+	local store = getGlobalLayoutLibrary(true)
+	if not store then
+		return false, "store_global_indisponible"
+	end
+	store[ownerKey] = payload
+	return true, ownerKey, payload
+end
+
+function MultiBot.GetSavedMainBarLayoutOwners()
+	local store = getGlobalLayoutLibrary(false)
+	local owners = {}
+	for ownerKey, payload in pairs(store or {}) do
+		if type(ownerKey) == "string" and type(payload) == "string" and payload ~= "" then
+			owners[#owners + 1] = ownerKey
+		end
+	end
+	table.sort(owners)
+	return owners
+end
+
+function MultiBot.GetSavedMainBarLayoutPayload(ownerKey)
+	if type(ownerKey) ~= "string" or ownerKey == "" then
+		return nil
+	end
+	local store = getGlobalLayoutLibrary(false)
+	local payload = store and store[ownerKey] or nil
+	if type(payload) ~= "string" or payload == "" then
+		return nil
+	end
+	return payload
+end
+
+function MultiBot.ImportSavedMainBarLayout(ownerKey)
+	local payload = MultiBot.GetSavedMainBarLayoutPayload(ownerKey)
+	if not payload then
+		return false, "layout_introuvable"
+	end
+	return MultiBot.ImportMainBarLayoutPayload(payload)
+end
+
+function MultiBot.DeleteSavedMainBarLayout(ownerKey)
+	if type(ownerKey) ~= "string" or ownerKey == "" then
+		return false, "owner_invalide"
+	end
+	local store = getGlobalLayoutLibrary(true)
+	if not store or store[ownerKey] == nil then
+		return false, "layout_introuvable"
+	end
+	store[ownerKey] = nil
+	return true
+end
+
+local function isMainBarLayoutKey(key)
+	return type(key) == "string" and (key == "MultiBarPoint" or string.find(key, "^ButtonLayout:") ~= nil)
+end
+
+function MultiBot.ResetMainBarLayoutState()
+	local removed = 0
+	local profileStore = getLayoutProfileStore()
+	if profileStore then
+		migrateLegacyLayoutStateIfNeeded(profileStore)
+		for key in pairs(profileStore) do
+			if isMainBarLayoutKey(key) then
+				profileStore[key] = nil
+				removed = removed + 1
+			end
+		end
+	end
+
+	local legacy = getLegacyStateStore(false)
+	if type(legacy) == "table" then
+		for key in pairs(legacy) do
+			if isMainBarLayoutKey(key) then
+				legacy[key] = nil
+			end
+		end
+	end
+
+	if MultiBot._mbShiftSwapGlobal and MultiBot.ResetButtonLayoutContext then
+		for contextKey in pairs(MultiBot._mbShiftSwapGlobal) do
+			MultiBot.ResetButtonLayoutContext(contextKey, false)
+		end
+	end
+
+	local multiBar = MultiBot.frames and MultiBot.frames["MultiBar"]
+	if multiBar and multiBar.setPoint then
+		multiBar.setPoint(-262, 144)
+	end
+
+	return true, removed
+end
+
+local function applyImportedLayoutEntry(key, value)
+	if key == "mainBarMoveLocked" then
+		if MultiBot.SetMainBarMoveLocked then
+			MultiBot.SetMainBarMoveLocked(value == "1")
+		end
+		return true
+	end
+
+	if not shouldExportLayoutKey(key) then
+		return false
+	end
+
+	setSavedLayoutValue(key, value)
+	if key == "MultiBarPoint" then
+		local multibar = MultiBot.frames and MultiBot.frames["MultiBar"]
+		if multibar and multibar.setPoint and MultiBot.doSplit then
+			local split = MultiBot.doSplit(value, ", ")
+			multibar.setPoint(tonumber(split[1]), tonumber(split[2]))
+		end
+		return true
+	end
+
+	local context = string.match(key, "^ButtonLayout:(.+)$")
+	if context and MultiBot.ApplySavedButtonLayout then
+		MultiBot.ApplySavedButtonLayout(context)
+	end
+	return true
+end
+
+function MultiBot.ImportMainBarLayoutPayload(payload)
+	if type(payload) ~= "string" or payload == "" then
+		return false, "payload_vide"
+	end
+
+	local tokens = {}
+	for token in string.gmatch(payload, "([^|]+)") do
+		tokens[#tokens + 1] = token
+	end
+	if tokens[1] ~= LAYOUT_EXPORT_VERSION then
+		return false, "version_invalide"
+	end
+
+	local imported = 0
+	for index = 2, #tokens do
+		local token = tokens[index]
+		local left, right = string.match(token, "^([^=]+)=(.+)$")
+		if left and right then
+			local key = left
+			if key ~= "mainBarMoveLocked" then
+				key = decodePayloadValue(left)
+			end
+			local value = decodePayloadValue(right)
+			if key and value and applyImportedLayoutEntry(key, value) then
+				imported = imported + 1
+			end
+		end
+	end
+
+	if imported == 0 then
+		return false, "aucune_donnee_importee"
+	end
+	return true, imported
+end
+
 -- HANDLER --
 
 
@@ -1251,7 +1531,7 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 			-- On ne traite que les réponses commençant par "Glyphs:" ou "No glyphs"
 			if not rawMsg:match("^[Gg]lyphs:") and not rawMsg:match("^[Nn]o glyphs") then
-				DEFAULT_CHAT_FRAME:AddMessage("|cff66ccff[ERROR]|r Ignored non-glyphs msg")
+				DEFAULT_CHAT_FRAME:AddMessage("|cff66ccff[ERROR]|r " .. MultiBot.L("talent.glyphs.error_ignored_non_glyph"))
 				return
 			end
 
@@ -1719,11 +1999,140 @@ local function ClassTestCommand()
   end
 end
 
+local function MainBarLayoutExportCommand()
+  if not MultiBot.SaveMainBarLayoutForCurrentPlayer then
+    printToChat("[MB] Export indisponible.")
+    return
+  end
+
+  local ok, ownerKeyOrError = MultiBot.SaveMainBarLayoutForCurrentPlayer()
+  if not ok then
+    printToChat(("[MB] Export échoué: %s"):format(tostring(ownerKeyOrError)))
+    return
+  end
+  printToChat(("[MB] Layout sauvegardé pour %s"):format(ownerKeyOrError))
+end
+
+local function MainBarLayoutImportOwnerCommand(msg)
+  if not MultiBot.ImportSavedMainBarLayout then
+    printToChat("[MB] Import (owner) indisponible.")
+    return
+  end
+
+  local ownerKey = tostring(msg or "")
+  ownerKey = string.match(ownerKey, "^%s*(.-)%s*$") or ""
+  if ownerKey == "" then
+    printToChat("[MB] Usage: /mblio <NomJoueur-Royaume>")
+    return
+  end
+
+  local ok, detail = MultiBot.ImportSavedMainBarLayout(ownerKey)
+  if ok then
+    printToChat(("[MB] Layout '%s' importé (%s entrées)."):format(ownerKey, tostring(detail)))
+    return
+  end
+  printToChat(("[MB] Import '%s' échoué: %s"):format(ownerKey, tostring(detail)))
+end
+
+local function MainBarLayoutListCommand()
+  if not MultiBot.GetSavedMainBarLayoutOwners then
+    printToChat("[MB] Liste layouts indisponible.")
+    return
+  end
+  local owners = MultiBot.GetSavedMainBarLayoutOwners()
+  if #owners == 0 then
+    printToChat("[MB] Aucun layout sauvegardé.")
+    return
+  end
+  printToChat("[MB] Layouts sauvegardés:")
+  for _, owner in ipairs(owners) do
+    printToChat(" - " .. owner)
+  end
+end
+
+local function MainBarLayoutImportPayloadCommand(msg)
+  if not MultiBot.ImportMainBarLayoutPayload then
+    printToChat("[MB] Import payload indisponible.")
+    return
+  end
+
+  local payload = tostring(msg or "")
+  payload = string.match(payload, "^%s*(.-)%s*$") or ""
+  local ok, detail = MultiBot.ImportMainBarLayoutPayload(payload)
+  if ok then
+    printToChat(("[MB] Payload importé (%s entrées)."):format(tostring(detail)))
+    return
+  end
+  printToChat(("[MB] Import payload échoué: %s"):format(tostring(detail)))
+end
+
+local function MainBarLayoutShowPayloadCommand(msg)
+  if not MultiBot.GetSavedMainBarLayoutPayload then
+    printToChat("[MB] Show payload indisponible.")
+    return
+  end
+
+  local ownerKey = tostring(msg or "")
+  ownerKey = string.match(ownerKey, "^%s*(.-)%s*$") or ""
+  if ownerKey == "" then
+    ownerKey = getPlayerLayoutOwnerKey()
+  end
+  local payload = MultiBot.GetSavedMainBarLayoutPayload(ownerKey)
+  if not payload then
+    printToChat(("[MB] Aucun payload pour '%s'."):format(ownerKey))
+    return
+  end
+  printToChat(("[MB] Payload '%s':"):format(ownerKey))
+  printToChat(payload)
+end
+
+local function MainBarLayoutDeleteCommand(msg)
+  if not MultiBot.DeleteSavedMainBarLayout then
+    printToChat("[MB] Delete layout indisponible.")
+    return
+  end
+
+  local ownerKey = tostring(msg or "")
+  ownerKey = string.match(ownerKey, "^%s*(.-)%s*$") or ""
+  if ownerKey == "" then
+    printToChat("[MB] Usage: /mbldel <NomJoueur-Royaume>")
+    return
+  end
+
+  local ok, detail = MultiBot.DeleteSavedMainBarLayout(ownerKey)
+  if ok then
+    printToChat(("[MB] Layout supprimé: %s"):format(ownerKey))
+    return
+  end
+  printToChat(("[MB] Suppression impossible (%s): %s"):format(ownerKey, tostring(detail)))
+end
+
+local function MainBarLayoutResetCommand()
+  if not MultiBot.ResetMainBarLayoutState then
+    printToChat("[MB] Reset layout indisponible.")
+    return
+  end
+
+  local ok, removed = MultiBot.ResetMainBarLayoutState()
+  if ok then
+    printToChat(("[MB] Layout reset effectué (%s clés supprimées)."):format(tostring(removed)))
+    return
+  end
+  printToChat("[MB] Reset layout échoué.")
+end
+
 local COMMAND_DEFINITIONS = {
   { "MULTIBOT", ToggleMultiBotUI, { "multibot", "mbot", "mb" } },
   { "MBFAKEGM", FakeGMCommand, { "mbfakegm" } },
   { "MBCLASS", ClassCommand, { "mbclass" } },
   { "MBCLASSTEST", ClassTestCommand, { "mbclasstest" } },
+  { "MBLAYOUTEXPORT", MainBarLayoutExportCommand, { "mblayoutexport", "mblx" } },
+  { "MBLAYOUTLIST", MainBarLayoutListCommand, { "mblayoutlist", "mbll" } },
+  { "MBLAYOUTIMPORTOWNER", MainBarLayoutImportOwnerCommand, { "mblayoutimportowner", "mblio" } },
+  { "MBLAYOUTIMPORTPAYLOAD", MainBarLayoutImportPayloadCommand, { "mblayoutimportpayload", "mbli" } },
+  { "MBLAYOUTSHOWPAYLOAD", MainBarLayoutShowPayloadCommand, { "mblayoutshowpayload", "mblp" } },
+  { "MBLAYOUTDELETE", MainBarLayoutDeleteCommand, { "mblayoutdelete", "mbldel" } },
+  { "MBLAYOUTRESET", MainBarLayoutResetCommand, { "mblayoutreset", "mblreset" } },
 }
 
 for _, def in ipairs(COMMAND_DEFINITIONS) do
