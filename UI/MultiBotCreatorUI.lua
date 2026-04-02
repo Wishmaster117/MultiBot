@@ -138,7 +138,7 @@ function MultiBot.InitializeCreatorUI(tLeft)
         return nil
     end
 
-    local rootButton = tLeft.addButton("Creator", 0, 0, CREATOR_ROOT_ICON, MultiBot.L("tips.creator.master"))
+    local rootButton = tLeft.addButton("Creator", 0, 0, CREATOR_ROOT_ICON, MultiBot.L("tips.creator.master")).doHide()
     local creatorFrame = tLeft.addFrame(CREATOR_FRAME_NAME, CREATOR_FRAME_X, CREATOR_FRAME_Y)
     creatorFrame:Hide()
 

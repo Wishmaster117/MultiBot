@@ -1,43 +1,17 @@
 TODO
 
-* Voi si y'a pas d'autres appels à pageLabel:SetText(MB_PAGE_DEFAULT) dans les fichiers et remplacer par : +	pageLabel:SetText(MultiBot.MB_PAGE_DEFAULT or "0/0")
-* Ressortir les UI quetes dans leurs propre fichiers et uniformiser le tempklate de la frame comme celle de Itemus
-* Uniformiser le templste de la frame reward comme celle de itemus
+* Voir si y'a pas d'autres appels à pageLabel:SetText(MB_PAGE_DEFAULT) dans les fichiers et remplacer par : +	pageLabel:SetText(MultiBot.MB_PAGE_DEFAULT or "0/0")
+* Uniformiser le template des frame quetes comme celle de Itemus
+* Uniformiser le template de la frame reward comme celle de itemus
 * Essayer de faire disparaitre la barre multibots au bout d'un temps et la faire apparaitre quand on passe la souris dessus.
 * Quand on deplace ou fait quelque chose dans l'ui il faudrait que ça se sauvegarde tout de suite dans les variables dans deco reco
 * Raidus doit se rafraichir à l'ouverture et fermeture
 * dans la liste des quêtes des fois c'est l'ID de la queête qui apparait et pas le tritre
-* Afficher le pognon et les places de sacs dans la frame inventaire.
-* Iconos ne mémorise pas sa position et n'a pas de strata
-* Revoir le positionnement des fleches et pages de Iconos
 * Mettre une option pour choisir la tailles des icones de la main barre et des quickhunter/shaman
 * Voir si il y'a pas d'autres option que l'on peut ajouter à la frame options de multibot
 * creer le multilangue pour le tooltip: setTooltip(self, "Show / Hide / Move Quick Shaman") des fichiers quickshaman et quickhunter
-* Ajouter des emplacements de sacs à la fenêtre inventaire
-* Creator a l'air de planter et apparait même quand il est desactivé.
-* Faire les tootips multi dans la fonction:
-		local originalDoRight = button.doRight
-		button.doRight = function(btn)
-			if(IsShiftKeyDown()) then
-				if(state.selected == nil) then
-					state.selected = entryRec
-					if(UIErrorsFrame) then
-						UIErrorsFrame:AddMessage("Swap source: " .. (entryRec.id or entryRec.name), 1, 0.82, 0, 1)
-					end
-					return
-				end
-
-				if(state.selected == entryRec) then
-					state.selected = nil
-					if(UIErrorsFrame) then
-						UIErrorsFrame:AddMessage("Swap annulé.", 1, 0.25, 0.25, 1)
-					end
-					return
-				end
-De MultiboEngine
 * Finir les options de déplacement des boutons
 * Debuguer le blocage de la barre principale en déplacement ça a l'air de ne pas persister apres une deco reco
-* Améliorer le panneau options avec des onglets
 
 
  Ajouter la fonction unequipe à Multibit:

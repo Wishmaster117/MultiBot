@@ -198,11 +198,6 @@ function MultiBot.InitializeQuestLogFrame()
     content:SetLayout("List")
     window:AddChild(content)
 
-    local header = aceGUI:Create("Heading")
-    header:SetFullWidth(true)
-    header:SetText(QUEST_LOG)
-    content:AddChild(header)
-
     local scroll = aceGUI:Create("ScrollFrame")
     scroll:SetFullWidth(true)
     scroll:SetFullHeight(true)

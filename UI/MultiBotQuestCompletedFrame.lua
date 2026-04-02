@@ -69,11 +69,6 @@ function MultiBot.InitializeQuestCompletedFrame()
     content:SetLayout("List")
     window:AddChild(content)
 
-    local heading = aceGUI:Create("Heading")
-    heading:SetFullWidth(true)
-    heading:SetText(MultiBot.L("tips.quests.complist"))
-    content:AddChild(heading)
-
     local summary = aceGUI:Create("Label")
     summary:SetFullWidth(true)
     summary:SetText("")
