@@ -65,6 +65,7 @@ UI\MultiBotSpellBookFrame.lua
 UI\MultiBotRewardFrame.lua
 UI\MultiBotInventoryFrame.lua
 UI\MultiBotInventoryItem.lua
+UI\MultiBotInspectUI.lua
 UI\MultiBotItemusFrame.lua
 UI\MultiBotIconosFrame.lua
 UI\MultiBotItem.lua
