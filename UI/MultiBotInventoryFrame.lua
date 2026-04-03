@@ -20,6 +20,8 @@ local INVENTORY_WINDOW_DEFAULTS = {
     instantActionColumns = 3,
     instantActionSpacingX = 29,
     instantActionSpacingY = 34,
+    summaryTopPadding = 10,
+    summaryLineSpacing = 16,
     itemSize = 32,
     itemSpacingX = 38,
     itemSpacingY = 37,
@@ -422,6 +424,112 @@ local function updateModeLabel()
     end
 end
 
+local function formatMoneyLabel(gold, silver, copper)
+    local g = tonumber(gold) or 0
+    local s = tonumber(silver) or 0
+    local c = tonumber(copper) or 0
+    local moneyLabel = MultiBot.L("info.inventory.money_label", "Money")
+    return string.format("|cffffff00%s:|r %d|cffffd700g|r %d|cffc7c7cfs|r %d|cffb87333c|r", moneyLabel, g, s, c)
+end
+
+local function formatBagSlotsLabel(used, total)
+    local usedSlots = tonumber(used)
+    local totalSlots = tonumber(total)
+    local bagSlotsLabel = MultiBot.L("info.inventory.bag_slots_label", "Bag Slots")
+    if not usedSlots or not totalSlots then
+        return string.format("|cffffff00%s:|r -/-", bagSlotsLabel)
+    end
+
+    return string.format("|cffffff00%s:|r %d/%d", bagSlotsLabel, usedSlots, totalSlots)
+end
+
+local function parseInventorySummaryLine(rawLine)
+    local line = tostring(rawLine or "")
+    if line == "" then
+        return nil
+    end
+
+    local function escapeLuaPattern(value)
+        return tostring(value or ""):gsub("([%(%)%.%%%+%-%*%?%[%]%^%$])", "%%%1")
+    end
+
+    local function resolveBagPair()
+        local markerCandidates = {
+            "Bag",
+            MultiBot.L("info.shorts.bag", "Bag"),
+            "背包",
+        }
+        local seen = {}
+
+        for _, marker in ipairs(markerCandidates) do
+            local token = tostring(marker or "")
+            local lowered = string.lower(token)
+            if token ~= "" and not seen[lowered] then
+                seen[lowered] = true
+                local usedToken, totalToken = string.match(line, escapeLuaPattern(token) .. "[^%d]*(%d+)%s*/%s*(%d+)")
+                local usedValue = tonumber(usedToken)
+                local totalValue = tonumber(totalToken)
+                if usedValue and totalValue and usedValue <= totalValue then
+                    return usedValue, totalValue
+                end
+            end
+        end
+
+        local bestUsed, bestTotal
+        for usedToken, totalToken in string.gmatch(line, "(%d+)%s*/%s*(%d+)") do
+            local usedValue = tonumber(usedToken)
+            local totalValue = tonumber(totalToken)
+            if usedValue and totalValue and usedValue <= totalValue then
+                if not bestUsed or usedValue > bestUsed then
+                    bestUsed, bestTotal = usedValue, totalValue
+                end
+            end
+        end
+
+        return bestUsed, bestTotal
+    end
+
+    local used, total = resolveBagPair()
+
+    local gold = string.match(line, "(%d+)%s*[gG]%f[%A]")
+        or string.match(string.lower(line), "(%d+)%s*gold%f[%A]")
+        or string.match(line, "(%d+)%s*金")
+    local silver = string.match(line, "(%d+)%s*[sS]%f[%A]")
+        or string.match(string.lower(line), "(%d+)%s*silver%f[%A]")
+        or string.match(line, "(%d+)%s*银")
+    local copper = string.match(line, "(%d+)%s*[cC]%f[%A]")
+        or string.match(string.lower(line), "(%d+)%s*copper%f[%A]")
+        or string.match(line, "(%d+)%s*铜")
+
+    if not used and not total and not gold and not silver and not copper then
+        return nil
+    end
+
+    return {
+        bagUsed = tonumber(used),
+        bagTotal = tonumber(total),
+        gold = tonumber(gold) or 0,
+        silver = tonumber(silver) or 0,
+        copper = tonumber(copper) or 0,
+    }
+end
+
+local function updateInventorySummaryLabels(inventory)
+    if not inventory then
+        return
+    end
+
+    local summary = inventory.summary or {}
+
+    if inventory.moneyLabel then
+        inventory.moneyLabel:SetText(formatMoneyLabel(summary.gold, summary.silver, summary.copper))
+    end
+
+    if inventory.bagSlotsLabel then
+        inventory.bagSlotsLabel:SetText(formatBagSlotsLabel(summary.bagUsed, summary.bagTotal))
+    end
+end
+
 local function getInventoryWindowTitle(botName)
     local defaultTitle = MB_INVENTORY_LABEL or INVENTORY_TOOLTIP or BAGSLOT or "Inventory"
     if not botName or botName == "" then
@@ -802,6 +910,22 @@ local function createInventoryContent(window)
         buttons[definition.key] = makeActionButton(leftPanel, definition.key, definition.texture, definition.tip, yOffset, xOffset)
     end
 
+    local summaryAnchorY = instantStartY
+        - (math.ceil(#instantButtonDefs / instantColumns) * instantSpacingY)
+        - INVENTORY_WINDOW_DEFAULTS.summaryTopPadding
+
+    local moneyLabel = leftPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    moneyLabel:SetPoint("TOPLEFT", leftPanel, "TOPLEFT", 8, summaryAnchorY)
+    moneyLabel:SetPoint("TOPRIGHT", leftPanel, "TOPRIGHT", -6, summaryAnchorY)
+    moneyLabel:SetJustifyH("LEFT")
+    moneyLabel:SetText(formatMoneyLabel(0, 0, 0))
+
+    local bagSlotsLabel = leftPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    bagSlotsLabel:SetPoint("TOPLEFT", moneyLabel, "BOTTOMLEFT", 0, -INVENTORY_WINDOW_DEFAULTS.summaryLineSpacing)
+    bagSlotsLabel:SetPoint("TOPRIGHT", moneyLabel, "BOTTOMRIGHT", 0, -INVENTORY_WINDOW_DEFAULTS.summaryLineSpacing)
+    bagSlotsLabel:SetJustifyH("LEFT")
+    bagSlotsLabel:SetText(formatBagSlotsLabel(nil, nil))
+
     local items = makeItemsContainer(itemsPanel, scrollChild)
     items:updateLayout()
 
@@ -817,6 +941,8 @@ local function createInventoryContent(window)
         modeLabel = modeLabel,
         modeValueLabel = modeValueLabel,
         helperText = helperText,
+        moneyLabel = moneyLabel,
+        bagSlotsLabel = bagSlotsLabel,
         actionHost = actionHost,
         buttons = buttons,
     }
@@ -869,9 +995,18 @@ function MultiBot.InitializeInventoryFrame()
         modeLabel = content.modeLabel,
         modeValueLabel = content.modeValueLabel,
         helperText = content.helperText,
+        moneyLabel = content.moneyLabel,
+        bagSlotsLabel = content.bagSlotsLabel,
         name = "",
         action = "s",
         pendingLootBot = nil,
+        summary = {
+            bagUsed = nil,
+            bagTotal = nil,
+            gold = 0,
+            silver = 0,
+            copper = 0,
+        },
     }
 
     MultiBot.inventory = inventory
@@ -999,7 +1134,31 @@ function MultiBot.InitializeInventoryFrame()
         setInventoryBotName(botName or "")
         self.pendingLootBot = nil
         self:resetItems()
+        self.summary = {
+            bagUsed = nil,
+            bagTotal = nil,
+            gold = 0,
+            silver = 0,
+            copper = 0,
+        }
+        updateInventorySummaryLabels(self)
         return self
+    end
+
+    function inventory:applySummaryLine(line)
+        local parsed = parseInventorySummaryLine(line)
+        if not parsed then
+            return false
+        end
+
+        self.summary = self.summary or {}
+        self.summary.bagUsed = parsed.bagUsed or self.summary.bagUsed
+        self.summary.bagTotal = parsed.bagTotal or self.summary.bagTotal
+        self.summary.gold = parsed.gold or 0
+        self.summary.silver = parsed.silver or 0
+        self.summary.copper = parsed.copper or 0
+        updateInventorySummaryLabels(self)
+        return true
     end
 
     function inventory:appendItem(itemInfo)
@@ -1043,6 +1202,7 @@ function MultiBot.InitializeInventoryFrame()
 
     setInventoryActionState("Sell", { cancelTrade = false })
     resetInventoryViewState()
+    updateInventorySummaryLabels(inventory)
 
     return inventory
 end

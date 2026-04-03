@@ -168,9 +168,9 @@ local function bindIconosWindowPosition(window)
 
     local savedPoint = MultiBot.GetSavedLayoutValue and MultiBot.GetSavedLayoutValue(ICONOS_LAYOUT_KEY) or nil
     if type(savedPoint) == "string" and savedPoint ~= "" then
-        local splitPoint = MultiBot.doSplit(savedPoint, ", ")
-        local offsetX = tonumber(splitPoint[1])
-        local offsetY = tonumber(splitPoint[2])
+        local offsetX, offsetY = string.match(savedPoint, "^%s*(-?%d+)%s*,%s*(-?%d+)%s*$")
+        offsetX = tonumber(offsetX)
+        offsetY = tonumber(offsetY)
         if offsetX and offsetY then
             window.frame:ClearAllPoints()
             window.frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", offsetX, offsetY)
@@ -206,12 +206,11 @@ local function bindIconosMoveInteractions(window)
     end)
 
     window.title:HookScript("OnMouseUp", function()
-        if not window.frame.__mbRightDragging then
-            return
+        if window.frame.__mbRightDragging then
+            window.frame.__mbRightDragging = nil
+            window.frame:StopMovingOrSizing()
         end
 
-        window.frame.__mbRightDragging = nil
-        window.frame:StopMovingOrSizing()
         persistIconosWindowPosition(window.frame)
     end)
 
@@ -220,15 +219,16 @@ local function bindIconosMoveInteractions(window)
             frame.__mbRightDragging = nil
             frame:StopMovingOrSizing()
         end
+
+        persistIconosWindowPosition(frame)
     end)
 
     window.frame:HookScript("OnMouseUp", function(frame)
-        if not frame.__mbRightDragging then
-            return
+        if frame.__mbRightDragging then
+            frame.__mbRightDragging = nil
+            frame:StopMovingOrSizing()
         end
 
-        frame.__mbRightDragging = nil
-        frame:StopMovingOrSizing()
         persistIconosWindowPosition(frame)
     end)
 
@@ -756,17 +756,20 @@ local function createIconosContent(window, iconos)
     resultsLabel:SetText("0/0")
 
     local prevButton = createPaginationButton(headerPanel, "<")
-    prevButton:SetPoint("BOTTOMRIGHT", headerPanel, "BOTTOMRIGHT", -50, 14)
+    prevButton:SetPoint("BOTTOMRIGHT", headerPanel, "BOTTOMRIGHT", -82, 14)
 
     local nextButton = createPaginationButton(headerPanel, ">")
     nextButton:SetPoint("BOTTOMRIGHT", headerPanel, "BOTTOMRIGHT", -10, 14)
 
-    resultsLabel:SetPoint("RIGHT", prevButton, "LEFT", -8, 0)
+    resultsLabel:ClearAllPoints()
+    resultsLabel:SetPoint("LEFT", prevButton, "RIGHT", 6, 0)
+    resultsLabel:SetPoint("RIGHT", nextButton, "LEFT", -6, 0)
+    resultsLabel:SetJustifyH("CENTER")
 
     local pageLabel = headerPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    pageLabel:SetPoint("LEFT", prevButton, "RIGHT", 4, 0)
-    pageLabel:SetPoint("RIGHT", nextButton, "LEFT", -4, 0)
-    pageLabel:SetJustifyH("CENTER")
+    pageLabel:SetPoint("RIGHT", prevButton, "LEFT", -8, 0)
+    pageLabel:SetWidth(52)
+    pageLabel:SetJustifyH("RIGHT")
     pageLabel:SetText(getIconosPageLabel(0, 0))
 
     local pathPanel = CreateFrame("Frame", nil, content)
@@ -1034,6 +1037,22 @@ function MultiBot.InitializeIconosFrame()
 
         self.window.frame:Show()
         self:Refresh()
+    end
+
+    function iconos.setPoint(pointX, pointY)
+        if not iconos.window or not iconos.window.frame then
+            return
+        end
+
+        local offsetX = tonumber(pointX)
+        local offsetY = tonumber(pointY)
+        if not offsetX or not offsetY then
+            return
+        end
+
+        iconos.window.frame:ClearAllPoints()
+        iconos.window.frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", offsetX, offsetY)
+        persistIconosWindowPosition(iconos.window.frame)
     end
 
     function iconos:HideWindow()

@@ -626,7 +626,7 @@ function MultiBot.BuildOptionsPanel()
           if UIErrorsFrame then
             UIErrorsFrame:AddMessage(optL("options.layout.error_no_layout_to_delete"), 1, 0.25, 0.25, 1)
           end
-          return		  
+          return
         end
         if not MultiBot.DeleteSavedMainBarLayout then
           if UIErrorsFrame then

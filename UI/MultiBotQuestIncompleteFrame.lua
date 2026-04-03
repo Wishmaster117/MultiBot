@@ -69,11 +69,6 @@ function MultiBot.InitializeQuestIncompleteFrame()
     content:SetLayout("List")
     window:AddChild(content)
 
-    local heading = aceGUI:Create("Heading")
-    heading:SetFullWidth(true)
-    heading:SetText(MultiBot.L("tips.quests.incomplist"))
-    content:AddChild(heading)
-
     local summary = aceGUI:Create("Label")
     summary:SetFullWidth(true)
     summary:SetText("")

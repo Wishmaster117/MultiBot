@@ -542,7 +542,7 @@ local POINT_FRAME_BINDINGS = {
 	{ saveKey = "InventoryPoint", getFrame = function() return MultiBot.inventory end },
 	{ saveKey = "SpellbookPoint", getFrame = function() return MultiBot.spellbook end },
 	{ saveKey = "ItemusPoint", getFrame = function() return MultiBot.itemus end },
-	{ saveKey = "IconosPoint", getFrame = function() return MultiBot.iconos and (MultiBot.iconos.frame or MultiBot.iconos) end },
+	{ saveKey = "IconosPoint", getFrame = function() return MultiBot.iconos or (MultiBot.iconos and MultiBot.iconos.frame) end },
 	{ saveKey = "StatsPoint", getFrame = function() return MultiBot.stats end },
 	{ saveKey = "RewardPoint", getFrame = function() return MultiBot.reward end },
 	{ saveKey = "TalentPoint", getFrame = function() return MultiBot.talent end },
@@ -562,9 +562,23 @@ local function getPortalButton(color)
 end
 
 local function saveBoundFramePoints()
+	local function canReadPoint(frame)
+		if not frame then
+			return false
+		end
+
+		local getRight = frame.GetRight or frame.getRight
+		local getBottom = frame.GetBottom or frame.getBottom
+		if type(getRight) ~= "function" or type(getBottom) ~= "function" then
+			return false
+		end
+
+		return getRight(frame) ~= nil and getBottom(frame) ~= nil
+	end
+
 	for _, binding in ipairs(POINT_FRAME_BINDINGS) do
 		local frame = binding.getFrame and binding.getFrame()
-		if frame then
+		if frame and canReadPoint(frame) then
 			local tX, tY = MultiBot.toPoint(frame)
 			setSavedLayoutValue(binding.saveKey, tX .. ", " .. tY)
 		end
@@ -576,8 +590,12 @@ local function restoreBoundFramePoints()
 		local pointValue = getSavedLayoutValue(binding.saveKey)
 		local frame = binding.getFrame and binding.getFrame()
 		if pointValue ~= nil and frame and frame.setPoint then
-			local tPoint = MultiBot.doSplit(pointValue, ", ")
-			frame.setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
+			local pointX, pointY = string.match(tostring(pointValue), "^%s*(-?%d+)%s*,%s*(-?%d+)%s*$")
+			pointX = tonumber(pointX)
+			pointY = tonumber(pointY)
+			if pointX and pointY then
+				frame.setPoint(pointX, pointY)
+			end
 		end
 	end
 end
@@ -1797,6 +1815,9 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		end
 
 		if(tButton.waitFor == "ITEM" and (MultiBot.beInside(arg1, "Bag,", "Dur") or MultiBot.beInside(arg1, "背包", "耐久度"))) then
+			if MultiBot.inventory and MultiBot.inventory.applySummaryLine then
+				MultiBot.inventory:applySummaryLine(arg1)
+			end
 			MultiBot.inventory:Show()
 			tButton.waitFor = ""
 			InspectUnit(arg2)
@@ -1822,13 +1843,13 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		-- EQUIPPING --
 
 		if(MultiBot.inventory:IsVisible()) then
-			if(MultiBot.isInside(arg1, "装备", "使用", "吃", "喝", "盛宴", "摧毁")) then
+			if(MultiBot.isInside(arg1, "装备", "卸下", "使用", "吃", "喝", "盛宴", "摧毁")) then
 				tButton.waitFor = "INVENTORY"
 				SendChatMessage("items", "WHISPER", nil, tButton.name)
 				return
 			end
 
-			if(MultiBot.isInside(string.lower(arg1), "equipping", "using", "eating", "drinking", "feasting", "destroyed")) then
+			if(MultiBot.isInside(string.lower(arg1), "equipping", "unequipping", "using", "eating", "drinking", "feasting", "destroyed", "removed", "taking off")) then
 				tButton.waitFor = "INVENTORY"
 				SendChatMessage("items", "WHISPER", nil, tButton.name)
 				return
