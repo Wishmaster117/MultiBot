@@ -315,19 +315,6 @@ local function createMainActionButton(mainFrame, definition)
     return button
 end
 
-local function isMainBarMoveAllowed()
-    local moveLocked = MultiBot.GetMainBarMoveLocked and MultiBot.GetMainBarMoveLocked()
-    if moveLocked == nil then
-        moveLocked = true
-    end
-
-    if moveLocked then
-        return IsControlKeyDown()
-    end
-
-    return true
-end
-
 local function saveMultiBarPosition()
     local multiBar = MultiBot.frames and MultiBot.frames["MultiBar"]
     if not multiBar or not MultiBot.SetSavedLayoutValue or not MultiBot.toPoint then
@@ -410,8 +397,24 @@ function MultiBot.InitializeMainUI(tMultiBar)
 
     local mainButton = tMultiBar.addButton(MAIN_BUTTON_NAME, 0, 0, MAIN_BUTTON_ICON, MultiBot.L("tips.main.master"))
     mainButton:RegisterForDrag("RightButton")
+
+    local function applyMoveLockState(moveLocked)
+        local locked = moveLocked
+        if locked == nil and MultiBot.GetMainBarMoveLocked then
+            locked = MultiBot.GetMainBarMoveLocked()
+        end
+        if locked == nil then
+            locked = true
+        end
+        mainButton.__mbMoveLocked = locked and true or false
+    end
+
+    MultiBot.ApplyMainBarMoveLockState = applyMoveLockState
+    applyMoveLockState()
+
     mainButton:SetScript("OnDragStart", function()
-        if not isMainBarMoveAllowed() then
+        local moveLocked = mainButton.__mbMoveLocked
+        if moveLocked and not IsControlKeyDown() then
             if UIErrorsFrame then
                 UIErrorsFrame:AddMessage(MultiBot.L("mainbar.swap.locked"), 1, 0.25, 0.25, 1)
             end
