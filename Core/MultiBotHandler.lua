@@ -466,6 +466,9 @@ function MultiBot.ResetMainBarLayoutState()
 	if multiBar and multiBar.setPoint then
 		multiBar.setPoint(-262, 144)
 	end
+	if MultiBot.RefreshMainBarAutoHideState then
+		MultiBot.RefreshMainBarAutoHideState()
+	end
 
 	return true, removed
 end
@@ -488,6 +491,9 @@ local function applyImportedLayoutEntry(key, value)
 		if multibar and multibar.setPoint and MultiBot.doSplit then
 			local split = MultiBot.doSplit(value, ", ")
 			multibar.setPoint(tonumber(split[1]), tonumber(split[2]))
+		end
+		if MultiBot.RefreshMainBarAutoHideState then
+			MultiBot.RefreshMainBarAutoHideState()
 		end
 		return true
 	end
