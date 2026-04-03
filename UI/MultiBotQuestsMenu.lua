@@ -3,15 +3,63 @@ if not MultiBot then return end
 local QuestsMenu = MultiBot.QuestsMenu or {}
 MultiBot.QuestsMenu = QuestsMenu
 
-local function toggleButtons(buttonA, buttonB)
-    if buttonA:IsShown() then
-        buttonA:doHide()
-        buttonB:doHide()
+local function setSubButtonsVisible(buttonA, buttonB, visible)
+    if visible then
+        buttonA:doShow()
+        buttonB:doShow()
         return
     end
 
-    buttonA:doShow()
-    buttonB:doShow()
+    buttonA:doHide()
+    buttonB:doHide()
+end
+
+local function shouldAutoCollapseQuestGroups()
+    if MultiBot.GetDisableAutoCollapse then
+        return not MultiBot.GetDisableAutoCollapse()
+    end
+    return true
+end
+
+local function collapseOtherQuestGroups(activeGroup)
+    if not shouldAutoCollapseQuestGroups() then
+        return
+    end
+
+    local groups = QuestsMenu.expandableGroups
+    if type(groups) ~= "table" then
+        return
+    end
+
+    for index = 1, #groups do
+        local group = groups[index]
+        if group ~= activeGroup then
+            setSubButtonsVisible(group.buttonA, group.buttonB, false)
+        end
+    end
+end
+
+local function registerExpandableGroup(rootButton, buttonA, buttonB)
+    QuestsMenu.expandableGroups = QuestsMenu.expandableGroups or {}
+    local group = {
+        root = rootButton,
+        buttonA = buttonA,
+        buttonB = buttonB,
+    }
+    table.insert(QuestsMenu.expandableGroups, group)
+
+    rootButton.doLeft = function()
+        local isOpen = buttonA:IsShown() or buttonB:IsShown()
+        if isOpen then
+            setSubButtonsVisible(buttonA, buttonB, false)
+            return
+        end
+
+        collapseOtherQuestGroups(group)
+        setSubButtonsVisible(buttonA, buttonB, true)
+    end
+
+    return group
 end
 
 local function sendIncomplete(method)
@@ -133,6 +181,7 @@ function MultiBot.InitializeQuestsMenu(tRight)
     local button = tRight.addButton("Quests Menu", 0, 0, "achievement_quests_completed_06", MultiBot.L("tips.quests.main"))
     local menu = tRight.addFrame("QuestMenu", -2, 64)
     menu:Hide()
+    QuestsMenu.expandableGroups = {}
 
     button.doLeft = function(owner)
         MultiBot.ShowHideSwitch(owner.parent.frames["QuestMenu"])
@@ -161,7 +210,7 @@ function MultiBot.InitializeQuestsMenu(tRight)
     local incompWhisper = menu.addButton("BotQuestsIncompWhisper", 61, 90, "Interface\\Icons\\INV_Crate_08", MultiBot.L("tips.quests.sendwhisp"))
     incompGroup:doHide()
     incompWhisper:doHide()
-    incompButton.doLeft = function() toggleButtons(incompGroup, incompWhisper) end
+    registerExpandableGroup(incompButton, incompGroup, incompWhisper)
     incompGroup.doLeft = function() sendIncomplete("GROUP") end
     incompWhisper.doLeft = function() sendIncomplete("WHISPER") end
     tRight.buttons["BotQuestsIncomp"] = incompButton
@@ -173,7 +222,7 @@ function MultiBot.InitializeQuestsMenu(tRight)
     local completedWhisper = menu.addButton("BotQuestsCompWhisper", 61, 60, "Interface\\Icons\\INV_Crate_09", MultiBot.L("tips.quests.sendwhisp"))
     completedGroup:doHide()
     completedWhisper:doHide()
-    completedButton.doLeft = function() toggleButtons(completedGroup, completedWhisper) end
+    registerExpandableGroup(completedButton, completedGroup, completedWhisper)
     completedGroup.doLeft = function() sendCompleted("GROUP") end
     completedWhisper.doLeft = function() sendCompleted("WHISPER") end
     tRight.buttons["BotQuestsComp"] = completedButton
@@ -195,7 +244,7 @@ function MultiBot.InitializeQuestsMenu(tRight)
     local allWhisper = menu.addButton("BotQuestsAllWhisper", 61, 120, "Interface\\Icons\\INV_Misc_Book_09", MultiBot.L("tips.quests.sendwhisp"))
     allGroup:doHide()
     allWhisper:doHide()
-    allButton.doLeft = function() toggleButtons(allGroup, allWhisper) end
+    registerExpandableGroup(allButton, allGroup, allWhisper)
     allGroup.doLeft = function() sendAll("GROUP") end
     allWhisper.doLeft = function() sendAll("WHISPER") end
     tRight.buttons["BotQuestsAll"] = allButton
@@ -207,7 +256,7 @@ function MultiBot.InitializeQuestsMenu(tRight)
     local gobSearchButton = menu.addButton("BotUseGOBSearch", 61, 150, "Interface\\Icons\\inv_misc_spyglass_02", MultiBot.L("tips.quests.gobsearch"))
     gobNameButton:doHide()
     gobSearchButton:doHide()
-    gobButton.doLeft = function() toggleButtons(gobNameButton, gobSearchButton) end
+    registerExpandableGroup(gobButton, gobNameButton, gobSearchButton)
     gobNameButton.doLeft = function()
         if not ShowPrompt then
             return
