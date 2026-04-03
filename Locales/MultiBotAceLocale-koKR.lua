@@ -7,6 +7,7 @@ local koKRValues = {
   ["info.itemdestroyalert"] = "이 아이템을 정말로 파기하시겠습니까?\n%s",
   ["info.keydestroyalert"] = "열쇠는 판매하지 않습니다.",
   ["info.itemsellalert"] = "이 아이템은 판매할 수 없습니다.",
+  ["info.questitemsellalert"] = "퀘스트 아이템은 판매할 수 없습니다.",
   ["info.inventoryvendortarget"] = "먼저 판매자를 선택해야 합니다.",
   ["info.butttitle"] = "|cffffd100MultiBot|r",
   ["info.buttontoggle"] = "|cff00ff00좌클릭: UI 전환|r",

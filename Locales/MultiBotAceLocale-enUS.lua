@@ -7,6 +7,7 @@ local enUSValues = {
   ["info.itemdestroyalert"] = "Do you REALLY want to destroy this item?\n%s",
   ["info.keydestroyalert"] = "I will not sell Keys.",
   ["info.itemsellalert"] = "I cant sell this Item.",
+  ["info.questitemsellalert"] = "I cannot sell quest items.",
   ["info.inventoryvendortarget"] = "You must select a vendor first.",
   ["info.butttitle"] = "|cffffd100MultiBot|r",
   ["info.buttontoggle"] = "|cff00ff00Left-click: toggle UI|r",

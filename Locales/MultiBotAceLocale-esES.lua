@@ -7,6 +7,7 @@ local esESValues = {
   ["info.itemdestroyalert"] = "¿REALMENTE quieres destruir este objeto?\n%s",
   ["info.keydestroyalert"] = "No venderé llaves.",
   ["info.itemsellalert"] = "No puedo vender este objeto.",
+  ["info.questitemsellalert"] = "No puedo vender objetos de misión.",
   ["info.inventoryvendortarget"] = "Primero debes seleccionar un vendedor.",
   ["info.butttitle"] = "|cffffd100MultiBot|r",
   ["info.buttontoggle"] = "|cff00ff00Clic izquierdo: alternar la interfaz|r",

@@ -78,7 +78,11 @@ local function buildInventoryItemRecord(itemInfo)
     end
 
     local itemIcon = GetItemIcon(itemId)
-    local itemName, itemLink, itemRare, _, _, itemType, itemSubType, _, _, _, _, itemClassId = GetItemInfo(itemId)
+    local itemName, itemLink, itemRare, _, _, itemType, _, _, _, _, _, itemClassID = GetItemInfo(itemId)
+    if (itemClassID == nil) and GetItemInfoInstant then
+        local _, _, _, _, _, instantClassID = GetItemInfoInstant(tonumber(itemId) or itemId)
+        itemClassID = instantClassID
+    end
 
     return {
         id = itemId,
@@ -86,9 +90,8 @@ local function buildInventoryItemRecord(itemInfo)
         name = resolveInventoryItemName(parts, itemName),
         link = resolveInventoryItemLink(parts, itemLink),
         rare = resolveInventoryItemRarity(itemRare),
-        itemType = itemType,
-        itemSubType = itemSubType,
-        itemClassId = itemClassId,
+        classID = itemClassID,
+        type = itemType,
         count = extractInventoryItemCount(parts),
         info = itemInfo,
         parts = parts,
@@ -142,95 +145,27 @@ local function isInventoryProtectedHearthstone(item)
     return item and item.id == "6948"
 end
 
-local inventorySellGuardTooltipName = "MB_InventorySellGuardTooltip"
-local function getInventorySellGuardTooltip()
-    if MultiBot.AceUI and MultiBot.AceUI.EnsureHiddenTooltip then
-        return MultiBot.AceUI.EnsureHiddenTooltip(inventorySellGuardTooltipName, UIParent)
-    end
-
-    local tooltip = _G[inventorySellGuardTooltipName]
-    if tooltip then
-        return tooltip
-    end
-
-    tooltip = CreateFrame("GameTooltip", inventorySellGuardTooltipName, UIParent, "GameTooltipTemplate")
-    tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-    return tooltip
-end
-
-local function tooltipContainsQuestHint(itemLink)
-    if type(itemLink) ~= "string" or itemLink == "" then
-        return false
-    end
-
-    local tooltip = getInventorySellGuardTooltip()
-    if not tooltip then
-        return false
-    end
-
-    tooltip:ClearLines()
-    tooltip:SetHyperlink(itemLink)
-
-    local questMarkers = {
-        ITEM_STARTS_QUEST,
-        QUESTS_LABEL,
-        TRACKER_HEADER_QUESTS,
-        "Quest",
-        "Quête",
-        "任务",
-        "퀘스트",
-    }
-
-    for lineIndex = 1, 12 do
-        local line = _G[inventorySellGuardTooltipName .. "TextLeft" .. lineIndex]
-        local text = line and line.GetText and line:GetText() or nil
-        if text and text ~= "" then
-            for _, marker in ipairs(questMarkers) do
-                if type(marker) == "string" and marker ~= "" and string.find(text, marker, 1, true) then
-                    return true
-                end
-            end
-        end
-    end
-
-    return false
-end
-
-local function isInventoryQuestType(item)
-    if not item then
-        return false
-    end
-
-    local itemType = tostring(item.itemType or "")
-    local questTypeTokens = {
-        QUESTS_LABEL,
-        TRACKER_HEADER_QUESTS,
-        "Quest",
-        "Quête",
-        "任务",
-        "퀘스트",
-    }
-
-    for _, token in ipairs(questTypeTokens) do
-        if type(token) == "string" and token ~= "" and itemType == token then
-            return true
-        end
-    end
-
-    return false
-end
-
 local function isInventoryProtectedQuestItem(item)
     if not item then
         return false
     end
 
-    if isInventoryQuestType(item) then
-        return true
+    if type(item.classID) == "number" then
+        local questClassID = (type(LE_ITEM_CLASS_QUESTITEM) == "number") and LE_ITEM_CLASS_QUESTITEM or 12
+        return item.classID == questClassID
     end
 
-    return tooltipContainsQuestHint(item.link)
+    return false
 end
+
+MultiBot.InventoryIsProtectedQuestItem = isInventoryProtectedQuestItem
+
+MultiBot.InventoryIsProtectedSellItem = function(item)
+    return isInventoryProtectedQuestItem(item)
+        or isInventoryProtectedHearthstone(item)
+        or isInventoryProtectedKey(item)
+end
+
 
 local function needsInventoryDestroyConfirmation(item)
     return isInventoryProtectedHearthstone(item)
@@ -279,6 +214,11 @@ local function handleInventoryItemClick(button)
             return
         end
 
+        if isInventoryProtectedQuestItem(item) then
+            sendInventoryFeedback("questitemsellalert", "I cannot sell quest items.")
+            return
+        end
+
         if isInventoryProtectedHearthstone(item) then
             sendInventoryFeedback("itemsellalert", "You cannot sell this item")
             return
@@ -286,11 +226,6 @@ local function handleInventoryItemClick(button)
 
         if isInventoryProtectedKey(item) then
             sendInventoryFeedback("keydestroyalert", "I will not sell Keys.")
-            return
-        end
-
-        if isInventoryProtectedQuestItem(item) then
-            sendInventoryFeedback("itemsellalert", "I will not sell quest items.")
             return
         end
 

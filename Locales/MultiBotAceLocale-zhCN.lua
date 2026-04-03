@@ -7,6 +7,7 @@ local zhCNValues = {
   ["info.itemdestroyalert"] = "你真的要销毁这个物品吗？\n%s",
   ["info.keydestroyalert"] = "我不会出售钥匙。",
   ["info.itemsellalert"] = "我无法出售该物品。",
+  ["info.questitemsellalert"] = "无法出售任务物品。",
   ["info.inventoryvendortarget"] = "您必须先选择一位商人。",
   ["info.butttitle"] = "|cffffd100MultiBot|r",
   ["info.buttontoggle"] = "|cff00ff00左键：切换界面|r",
