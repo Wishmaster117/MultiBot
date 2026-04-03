@@ -160,7 +160,7 @@ local function buildLegacyOptionsContent(panel)
   local disableAutoCollapse = MultiBot.GetDisableAutoCollapse and MultiBot.GetDisableAutoCollapse() or false
   local mainBarAutoHideEnabled = MultiBot.GetMainBarAutoHideEnabled and MultiBot.GetMainBarAutoHideEnabled() or false
   local mainBarAutoHideDelay = MultiBot.GetMainBarAutoHideDelay and MultiBot.GetMainBarAutoHideDelay() or 60
-  
+
   local strataDropDown = CreateFrame("Frame", "MultiBotStrataDropDown", scrollChild, "UIDropDownMenuTemplate")
 
   local chkMinimapHide = CreateFrame("CheckButton", "MultiBot_MinimapHideCheck", scrollChild, "InterfaceOptionsCheckButtonTemplate")
