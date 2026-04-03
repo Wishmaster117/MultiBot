@@ -563,14 +563,82 @@ end
 
 MultiBot.ShowHideSwitch = function(pFrame)
 	if(pFrame:IsVisible()) then
+		if MultiBot.RestoreCollapsedUnitBarsFromDropdown then
+			MultiBot.RestoreCollapsedUnitBarsFromDropdown(pFrame)
+		end
 		pFrame:Hide()
 		if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(pFrame) end
 		return false
 	end
 
+	if MultiBot.CollapseOtherUnitBarsForDropdown then
+		MultiBot.CollapseOtherUnitBarsForDropdown(pFrame)
+	end
+
 	pFrame:Show()
 	if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(pFrame) end
 	return true
+end
+
+MultiBot.RestoreCollapsedUnitBarsFromDropdown = function(targetFrame)
+	if not targetFrame then
+		return
+	end
+
+	local collapsedBars = targetFrame._mbCollapsedBars
+	if type(collapsedBars) ~= "table" then
+		return
+	end
+
+	for index = 1, #collapsedBars do
+		local frame = collapsedBars[index]
+		if frame and frame.Show then
+			frame:Show()
+		end
+	end
+
+	targetFrame._mbCollapsedBars = nil
+end
+
+MultiBot.CollapseOtherUnitBarsForDropdown = function(targetFrame)
+	if not targetFrame or not targetFrame.parent then
+		return
+	end
+
+	local unitsFrame = MultiBot.frames
+		and MultiBot.frames["MultiBar"]
+		and MultiBot.frames["MultiBar"].frames
+		and MultiBot.frames["MultiBar"].frames["Units"]
+	if not unitsFrame or not unitsFrame.frames then
+		return
+	end
+
+	local ownerBar = targetFrame.parent
+	while ownerBar and ownerBar.parent and ownerBar.parent ~= unitsFrame do
+		ownerBar = ownerBar.parent
+	end
+
+	if not ownerBar or ownerBar.parent ~= unitsFrame then
+		return
+	end
+
+	-- On ne collapse les autres barres que pour l'ouverture d'un sous-menu
+	-- (pas lors de l'ouverture/fermeture de la barre du bot elle-même).
+	if targetFrame == ownerBar then
+		return
+	end
+
+	local collapsedBars = {}
+	for key, frame in pairs(unitsFrame.frames) do
+		if frame ~= ownerBar and key ~= "Alliance" and key ~= "Control"
+				and frame and frame.Hide and frame.IsShown and frame:IsShown() then
+			table.insert(collapsedBars, frame)
+			frame:Hide()
+		end
+	end
+
+	targetFrame._mbDropdownManaged = true
+	targetFrame._mbCollapsedBars = collapsedBars
 end
 
 MultiBot.OnOffActionToTarget = function(pButton, pOn, pOff, pTarget)
@@ -1080,6 +1148,14 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 
 		if(pEvent == "RightButton" and button.doRight ~= nil) then button.doRight(button) end
 		if(pEvent == "LeftButton" and button.doLeft ~= nil) then button.doLeft(button) end
+
+		if button.parent and button.parent._mbDropdownManaged then
+			if MultiBot.RestoreCollapsedUnitBarsFromDropdown then
+				MultiBot.RestoreCollapsedUnitBarsFromDropdown(button.parent)
+			end
+			button.parent:Hide()
+			if(MultiBot.RequestClickBlockerUpdate) then MultiBot.RequestClickBlockerUpdate(button.parent) end
+		end
 	end)
 
 	return button
