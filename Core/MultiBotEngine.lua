@@ -605,6 +605,12 @@ MultiBot.CollapseOtherUnitBarsForDropdown = function(targetFrame)
 		return
 	end
 
+	if targetFrame._mbSkipAutoCollapse then
+		targetFrame._mbDropdownManaged = nil
+		targetFrame._mbCollapsedBars = nil
+		return
+	end
+
 	if MultiBot.GetDisableAutoCollapse and MultiBot.GetDisableAutoCollapse() then
 		targetFrame._mbDropdownManaged = nil
 		targetFrame._mbCollapsedBars = nil

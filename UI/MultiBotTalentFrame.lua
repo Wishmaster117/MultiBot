@@ -96,6 +96,45 @@ local function setTalentFrameCloseToHide(window)
     end
 end
 
+local function setTalentButtonEnabled(botName, isEnabled)
+    if type(botName) ~= "string" or botName == "" then
+        return
+    end
+
+    local unitsRoot = MultiBot
+        and MultiBot.frames
+        and MultiBot.frames["MultiBar"]
+        and MultiBot.frames["MultiBar"].frames
+        and MultiBot.frames["MultiBar"].frames["Units"]
+    local unitFrame = unitsRoot and unitsRoot.frames and unitsRoot.frames[botName]
+    if not unitFrame or not unitFrame.getButton then
+        return
+    end
+
+    local button = unitFrame.getButton("Talent")
+    if not button then
+        return
+    end
+
+    if isEnabled and button.setEnable then
+        button.setEnable()
+        return
+    end
+
+    if button.setDisable then
+        button.setDisable()
+    end
+end
+
+local function syncTalentButtonStateOnHide()
+    local talentFrame = MultiBot and MultiBot.talent
+    if not talentFrame then
+        return
+    end
+
+    setTalentButtonEnabled(talentFrame.name, false)
+end
+
 -- TODO = Mettre une variable pour deplacer l'icone fallback dans le cadre
 local DEFAULT_TALENT_HOST_CONTENT_LAYOUT = {
     CONTENT_TUNE_X = 0, -- Décalage horizontal global de tout le contenu dans la fenêtre host ACE.
@@ -203,12 +242,13 @@ function MultiBot.InitializeTalentFrameModule()
     MultiBot.TalentTabLabels = MultiBot.TalentTabLabels or { GLYPHS = "Glyphs", CUSTOM_TALENTS = "Custom Talents", CUSTOM_GLYPHS = "Custom Glyphs", COPY = MultiBot.L("info.talent.Copy"), APPLY = MultiBot.L("info.talent.Apply") }
     MultiBot.TalentTabStates = MultiBot.TalentTabStates or { TALENTS = "talents", GLYPHS = "glyphs", CUSTOM_TALENTS = "custom_talents", CUSTOM_GLYPHS = "custom_glyphs" }
     MultiBot.TalentTabContextProfiles = MultiBot.TalentTabContextProfiles or {
-        [MultiBot.TalentTabStates.TALENTS] = { pointsVisible = true, showTalentTrees = true, copyVisible = true, copyActive = true, hideApply = true },
+        [MultiBot.TalentTabStates.TALENTS] = { pointsVisible = true, showTalentTrees = true, copyVisible = true, copyActive = true, refreshApply = true },
         [MultiBot.TalentTabStates.GLYPHS] = { titleKey = "info.glyphsglyphsfor", pointsVisible = false, showTalentTrees = false, copyVisible = false, copyActive = false, hideApply = true },
         [MultiBot.TalentTabStates.CUSTOM_TALENTS] = { titleKey = "info.talentscustomtalentsfor", pointsVisible = true, showTalentTrees = true, copyVisible = false, copyActive = false, refreshApply = true },
         [MultiBot.TalentTabStates.CUSTOM_GLYPHS] = { titleKey = "info.glyphscustomglyphsfor", pointsVisible = false, showTalentTrees = false, copyVisible = false, copyActive = false, refreshApply = true },
     }
     MultiBot.TalentApplyActionSpecs = MultiBot.TalentApplyActionSpecs or {
+        [MultiBot.TalentTabStates.TALENTS] = { hasSelection = "hasTalentsApplySelection", applySelection = "applyCustomTalents" },
         [MultiBot.TalentTabStates.CUSTOM_TALENTS] = { hasSelection = "hasCustomTalentSelection", applySelection = "applyCustomTalents" },
         [MultiBot.TalentTabStates.CUSTOM_GLYPHS] = { hasSelection = "hasCustomGlyphSelection", applySelection = "applyCustomGlyphs" },
     }
@@ -602,6 +642,25 @@ function MultiBot.InitializeTalentFrameModule()
         end) == true
     end
 
+    function MultiBot.talent.hasUnspentTalentPoints()
+        return (tonumber(MultiBot.talent.points) or 0) > 0
+    end
+
+    function MultiBot.talent.hasTalentsApplySelection()
+        return MultiBot.talent.getActiveTabState() == MultiBot.TalentTabStates.TALENTS
+            and MultiBot.talent.hasUnspentTalentPoints()
+    end
+
+    function MultiBot.talent.isTalentEditingEnabledForCurrentTab()
+        local activeTab = MultiBot.talent.getActiveTabState()
+        if activeTab == MultiBot.TalentTabStates.CUSTOM_TALENTS then
+            return true
+        end
+
+        return activeTab == MultiBot.TalentTabStates.TALENTS
+            and MultiBot.talent.hasUnspentTalentPoints()
+    end
+
     function MultiBot.talent.getActiveTabState()
         return MultiBot.talent and MultiBot.talent.__activeTab
     end
@@ -851,6 +910,7 @@ function MultiBot.InitializeTalentFrameModule()
         registerTalentFrameEscapeClose(window, "TalentGlyphHost")
         bindTalentFramePosition(window, "talent_glyph_host")
         setTalentFrameCloseToHide(window)
+        window.frame:HookScript("OnHide", syncTalentButtonStateOnHide)
 
         local host = CreateFrame("Frame", nil, window.content)
         if not host then
@@ -1527,7 +1587,7 @@ function MultiBot.InitializeTalentFrameModule()
     end
 
     function MultiBot.talent.onTalentLeftClick(pButton)
-        if MultiBot.talent.__activeTab ~= MultiBot.TalentTabStates.CUSTOM_TALENTS then
+        if not MultiBot.talent.isTalentEditingEnabledForCurrentTab() then
             return
         end
 
@@ -1548,7 +1608,7 @@ function MultiBot.InitializeTalentFrameModule()
     end
 
     function MultiBot.talent.onTalentRightClick(pButton)
-        if MultiBot.talent.__activeTab ~= MultiBot.TalentTabStates.CUSTOM_TALENTS then
+        if not MultiBot.talent.isTalentEditingEnabledForCurrentTab() then
             return
         end
 

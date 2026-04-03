@@ -11,4 +11,3 @@ TODO
 * faire en sorte que les menus déroulants de la main barre se ferment quand on on ouvre un autre
 * revoir le fichiers UI/MultiBotTalent, la partie des glyphes et des talents car il y'a eu des modifications dans le fichiers .conf de multibot
 * pourquoi les glyphes sont longues a afficher?
-* retirer le collaps sur le bouton "filtre de role"

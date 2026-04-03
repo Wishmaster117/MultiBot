@@ -570,6 +570,7 @@ local function createInviteControls(controlFrame)
 
     local inviteFrame = controlFrame.addFrame("Invite", -30, 122)
     inviteFrame:Hide()
+    inviteFrame._mbSkipAutoCollapse = true
 
     for _, definition in ipairs(INVITE_BUTTONS) do
         inviteFrame.addButton(definition.name, definition.x, 0, definition.icon, MultiBot.L(definition.tip))
