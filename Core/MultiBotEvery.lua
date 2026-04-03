@@ -26,11 +26,7 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
     -- Bouton parent « Misc »
     local btnMisc = pFrame.addButton("Misc",  64,  0, "inv_misc_enggizmos_swissarmy", MultiBot.L("tips.every.misc"))
     btnMisc.doLeft = function(self)
-       if tMisc:IsShown() then
-          tMisc:Hide()
-       else
-          tMisc:Show()
-       end
+       MultiBot.ShowHideSwitch(tMisc)
     end
 
     -- Texture étoile

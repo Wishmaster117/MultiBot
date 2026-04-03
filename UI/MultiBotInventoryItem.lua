@@ -78,7 +78,11 @@ local function buildInventoryItemRecord(itemInfo)
     end
 
     local itemIcon = GetItemIcon(itemId)
-    local itemName, itemLink, itemRare = GetItemInfo(itemId)
+    local itemName, itemLink, itemRare, _, _, itemType, _, _, _, _, _, itemClassID = GetItemInfo(itemId)
+    if (itemClassID == nil) and GetItemInfoInstant then
+        local _, _, _, _, _, instantClassID = GetItemInfoInstant(tonumber(itemId) or itemId)
+        itemClassID = instantClassID
+    end
 
     return {
         id = itemId,
@@ -86,6 +90,8 @@ local function buildInventoryItemRecord(itemInfo)
         name = resolveInventoryItemName(parts, itemName),
         link = resolveInventoryItemLink(parts, itemLink),
         rare = resolveInventoryItemRarity(itemRare),
+        classID = itemClassID,
+        type = itemType,
         count = extractInventoryItemCount(parts),
         info = itemInfo,
         parts = parts,
@@ -139,6 +145,28 @@ local function isInventoryProtectedHearthstone(item)
     return item and item.id == "6948"
 end
 
+local function isInventoryProtectedQuestItem(item)
+    if not item then
+        return false
+    end
+
+    if type(item.classID) == "number" then
+        local questClassID = (type(LE_ITEM_CLASS_QUESTITEM) == "number") and LE_ITEM_CLASS_QUESTITEM or 12
+        return item.classID == questClassID
+    end
+
+    return false
+end
+
+MultiBot.InventoryIsProtectedQuestItem = isInventoryProtectedQuestItem
+
+MultiBot.InventoryIsProtectedSellItem = function(item)
+    return isInventoryProtectedQuestItem(item)
+        or isInventoryProtectedHearthstone(item)
+        or isInventoryProtectedKey(item)
+end
+
+
 local function needsInventoryDestroyConfirmation(item)
     return isInventoryProtectedHearthstone(item)
         or isInventoryProtectedKey(item)
@@ -183,6 +211,11 @@ local function handleInventoryItemClick(button)
     if action == "s" then
         if not MultiBot.isTarget() then
             sendInventoryFeedback("inventoryvendortarget", "Target a vendor first")
+            return
+        end
+
+        if isInventoryProtectedQuestItem(item) then
+            sendInventoryFeedback("questitemsellalert", "I cannot sell quest items.")
             return
         end
 

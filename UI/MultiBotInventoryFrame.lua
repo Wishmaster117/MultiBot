@@ -426,10 +426,8 @@ end
 
 local function formatMoneyLabel(gold, silver, copper)
     local g = tonumber(gold) or 0
-    local s = tonumber(silver) or 0
-    local c = tonumber(copper) or 0
     local moneyLabel = MultiBot.L("info.inventory.money_label", "Money")
-    return string.format("|cffffff00%s:|r %d|cffffd700g|r %d|cffc7c7cfs|r %d|cffb87333c|r", moneyLabel, g, s, c)
+    return string.format("|cffffff00%s:|r %d|cffffd700g|r", moneyLabel, g)
 end
 
 local function formatBagSlotsLabel(used, total)
@@ -793,6 +791,72 @@ local function runInventoryInstantAction(botName, command, options)
     if options.clearActionState then
         CancelTrade()
         setInventoryActionState(nil, { cancelTrade = false })
+    end
+
+    local function isBulkSellCommand(cmd)
+        return cmd == "s *" or cmd == "s vendor"
+    end
+
+    local function shouldSellButtonForBulk(button, cmd)
+        local item = button and button.item
+        if not item then
+            return false
+        end
+
+        if MultiBot.InventoryIsProtectedSellItem and MultiBot.InventoryIsProtectedSellItem(item) then
+            return false
+        end
+
+        if cmd == "s *" then
+            return tonumber(item.rare or -1) == 0
+        end
+
+        return true
+    end
+
+    local function runFilteredBulkSell(cmd)
+        local inventory = MultiBot.inventory
+        local itemsFrame = inventory and inventory.frames and inventory.frames.Items
+        local itemButtons = itemsFrame and itemsFrame.buttons
+        if type(itemButtons) ~= "table" then
+            return false
+        end
+
+        local sellCount = 0
+        local protectedFound = false
+        for _, itemButton in pairs(itemButtons) do
+            if itemButton and itemButton.item then
+                if MultiBot.InventoryIsProtectedSellItem and MultiBot.InventoryIsProtectedSellItem(itemButton.item) then
+                    protectedFound = true
+                elseif shouldSellButtonForBulk(itemButton, cmd) then
+                    SendChatMessage("s " .. itemButton.tip, "WHISPER", nil, botName)
+                    if itemButton.Hide then
+                        itemButton:Hide()
+                    end
+                    sellCount = sellCount + 1
+                end
+            end
+        end
+
+        if protectedFound then
+            SendChatMessage(MultiBot.L("info.questitemsellalert", "I cannot sell quest items."), "SAY")
+        end
+
+        if sellCount < 1 and not protectedFound then
+            return false
+        end
+
+        if options.refreshDelay ~= nil and MultiBot.RefreshInventory then
+            MultiBot.RefreshInventory(options.refreshDelay)
+        elseif options.refresh and MultiBot.RefreshInventory then
+            MultiBot.RefreshInventory()
+        end
+
+        return true
+    end
+
+    if isBulkSellCommand(command) then
+        return runFilteredBulkSell(command)
     end
 
     SendChatMessage(command, "WHISPER", nil, botName)

@@ -153,6 +153,7 @@ local function buildLegacyOptionsContent(panel)
 
   local minimapConfig = MultiBot.GetMinimapConfig and MultiBot.GetMinimapConfig() or { hide = false }
   local mainBarMoveLocked = MultiBot.GetMainBarMoveLocked and MultiBot.GetMainBarMoveLocked() or true
+  local disableAutoCollapse = MultiBot.GetDisableAutoCollapse and MultiBot.GetDisableAutoCollapse() or false
 
   local strataDropDown = CreateFrame("Frame", "MultiBotStrataDropDown", scrollChild, "UIDropDownMenuTemplate")
 
@@ -187,15 +188,27 @@ local function buildLegacyOptionsContent(panel)
     end
   end)
 
+  local chkDisableAutoCollapse = CreateFrame("CheckButton", "MultiBot_DisableAutoCollapseCheck", scrollChild, "InterfaceOptionsCheckButtonTemplate")
+  chkDisableAutoCollapse:SetPoint("TOPLEFT", chkMainBarMoveLocked, "BOTTOMLEFT", 0, -8)
+  _G[chkDisableAutoCollapse:GetName() .. "Text"]:SetText(optL("options.layout.disable_autocollapse"))
+  chkDisableAutoCollapse.tooltipText = optL("options.layout.disable_autocollapse_desc")
+  chkDisableAutoCollapse:SetChecked(disableAutoCollapse and true or false)
+  chkDisableAutoCollapse:SetScript("OnClick", function(btn)
+    if MultiBot.SetDisableAutoCollapse then
+      MultiBot.SetDisableAutoCollapse(btn:GetChecked() and true or false)
+    end
+  end)
+
   panel.chkMinimapHide = chkMinimapHide
   panel.chkMainBarMoveLocked = chkMainBarMoveLocked
+  panel.chkDisableAutoCollapse = chkDisableAutoCollapse
 
   local selectedOwnerKey = nil
   local refreshOwnerDropdown
 
   local exportBtn = CreateFrame("Button", nil, scrollChild, "UIPanelButtonTemplate")
   exportBtn:SetSize(110, 22)
-  exportBtn:SetPoint("TOPLEFT", chkMainBarMoveLocked, "BOTTOMLEFT", 0, -14)
+  exportBtn:SetPoint("TOPLEFT", chkDisableAutoCollapse, "BOTTOMLEFT", 0, -14)
   exportBtn:SetText(optL("options.layout.export"))
   exportBtn:SetScript("OnClick", function()
     if MultiBot.SaveMainBarLayoutForCurrentPlayer then
@@ -516,6 +529,7 @@ function MultiBot.BuildOptionsPanel()
     local function buildLayoutTab(tabGroup)
       local scroll = addTabScroll(tabGroup)
       local mainBarMoveLocked = MultiBot.GetMainBarMoveLocked and MultiBot.GetMainBarMoveLocked() or true
+      local disableAutoCollapse = MultiBot.GetDisableAutoCollapse and MultiBot.GetDisableAutoCollapse() or false
 
       local chkMainBarMoveLocked = AceGUI:Create("CheckBox")
       chkMainBarMoveLocked:SetLabel(mainBarMoveLockLabel)
@@ -531,6 +545,21 @@ function MultiBot.BuildOptionsPanel()
       end)
       scroll:AddChild(chkMainBarMoveLocked)
       panel.chkMainBarMoveLocked = chkMainBarMoveLocked
+
+      local chkDisableAutoCollapse = AceGUI:Create("CheckBox")
+      chkDisableAutoCollapse:SetLabel(optL("options.layout.disable_autocollapse"))
+      if chkDisableAutoCollapse.SetDescription then
+        chkDisableAutoCollapse:SetDescription(optL("options.layout.disable_autocollapse_desc"))
+      end
+      chkDisableAutoCollapse:SetValue(disableAutoCollapse and true or false)
+      chkDisableAutoCollapse:SetFullWidth(true)
+      chkDisableAutoCollapse:SetCallback("OnValueChanged", function(_, _, value)
+        if MultiBot.SetDisableAutoCollapse then
+          MultiBot.SetDisableAutoCollapse(value and true or false)
+        end
+      end)
+      scroll:AddChild(chkDisableAutoCollapse)
+      panel.chkDisableAutoCollapse = chkDisableAutoCollapse
 
       local ownerTitle = AceGUI:Create("Label")
       ownerTitle:SetFullWidth(true)
