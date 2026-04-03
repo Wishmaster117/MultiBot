@@ -14,4 +14,4 @@ TODO
 * Finir les options de déplacement des boutons
 * Debuguer le blocage de la barre principale en déplacement ça a l'air de ne pas persister apres une deco reco
 * Menu misc: faire en sorte que les barres horizontales des autres bots se ferment et que le menu se referme après avoir selectionné une action et que quand ce menu se referme toutes les barres de réouvrent.
-* faite aussi ceci pour tout les menus deroulants de la every barre
+* faite aussi ceci pour tout les menus deroulants de la every main

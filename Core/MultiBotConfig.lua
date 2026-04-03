@@ -20,6 +20,7 @@ local THROTTLE_DEFAULTS = {
 local UI_DEFAULTS = {
   mainBar = {
     moveLocked = true,
+    disableAutoCollapse = false,
   },
 }
 
@@ -78,6 +79,9 @@ local function migrateLegacyConfigIntoProfile(profile)
   profile.ui.mainBar = profile.ui.mainBar or {}
   if type(profile.ui.mainBar.moveLocked) ~= "boolean" then
     profile.ui.mainBar.moveLocked = UI_DEFAULTS.mainBar.moveLocked
+  end
+  if type(profile.ui.mainBar.disableAutoCollapse) ~= "boolean" then
+    profile.ui.mainBar.disableAutoCollapse = UI_DEFAULTS.mainBar.disableAutoCollapse
   end
 end
 
@@ -139,6 +143,9 @@ function MultiBot.Config_Ensure()
   config.ui.mainBar = config.ui.mainBar or {}
   if type(config.ui.mainBar.moveLocked) ~= "boolean" then
     config.ui.mainBar.moveLocked = UI_DEFAULTS.mainBar.moveLocked
+  end
+  if type(config.ui.mainBar.disableAutoCollapse) ~= "boolean" then
+    config.ui.mainBar.disableAutoCollapse = UI_DEFAULTS.mainBar.disableAutoCollapse
   end
 end
 
@@ -252,4 +259,22 @@ function MultiBot.SetMainBarMoveLocked(value)
   config.ui.mainBar = config.ui.mainBar or {}
   config.ui.mainBar.moveLocked = value and true or false
   return config.ui.mainBar.moveLocked
+end
+
+function MultiBot.GetDisableAutoCollapse()
+  local config = getConfigStore(false)
+  local value = config and config.ui and config.ui.mainBar and config.ui.mainBar.disableAutoCollapse
+  if type(value) == "boolean" then
+    return value
+  end
+
+  return UI_DEFAULTS.mainBar.disableAutoCollapse
+end
+
+function MultiBot.SetDisableAutoCollapse(value)
+  local config = getConfigStore(true)
+  config.ui = config.ui or {}
+  config.ui.mainBar = config.ui.mainBar or {}
+  config.ui.mainBar.disableAutoCollapse = value and true or false
+  return config.ui.mainBar.disableAutoCollapse
 end
