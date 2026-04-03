@@ -36,7 +36,8 @@ globals = {
 	"TooltipBackdropTemplateMixin", "NORMAL_FONT_COLOR", "HIGHLIGHT_FONT_COLOR", "GameTooltip_SetDefaultAnchor", "ChatFrame1", "UISpecialFrames", "GetMouseFocus", "ShowUIPanel", "tremove", "min", "max",
 	"GetMinimapShape", "GetMinimapShape", "PanelTemplates_TabResize", "GetGuildRosterShowOffline", "SetGuildRosterShowOffline", "IsInGuild", "GetGuildInfo", "SetGuildRosterShowOffline", "PLAYER", "INVENTORY_TOOLTIP",
 	"BAGSLOT", "UNKNOWN", "UnitIsDead", "ShowPrompt", "_MB_GetOrCreateShamanPos", "ensureHiddenTooltip", "MB_TAB_TITLE_DEFAULT", "SPELLBOOK", "MB_PAGE_DEFAULT", "SPELLBOOK_END_NON_SPELL_STREAK", "sendInventoryItemCommand",
-	"RAID_CLASS_COLORS", "INSPECT", "MB_INVENTORY_LABEL", "LOADING", "ITEM", "ITEMS", "SEARCH", "NO_QUESTS_LABEL", "QUESTS_LABEL", "QUEST_LOG", "UnitIsUnit", "ITEM_STARTS_QUEST", "TRACKER_HEADER_QUESTS"
+	"RAID_CLASS_COLORS", "INSPECT", "MB_INVENTORY_LABEL", "LOADING", "ITEM", "ITEMS", "SEARCH", "NO_QUESTS_LABEL", "QUESTS_LABEL", "QUEST_LOG", "UnitIsUnit", "ITEM_STARTS_QUEST", "TRACKER_HEADER_QUESTS",
+	"GetItemInfoInstant", "LE_ITEM_CLASS_QUESTITEM"
 }
 
 read_globals = {
