@@ -324,6 +324,8 @@ local function saveMultiBarPosition()
     end
 
     local offsetX, offsetY = MultiBot.toPoint(multiBar)
+    multiBar.x = offsetX
+    multiBar.y = offsetY
     MultiBot.SetSavedLayoutValue(MULTIBAR_LAYOUT_KEY, offsetX .. ", " .. offsetY)
     if MultiBot.RefreshMainBarAutoHideState then
         MultiBot.RefreshMainBarAutoHideState()
@@ -407,6 +409,8 @@ local function syncMainBarDetectorPosition(state)
 
     detector:ClearAllPoints()
     detector:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", multiBar.x or 0, multiBar.y or 0)
+    state.syncedX = multiBar.x or 0
+    state.syncedY = multiBar.y or 0
 end
 
 local function splitCsv(value)
@@ -488,6 +492,8 @@ function MultiBot.InitializeMainUI(tMultiBar)
         delay = 60,
         elapsed = 0,
         lastInteraction = GetTime(),
+        syncedX = nil,
+        syncedY = nil,
     }
 
     local detector = CreateFrame("Frame", "MultiBotMainBarAutoHideDetector", UIParent)
@@ -584,6 +590,27 @@ function MultiBot.InitializeMainUI(tMultiBar)
                 return
             end
             autoHideState.elapsed = 0
+
+            local configuredEnabled = MultiBot.GetMainBarAutoHideEnabled and MultiBot.GetMainBarAutoHideEnabled() or false
+            local configuredDelay = MultiBot.GetMainBarAutoHideDelay and MultiBot.GetMainBarAutoHideDelay() or autoHideState.delay
+            if configuredEnabled ~= autoHideState.enabled then
+                autoHideState.enabled = configuredEnabled and true or false
+                autoHideState.delay = configuredDelay
+                if autoHideState.enabled then
+                    autoHideState.lastInteraction = GetTime()
+                else
+                    showMainBarFromAutoHide(autoHideState)
+                    autoHideState.lastInteraction = GetTime()
+                end
+            else
+                autoHideState.delay = configuredDelay
+            end
+
+            local currentX = autoHideState.multiBar.x or 0
+            local currentY = autoHideState.multiBar.y or 0
+            if currentX ~= autoHideState.syncedX or currentY ~= autoHideState.syncedY then
+                syncMainBarDetectorPosition(autoHideState)
+            end
 
             if not autoHideState.enabled or autoHideState.hidden then
                 return

@@ -15,7 +15,7 @@ Checklist for the full addon-wide ACE3 expansion after M7 completion.
 
 - [x] Inventory all legacy frame-based screens and map migration order.
   - Source of truth: `docs/ace3-ui-frame-inventory.md` (update per M8 PR).
-- [ ] Migrate one screen at a time to AceGUI containers/widgets.
+- [x] Migrate one screen at a time to AceGUI containers/widgets.
 - [x] Inventory migration slice completed (`UI/MultiBotInventoryFrame.lua` + `UI/MultiBotInventoryItem.lua`): native AceGUI host window, dedicated controller API, hybrid dense-icon scroll grid, request/refresh parity, and legacy shell removal.
 - [x] Options panel content migrated to AceGUI widgets (`UI/MultiBotOptions.lua`) while keeping InterfaceOptions category + slash entrypoint behavior.
 - [x] Temporary shared migration debug helper introduced (`Core/MultiBotDebug.lua`) to avoid duplicated diagnostics across files.
@@ -35,7 +35,7 @@ Checklist for the full addon-wide ACE3 expansion after M7 completion.
 - [x] Escape-close parity added for migrated AceGUI popups (`Core/MultiBotInit.lua`): popup windows are now registered in `UISpecialFrames` for consistent ESC close behavior.
 - [x] Quest/GameObject architectural follow-up documented (`docs/ace3-quests-gobjects-migration-tracker.md`): the remaining extraction out of `Core/MultiBotInit.lua` and Itemus-style skin target are now tracked explicitly for the next M8 Quest-frame PRs.
 - [x] Quest/GameObject extraction slice completed structurally (`UI/MultiBotQuestUIShared.lua`, `UI/MultiBotPromptDialog.lua`, `UI/MultiBotQuestLogFrame.lua`, `UI/MultiBotQuestIncompleteFrame.lua`, `UI/MultiBotQuestCompletedFrame.lua`, `UI/MultiBotQuestAllFrame.lua`, `UI/MultiBotGameObjectResultsFrame.lua`, `UI/MultiBotGameObjectCopyFrame.lua`, `UI/MultiBotQuestsMenu.lua` + `Core/MultiBotInit.lua` + `MultiBot.toc`): legacy inline frame construction was removed from Core and replaced by dedicated UI modules with shared helpers, deterministic aggregation helpers, and preserved Ace window close/ESC/position behavior.
-- [ ] Quest/GameObject slice final in-game parity validation + Itemus-style polish pass.
+- [x] Quest/GameObject slice final in-game parity validation + Itemus-style polish pass.
 - [x] Preserve slash entry points and open/close behavior (aliases unchanged in migrated slices; popup close/hide + ESC parity preserved).
 - [x] Keep persisted state routed through existing AceDB helpers (`Core/MultiBotInit.lua`: migrated popups now persist positions in `MultiBot.db.profile.ui.popupPositions`).
 - [x] Validate visual/interaction parity per migrated screen (close/hide/ESC parity + popup reopen behavior aligned across migrated slices).

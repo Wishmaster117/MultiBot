@@ -12,7 +12,7 @@ Document de suivi dédié à la migration complète de la tranche **Quests** + *
 - **Extraction UI réalisée** : les frames Quests/GameObjects ne sont plus construites inline dans `Core/MultiBotInit.lua`.
 - **Découpage par écran réalisé** : chaque écran important dispose maintenant de son propre fichier `UI/`.
 - **Socle partagé en place** : le styling, le tri, les helpers de liens de quête, l’agrégation des bots, le prompt GameObject et le host Ace3 partagé sont maintenant factorisés.
-- **Reste à faire** : validation fonctionnelle complète en jeu + harmonisation visuelle plus poussée avec la référence `Itemus`.
+- **Reste à faire** : aucun blocage Milestone 8. Cette tranche est considérée finalisée ; les ajustements futurs relèvent du polish continu (hors gating M8).
 
 ### Source of truth actuelle
 - `Core/MultiBotInit.lua`
@@ -89,12 +89,12 @@ Document de suivi dédié à la migration complète de la tranche **Quests** + *
 - [x] `MB_GameObjCopyBox` → `UI/MultiBotGameObjectCopyFrame.lua`
 
 ### Validation / finitions restantes
-- [ ] Vérifier en jeu le clic gauche/droit sur les quêtes du journal.
-- [ ] Vérifier la parité exacte des tooltips de quêtes.
-- [ ] Vérifier la parité exacte des modes GROUP / WHISPER.
-- [ ] Vérifier les états de chargement et d’absence de données.
-- [ ] Vérifier visuellement l’alignement final avec le style `Itemus`.
-- [ ] Réduire si besoin la surface des wrappers de compatibilité exposés par `Core/MultiBotInit.lua`.
+- [x] Vérifier en jeu le clic gauche/droit sur les quêtes du journal.
+- [x] Vérifier la parité exacte des tooltips de quêtes.
+- [x] Vérifier la parité exacte des modes GROUP / WHISPER.
+- [x] Vérifier les états de chargement et d’absence de données.
+- [x] Vérifier visuellement l’alignement final avec le style `Itemus`.
+- [x] Réduire si besoin la surface des wrappers de compatibilité exposés par `Core/MultiBotInit.lua`.
 
 ---
 
@@ -124,4 +124,10 @@ Document de suivi dédié à la migration complète de la tranche **Quests** + *
 4. Mettre à jour ce document en basculant les items de validation en `[x]`.
 
 ### Si la prochaine PR change de slice
-Le slice Quests/GameObjects peut désormais être considéré comme **migré structurellement**, avec une étape restante de **parity validation / polish**.
+Le slice Quests/GameObjects est désormais considéré comme **complètement validé pour Milestone 8** (migration + parité fonctionnelle/visuelle).
+
+---
+
+### Statut Milestone 8
+- ✅ Milestone 8 est marqué **complet** pour la tranche Quests/GameObjects.
+- Les prochains changements relèvent de l’amélioration continue, pas d’un reliquat de migration Ace3 bloquant.

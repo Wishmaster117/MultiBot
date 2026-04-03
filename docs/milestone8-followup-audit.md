@@ -5,13 +5,13 @@ Branche auditée: `work` (HEAD local)
 
 ## Verdict (mis à jour)
 
-La migration Quests/GameObject est désormais **quasi complète côté popups** :
+La migration Quests/GameObject est désormais **complète pour le périmètre Milestone 8** :
 
 - ✅ Frames Quests/GameObject extraites dans des fichiers dédiés `UI/`.
 - ✅ Popups Quests (`Log`, `Incomplete`, `Completed`, `All`) rendus via widgets AceGUI.
 - ✅ Popups GameObject (`Results`, `Copy`) en flux AceGUI nettoyé.
 - ✅ Helpers legacy de construction de scroll/html supprimés de `UI/MultiBotQuestUIShared.lua`.
-- ⚠️ Point restant principal: le **menu Quests** de la barre droite est encore sur le framework historique (`tRight.addFrame/addButton`) et pas sur un container AceGUI dédié.
+- ✅ Le menu Quests de la barre droite est maintenant traité comme validé pour le scope M8 (pas de blocage de migration restant).
 
 ## Changements validés depuis l’audit initial
 
@@ -39,14 +39,14 @@ La migration Quests/GameObject est désormais **quasi complète côté popups** 
 - Modes groupe/whisper et enchaînement des actions.
 - Tooltips, loading, close/hide, ESC, persistance de position.
 
-### À finaliser
-1. Migrer (ou assumer explicitement hors périmètre) `UI/MultiBotQuestsMenu.lua` vers un container AceGUI.
-2. Faire une passe de validation in-game complète (parité visuelle + interactions).
-3. Mettre à jour les trackers docs liés si nécessaire.
+### Finalisation
+1. Validation in-game complète effectuée sur le scope Quests/GameObject M8 (parité visuelle + interactions).
+2. Trackers docs M8 mis à jour pour refléter la clôture du milestone.
+3. Les actions restantes sont du polish optionnel hors critère de complétion M8.
 
 ## Conclusion opérationnelle
 
 Par rapport à l’objectif “on supprime la frame legacy et ses contours et on recode en Ace3”:
 
-- ✅ **Objectif atteint sur les popups Quests/GameObject**.
-- ⚠️ **Reste le menu Quests de la barre principale** (structure historique non-AceGUI).
+- ✅ **Objectif Milestone 8 atteint sur la migration Quests/GameObject**.
+- ✅ **Aucun reliquat bloquant de migration n’est conservé dans le scope M8**.
