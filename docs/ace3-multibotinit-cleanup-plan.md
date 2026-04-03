@@ -260,8 +260,8 @@ Le nettoyage pourra être considéré comme réussi quand :
 ### Milestone 8 — Quests / GameObjects
 - [x] Extraire les helpers Quests/Ace3 de `Core/MultiBotInit.lua`
 - [x] Garder `UI/MultiBotQuestUIShared.lua` centré sur le rendu partagé, pas sur le host Ace3
-- [ ] Vérifier qu’aucune frame legacy n’est ré-embarquée dans une fenêtre AceGUI
-- [ ] Vérifier la parité visuelle et fonctionnelle en jeu
+- [x] Vérifier qu’aucune frame legacy n’est ré-embarquée dans une fenêtre AceGUI
+- [x] Vérifier la parité visuelle et fonctionnelle en jeu
 
 ### Nettoyage structurel de `Init`
 - [x] Extraire `GroupActions`
@@ -290,7 +290,7 @@ Le nettoyage pourra être considéré comme réussi quand :
 - Extraire BuildFormationUI (le plus net).
 - Extraire le bootstrap stats.
 - Sortir le bloc Left/Mode/Stay/Follow pour arriver à un Init presque 100% composition.
-- finaliser la validation en jeu du slice Quests/GameObjects (parité fonctionnelle + visuelle) ;
+- validation en jeu du slice Quests/GameObjects finalisée (parité fonctionnelle + visuelle) ;
 - conserver la règle “pas de wrapper legacy dans une fenêtre AceGUI”.
 
 ### À faire ensuite
