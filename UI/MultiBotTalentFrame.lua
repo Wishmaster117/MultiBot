@@ -96,6 +96,45 @@ local function setTalentFrameCloseToHide(window)
     end
 end
 
+local function setTalentButtonEnabled(botName, isEnabled)
+    if type(botName) ~= "string" or botName == "" then
+        return
+    end
+
+    local unitsRoot = MultiBot
+        and MultiBot.frames
+        and MultiBot.frames["MultiBar"]
+        and MultiBot.frames["MultiBar"].frames
+        and MultiBot.frames["MultiBar"].frames["Units"]
+    local unitFrame = unitsRoot and unitsRoot.frames and unitsRoot.frames[botName]
+    if not unitFrame or not unitFrame.getButton then
+        return
+    end
+
+    local button = unitFrame.getButton("Talent")
+    if not button then
+        return
+    end
+
+    if isEnabled and button.setEnable then
+        button.setEnable()
+        return
+    end
+
+    if button.setDisable then
+        button.setDisable()
+    end
+end
+
+local function syncTalentButtonStateOnHide()
+    local talentFrame = MultiBot and MultiBot.talent
+    if not talentFrame then
+        return
+    end
+
+    setTalentButtonEnabled(talentFrame.name, false)
+end
+
 -- TODO = Mettre une variable pour deplacer l'icone fallback dans le cadre
 local DEFAULT_TALENT_HOST_CONTENT_LAYOUT = {
     CONTENT_TUNE_X = 0, -- Décalage horizontal global de tout le contenu dans la fenêtre host ACE.
@@ -871,6 +910,7 @@ function MultiBot.InitializeTalentFrameModule()
         registerTalentFrameEscapeClose(window, "TalentGlyphHost")
         bindTalentFramePosition(window, "talent_glyph_host")
         setTalentFrameCloseToHide(window)
+        window.frame:HookScript("OnHide", syncTalentButtonStateOnHide)
 
         local host = CreateFrame("Frame", nil, window.content)
         if not host then
