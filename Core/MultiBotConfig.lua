@@ -258,6 +258,9 @@ function MultiBot.SetMainBarMoveLocked(value)
   config.ui = config.ui or {}
   config.ui.mainBar = config.ui.mainBar or {}
   config.ui.mainBar.moveLocked = value and true or false
+  if MultiBot.ApplyMainBarMoveLockState then
+    MultiBot.ApplyMainBarMoveLockState(config.ui.mainBar.moveLocked)
+  end
   return config.ui.mainBar.moveLocked
 end
 
