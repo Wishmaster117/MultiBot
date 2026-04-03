@@ -203,12 +203,13 @@ function MultiBot.InitializeTalentFrameModule()
     MultiBot.TalentTabLabels = MultiBot.TalentTabLabels or { GLYPHS = "Glyphs", CUSTOM_TALENTS = "Custom Talents", CUSTOM_GLYPHS = "Custom Glyphs", COPY = MultiBot.L("info.talent.Copy"), APPLY = MultiBot.L("info.talent.Apply") }
     MultiBot.TalentTabStates = MultiBot.TalentTabStates or { TALENTS = "talents", GLYPHS = "glyphs", CUSTOM_TALENTS = "custom_talents", CUSTOM_GLYPHS = "custom_glyphs" }
     MultiBot.TalentTabContextProfiles = MultiBot.TalentTabContextProfiles or {
-        [MultiBot.TalentTabStates.TALENTS] = { pointsVisible = true, showTalentTrees = true, copyVisible = true, copyActive = true, hideApply = true },
+        [MultiBot.TalentTabStates.TALENTS] = { pointsVisible = true, showTalentTrees = true, copyVisible = true, copyActive = true, refreshApply = true },
         [MultiBot.TalentTabStates.GLYPHS] = { titleKey = "info.glyphsglyphsfor", pointsVisible = false, showTalentTrees = false, copyVisible = false, copyActive = false, hideApply = true },
         [MultiBot.TalentTabStates.CUSTOM_TALENTS] = { titleKey = "info.talentscustomtalentsfor", pointsVisible = true, showTalentTrees = true, copyVisible = false, copyActive = false, refreshApply = true },
         [MultiBot.TalentTabStates.CUSTOM_GLYPHS] = { titleKey = "info.glyphscustomglyphsfor", pointsVisible = false, showTalentTrees = false, copyVisible = false, copyActive = false, refreshApply = true },
     }
     MultiBot.TalentApplyActionSpecs = MultiBot.TalentApplyActionSpecs or {
+        [MultiBot.TalentTabStates.TALENTS] = { hasSelection = "hasTalentsApplySelection", applySelection = "applyCustomTalents" },
         [MultiBot.TalentTabStates.CUSTOM_TALENTS] = { hasSelection = "hasCustomTalentSelection", applySelection = "applyCustomTalents" },
         [MultiBot.TalentTabStates.CUSTOM_GLYPHS] = { hasSelection = "hasCustomGlyphSelection", applySelection = "applyCustomGlyphs" },
     }
@@ -600,6 +601,25 @@ function MultiBot.InitializeTalentFrameModule()
 
             return nil
         end) == true
+    end
+
+    function MultiBot.talent.hasUnspentTalentPoints()
+        return (tonumber(MultiBot.talent.points) or 0) > 0
+    end
+
+    function MultiBot.talent.hasTalentsApplySelection()
+        return MultiBot.talent.getActiveTabState() == MultiBot.TalentTabStates.TALENTS
+            and MultiBot.talent.hasUnspentTalentPoints()
+    end
+
+    function MultiBot.talent.isTalentEditingEnabledForCurrentTab()
+        local activeTab = MultiBot.talent.getActiveTabState()
+        if activeTab == MultiBot.TalentTabStates.CUSTOM_TALENTS then
+            return true
+        end
+
+        return activeTab == MultiBot.TalentTabStates.TALENTS
+            and MultiBot.talent.hasUnspentTalentPoints()
     end
 
     function MultiBot.talent.getActiveTabState()
@@ -1527,7 +1547,7 @@ function MultiBot.InitializeTalentFrameModule()
     end
 
     function MultiBot.talent.onTalentLeftClick(pButton)
-        if MultiBot.talent.__activeTab ~= MultiBot.TalentTabStates.CUSTOM_TALENTS then
+        if not MultiBot.talent.isTalentEditingEnabledForCurrentTab() then
             return
         end
 
@@ -1548,7 +1568,7 @@ function MultiBot.InitializeTalentFrameModule()
     end
 
     function MultiBot.talent.onTalentRightClick(pButton)
-        if MultiBot.talent.__activeTab ~= MultiBot.TalentTabStates.CUSTOM_TALENTS then
+        if not MultiBot.talent.isTalentEditingEnabledForCurrentTab() then
             return
         end
 
