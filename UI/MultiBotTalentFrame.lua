@@ -729,6 +729,25 @@ function MultiBot.InitializeTalentFrameModule()
         end
     end
 
+    function MultiBot.talent.updateTalentTreeLayeringForHost(host)
+        if not host then
+            return
+        end
+
+        local hostStrata = host:GetFrameStrata() or "DIALOG"
+        local hostLevel = host:GetFrameLevel() or 0
+
+        MultiBot.talent.forEachTalentTree(function(_, treeFrame)
+            if treeFrame and treeFrame.SetFrameStrata and treeFrame.SetFrameLevel then
+                treeFrame:SetFrameStrata(hostStrata)
+                treeFrame:SetFrameLevel(hostLevel + 1)
+            end
+
+            MultiBot.talent.syncTalentTreeLayering(treeFrame)
+            return nil
+        end)
+    end
+
     function MultiBot.talent.activateHostTab(host, window, value)
         local hostTab = MultiBot.TalentTabHost and MultiBot.TalentTabHost.BUTTONS and MultiBot.TalentTabHost.BUTTONS[value]
         local tab = hostTab and MultiBot.talent.tabTextures and MultiBot.talent.tabTextures[hostTab.key]
@@ -739,6 +758,7 @@ function MultiBot.InitializeTalentFrameModule()
         end
 
         MultiBot.talent.updateTabChromeForHost(host)
+        MultiBot.talent.updateTalentTreeLayeringForHost(host)
         MultiBot.talent.refreshApplyTabVisibility()
         if MultiBot.talent.texts and MultiBot.talent.texts["Title"] then
             MultiBot.talent.texts["Title"]:Hide()
@@ -792,6 +812,7 @@ function MultiBot.InitializeTalentFrameModule()
         end
 
         MultiBot.talent.updateTabChromeForHost(host)
+        MultiBot.talent.updateTalentTreeLayeringForHost(host)
         MultiBot.talent.refreshApplyTabVisibility()
         return host
     end
@@ -1318,13 +1339,59 @@ function MultiBot.InitializeTalentFrameModule()
 	return pTab
     end
 
+    function MultiBot.talent.getTalentTreeLayerLevel(treeFrame, offset)
+        local baseLevel = (treeFrame and treeFrame.GetFrameLevel and treeFrame:GetFrameLevel()) or 0
+        return baseLevel + (offset or 0)
+    end
+
+    function MultiBot.talent.syncTalentTreeLayering(treeFrame)
+        if not treeFrame then
+            return
+        end
+
+        local arrowLevel = MultiBot.talent.getTalentTreeLayerLevel(treeFrame, 1)
+        local talentLevel = MultiBot.talent.getTalentTreeLayerLevel(treeFrame, 2)
+        local valueLevel = MultiBot.talent.getTalentTreeLayerLevel(treeFrame, 3)
+
+        if treeFrame.arrows then
+            for _, arrowFrame in ipairs(treeFrame.arrows) do
+                if arrowFrame and arrowFrame.SetFrameLevel then
+                    arrowFrame:SetFrameLevel(arrowLevel)
+                end
+            end
+        end
+
+        if treeFrame.buttons then
+            for _, talentButton in pairs(treeFrame.buttons) do
+                if talentButton and talentButton.SetFrameLevel then
+                    talentButton:SetFrameLevel(talentLevel)
+                end
+            end
+        end
+
+        if treeFrame.frames then
+            for _, valueFrame in pairs(treeFrame.frames) do
+                if valueFrame and valueFrame.SetFrameLevel then
+                    valueFrame:SetFrameLevel(valueLevel)
+                end
+            end
+        end
+    end
+
+    function MultiBot.talent.syncAllTalentTreeLayering()
+        MultiBot.talent.forEachTalentTree(function(_, treeFrame)
+            MultiBot.talent.syncTalentTreeLayering(treeFrame)
+            return nil
+        end)
+    end
+
     MultiBot.talent.addArrow = function(pTab, pID, pNeeds, piX, piY, pTexture)
 	local tArrow = pTab.addFrame("Arrow" .. pID, piX * pTab.grid.icons.size - pTab.grid.arrows.x, pTab.grid.arrows.y - piY * pTab.grid.icons.size, pTab.grid.arrows.size)
 	tArrow.inactive = "Interface\\AddOns\\MultiBot\\Textures\\Talent_Silver_" .. pTexture .. ".blp"
 	tArrow.addTexture(tArrow.inactive)
 	tArrow.active = "Interface\\AddOns\\MultiBot\\Textures\\Talent_Gold_" .. pTexture .. ".blp"
 	tArrow.needs = pNeeds
-	tArrow:SetFrameLevel(7)
+	tArrow:SetFrameLevel(MultiBot.talent.getTalentTreeLayerLevel(pTab, 1))
 	return tArrow
     end
 
@@ -1516,7 +1583,7 @@ function MultiBot.InitializeTalentFrameModule()
 	tTalent.id = pID
 	tTalent.doLeft = MultiBot.talent.onTalentLeftClick
 	tTalent.doRight = MultiBot.talent.onTalentRightClick
-	tTalent:SetFrameLevel(8)
+	tTalent:SetFrameLevel(MultiBot.talent.getTalentTreeLayerLevel(pTab, 2))
 	return tTalent
     end
 
@@ -1526,7 +1593,7 @@ function MultiBot.InitializeTalentFrameModule()
 	tValue.addTexture("Interface\\AddOns\\MultiBot\\Textures\\Talent_Black.blp")
 	tValue.addText("Value", tColor .. pRank .. "/" .. pMax .. "|r", "CENTER", -0.5, 1, 10)
 	if(MultiBot.talent.points == 0 and pRank == 0) then tValue:Hide() end
-	tValue:SetFrameLevel(9)
+	tValue:SetFrameLevel(MultiBot.talent.getTalentTreeLayerLevel(pTab, 3))
 	return tValue
     end
 
