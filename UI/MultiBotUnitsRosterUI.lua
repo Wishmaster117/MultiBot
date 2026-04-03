@@ -72,6 +72,7 @@ function MultiBot.BuildRosterUI(tControl)
     local rootButton = tControl.addButton("Roster", 0, 30, ROSTER_ROOT_ICON, MultiBot.L("tips.units.roster"))
     local rosterFrame = tControl.addFrame(ROSTER_FRAME_NAME, ROSTER_FRAME_X, ROSTER_FRAME_Y)
     rosterFrame:Hide()
+    rosterFrame._mbSkipAutoCollapse = true
 
     rootButton.doLeft = function(owner)
         MultiBot.ShowHideSwitch(owner.parent.frames[ROSTER_FRAME_NAME])
