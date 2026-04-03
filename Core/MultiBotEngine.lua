@@ -1154,6 +1154,9 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 
 		if(pEvent == "RightButton" and button.doRight ~= nil) then button.doRight(button) end
 		if(pEvent == "LeftButton" and button.doLeft ~= nil) then button.doLeft(button) end
+		if MultiBot.MainBarAutoHide_NotifyInteraction then
+			MultiBot.MainBarAutoHide_NotifyInteraction()
+		end
 
 		if button.parent and button.parent._mbDropdownManaged then
 			if MultiBot.RestoreCollapsedUnitBarsFromDropdown then

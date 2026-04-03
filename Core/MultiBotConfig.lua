@@ -21,6 +21,8 @@ local UI_DEFAULTS = {
   mainBar = {
     moveLocked = true,
     disableAutoCollapse = false,
+    autoHideEnabled = false,
+    autoHideDelay = 60,
   },
 }
 
@@ -82,6 +84,12 @@ local function migrateLegacyConfigIntoProfile(profile)
   end
   if type(profile.ui.mainBar.disableAutoCollapse) ~= "boolean" then
     profile.ui.mainBar.disableAutoCollapse = UI_DEFAULTS.mainBar.disableAutoCollapse
+  end
+  if type(profile.ui.mainBar.autoHideEnabled) ~= "boolean" then
+    profile.ui.mainBar.autoHideEnabled = UI_DEFAULTS.mainBar.autoHideEnabled
+  end
+  if type(profile.ui.mainBar.autoHideDelay) ~= "number" or profile.ui.mainBar.autoHideDelay <= 0 then
+    profile.ui.mainBar.autoHideDelay = UI_DEFAULTS.mainBar.autoHideDelay
   end
 end
 
@@ -146,6 +154,12 @@ function MultiBot.Config_Ensure()
   end
   if type(config.ui.mainBar.disableAutoCollapse) ~= "boolean" then
     config.ui.mainBar.disableAutoCollapse = UI_DEFAULTS.mainBar.disableAutoCollapse
+  end
+  if type(config.ui.mainBar.autoHideEnabled) ~= "boolean" then
+    config.ui.mainBar.autoHideEnabled = UI_DEFAULTS.mainBar.autoHideEnabled
+  end
+  if type(config.ui.mainBar.autoHideDelay) ~= "number" or config.ui.mainBar.autoHideDelay <= 0 then
+    config.ui.mainBar.autoHideDelay = UI_DEFAULTS.mainBar.autoHideDelay
   end
 end
 
@@ -280,4 +294,59 @@ function MultiBot.SetDisableAutoCollapse(value)
   config.ui.mainBar = config.ui.mainBar or {}
   config.ui.mainBar.disableAutoCollapse = value and true or false
   return config.ui.mainBar.disableAutoCollapse
+end
+
+local function normalizeMainBarAutoHideDelay(value)
+  if type(value) ~= "number" then
+    return UI_DEFAULTS.mainBar.autoHideDelay
+  end
+  if value < 5 then
+    return 5
+  end
+  if value > 600 then
+    return 600
+  end
+  return value
+end
+
+function MultiBot.GetMainBarAutoHideEnabled()
+  local config = getConfigStore(false)
+  local value = config and config.ui and config.ui.mainBar and config.ui.mainBar.autoHideEnabled
+  if type(value) == "boolean" then
+    return value
+  end
+
+  return UI_DEFAULTS.mainBar.autoHideEnabled
+end
+
+function MultiBot.SetMainBarAutoHideEnabled(value)
+  local config = getConfigStore(true)
+  config.ui = config.ui or {}
+  config.ui.mainBar = config.ui.mainBar or {}
+  config.ui.mainBar.autoHideEnabled = value and true or false
+  if MultiBot.RefreshMainBarAutoHideState then
+    MultiBot.RefreshMainBarAutoHideState()
+  end
+  return config.ui.mainBar.autoHideEnabled
+end
+
+function MultiBot.GetMainBarAutoHideDelay()
+  local config = getConfigStore(false)
+  local value = config and config.ui and config.ui.mainBar and config.ui.mainBar.autoHideDelay
+  if type(value) == "number" and value > 0 then
+    return normalizeMainBarAutoHideDelay(value)
+  end
+
+  return UI_DEFAULTS.mainBar.autoHideDelay
+end
+
+function MultiBot.SetMainBarAutoHideDelay(value)
+  local config = getConfigStore(true)
+  config.ui = config.ui or {}
+  config.ui.mainBar = config.ui.mainBar or {}
+  config.ui.mainBar.autoHideDelay = normalizeMainBarAutoHideDelay(value)
+  if MultiBot.RefreshMainBarAutoHideState then
+    MultiBot.RefreshMainBarAutoHideState()
+  end
+  return config.ui.mainBar.autoHideDelay
 end

@@ -14,6 +14,10 @@ local function secondsLabel(value)
   return string.format("%.1f %s", value, suffix)
 end
 
+local function mainBarAutoHideDelayLabel(value)
+  return string.format("%d %s", round(value, 1), MultiBot.L("options.seconds_suffix"))
+end
+
 local function getAceGUI()
   if type(LibStub) ~= "table" then return nil end
   return LibStub("AceGUI-3.0", true)
@@ -154,7 +158,9 @@ local function buildLegacyOptionsContent(panel)
   local minimapConfig = MultiBot.GetMinimapConfig and MultiBot.GetMinimapConfig() or { hide = false }
   local mainBarMoveLocked = MultiBot.GetMainBarMoveLocked and MultiBot.GetMainBarMoveLocked() or true
   local disableAutoCollapse = MultiBot.GetDisableAutoCollapse and MultiBot.GetDisableAutoCollapse() or false
-
+  local mainBarAutoHideEnabled = MultiBot.GetMainBarAutoHideEnabled and MultiBot.GetMainBarAutoHideEnabled() or false
+  local mainBarAutoHideDelay = MultiBot.GetMainBarAutoHideDelay and MultiBot.GetMainBarAutoHideDelay() or 60
+  
   local strataDropDown = CreateFrame("Frame", "MultiBotStrataDropDown", scrollChild, "UIDropDownMenuTemplate")
 
   local chkMinimapHide = CreateFrame("CheckButton", "MultiBot_MinimapHideCheck", scrollChild, "InterfaceOptionsCheckButtonTemplate")
@@ -199,16 +205,72 @@ local function buildLegacyOptionsContent(panel)
     end
   end)
 
+  local chkMainBarAutoHide = CreateFrame("CheckButton", "MultiBot_MainBarAutoHideCheck", scrollChild, "InterfaceOptionsCheckButtonTemplate")
+  chkMainBarAutoHide:SetPoint("TOPLEFT", chkDisableAutoCollapse, "BOTTOMLEFT", 0, -8)
+  _G[chkMainBarAutoHide:GetName() .. "Text"]:SetText(optL("options.layout.mainbar_autohide"))
+  chkMainBarAutoHide.tooltipText = optL("options.layout.mainbar_autohide_desc")
+  chkMainBarAutoHide:SetChecked(mainBarAutoHideEnabled and true or false)
+
+  local mainBarAutoHideDelaySlider = CreateFrame("Slider", PANEL_NAME .. "_mainbar_autohide_delay_slider", scrollChild, "OptionsSliderTemplate")
+  mainBarAutoHideDelaySlider:SetPoint("TOPLEFT", chkMainBarAutoHide, "BOTTOMLEFT", 8, -18)
+  mainBarAutoHideDelaySlider:SetWidth(300)
+  mainBarAutoHideDelaySlider:SetMinMaxValues(5, 600)
+  mainBarAutoHideDelaySlider:SetValueStep(1)
+  if mainBarAutoHideDelaySlider.SetObeyStepOnDrag then
+    mainBarAutoHideDelaySlider:SetObeyStepOnDrag(true)
+  end
+  mainBarAutoHideDelaySlider:SetValue(mainBarAutoHideDelay)
+
+  _G[mainBarAutoHideDelaySlider:GetName() .. "Text"]:SetText(optL("options.layout.mainbar_autohide_delay"))
+  _G[mainBarAutoHideDelaySlider:GetName() .. "Low"]:SetText(mainBarAutoHideDelayLabel(5))
+  _G[mainBarAutoHideDelaySlider:GetName() .. "High"]:SetText(mainBarAutoHideDelayLabel(600))
+
+  local autoHideDelayValueLabel = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+  autoHideDelayValueLabel:SetPoint("TOP", mainBarAutoHideDelaySlider, "BOTTOM", 0, 0)
+  autoHideDelayValueLabel:SetText(mainBarAutoHideDelayLabel(mainBarAutoHideDelay))
+
+  local function updateMainBarAutoHideDelaySliderState()
+    local enabled = chkMainBarAutoHide:GetChecked() and true or false
+    if enabled then
+      mainBarAutoHideDelaySlider:Enable()
+      autoHideDelayValueLabel:SetTextColor(0.82, 0.82, 0.82)
+    else
+      mainBarAutoHideDelaySlider:Disable()
+      autoHideDelayValueLabel:SetTextColor(0.5, 0.5, 0.5)
+    end
+  end
+
+  chkMainBarAutoHide:SetScript("OnClick", function(btn)
+    local enabled = btn:GetChecked() and true or false
+    if MultiBot.SetMainBarAutoHideEnabled then
+      MultiBot.SetMainBarAutoHideEnabled(enabled)
+    end
+    updateMainBarAutoHideDelaySliderState()
+  end)
+
+  mainBarAutoHideDelaySlider:SetScript("OnValueChanged", function(self, value)
+    value = round(value, 1)
+    self:SetValue(value)
+    autoHideDelayValueLabel:SetText(mainBarAutoHideDelayLabel(value))
+    if MultiBot.SetMainBarAutoHideDelay then
+      MultiBot.SetMainBarAutoHideDelay(value)
+    end
+  end)
+
+  updateMainBarAutoHideDelaySliderState()
+
   panel.chkMinimapHide = chkMinimapHide
   panel.chkMainBarMoveLocked = chkMainBarMoveLocked
   panel.chkDisableAutoCollapse = chkDisableAutoCollapse
+  panel.chkMainBarAutoHide = chkMainBarAutoHide
+  panel.mainBarAutoHideDelaySlider = mainBarAutoHideDelaySlider
 
   local selectedOwnerKey = nil
   local refreshOwnerDropdown
 
   local exportBtn = CreateFrame("Button", nil, scrollChild, "UIPanelButtonTemplate")
   exportBtn:SetSize(110, 22)
-  exportBtn:SetPoint("TOPLEFT", chkDisableAutoCollapse, "BOTTOMLEFT", 0, -14)
+  exportBtn:SetPoint("TOPLEFT", mainBarAutoHideDelaySlider, "BOTTOMLEFT", -8, -24)
   exportBtn:SetText(optL("options.layout.export"))
   exportBtn:SetScript("OnClick", function()
     if MultiBot.SaveMainBarLayoutForCurrentPlayer then
@@ -530,6 +592,8 @@ function MultiBot.BuildOptionsPanel()
       local scroll = addTabScroll(tabGroup)
       local mainBarMoveLocked = MultiBot.GetMainBarMoveLocked and MultiBot.GetMainBarMoveLocked() or true
       local disableAutoCollapse = MultiBot.GetDisableAutoCollapse and MultiBot.GetDisableAutoCollapse() or false
+      local mainBarAutoHideEnabled = MultiBot.GetMainBarAutoHideEnabled and MultiBot.GetMainBarAutoHideEnabled() or false
+      local mainBarAutoHideDelay = MultiBot.GetMainBarAutoHideDelay and MultiBot.GetMainBarAutoHideDelay() or 60
 
       local chkMainBarMoveLocked = AceGUI:Create("CheckBox")
       chkMainBarMoveLocked:SetLabel(mainBarMoveLockLabel)
@@ -560,6 +624,50 @@ function MultiBot.BuildOptionsPanel()
       end)
       scroll:AddChild(chkDisableAutoCollapse)
       panel.chkDisableAutoCollapse = chkDisableAutoCollapse
+
+      local autoHideDelaySlider = AceGUI:Create("Slider")
+      autoHideDelaySlider:SetLabel(optL("options.layout.mainbar_autohide_delay"))
+      autoHideDelaySlider:SetSliderValues(5, 600, 1)
+      autoHideDelaySlider:SetValue(mainBarAutoHideDelay)
+      autoHideDelaySlider:SetFullWidth(true)
+      autoHideDelaySlider:SetCallback("OnValueChanged", function(widget, _, value)
+        value = round(value, 1)
+        widget:SetValue(value)
+        widget:SetLabel(formatSliderLabel(optL("options.layout.mainbar_autohide_delay"), mainBarAutoHideDelayLabel(value)))
+        if MultiBot.SetMainBarAutoHideDelay then
+          MultiBot.SetMainBarAutoHideDelay(value)
+        end
+      end)
+
+      local function refreshAutoHideDelaySliderState(enabled)
+        local delayValue = MultiBot.GetMainBarAutoHideDelay and MultiBot.GetMainBarAutoHideDelay() or mainBarAutoHideDelay
+        autoHideDelaySlider:SetValue(delayValue)
+        autoHideDelaySlider:SetLabel(formatSliderLabel(optL("options.layout.mainbar_autohide_delay"), mainBarAutoHideDelayLabel(delayValue)))
+        if autoHideDelaySlider.SetDisabled then
+          autoHideDelaySlider:SetDisabled(not enabled)
+        end
+      end
+
+      local chkMainBarAutoHide = AceGUI:Create("CheckBox")
+      chkMainBarAutoHide:SetLabel(optL("options.layout.mainbar_autohide"))
+      if chkMainBarAutoHide.SetDescription then
+        chkMainBarAutoHide:SetDescription(optL("options.layout.mainbar_autohide_desc"))
+      end
+      chkMainBarAutoHide:SetValue(mainBarAutoHideEnabled and true or false)
+      chkMainBarAutoHide:SetFullWidth(true)
+      chkMainBarAutoHide:SetCallback("OnValueChanged", function(_, _, value)
+        local enabled = value and true or false
+        if MultiBot.SetMainBarAutoHideEnabled then
+          MultiBot.SetMainBarAutoHideEnabled(enabled)
+        end
+        refreshAutoHideDelaySliderState(enabled)
+      end)
+      scroll:AddChild(chkMainBarAutoHide)
+      panel.chkMainBarAutoHide = chkMainBarAutoHide
+
+      refreshAutoHideDelaySliderState(mainBarAutoHideEnabled and true or false)
+      scroll:AddChild(autoHideDelaySlider)
+      panel.autoHideDelaySlider = autoHideDelaySlider
 
       local ownerTitle = AceGUI:Create("Label")
       ownerTitle:SetFullWidth(true)
