@@ -1843,13 +1843,13 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 		-- EQUIPPING --
 
 		if(MultiBot.inventory:IsVisible()) then
-			if(MultiBot.isInside(arg1, "装备", "使用", "吃", "喝", "盛宴", "摧毁")) then
+			if(MultiBot.isInside(arg1, "装备", "卸下", "使用", "吃", "喝", "盛宴", "摧毁")) then
 				tButton.waitFor = "INVENTORY"
 				SendChatMessage("items", "WHISPER", nil, tButton.name)
 				return
 			end
 
-			if(MultiBot.isInside(string.lower(arg1), "equipping", "using", "eating", "drinking", "feasting", "destroyed")) then
+			if(MultiBot.isInside(string.lower(arg1), "equipping", "unequipping", "using", "eating", "drinking", "feasting", "destroyed", "removed", "taking off")) then
 				tButton.waitFor = "INVENTORY"
 				SendChatMessage("items", "WHISPER", nil, tButton.name)
 				return
