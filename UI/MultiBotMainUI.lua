@@ -9,6 +9,8 @@ local MULTIBAR_LAYOUT_KEY = "MultiBarPoint"
 local MAINBAR_BUTTON_ORDER_LAYOUT_KEY = "MainBarButtonsOrder"
 local MAINBAR_BUTTON_STEP_Y = 34
 local LEFT_LAYOUT_SHIFT = 34
+local MAINBAR_AUTOHIDE_HOTSPOT_SIZE = 42
+local MAINBAR_AUTOHIDE_UPDATE_INTERVAL = 0.2
 
 local LEFT_LAYOUT_NAMES = {
     "Tanker",
@@ -323,6 +325,88 @@ local function saveMultiBarPosition()
 
     local offsetX, offsetY = MultiBot.toPoint(multiBar)
     MultiBot.SetSavedLayoutValue(MULTIBAR_LAYOUT_KEY, offsetX .. ", " .. offsetY)
+    if MultiBot.RefreshMainBarAutoHideState then
+        MultiBot.RefreshMainBarAutoHideState()
+    end
+end
+
+local function isMouseOverFrameNode(node)
+    if not node or (node.IsShown and not node:IsShown()) then
+        return false
+    end
+
+    if node.IsMouseOver and node:IsMouseOver() then
+        return true
+    end
+
+    local buttons = node.buttons
+    if type(buttons) == "table" then
+        for _, button in pairs(buttons) do
+            if button and button.IsShown and button:IsShown() and button.IsMouseOver and button:IsMouseOver() then
+                return true
+            end
+        end
+    end
+
+    local children = node.frames
+    if type(children) == "table" then
+        for _, child in pairs(children) do
+            if isMouseOverFrameNode(child) then
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
+local function hideMainBarForAutoHide(state)
+    if state.hidden then
+        return
+    end
+
+    local multiBar = state.multiBar
+    if not multiBar then
+        return
+    end
+
+    multiBar:Hide()
+    state.hidden = true
+    if state.detector then
+        state.detector:Show()
+    end
+end
+
+local function showMainBarFromAutoHide(state)
+    local multiBar = state.multiBar
+    if not multiBar then
+        return
+    end
+
+    if state.hidden then
+        multiBar:Show()
+        state.hidden = false
+    end
+
+    if state.detector then
+        state.detector:Hide()
+    end
+end
+
+local function markMainBarInteraction(state)
+    state.lastInteraction = GetTime()
+    showMainBarFromAutoHide(state)
+end
+
+local function syncMainBarDetectorPosition(state)
+    local detector = state and state.detector
+    local multiBar = state and state.multiBar
+    if not detector or not multiBar then
+        return
+    end
+
+    detector:ClearAllPoints()
+    detector:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", multiBar.x or 0, multiBar.y or 0)
 end
 
 local function splitCsv(value)
@@ -397,6 +481,25 @@ function MultiBot.InitializeMainUI(tMultiBar)
 
     local mainButton = tMultiBar.addButton(MAIN_BUTTON_NAME, 0, 0, MAIN_BUTTON_ICON, MultiBot.L("tips.main.master"))
     mainButton:RegisterForDrag("RightButton")
+    local autoHideState = {
+        multiBar = MultiBot.frames and MultiBot.frames["MultiBar"],
+        hidden = false,
+        enabled = false,
+        delay = 60,
+        elapsed = 0,
+        lastInteraction = GetTime(),
+    }
+
+    local detector = CreateFrame("Frame", "MultiBotMainBarAutoHideDetector", UIParent)
+    detector:SetFrameStrata("TOOLTIP")
+    detector:SetSize(MAINBAR_AUTOHIDE_HOTSPOT_SIZE, MAINBAR_AUTOHIDE_HOTSPOT_SIZE)
+    detector:EnableMouse(true)
+    detector:Hide()
+    autoHideState.detector = detector
+
+    detector:SetScript("OnEnter", function()
+        markMainBarInteraction(autoHideState)
+    end)
 
     local function applyMoveLockState(moveLocked)
         local locked = moveLocked
@@ -413,6 +516,7 @@ function MultiBot.InitializeMainUI(tMultiBar)
     applyMoveLockState()
 
     mainButton:SetScript("OnDragStart", function()
+        markMainBarInteraction(autoHideState)
         local moveLocked = mainButton.__mbMoveLocked
         if moveLocked and not IsControlKeyDown() then
             if UIErrorsFrame then
@@ -426,13 +530,77 @@ function MultiBot.InitializeMainUI(tMultiBar)
     mainButton:SetScript("OnDragStop", function()
         MultiBot.frames["MultiBar"]:StopMovingOrSizing()
         saveMultiBarPosition()
+        syncMainBarDetectorPosition(autoHideState)
+        markMainBarInteraction(autoHideState)
     end)
     mainButton.doLeft = function(button)
+        markMainBarInteraction(autoHideState)
         MultiBot.ShowHideSwitch(button.parent.frames[MAIN_FRAME_NAME])
     end
 
     local mainFrame = tMultiBar.addFrame(MAIN_FRAME_NAME, MAIN_FRAME_X, MAIN_FRAME_Y)
     mainFrame:Hide()
+    mainFrame:HookScript("OnShow", function()
+        markMainBarInteraction(autoHideState)
+    end)
+    mainFrame:HookScript("OnHide", function()
+        markMainBarInteraction(autoHideState)
+    end)
+
+    function MultiBot.MainBarAutoHide_NotifyInteraction()
+        markMainBarInteraction(autoHideState)
+    end
+
+    function MultiBot.RefreshMainBarAutoHideState()
+        autoHideState.enabled = MultiBot.GetMainBarAutoHideEnabled and MultiBot.GetMainBarAutoHideEnabled() or false
+        autoHideState.delay = MultiBot.GetMainBarAutoHideDelay and MultiBot.GetMainBarAutoHideDelay() or 60
+        syncMainBarDetectorPosition(autoHideState)
+        if not autoHideState.enabled then
+            showMainBarFromAutoHide(autoHideState)
+            autoHideState.lastInteraction = GetTime()
+        end
+    end
+
+    if autoHideState.multiBar and autoHideState.multiBar.HookScript then
+        autoHideState.multiBar:HookScript("OnShow", function()
+            if autoHideState.enabled and autoHideState.hidden then
+                return
+            end
+            autoHideState.hidden = false
+            if autoHideState.detector then
+                autoHideState.detector:Hide()
+            end
+        end)
+    end
+
+    mainButton:HookScript("PostClick", function()
+        markMainBarInteraction(autoHideState)
+    end)
+
+    if autoHideState.multiBar and autoHideState.multiBar.HookScript then
+        autoHideState.multiBar:HookScript("OnUpdate", function(_, elapsed)
+            autoHideState.elapsed = autoHideState.elapsed + elapsed
+            if autoHideState.elapsed < MAINBAR_AUTOHIDE_UPDATE_INTERVAL then
+                return
+            end
+            autoHideState.elapsed = 0
+
+            if not autoHideState.enabled or autoHideState.hidden then
+                return
+            end
+
+            if isMouseOverFrameNode(autoHideState.multiBar) then
+                autoHideState.lastInteraction = GetTime()
+                return
+            end
+
+            if (GetTime() - autoHideState.lastInteraction) >= autoHideState.delay then
+                hideMainBarForAutoHide(autoHideState)
+            end
+        end)
+    end
+
+    MultiBot.RefreshMainBarAutoHideState()
 
     local defaultMainButtonOrder = {
         "Coords",
