@@ -25,6 +25,7 @@ Libs\LibDropdown-1.0\LibDropdown-1.0.lua
 
 
 Core\MultiBot.lua
+Core\MultiBotStore.lua
 Core\MultiBotConfig.lua
 Core\MultiBotLocale.lua
 Core\MultiBotDebug.lua
