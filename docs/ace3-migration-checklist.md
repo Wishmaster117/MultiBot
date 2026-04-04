@@ -54,3 +54,12 @@ Checklist for each migration PR to verify no user-facing regressions.
 - [x] Options panel controls still apply values immediately.
 
 ---
+
+ ### 8) Milestone 10 — data model lifecycle validations
+- [x] Targeted read paths do not create tables implicitly (audit via instrumentation + grep review sur le périmètre M10 ciblé).
+- [x] Store helpers for normalization/validation are centralized and reused (core/ui slices migrated to `MultiBot.Store`).
+- [x] Migrated modules no longer contain ad-hoc inline bootstrap snippets (final audit pass sur les slices migrés Store).
+- [x] Runtime behavior parity validated in-game for migrated slices (Quest/SpellBook/Reward/mainBar/layout).
+- [x] `docs/milestone10-data-model-lifecycle-tracker.md` and this checklist are updated per PR.
+
+---

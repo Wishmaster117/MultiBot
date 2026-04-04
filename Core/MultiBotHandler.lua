@@ -277,7 +277,11 @@ local function getGlobalLayoutLibrary(createIfMissing)
 	end
 
 	if createIfMissing then
-		globalSave.savedLayoutsByPlayer = globalSave.savedLayoutsByPlayer or {}
+		if MultiBot.Store and MultiBot.Store.EnsureTableField then
+			MultiBot.Store.EnsureTableField(globalSave, "savedLayoutsByPlayer", {})
+		elseif type(globalSave.savedLayoutsByPlayer) ~= "table" then
+			globalSave.savedLayoutsByPlayer = {}
+		end
 
 		local db = MultiBot.db
 		local legacyStore = db and db.global and db.global.ui and db.global.ui.savedLayoutsByPlayer or nil
@@ -331,7 +335,10 @@ local function collectLayoutExportEntries()
 		end
 	end
 
-	local registered = MultiBot._mbRegisteredButtonLayoutKeys or {}
+	local registered = MultiBot._mbRegisteredButtonLayoutKeys
+	if type(registered) ~= "table" then
+		registered = {}
+	end
 	for key in pairs(registered) do
 		if shouldExportLayoutKey(key) and entries[key] == nil then
 			local value = getSavedLayoutValue(key)
@@ -353,7 +360,10 @@ end
 
 local function sortedKeysOf(map)
 	local keys = {}
-	for key in pairs(map or {}) do
+	if type(map) ~= "table" then
+		return keys
+	end
+	for key in pairs(map) do
 		keys[#keys + 1] = key
 	end
 	table.sort(keys)
@@ -387,7 +397,10 @@ end
 function MultiBot.GetSavedMainBarLayoutOwners()
 	local store = getGlobalLayoutLibrary(false)
 	local owners = {}
-	for ownerKey, payload in pairs(store or {}) do
+	if type(store) ~= "table" then
+		return owners
+	end
+	for ownerKey, payload in pairs(store) do
 		if type(ownerKey) == "string" and type(payload) == "string" and payload ~= "" then
 			owners[#owners + 1] = ownerKey
 		end
@@ -786,25 +799,29 @@ local requireEnabledStateOnRight = options and options.requireEnabledStateOnRigh
 end
 
 local function ensureQuestStateTables()
-	MultiBot.BotQuestsIncompleted = MultiBot.BotQuestsIncompleted or {}
-	MultiBot.BotQuestsCompleted = MultiBot.BotQuestsCompleted or {}
-	MultiBot.BotQuestsAll = MultiBot.BotQuestsAll or {}
-	MultiBot._awaitingQuestsIncompleted = MultiBot._awaitingQuestsIncompleted or {}
-	MultiBot._awaitingQuestsCompleted = MultiBot._awaitingQuestsCompleted or {}
-	MultiBot.LastGameObjectSearch = MultiBot.LastGameObjectSearch or {}
-	MultiBot._GameObjCaptureInProgress = MultiBot._GameObjCaptureInProgress or {}
-	MultiBot._GameObjCurrentSection = MultiBot._GameObjCurrentSection or {}
-	MultiBot._questAllBuffer = MultiBot._questAllBuffer or {}
+	local ensureRuntime = MultiBot.Store and MultiBot.Store.EnsureRuntimeTable
+	if type(ensureRuntime) ~= "function" then
+		return
+	end
+	ensureRuntime("BotQuestsIncompleted")
+	ensureRuntime("BotQuestsCompleted")
+	ensureRuntime("BotQuestsAll")
+	ensureRuntime("_awaitingQuestsIncompleted")
+	ensureRuntime("_awaitingQuestsCompleted")
+	ensureRuntime("LastGameObjectSearch")
+	ensureRuntime("_GameObjCaptureInProgress")
+	ensureRuntime("_GameObjCurrentSection")
+	ensureRuntime("_questAllBuffer")
 end
 
 local function FillQuestTable(tbl, author, msg)
-	MultiBot[tbl] = MultiBot[tbl] or {}
-	MultiBot[tbl][author] = MultiBot[tbl][author] or {}
+	local bucket = MultiBot.Store.EnsureRuntimeTable(tbl)
+	MultiBot.Store.EnsureTableField(bucket, author, {})
 	for link in msg:gmatch("|Hquest:[^|]+|h%[[^%]]+%]|h") do
 		local id = tonumber(link:match("|Hquest:(%d+):"))
 		local name = link:match("%[([^%]]+)%]")
 		if id and name then
-			MultiBot[tbl][author][id] = name
+			bucket[author][id] = name
 		end
 	end
 end
@@ -874,17 +891,17 @@ local function HandleQuestResponse(rawMsg, author)
 	end
 
 	if rawMsg:find(QUEST_LINE_MARKERS.incompleted, 1, true) then
-		MultiBot.BotQuestsIncompleted[author] = {}
-		MultiBot._awaitingQuestsIncompleted[author] = true
+		MultiBot.Store.EnsureRuntimeTable("BotQuestsIncompleted")[author] = {}
+		MultiBot.Store.EnsureRuntimeTable("_awaitingQuestsIncompleted")[author] = true
 		return
 	end
 
-	if MultiBot._awaitingQuestsIncompleted[author] then
+	if MultiBot.Store.EnsureRuntimeTable("_awaitingQuestsIncompleted")[author] then
 		FillQuestTable("BotQuestsIncompleted", author, rawMsg)
 		if rawMsg:find(QUEST_LINE_MARKERS.summary, 1, true) then
 			finalizeQuestSection(
 				author,
-				MultiBot._awaitingQuestsIncompleted,
+				MultiBot.Store.EnsureRuntimeTable("_awaitingQuestsIncompleted"),
 				MultiBot.tBotPopup,
 				MultiBot._lastIncMode,
 				"GROUP",
@@ -896,17 +913,17 @@ local function HandleQuestResponse(rawMsg, author)
 	end
 
 	if rawMsg:find(QUEST_LINE_MARKERS.completed, 1, true) then
-		MultiBot.BotQuestsCompleted[author] = {}
-		MultiBot._awaitingQuestsCompleted[author] = true
+		MultiBot.Store.EnsureRuntimeTable("BotQuestsCompleted")[author] = {}
+		MultiBot.Store.EnsureRuntimeTable("_awaitingQuestsCompleted")[author] = true
 		return
 	end
 
-	if MultiBot._awaitingQuestsCompleted[author] then
+	if MultiBot.Store.EnsureRuntimeTable("_awaitingQuestsCompleted")[author] then
 		FillQuestTable("BotQuestsCompleted", author, rawMsg)
 		if rawMsg:find(QUEST_LINE_MARKERS.summary, 1, true) then
 			finalizeQuestSection(
 				author,
-				MultiBot._awaitingQuestsCompleted,
+				MultiBot.Store.EnsureRuntimeTable("_awaitingQuestsCompleted"),
 				MultiBot.tBotCompPopup,
 				MultiBot._lastCompMode,
 				"GROUP",
@@ -949,11 +966,18 @@ MultiBot.ShouldHandleQuestsAllWhisper = shouldHandleQuestsAllWhisper
 _G.shouldHandleQuestsAllWhisper = shouldHandleQuestsAllWhisper
 
 local function fillQuestsAllTablesFromBuffer(author)
-	local linesBuffer = MultiBot._questAllBuffer[author] or {}
+	local questAllBuffer = MultiBot.Store.EnsureRuntimeTable("_questAllBuffer")
+	local linesBuffer = questAllBuffer[author]
+	if type(linesBuffer) ~= "table" then
+		linesBuffer = {}
+	end
+	local allStore = MultiBot.Store.EnsureRuntimeTable("BotQuestsAll")
+	local completedStore = MultiBot.Store.EnsureRuntimeTable("BotQuestsCompleted")
+	local incompletedStore = MultiBot.Store.EnsureRuntimeTable("BotQuestsIncompleted")
 
-	MultiBot.BotQuestsAll[author] = {}
-	MultiBot.BotQuestsCompleted[author] = {}
-	MultiBot.BotQuestsIncompleted[author] = {}
+	allStore[author] = {}
+	completedStore[author] = {}
+	incompletedStore[author] = {}
 
 	local mode = nil
 	for _, line in ipairs(linesBuffer) do
@@ -967,11 +991,11 @@ local function fillQuestsAllTablesFromBuffer(author)
 			local id = tonumber(line:match("|Hquest:(%d+):"))
 			local name = line:match("%[([^%]]+)%]")
 			if id and name then
-				table.insert(MultiBot.BotQuestsAll[author], line)
+				table.insert(allStore[author], line)
 				if mode == "incomplete" then
-					MultiBot.BotQuestsIncompleted[author][id] = name
+					incompletedStore[author][id] = name
 				elseif mode == "complete" then
-					MultiBot.BotQuestsCompleted[author][id] = name
+					completedStore[author][id] = name
 				end
 			end
 		end
@@ -979,7 +1003,11 @@ local function fillQuestsAllTablesFromBuffer(author)
 end
 
 local function areAllQuestsAllBotsCompleted()
-	for _, ok in pairs(MultiBot._awaitingQuestsAllBots or {}) do
+	local awaiting = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("_awaitingQuestsAllBots")) or MultiBot._awaitingQuestsAllBots
+	if type(awaiting) ~= "table" then
+		return true
+	end
+	for _, ok in pairs(awaiting) do
 		if not ok then
 			return false
 		end
@@ -989,8 +1017,9 @@ local function areAllQuestsAllBotsCompleted()
 end
 
 function HandleQuestsAllResponse(rawMsg, author)
-	MultiBot._questAllBuffer[author] = MultiBot._questAllBuffer[author] or {}
-	table.insert(MultiBot._questAllBuffer[author], rawMsg)
+	local questAllBuffer = MultiBot.Store.EnsureRuntimeTable("_questAllBuffer")
+	MultiBot.Store.EnsureTableField(questAllBuffer, author, {})
+	table.insert(questAllBuffer[author], rawMsg)
 
 	if not rawMsg:find(QUEST_LINE_MARKERS.summary, 1, true) then
 		return
@@ -1002,7 +1031,7 @@ function HandleQuestsAllResponse(rawMsg, author)
 		MultiBot._awaitingQuestsAllBots[author] = true
 	end
 
-	MultiBot._questAllBuffer[author] = nil
+	questAllBuffer[author] = nil
 
 	if areAllQuestsAllBotsCompleted() then
 		MultiBot._awaitingQuestsAll = false
@@ -1576,8 +1605,12 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			end
 
 			-- On stocke cette liste pour le rafraîchissement
-			MultiBot.receivedGlyphs = MultiBot.receivedGlyphs or {}
-			MultiBot.receivedGlyphs[author] = {}
+			local receivedGlyphs = (MultiBot.Store and MultiBot.Store.EnsureRuntimeTable and MultiBot.Store.EnsureRuntimeTable("receivedGlyphs")) or MultiBot.receivedGlyphs
+			if type(receivedGlyphs) ~= "table" then
+				receivedGlyphs = {}
+				MultiBot.receivedGlyphs = receivedGlyphs
+			end
+			receivedGlyphs[author] = {}
 
 			-- Détermination du type Major/Minor et remplissage
 			local unit = MultiBot.toUnit(author)
@@ -1592,7 +1625,7 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			for idx, id in ipairs(ids) do
 				local sock = map[idx]                    -- n° de socket cible
 				local typ  = (glyphDB.Major and glyphDB.Major[id]) and "Major" or "Minor"
-				MultiBot.receivedGlyphs[author][sock] = { id = id, type = typ }
+				receivedGlyphs[author][sock] = { id = id, type = typ }
 			end
 
 			-- Si l'onglet Glyphes est ouvert, on force son rafraîchissement.

@@ -176,10 +176,10 @@ local HUNTER_PET_STANCE_MIGRATION_KEY = "hunterPetStanceVersion"
 local FAVORITES_MIGRATION_KEY = "favoritesVersion"
 
 local function getUiMigrationStore()
-  if not (MultiBot.Store and MultiBot.Store.EnsureMigrationStore) then
+  if not (MultiBot.Store and MultiBot.Store.GetMigrationStore) then
     return nil
   end
-  return MultiBot.Store.EnsureMigrationStore()
+  return MultiBot.Store.GetMigrationStore()
 end
 
 local function shouldSyncLegacyUiState(versionKey, targetVersion)
@@ -193,7 +193,7 @@ local function shouldSyncLegacyUiState(versionKey, targetVersion)
 end
 
 local function markLegacyUiStateMigrated(versionKey, targetVersion)
-  local migrations = getUiMigrationStore()
+  local migrations = MultiBot.Store and MultiBot.Store.EnsureMigrationStore and MultiBot.Store.EnsureMigrationStore()
   if not migrations then
     return
   end
@@ -247,7 +247,15 @@ end
 
 function MultiBot.GetGlobalBotStore()
   local legacyStore = getLegacyGlobalBotStore()
-  local store = MultiBot.Store and MultiBot.Store.EnsureBotsStore and MultiBot.Store.EnsureBotsStore()
+  local store = MultiBot.Store and MultiBot.Store.GetBotsStore and MultiBot.Store.GetBotsStore()
+  if not store and shouldSyncLegacyUiState(GLOBAL_BOT_STORE_MIGRATION_KEY, GLOBAL_BOT_STORE_MIGRATION_VERSION) then
+    for _, value in pairs(legacyStore or {}) do
+      if isGlobalBotRosterEntry(value) then
+        store = MultiBot.Store and MultiBot.Store.EnsureBotsStore and MultiBot.Store.EnsureBotsStore()
+        break
+      end
+    end
+  end
   if store then
     migrateLegacyGlobalBotStoreIfNeeded(store, legacyStore)
     MultiBot.Store.SanitizeGlobalBotStore(store)
@@ -265,7 +273,10 @@ function MultiBot.SetGlobalBotEntry(name, value)
     return nil
   end
 
-  local store = MultiBot.GetGlobalBotStore and MultiBot.GetGlobalBotStore() or getLegacyGlobalBotStore()
+  local store = MultiBot.Store and MultiBot.Store.EnsureBotsStore and MultiBot.Store.EnsureBotsStore()
+  if not store then
+    store = getLegacyGlobalBotStore()
+  end
   store[name] = value
 
   if shouldSyncLegacyUiState(GLOBAL_BOT_STORE_MIGRATION_KEY, GLOBAL_BOT_STORE_MIGRATION_VERSION) then
@@ -277,7 +288,10 @@ function MultiBot.SetGlobalBotEntry(name, value)
 end
 
 function MultiBot.ClearGlobalBotStore()
-  local store = MultiBot.GetGlobalBotStore and MultiBot.GetGlobalBotStore() or getLegacyGlobalBotStore()
+  local store = MultiBot.Store and MultiBot.Store.EnsureBotsStore and MultiBot.Store.EnsureBotsStore()
+  if not store then
+    store = getLegacyGlobalBotStore()
+  end
   if wipe then
     wipe(store)
   else
@@ -327,10 +341,14 @@ local function getLegacyMinimapConfig(createIfMissing)
 end
 
 function MultiBot.GetMinimapConfig()
-  local minimap = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("minimap")
+  local minimap = MultiBot.Store and MultiBot.Store.GetUIChildStore and MultiBot.Store.GetUIChildStore("minimap")
+  local legacy = getLegacyMinimapConfig(false)
+  
+  if not minimap and shouldSyncLegacyUiState(MINIMAP_CONFIG_MIGRATION_KEY, MINIMAP_CONFIG_MIGRATION_VERSION) and legacy then
+    minimap = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("minimap")
+  end
   if minimap then
     if shouldSyncLegacyUiState(MINIMAP_CONFIG_MIGRATION_KEY, MINIMAP_CONFIG_MIGRATION_VERSION) then
-      local legacy = getLegacyMinimapConfig(false)
       if type(minimap.hide) ~= "boolean" then
         minimap.hide = (legacy and legacy.hide) or MINIMAP_CONFIG_DEFAULTS.hide
       end
@@ -353,11 +371,14 @@ function MultiBot.GetMinimapConfig()
     return minimap
   end
 
-  return getLegacyMinimapConfig(true)
+  return legacy or { hide = MINIMAP_CONFIG_DEFAULTS.hide, angle = MINIMAP_CONFIG_DEFAULTS.angle }
 end
 
 function MultiBot.SetMinimapConfig(key, value)
-  local minimap = MultiBot.GetMinimapConfig()
+  local minimap = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("minimap")
+  if not minimap then
+    minimap = getLegacyMinimapConfig(true)
+  end
   minimap[key] = value
 
   if shouldSyncLegacyUiState(MINIMAP_CONFIG_MIGRATION_KEY, MINIMAP_CONFIG_MIGRATION_VERSION) then
@@ -386,12 +407,12 @@ local function getLegacyGlobalStrataLevel(createIfMissing)
 end
 
 function MultiBot.GetGlobalStrataLevel()
-  local uiStore = MultiBot.Store and MultiBot.Store.EnsureUIStore and MultiBot.Store.EnsureUIStore()
-  if uiStore then
+  local strata = MultiBot.Store and MultiBot.Store.GetUIValue and MultiBot.Store.GetUIValue("strataLevel")
+  if MultiBot.Store and MultiBot.Store.GetUIStore and MultiBot.Store.GetUIStore() then
     if shouldSyncLegacyUiState(STRATA_LEVEL_MIGRATION_KEY, STRATA_LEVEL_MIGRATION_VERSION) then
       local legacyLevel = getLegacyGlobalStrataLevel(false)
-      if type(uiStore.strataLevel) ~= "string" or uiStore.strataLevel == "" then
-        uiStore.strataLevel = legacyLevel or STRATA_LEVEL_DEFAULT
+      if (type(strata) ~= "string" or strata == "") and legacyLevel then
+        strata = MultiBot.Store.SetUIValue and MultiBot.Store.SetUIValue("strataLevel", legacyLevel)
       end
       markLegacyUiStateMigrated(STRATA_LEVEL_MIGRATION_KEY, STRATA_LEVEL_MIGRATION_VERSION)
 
@@ -399,13 +420,13 @@ function MultiBot.GetGlobalStrataLevel()
       local _, globalSave = ensureSavedVariables()
       globalSave["Strata.Level"] = nil
     end
-    if type(uiStore.strataLevel) ~= "string" or uiStore.strataLevel == "" then
-      uiStore.strataLevel = STRATA_LEVEL_DEFAULT
+    if type(strata) ~= "string" or strata == "" then
+      strata = STRATA_LEVEL_DEFAULT
     end
-    return uiStore.strataLevel
+    return strata
   end
 
-  return getLegacyGlobalStrataLevel(true)
+  return getLegacyGlobalStrataLevel(false) or STRATA_LEVEL_DEFAULT
 end
 
 function MultiBot.SetGlobalStrataLevel(level)
@@ -457,12 +478,15 @@ local function getLegacyMainUIVisible(createIfMissing)
 end
 
 function MultiBot.GetMainUIVisibleConfig()
-
-  local uiStore = MultiBot.Store and MultiBot.Store.EnsureUIStore and MultiBot.Store.EnsureUIStore()
+  local uiStore = MultiBot.Store and MultiBot.Store.GetUIStore and MultiBot.Store.GetUIStore()
+  local visible = MultiBot.Store and MultiBot.Store.GetUIValue and MultiBot.Store.GetUIValue("mainVisible")
   if uiStore then
     if shouldSyncLegacyUiState(MAIN_VISIBLE_MIGRATION_KEY, MAIN_VISIBLE_MIGRATION_VERSION) then
-      if type(uiStore.mainVisible) ~= "boolean" then
-        uiStore.mainVisible = getLegacyMainUIVisible(false)
+      if type(visible) ~= "boolean" then
+        local legacyValue = getLegacyMainUIVisible(false)
+        if type(legacyValue) == "boolean" then
+          visible = MultiBot.Store.SetUIValue and MultiBot.Store.SetUIValue("mainVisible", legacyValue)
+        end
       end
       markLegacyUiStateMigrated(MAIN_VISIBLE_MIGRATION_KEY, MAIN_VISIBLE_MIGRATION_VERSION)
 
@@ -470,13 +494,13 @@ function MultiBot.GetMainUIVisibleConfig()
       local save = ensureSavedVariables()
       save["UIVisible"] = nil
     end
-    if type(uiStore.mainVisible) ~= "boolean" then
-      uiStore.mainVisible = MAIN_UI_VISIBLE_DEFAULT
+    if type(visible) ~= "boolean" then
+      visible = MAIN_UI_VISIBLE_DEFAULT
     end
-    return uiStore.mainVisible
+    return visible
   end
 
-  return getLegacyMainUIVisible(true)
+  return getLegacyMainUIVisible(false) or MAIN_UI_VISIBLE_DEFAULT
 end
 
 function MultiBot.SetMainUIVisibleConfig(value)
@@ -580,7 +604,10 @@ function MultiBot.GetQuickFramePosition(frameKey)
   end
 
   local legacyPosStore = getLegacyQuickFramePositionStore(false)
-  local store = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("quickFramePositions")
+  local store = MultiBot.Store and MultiBot.Store.GetUIChildStore and MultiBot.Store.GetUIChildStore("quickFramePositions")
+  if not store and shouldSyncLegacyUiState(QUICK_FRAME_POSITIONS_MIGRATION_KEY, QUICK_FRAME_POSITIONS_MIGRATION_VERSION) and legacyPosStore then
+    store = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("quickFramePositions")
+  end
   if store then
     migrateLegacyQuickFramePositionsIfNeeded(store, legacyPosStore)
 
@@ -620,8 +647,17 @@ function MultiBot.SetQuickFramePosition(frameKey, point, relPoint, x, y)
 
   if shouldSyncLegacyUiState(QUICK_FRAME_POSITIONS_MIGRATION_KEY, QUICK_FRAME_POSITIONS_MIGRATION_VERSION) then
     legacyPosStore = legacyPosStore or getLegacyQuickFramePositionStore(true)
-    legacyPosStore[frameKey] = legacyPosStore[frameKey] or {}
-    legacyPosStore[frameKey].frame = position
+    local legacyEntry
+    if MultiBot.Store and MultiBot.Store.EnsureTableField then
+      legacyEntry = MultiBot.Store.EnsureTableField(legacyPosStore, frameKey, {})
+    else
+      legacyEntry = legacyPosStore[frameKey]
+      if type(legacyEntry) ~= "table" then
+        legacyEntry = {}
+        legacyPosStore[frameKey] = legacyEntry
+      end
+    end
+    legacyEntry.frame = position
   end
 
   return position
@@ -632,7 +668,7 @@ function MultiBot.GetQuickFrameVisibleConfig(frameKey)
     return true
   end
 
-  local store = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("quickFrameVisibility")
+  local store = MultiBot.Store and MultiBot.Store.GetUIChildStore and MultiBot.Store.GetUIChildStore("quickFrameVisibility")
   if not store then
     return true
   end
@@ -712,7 +748,10 @@ function MultiBot.GetHunterPetStance(name)
   end
 
   local legacyStore = getLegacyHunterPetStanceStore(false)
-  local store = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("hunterPetStance")
+  local store = MultiBot.Store and MultiBot.Store.GetUIChildStore and MultiBot.Store.GetUIChildStore("hunterPetStance")
+  if not store and shouldSyncLegacyUiState(HUNTER_PET_STANCE_MIGRATION_KEY, HUNTER_PET_STANCE_MIGRATION_VERSION) and legacyStore then
+    store = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("hunterPetStance")
+  end
   if store then
     migrateLegacyHunterPetStanceIfNeeded(store, legacyStore)
 
@@ -769,7 +808,12 @@ local function getLegacyShamanTotemsStore(createIfMissing)
 end
 
 local function getShamanTotemsStore(createLegacyIfMissing)
-  local store = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("shamanTotems")
+  local store
+  if createLegacyIfMissing then
+    store = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("shamanTotems")
+  else
+    store = MultiBot.Store and MultiBot.Store.GetUIChildStore and MultiBot.Store.GetUIChildStore("shamanTotems")
+  end
   if store then
     return store, true
   end
@@ -867,13 +911,31 @@ function MultiBot.SetShamanTotemChoice(name, elementKey, icon)
   if not store then
     return nil
   end
-  store[name] = store[name] or {}
-  store[name][elementKey] = icon
+  local botStore
+  if MultiBot.Store and MultiBot.Store.EnsureTableField then
+    botStore = MultiBot.Store.EnsureTableField(store, name, {})
+  else
+    botStore = store[name]
+    if type(botStore) ~= "table" then
+      botStore = {}
+      store[name] = botStore
+    end
+  end
+  botStore[elementKey] = icon
 
   if shouldSyncLegacyShamanTotems() then
     local legacyStore = getLegacyShamanTotemsStore(true)
-    legacyStore[name] = legacyStore[name] or {}
-    legacyStore[name][elementKey] = icon
+    local legacyBotStore
+    if MultiBot.Store and MultiBot.Store.EnsureTableField then
+      legacyBotStore = MultiBot.Store.EnsureTableField(legacyStore, name, {})
+    else
+      legacyBotStore = legacyStore[name]
+      if type(legacyBotStore) ~= "table" then
+        legacyBotStore = {}
+        legacyStore[name] = legacyBotStore
+      end
+    end
+    legacyBotStore[elementKey] = icon
   end
 
   return icon
@@ -1259,10 +1321,14 @@ local function getLegacyFavoritesStore(createIfMissing)
 end
 
 local function getFavoritesStore()
-  local favorites = MultiBot.Store and MultiBot.Store.EnsureFavoritesStore and MultiBot.Store.EnsureFavoritesStore()
+  local favorites = MultiBot.Store and MultiBot.Store.GetFavoritesStore and MultiBot.Store.GetFavoritesStore()
+  local legacyFavorites = getLegacyFavoritesStore(false) or {}
+  local hasLegacyFavorites = next(legacyFavorites) ~= nil
+  if not favorites and hasLegacyFavorites and shouldSyncLegacyUiState(FAVORITES_MIGRATION_KEY, FAVORITES_MIGRATION_VERSION) then
+    favorites = MultiBot.Store and MultiBot.Store.EnsureFavoritesStore and MultiBot.Store.EnsureFavoritesStore()
+  end
   if favorites then
     if shouldSyncLegacyUiState(FAVORITES_MIGRATION_KEY, FAVORITES_MIGRATION_VERSION) then
-      local legacyFavorites = getLegacyFavoritesStore(false) or {}
       for name, isFavorite in pairs(legacyFavorites) do
         if favorites[name] == nil then
           favorites[name] = isFavorite
@@ -1329,7 +1395,10 @@ function MultiBot.UpdateFavoritesIndex()
 end
 
 function MultiBot.SetFavorite(name, isFav)
-  local favorites = getFavoritesStore() or getLegacyFavoritesStore(true)
+  local favorites = MultiBot.Store and MultiBot.Store.EnsureFavoritesStore and MultiBot.Store.EnsureFavoritesStore()
+  if not favorites then
+    favorites = getLegacyFavoritesStore(true)
+  end
   if isFav then favorites[name] = true
            else favorites[name] = nil
   end

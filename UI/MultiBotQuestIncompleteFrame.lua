@@ -1,7 +1,15 @@
 if not MultiBot then return end
 
-local Shared = MultiBot.QuestUIShared or {}
-local QuestIncompleteFrame = MultiBot.QuestIncompleteFrame or {}
+local EMPTY_TABLE = {}
+local Shared = MultiBot.QuestUIShared
+if type(Shared) ~= "table" then
+    Shared = {}
+end
+
+local QuestIncompleteFrame = MultiBot.QuestIncompleteFrame
+if type(QuestIncompleteFrame) ~= "table" then
+    QuestIncompleteFrame = {}
+end
 MultiBot.QuestIncompleteFrame = QuestIncompleteFrame
 
 local function getBotQuestsIncompletedStore()
@@ -9,7 +17,7 @@ local function getBotQuestsIncompletedStore()
     if not store and MultiBot.Store and MultiBot.Store.RecordReadMiss then
         MultiBot.Store.RecordReadMiss("QuestIncomplete", "BotQuestsIncompleted")
     end
-    return store or {}
+    return store or EMPTY_TABLE
 end
 
 local function clearList(self)
@@ -19,8 +27,8 @@ local function clearList(self)
 end
 
 function MultiBot.BuildBotQuestList(botName)
-    local frame = MultiBot.InitializeQuestIncompleteFrame()
-    local entries = Shared.SortQuestEntries(getBotQuestsIncompletedStore()[botName] or {})
+    local incompletedStore = getBotQuestsIncompletedStore()
+    local entries = Shared.SortQuestEntries((incompletedStore and incompletedStore[botName]) or EMPTY_TABLE)
 
     frame:Show()
     Shared.RenderQuestEntries(frame, entries, {

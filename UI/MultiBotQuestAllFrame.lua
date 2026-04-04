@@ -1,7 +1,15 @@
 if not MultiBot then return end
 
-local Shared = MultiBot.QuestUIShared or {}
-local QuestAllFrame = MultiBot.QuestAllFrame or {}
+local EMPTY_TABLE = {}
+local Shared = MultiBot.QuestUIShared
+if type(Shared) ~= "table" then
+    Shared = {}
+end
+
+local QuestAllFrame = MultiBot.QuestAllFrame
+if type(QuestAllFrame) ~= "table" then
+    QuestAllFrame = {}
+end
 MultiBot.QuestAllFrame = QuestAllFrame
 
 local function getBotQuestsAllStore()
@@ -9,7 +17,7 @@ local function getBotQuestsAllStore()
     if not store and MultiBot.Store and MultiBot.Store.RecordReadMiss then
         MultiBot.Store.RecordReadMiss("QuestAll", "BotQuestsAll")
     end
-    return store or {}
+    return store or EMPTY_TABLE
 end
 
 local function getBotQuestsCompletedStore()
@@ -17,7 +25,7 @@ local function getBotQuestsCompletedStore()
     if not store and MultiBot.Store and MultiBot.Store.RecordReadMiss then
         MultiBot.Store.RecordReadMiss("QuestAll", "BotQuestsCompleted")
     end
-    return store or {}
+    return store or EMPTY_TABLE
 end
 
 local function getBotQuestsIncompletedStore()
@@ -25,7 +33,7 @@ local function getBotQuestsIncompletedStore()
     if not store and MultiBot.Store and MultiBot.Store.RecordReadMiss then
         MultiBot.Store.RecordReadMiss("QuestAll", "BotQuestsIncompleted")
     end
-    return store or {}
+    return store or EMPTY_TABLE
 end
 
 local function clearList(self)
@@ -103,7 +111,8 @@ function MultiBot.BuildBotAllList(botName)
     local frame = MultiBot.InitializeQuestAllFrame()
     clearList(frame)
 
-    local quests = getBotQuestsAllStore()[botName] or {}
+    local questsStore = getBotQuestsAllStore()
+    local quests = (questsStore and questsStore[botName]) or EMPTY_TABLE
     for _, link in ipairs(quests) do
         local questID = tonumber(link:match("|Hquest:(%d+):"))
         local localizedName = questID and Shared.GetLocalizedQuestName(questID, link) or link
