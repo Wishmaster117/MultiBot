@@ -48,6 +48,57 @@ function Store.EnsureUIStore()
   return profile.ui
 end
 
+function Store.GetUIChildStore(childKey)
+  if type(childKey) ~= "string" or childKey == "" then
+    return nil
+  end
+
+  local ui = Store.GetUIStore()
+  if type(ui) ~= "table" then
+    return nil
+  end
+
+  local child = ui[childKey]
+  if type(child) ~= "table" then
+    return nil
+  end
+
+  return child
+end
+
+function Store.EnsureUIChildStore(childKey)
+  if type(childKey) ~= "string" or childKey == "" then
+    return nil
+  end
+
+  local ui = Store.EnsureUIStore()
+  ui[childKey] = ui[childKey] or {}
+  return ui[childKey]
+end
+
+function Store.GetUIValue(key)
+  if type(key) ~= "string" or key == "" then
+    return nil
+  end
+
+  local ui = Store.GetUIStore()
+  if type(ui) ~= "table" then
+    return nil
+  end
+
+  return ui[key]
+end
+
+function Store.SetUIValue(key, value)
+  if type(key) ~= "string" or key == "" then
+    return nil
+  end
+
+  local ui = Store.EnsureUIStore()
+  ui[key] = value
+  return value
+end
+
 function Store.GetMainBarStore()
   local ui = Store.GetUIStore()
   if type(ui) ~= "table" then

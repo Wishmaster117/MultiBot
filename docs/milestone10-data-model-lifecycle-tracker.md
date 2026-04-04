@@ -12,7 +12,7 @@ Référence roadmap : `ROADMAP.md` (D3 Milestone 10).
 ## 1) Objectifs fonctionnels (scope M10)
 
 - [x] Tous les accès aux stores à fort churn passent par des accesseurs centralisés. *(PR1: base API centralisée introduite, bascule progressive par domaine)*
-- [ ] Les lectures sont non-mutantes (pas de création de table cachée sur un read).
+- [ ] Les lectures sont non-mutantes (pas de création de table cachée sur un read). *(PR2: progression via accesseurs centralisés; assainissement final des read-paths prévu PR3/PR4)*
 - [ ] Les écritures/initialisations explicites utilisent des helpers dédiés (`ensure*` / `getOrCreate*`).
 - [ ] Les validateurs dupliqués sont regroupés dans une couche unique de normalisation.
 - [ ] Les modules ciblés n’ont plus de snippets one-off `if not t then t = {} end` hors helpers centralisés.
@@ -50,7 +50,7 @@ Référence roadmap : `ROADMAP.md` (D3 Milestone 10).
 | Store | Modules consommateurs | Helper actuel | Risque principal | Action M10 |
 |---|---|---|---|---|
 | `db.profile.ui.mainBar` | `Core/MultiBotConfig.lua` | Accès directs + normalisation locale | `READ_THEN_CREATE` implicite + validateurs dupliqués | **PR1 fait**: API `MultiBot.Store` + migration domaine mainBar |
-| `db.profile.ui` (minimap/strata/visibility/quick frames) | `Core/MultiBot.lua`, `UI/MultiBotTalentFrame.lua`, `UI/MultiBotSpecUI.lua`, `Features/MultiBotRaidus.lua` | Helpers locaux par module | Drift de schéma + créations inline | PR2+: converger vers accesseurs partagés |
+| `db.profile.ui` (minimap/strata/visibility/quick frames) | `Core/MultiBot.lua`, `UI/MultiBotTalentFrame.lua`, `UI/MultiBotSpecUI.lua`, `Features/MultiBotRaidus.lua` | Helpers locaux par module | Drift de schéma + créations inline | **PR2 fait (Core/MultiBot.lua)**, reste UI/Features à converger |
 | Runtime bot store (`profile.bots`, états temporaires) | `Core/MultiBot.lua`, `Core/MultiBotHandler.lua`, `Core/MultiBotEngine.lua` | Mix helpers + snippets inline | Normalisation partielle et validations divergentes | PR3: normalisation + validateurs centraux |
 | Quick UI caches (`MultiBot.*` runtime) | `UI/MultiBotQuest*`, `UI/MultiBotSpellBookFrame.lua`, `Features/MultiBotReward.lua` | Tables runtime ad-hoc | Mutations cachées / initialisations dispersées | PR4: wrappers runtime + hygiene read/write |
 
@@ -65,7 +65,7 @@ Référence roadmap : `ROADMAP.md` (D3 Milestone 10).
   - [x] `normalize*` (coercion/shape), *(PR1: `NormalizeMainBarSettings`)*
   - [ ] `validate*` (contrats + garde-fous).
 - [x] Documenter les contrats de chaque helper (input/output/effets de bord). *(PR1: contrats implicites codés + ce tracker mis à jour)*
-- [ ] Ajouter des garde-fous nil-safe homogènes.
+- [x] Ajouter des garde-fous nil-safe homogènes. *(PR2: `GetUIChildStore`, `EnsureUIChildStore`, `GetUIValue`, `SetUIValue`)*
 
 ### Contrat cible (checklist)
 
@@ -135,7 +135,7 @@ Référence roadmap : `ROADMAP.md` (D3 Milestone 10).
 ## 6) Backlog PR suggéré (ordre d’atterrissage)
 
 - [x] PR1 — Audit + ajout API store centralisée (sans bascule massive)
-- [ ] PR2 — Migration `db.profile.ui` vers accesseurs centralisés
+- [x] PR2 — Migration `db.profile.ui` vers accesseurs centralisés
 - [ ] PR3 — Migration runtime bot stores + validations communes
 - [ ] PR4 — Migration quick UI caches + suppression bootstraps inline
 - [ ] PR5 — Durcissement final + nettoyage + checklist release M10
@@ -147,6 +147,7 @@ Référence roadmap : `ROADMAP.md` (D3 Milestone 10).
 ### Entrées
 
 - 2026-04-04 — Codex — PR1/commit courant — `db.profile.ui.mainBar` — Ajout `MultiBot.Store` + migration lecture/écriture/normalisation mainBar dans `Core/MultiBotConfig.lua`.
+- 2026-04-04 — Codex — PR2/commit courant — `db.profile.ui` (minimap, strata, mainVisible, quickFramePositions, quickFrameVisibility, hunterPetStance, shamanTotems) — Migration des accès `Core/MultiBot.lua` vers API `MultiBot.Store`.
 
 ### Décisions
 

@@ -353,12 +353,8 @@ local function getLegacyMinimapConfig(createIfMissing)
 end
 
 function MultiBot.GetMinimapConfig()
-  local profile = MultiBot.db and MultiBot.db.profile
-  if profile then
-    profile.ui = profile.ui or {}
-    profile.ui.minimap = profile.ui.minimap or {}
-
-    local minimap = profile.ui.minimap
+  local minimap = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("minimap")
+  if minimap then
     if shouldSyncLegacyUiState(MINIMAP_CONFIG_MIGRATION_KEY, MINIMAP_CONFIG_MIGRATION_VERSION) then
       local legacy = getLegacyMinimapConfig(false)
       if type(minimap.hide) ~= "boolean" then
@@ -416,13 +412,12 @@ local function getLegacyGlobalStrataLevel(createIfMissing)
 end
 
 function MultiBot.GetGlobalStrataLevel()
-  local profile = MultiBot.db and MultiBot.db.profile
-  if profile then
-    profile.ui = profile.ui or {}
+  local uiStore = MultiBot.Store and MultiBot.Store.EnsureUIStore and MultiBot.Store.EnsureUIStore()
+  if uiStore then
     if shouldSyncLegacyUiState(STRATA_LEVEL_MIGRATION_KEY, STRATA_LEVEL_MIGRATION_VERSION) then
       local legacyLevel = getLegacyGlobalStrataLevel(false)
-      if type(profile.ui.strataLevel) ~= "string" or profile.ui.strataLevel == "" then
-        profile.ui.strataLevel = legacyLevel or STRATA_LEVEL_DEFAULT
+      if type(uiStore.strataLevel) ~= "string" or uiStore.strataLevel == "" then
+        uiStore.strataLevel = legacyLevel or STRATA_LEVEL_DEFAULT
       end
       markLegacyUiStateMigrated(STRATA_LEVEL_MIGRATION_KEY, STRATA_LEVEL_MIGRATION_VERSION)
 
@@ -430,10 +425,10 @@ function MultiBot.GetGlobalStrataLevel()
       local _, globalSave = ensureSavedVariables()
       globalSave["Strata.Level"] = nil
     end
-    if type(profile.ui.strataLevel) ~= "string" or profile.ui.strataLevel == "" then
-      profile.ui.strataLevel = STRATA_LEVEL_DEFAULT
+    if type(uiStore.strataLevel) ~= "string" or uiStore.strataLevel == "" then
+      uiStore.strataLevel = STRATA_LEVEL_DEFAULT
     end
-    return profile.ui.strataLevel
+    return uiStore.strataLevel
   end
 
   return getLegacyGlobalStrataLevel(true)
@@ -449,10 +444,8 @@ function MultiBot.SetGlobalStrataLevel(level)
     globalSave["Strata.Level"] = level
   end
 
-  local profile = MultiBot.db and MultiBot.db.profile
-  if profile then
-    profile.ui = profile.ui or {}
-    profile.ui.strataLevel = level
+  if MultiBot.Store and MultiBot.Store.SetUIValue then
+    MultiBot.Store.SetUIValue("strataLevel", level)
   end
 
   return level
@@ -491,12 +484,11 @@ end
 
 function MultiBot.GetMainUIVisibleConfig()
 
-  local profile = MultiBot.db and MultiBot.db.profile
-  if profile then
-    profile.ui = profile.ui or {}
+  local uiStore = MultiBot.Store and MultiBot.Store.EnsureUIStore and MultiBot.Store.EnsureUIStore()
+  if uiStore then
     if shouldSyncLegacyUiState(MAIN_VISIBLE_MIGRATION_KEY, MAIN_VISIBLE_MIGRATION_VERSION) then
-      if type(profile.ui.mainVisible) ~= "boolean" then
-        profile.ui.mainVisible = getLegacyMainUIVisible(false)
+      if type(uiStore.mainVisible) ~= "boolean" then
+        uiStore.mainVisible = getLegacyMainUIVisible(false)
       end
       markLegacyUiStateMigrated(MAIN_VISIBLE_MIGRATION_KEY, MAIN_VISIBLE_MIGRATION_VERSION)
 
@@ -504,10 +496,10 @@ function MultiBot.GetMainUIVisibleConfig()
       local save = ensureSavedVariables()
       save["UIVisible"] = nil
     end
-    if type(profile.ui.mainVisible) ~= "boolean" then
-      profile.ui.mainVisible = MAIN_UI_VISIBLE_DEFAULT
+    if type(uiStore.mainVisible) ~= "boolean" then
+      uiStore.mainVisible = MAIN_UI_VISIBLE_DEFAULT
     end
-    return profile.ui.mainVisible
+    return uiStore.mainVisible
   end
 
   return getLegacyMainUIVisible(true)
@@ -520,10 +512,8 @@ function MultiBot.SetMainUIVisibleConfig(value)
     save["UIVisible"] = visible
   end
 
-  local profile = MultiBot.db and MultiBot.db.profile
-  if profile then
-    profile.ui = profile.ui or {}
-    profile.ui.mainVisible = visible
+  if MultiBot.Store and MultiBot.Store.SetUIValue then
+    MultiBot.Store.SetUIValue("mainVisible", visible)
   end
 
   return visible
@@ -615,14 +605,9 @@ function MultiBot.GetQuickFramePosition(frameKey)
     return nil
   end
 
-  local profile = MultiBot.db and MultiBot.db.profile
   local legacyPosStore = getLegacyQuickFramePositionStore(false)
-
-  if profile then
-    profile.ui = profile.ui or {}
-    profile.ui.quickFramePositions = profile.ui.quickFramePositions or {}
-
-    local store = profile.ui.quickFramePositions
+  local store = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("quickFramePositions")
+  if store then
     migrateLegacyQuickFramePositionsIfNeeded(store, legacyPosStore)
 
     local pos = store[frameKey]
@@ -652,13 +637,9 @@ function MultiBot.SetQuickFramePosition(frameKey, point, relPoint, x, y)
     y = y,
   }
 
-  local profile = MultiBot.db and MultiBot.db.profile
   local legacyPosStore = getLegacyQuickFramePositionStore(false)
-  if profile then
-    profile.ui = profile.ui or {}
-    profile.ui.quickFramePositions = profile.ui.quickFramePositions or {}
-
-    local store = profile.ui.quickFramePositions
+  local store = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("quickFramePositions")
+  if store then
     migrateLegacyQuickFramePositionsIfNeeded(store, legacyPosStore)
     store[frameKey] = position
   end
@@ -677,17 +658,14 @@ function MultiBot.GetQuickFrameVisibleConfig(frameKey)
     return true
   end
 
-  local profile = MultiBot.db and MultiBot.db.profile
-  if not profile then
+  local store = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("quickFrameVisibility")
+  if not store then
     return true
   end
 
-  profile.ui = profile.ui or {}
-  profile.ui.quickFrameVisibility = profile.ui.quickFrameVisibility or {}
-
-  local value = profile.ui.quickFrameVisibility[frameKey]
+  local value = store[frameKey]
   if type(value) ~= "boolean" then
-    profile.ui.quickFrameVisibility[frameKey] = true
+    store[frameKey] = true
     return true
   end
 
@@ -700,11 +678,9 @@ function MultiBot.SetQuickFrameVisibleConfig(frameKey, visible)
   end
 
   local value = not not visible
-  local profile = MultiBot.db and MultiBot.db.profile
-  if profile then
-    profile.ui = profile.ui or {}
-    profile.ui.quickFrameVisibility = profile.ui.quickFrameVisibility or {}
-    profile.ui.quickFrameVisibility[frameKey] = value
+  local store = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("quickFrameVisibility")
+  if store then
+    store[frameKey] = value
   end
 
   return value
@@ -762,13 +738,8 @@ function MultiBot.GetHunterPetStance(name)
   end
 
   local legacyStore = getLegacyHunterPetStanceStore(false)
-  local profile = MultiBot.db and MultiBot.db.profile
-
-  if profile then
-    profile.ui = profile.ui or {}
-    profile.ui.hunterPetStance = profile.ui.hunterPetStance or {}
-
-    local store = profile.ui.hunterPetStance
+  local store = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("hunterPetStance")
+  if store then
     migrateLegacyHunterPetStanceIfNeeded(store, legacyStore)
 
     local value = store[name]
@@ -790,14 +761,9 @@ function MultiBot.SetHunterPetStance(name, stance)
     return nil
   end
 
-  local profile = MultiBot.db and MultiBot.db.profile
   local legacyStore = getLegacyHunterPetStanceStore(false)
-
-  if profile then
-    profile.ui = profile.ui or {}
-    profile.ui.hunterPetStance = profile.ui.hunterPetStance or {}
-
-    local store = profile.ui.hunterPetStance
+  local store = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("hunterPetStance")
+  if store then
     migrateLegacyHunterPetStanceIfNeeded(store, legacyStore)
     store[name] = stance
   end
@@ -829,11 +795,9 @@ local function getLegacyShamanTotemsStore(createIfMissing)
 end
 
 local function getShamanTotemsStore(createLegacyIfMissing)
-  local profile = MultiBot.db and MultiBot.db.profile
-  if profile then
-    profile.ui = profile.ui or {}
-    profile.ui.shamanTotems = profile.ui.shamanTotems or {}
-    return profile.ui.shamanTotems, true
+  local store = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("shamanTotems")
+  if store then
+    return store, true
   end
 
   return getLegacyShamanTotemsStore(createLegacyIfMissing), false
