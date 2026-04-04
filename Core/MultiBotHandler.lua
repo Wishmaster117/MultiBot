@@ -117,11 +117,10 @@ local function getLegacyStateStore(createIfMissing)
 end
 
 local function getMainBarProfileStore()
-	local profile = MultiBot.db and MultiBot.db.profile
-	if not profile then return nil end
-	profile.ui = profile.ui or {}
-	profile.ui.mainBar = profile.ui.mainBar or {}
-	return profile.ui.mainBar
+	if not (MultiBot.Store and MultiBot.Store.EnsureMainBarStore) then
+		return nil
+	end
+	return MultiBot.Store.EnsureMainBarStore()
 end
 
 local function migrateLegacyMainBarStateIfNeeded(profileStore)
@@ -186,11 +185,10 @@ MultiBot.SetSavedMainBarValue = function(key, value)
 end
 
 local function getLayoutProfileStore()
-	local profile = MultiBot.db and MultiBot.db.profile
-	if not profile then return nil end
-	profile.ui = profile.ui or {}
-	profile.ui.layout = profile.ui.layout or {}
-	return profile.ui.layout
+	if not (MultiBot.Store and MultiBot.Store.EnsureUIChildStore) then
+		return nil
+	end
+	return MultiBot.Store.EnsureUIChildStore("layout")
 end
 
 local function migrateLegacyLayoutStateIfNeeded(profileStore)

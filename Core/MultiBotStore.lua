@@ -4,6 +4,18 @@ MultiBot.Store = MultiBot.Store or {}
 
 local Store = MultiBot.Store
 
+local function normalizeMigrationEntries(migrations)
+  if type(migrations) ~= "table" then
+    return
+  end
+
+  for key, value in pairs(migrations) do
+    if type(value) ~= "number" then
+      migrations[key] = nil
+    end
+  end
+end
+
 local function getLegacyRoot(createIfMissing)
   local legacy = _G.MultiBotDB
   if type(legacy) == "table" then
@@ -97,6 +109,86 @@ function Store.SetUIValue(key, value)
   local ui = Store.EnsureUIStore()
   ui[key] = value
   return value
+end
+
+function Store.GetMigrationStore()
+  local profile = Store.GetProfileStore()
+  if type(profile) ~= "table" then
+    return nil
+  end
+
+  local migrations = profile.migrations
+  if type(migrations) ~= "table" then
+    return nil
+  end
+
+  normalizeMigrationEntries(migrations)
+  return migrations
+end
+
+function Store.EnsureMigrationStore()
+  local profile = Store.EnsureProfileStore()
+  profile.migrations = profile.migrations or {}
+  normalizeMigrationEntries(profile.migrations)
+  return profile.migrations
+end
+
+function Store.GetFavoritesStore()
+  local profile = Store.GetProfileStore()
+  if type(profile) ~= "table" then
+    return nil
+  end
+
+  if type(profile.favorites) ~= "table" then
+    return nil
+  end
+
+  return profile.favorites
+end
+
+function Store.EnsureFavoritesStore()
+  local profile = Store.EnsureProfileStore()
+  profile.favorites = profile.favorites or {}
+  return profile.favorites
+end
+
+function Store.IsValidGlobalBotRosterEntry(value)
+  if type(value) ~= "string" then
+    return false
+  end
+
+  return value:match("^[^,]+,%[[^%]]+%],[^,]*,%d+/%d+/%d+,[^,]+,%-?%d+,%-?%d+$") ~= nil
+end
+
+function Store.SanitizeGlobalBotStore(store)
+  if type(store) ~= "table" then
+    return
+  end
+
+  for botName, value in pairs(store) do
+    if type(botName) ~= "string" or not Store.IsValidGlobalBotRosterEntry(value) then
+      store[botName] = nil
+    end
+  end
+end
+
+function Store.GetBotsStore()
+  local profile = Store.GetProfileStore()
+  if type(profile) ~= "table" then
+    return nil
+  end
+
+  if type(profile.bots) ~= "table" then
+    return nil
+  end
+
+  return profile.bots
+end
+
+function Store.EnsureBotsStore()
+  local profile = Store.EnsureProfileStore()
+  profile.bots = profile.bots or {}
+  return profile.bots
 end
 
 function Store.GetMainBarStore()

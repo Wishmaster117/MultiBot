@@ -176,21 +176,10 @@ local HUNTER_PET_STANCE_MIGRATION_KEY = "hunterPetStanceVersion"
 local FAVORITES_MIGRATION_KEY = "favoritesVersion"
 
 local function getUiMigrationStore()
-  local profile = MultiBot.db and MultiBot.db.profile
-  if not profile then
+  if not (MultiBot.Store and MultiBot.Store.EnsureMigrationStore) then
     return nil
   end
-
-  profile.migrations = profile.migrations or {}
-
-  -- Keep only numeric migration version entries in this table.
-  for key, value in pairs(profile.migrations) do
-    if type(value) ~= "number" then
-      profile.migrations[key] = nil
-    end
-  end
-
-  return profile.migrations
+  return MultiBot.Store.EnsureMigrationStore()
 end
 
 local function shouldSyncLegacyUiState(versionKey, targetVersion)
@@ -230,23 +219,9 @@ local function getLegacyGlobalBotStore()
 end
 
 local function isGlobalBotRosterEntry(value)
-  if type(value) ~= "string" then
-    return false
-  end
-
-  return value:match("^[^,]+,%[[^%]]+%],[^,]*,%d+/%d+/%d+,[^,]+,%-?%d+,%-?%d+$") ~= nil
-end
-
-local function sanitizeGlobalBotStore(store)
-  if type(store) ~= "table" then
-    return
-  end
-
-  for botName, value in pairs(store) do
-    if type(botName) ~= "string" or not isGlobalBotRosterEntry(value) then
-      store[botName] = nil
-    end
-  end
+  return MultiBot.Store
+    and MultiBot.Store.IsValidGlobalBotRosterEntry
+    and MultiBot.Store.IsValidGlobalBotRosterEntry(value)
 end
 
 local function migrateLegacyGlobalBotStoreIfNeeded(store, legacyStore)
@@ -271,13 +246,12 @@ local function migrateLegacyGlobalBotStoreIfNeeded(store, legacyStore)
 end
 
 function MultiBot.GetGlobalBotStore()
-  local profile = MultiBot.db and MultiBot.db.profile
   local legacyStore = getLegacyGlobalBotStore()
-  if profile then
-    profile.bots = profile.bots or {}
-    migrateLegacyGlobalBotStoreIfNeeded(profile.bots, legacyStore)
-    sanitizeGlobalBotStore(profile.bots)
-    return profile.bots
+  local store = MultiBot.Store and MultiBot.Store.EnsureBotsStore and MultiBot.Store.EnsureBotsStore()
+  if store then
+    migrateLegacyGlobalBotStoreIfNeeded(store, legacyStore)
+    MultiBot.Store.SanitizeGlobalBotStore(store)
+    return store
   end
 
   return legacyStore
@@ -804,13 +778,10 @@ local function getShamanTotemsStore(createLegacyIfMissing)
 end
 
 local function getShamanTotemsMigrationStore()
-  local profile = MultiBot.db and MultiBot.db.profile
-  if not profile then
+  if not (MultiBot.Store and MultiBot.Store.EnsureMigrationStore) then
     return nil
   end
-
-  profile.migrations = profile.migrations or {}
-  return profile.migrations
+  return MultiBot.Store.EnsureMigrationStore()
 end
 
 local function shouldSyncLegacyShamanTotems()
@@ -1288,15 +1259,13 @@ local function getLegacyFavoritesStore(createIfMissing)
 end
 
 local function getFavoritesStore()
-  local profile = MultiBot.db and MultiBot.db.profile
-  if profile then
-    profile.favorites = profile.favorites or {}
-
+  local favorites = MultiBot.Store and MultiBot.Store.EnsureFavoritesStore and MultiBot.Store.EnsureFavoritesStore()
+  if favorites then
     if shouldSyncLegacyUiState(FAVORITES_MIGRATION_KEY, FAVORITES_MIGRATION_VERSION) then
       local legacyFavorites = getLegacyFavoritesStore(false) or {}
       for name, isFavorite in pairs(legacyFavorites) do
-        if profile.favorites[name] == nil then
-          profile.favorites[name] = isFavorite
+        if favorites[name] == nil then
+          favorites[name] = isFavorite
         end
       end
 
@@ -1307,7 +1276,7 @@ local function getFavoritesStore()
       savedVars.Favorites = nil
     end
 
-    return profile.favorites
+    return favorites
   end
 
   return getLegacyFavoritesStore(false) or {}
@@ -1360,8 +1329,7 @@ function MultiBot.UpdateFavoritesIndex()
 end
 
 function MultiBot.SetFavorite(name, isFav)
-  local profile = MultiBot.db and MultiBot.db.profile
-  local favorites = profile and getFavoritesStore() or getLegacyFavoritesStore(true)
+  local favorites = getFavoritesStore() or getLegacyFavoritesStore(true)
   if isFav then favorites[name] = true
            else favorites[name] = nil
   end
