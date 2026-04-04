@@ -5,15 +5,27 @@ local QuestAllFrame = MultiBot.QuestAllFrame or {}
 MultiBot.QuestAllFrame = QuestAllFrame
 
 local function getBotQuestsAllStore()
-    return (MultiBot.Store and MultiBot.Store.EnsureRuntimeTable and MultiBot.Store.EnsureRuntimeTable("BotQuestsAll")) or (MultiBot.BotQuestsAll or {})
+    local store = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsAll")) or MultiBot.BotQuestsAll
+    if not store and MultiBot.Store and MultiBot.Store.RecordReadMiss then
+        MultiBot.Store.RecordReadMiss("QuestAll", "BotQuestsAll")
+    end
+    return store or {}
 end
 
 local function getBotQuestsCompletedStore()
-    return (MultiBot.Store and MultiBot.Store.EnsureRuntimeTable and MultiBot.Store.EnsureRuntimeTable("BotQuestsCompleted")) or (MultiBot.BotQuestsCompleted or {})
+    local store = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsCompleted")) or MultiBot.BotQuestsCompleted
+    if not store and MultiBot.Store and MultiBot.Store.RecordReadMiss then
+        MultiBot.Store.RecordReadMiss("QuestAll", "BotQuestsCompleted")
+    end
+    return store or {}
 end
 
 local function getBotQuestsIncompletedStore()
-    return (MultiBot.Store and MultiBot.Store.EnsureRuntimeTable and MultiBot.Store.EnsureRuntimeTable("BotQuestsIncompleted")) or (MultiBot.BotQuestsIncompleted or {})
+    local store = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsIncompleted")) or MultiBot.BotQuestsIncompleted
+    if not store and MultiBot.Store and MultiBot.Store.RecordReadMiss then
+        MultiBot.Store.RecordReadMiss("QuestAll", "BotQuestsIncompleted")
+    end
+    return store or {}
 end
 
 local function clearList(self)
@@ -201,18 +213,14 @@ function MultiBot.InitializeQuestAllFrame()
     content:AddChild(scroll)
 
     window.frame:HookScript("OnHide", function()
-        local allStore = getBotQuestsAllStore()
-        local completedStore = getBotQuestsCompletedStore()
-        local incompletedStore = getBotQuestsIncompletedStore()
+        local allStore = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsAll")) or MultiBot.BotQuestsAll
+        local completedStore = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsCompleted")) or MultiBot.BotQuestsCompleted
+        local incompletedStore = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsIncompleted")) or MultiBot.BotQuestsIncompleted
 
-        if wipe then
-            wipe(allStore)
-            wipe(completedStore)
-            wipe(incompletedStore)
-        else
-            for key in pairs(allStore) do allStore[key] = nil end
-            for key in pairs(completedStore) do completedStore[key] = nil end
-            for key in pairs(incompletedStore) do incompletedStore[key] = nil end
+        if MultiBot.Store and MultiBot.Store.ClearTable then
+            MultiBot.Store.ClearTable(allStore)
+            MultiBot.Store.ClearTable(completedStore)
+            MultiBot.Store.ClearTable(incompletedStore)
         end
         clearList(QuestAllFrame)
     end)

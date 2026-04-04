@@ -5,7 +5,11 @@ local QuestIncompleteFrame = MultiBot.QuestIncompleteFrame or {}
 MultiBot.QuestIncompleteFrame = QuestIncompleteFrame
 
 local function getBotQuestsIncompletedStore()
-    return (MultiBot.Store and MultiBot.Store.EnsureRuntimeTable and MultiBot.Store.EnsureRuntimeTable("BotQuestsIncompleted")) or (MultiBot.BotQuestsIncompleted or {})
+    local store = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsIncompleted")) or MultiBot.BotQuestsIncompleted
+    if not store and MultiBot.Store and MultiBot.Store.RecordReadMiss then
+        MultiBot.Store.RecordReadMiss("QuestIncomplete", "BotQuestsIncompleted")
+    end
+    return store or {}
 end
 
 local function clearList(self)
@@ -83,11 +87,9 @@ function MultiBot.InitializeQuestIncompleteFrame()
     content:AddChild(scroll)
 
     window.frame:HookScript("OnHide", function()
-        local store = getBotQuestsIncompletedStore()
-        if wipe then
-            wipe(store)
-        else
-            for key in pairs(store) do store[key] = nil end
+        local store = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsIncompleted")) or MultiBot.BotQuestsIncompleted
+        if MultiBot.Store and MultiBot.Store.ClearTable then
+            MultiBot.Store.ClearTable(store)
         end
         clearList(QuestIncompleteFrame)
     end)

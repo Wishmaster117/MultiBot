@@ -3,6 +3,11 @@ MultiBot = MultiBot or {}
 MultiBot.Store = MultiBot.Store or {}
 
 local Store = MultiBot.Store
+Store.Diagnostics = Store.Diagnostics or {
+  enabled = false,
+  ensureCalls = {},
+  readMisses = {},
+}
 
 local function normalizeMigrationEntries(migrations)
   if type(migrations) ~= "table" then
@@ -210,7 +215,49 @@ function Store.EnsureRuntimeTable(fieldName)
   end
 
   MultiBot[fieldName] = MultiBot[fieldName] or {}
+  if Store.Diagnostics.enabled then
+    Store.Diagnostics.ensureCalls[fieldName] = (Store.Diagnostics.ensureCalls[fieldName] or 0) + 1
+  end
   return MultiBot[fieldName]
+end
+
+function Store.RecordReadMiss(scope, key)
+  if not Store.Diagnostics.enabled then
+    return
+  end
+  local bucketKey = (scope or "unknown") .. ":" .. (key or "unknown")
+  Store.Diagnostics.readMisses[bucketKey] = (Store.Diagnostics.readMisses[bucketKey] or 0) + 1
+end
+
+function Store.SetDiagnosticsEnabled(enabled)
+  Store.Diagnostics.enabled = enabled and true or false
+  return Store.Diagnostics.enabled
+end
+
+function Store.ResetDiagnostics()
+  Store.Diagnostics.ensureCalls = {}
+  Store.Diagnostics.readMisses = {}
+end
+
+function Store.GetDiagnosticsSnapshot()
+  return {
+    enabled = Store.Diagnostics.enabled,
+    ensureCalls = Store.Diagnostics.ensureCalls,
+    readMisses = Store.Diagnostics.readMisses,
+  }
+end
+
+function Store.ClearTable(target)
+  if type(target) ~= "table" then
+    return
+  end
+  if wipe then
+    wipe(target)
+    return
+  end
+  for key in pairs(target) do
+    target[key] = nil
+  end
 end
 
 function Store.EnsureTableField(parent, fieldName, defaultValue)

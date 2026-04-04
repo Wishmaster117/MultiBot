@@ -52,7 +52,7 @@ Référence roadmap : `ROADMAP.md` (D3 Milestone 10).
 | `db.profile.ui.mainBar` | `Core/MultiBotConfig.lua` | Accès directs + normalisation locale | `READ_THEN_CREATE` implicite + validateurs dupliqués | **PR1 fait**: API `MultiBot.Store` + migration domaine mainBar |
 | `db.profile.ui` (minimap/strata/visibility/quick frames) | `Core/MultiBot.lua`, `UI/MultiBotTalentFrame.lua`, `UI/MultiBotSpecUI.lua`, `Features/MultiBotRaidus.lua` | Helpers locaux par module | Drift de schéma + créations inline | **PR2 fait (Core/MultiBot.lua)**, reste UI/Features à converger |
 | Runtime bot store (`profile.bots`, états temporaires) | `Core/MultiBot.lua`, `Core/MultiBotHandler.lua`, `Core/MultiBotEngine.lua` | Mix helpers + snippets inline | Normalisation partielle et validations divergentes | **PR3 fait (Core/MultiBot.lua + Core/MultiBotHandler.lua)**, reste Engine à consolider |
-| Quick UI caches (`MultiBot.*` runtime) | `UI/MultiBotQuest*`, `UI/MultiBotSpellBookFrame.lua`, `Features/MultiBotReward.lua` | Tables runtime ad-hoc | Mutations cachées / initialisations dispersées | PR4: wrappers runtime + hygiene read/write |
+| Quick UI caches (`MultiBot.*` runtime) | `UI/MultiBotQuest*`, `UI/MultiBotSpellBookFrame.lua`, `Features/MultiBotReward.lua` | Tables runtime ad-hoc | Mutations cachées / initialisations dispersées | **PR4 fait**: wrappers runtime (`EnsureRuntimeTable`, `EnsureTableField`) + migration Quest/SpellBook/Reward |
 
 ---
 
@@ -137,7 +137,7 @@ Référence roadmap : `ROADMAP.md` (D3 Milestone 10).
 - [x] PR1 — Audit + ajout API store centralisée (sans bascule massive)
 - [x] PR2 — Migration `db.profile.ui` vers accesseurs centralisés
 - [x] PR3 — Migration runtime bot stores + validations communes
-- [ ] PR4 — Migration quick UI caches + suppression bootstraps inline
+- [x] PR4 — Migration quick UI caches + suppression bootstraps inline
 - [ ] PR5 — Durcissement final + nettoyage + checklist release M10
 
 ---
@@ -149,6 +149,7 @@ Référence roadmap : `ROADMAP.md` (D3 Milestone 10).
 - 2026-04-04 — Codex — PR1/commit courant — `db.profile.ui.mainBar` — Ajout `MultiBot.Store` + migration lecture/écriture/normalisation mainBar dans `Core/MultiBotConfig.lua`.
 - 2026-04-04 — Codex — PR2/commit courant — `db.profile.ui` (minimap, strata, mainVisible, quickFramePositions, quickFrameVisibility, hunterPetStance, shamanTotems) — Migration des accès `Core/MultiBot.lua` vers API `MultiBot.Store`.
 - 2026-04-04 — Codex — PR3/commit courant — stores runtime (`bots`, `favorites`, `migrations`, `layout/mainBar`) — Centralisation des accès/validations dans `MultiBot.Store` et migration des call sites Core.
+- 2026-04-04 — Codex — PR4/commit courant — quick UI caches (`BotQuests*`, `SpellBookUISettings`, `reward.*`) — Remplacement des initialisations ad-hoc par wrappers runtime centralisés.
 
 ### Décisions
 
