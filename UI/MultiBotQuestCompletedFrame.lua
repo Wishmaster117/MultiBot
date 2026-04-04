@@ -4,7 +4,9 @@ local Shared = MultiBot.QuestUIShared or {}
 local QuestCompletedFrame = MultiBot.QuestCompletedFrame or {}
 MultiBot.QuestCompletedFrame = QuestCompletedFrame
 
-MultiBot.BotQuestsCompleted = MultiBot.BotQuestsCompleted or {}
+local function getBotQuestsCompletedStore()
+    return (MultiBot.Store and MultiBot.Store.EnsureRuntimeTable and MultiBot.Store.EnsureRuntimeTable("BotQuestsCompleted")) or (MultiBot.BotQuestsCompleted or {})
+end
 
 local function clearList(self)
     if self.scroll then
@@ -14,7 +16,7 @@ end
 
 function MultiBot.BuildBotCompletedList(botName)
     local frame = MultiBot.InitializeQuestCompletedFrame()
-    local entries = Shared.SortQuestEntries(MultiBot.BotQuestsCompleted[botName] or {})
+    local entries = Shared.SortQuestEntries(getBotQuestsCompletedStore()[botName] or {})
 
     frame:Show()
     Shared.RenderQuestEntries(frame, entries, {
@@ -24,7 +26,7 @@ end
 
 function MultiBot.BuildAggregatedCompletedList()
     local frame = MultiBot.InitializeQuestCompletedFrame()
-    local entries = Shared.BuildAggregatedQuestEntries(MultiBot.BotQuestsCompleted)
+    local entries = Shared.BuildAggregatedQuestEntries(getBotQuestsCompletedStore())
 
     frame:Show()
     Shared.RenderQuestEntries(frame, entries, {
@@ -81,7 +83,12 @@ function MultiBot.InitializeQuestCompletedFrame()
     content:AddChild(scroll)
 
     window.frame:HookScript("OnHide", function()
-        MultiBot.BotQuestsCompleted = {}
+        local store = getBotQuestsCompletedStore()
+        if wipe then
+            wipe(store)
+        else
+            for key in pairs(store) do store[key] = nil end
+        end
         clearList(QuestCompletedFrame)
     end)
 

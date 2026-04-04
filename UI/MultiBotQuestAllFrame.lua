@@ -4,9 +4,17 @@ local Shared = MultiBot.QuestUIShared or {}
 local QuestAllFrame = MultiBot.QuestAllFrame or {}
 MultiBot.QuestAllFrame = QuestAllFrame
 
-MultiBot.BotQuestsAll = MultiBot.BotQuestsAll or {}
-MultiBot.BotQuestsCompleted = MultiBot.BotQuestsCompleted or {}
-MultiBot.BotQuestsIncompleted = MultiBot.BotQuestsIncompleted or {}
+local function getBotQuestsAllStore()
+    return (MultiBot.Store and MultiBot.Store.EnsureRuntimeTable and MultiBot.Store.EnsureRuntimeTable("BotQuestsAll")) or (MultiBot.BotQuestsAll or {})
+end
+
+local function getBotQuestsCompletedStore()
+    return (MultiBot.Store and MultiBot.Store.EnsureRuntimeTable and MultiBot.Store.EnsureRuntimeTable("BotQuestsCompleted")) or (MultiBot.BotQuestsCompleted or {})
+end
+
+local function getBotQuestsIncompletedStore()
+    return (MultiBot.Store and MultiBot.Store.EnsureRuntimeTable and MultiBot.Store.EnsureRuntimeTable("BotQuestsIncompleted")) or (MultiBot.BotQuestsIncompleted or {})
+end
 
 local function clearList(self)
     if self.scroll then
@@ -83,7 +91,7 @@ function MultiBot.BuildBotAllList(botName)
     local frame = MultiBot.InitializeQuestAllFrame()
     clearList(frame)
 
-    local quests = MultiBot.BotQuestsAll[botName] or {}
+    local quests = getBotQuestsAllStore()[botName] or {}
     for _, link in ipairs(quests) do
         local questID = tonumber(link:match("|Hquest:(%d+):"))
         local localizedName = questID and Shared.GetLocalizedQuestName(questID, link) or link
@@ -105,8 +113,8 @@ function MultiBot.BuildAggregatedAllList()
     local frame = MultiBot.InitializeQuestAllFrame()
     clearList(frame)
 
-    local completeEntries = Shared.BuildAggregatedQuestEntries(MultiBot.BotQuestsCompleted)
-    local incompleteEntries = Shared.BuildAggregatedQuestEntries(MultiBot.BotQuestsIncompleted)
+    local completeEntries = Shared.BuildAggregatedQuestEntries(getBotQuestsCompletedStore())
+    local incompleteEntries = Shared.BuildAggregatedQuestEntries(getBotQuestsIncompletedStore())
 
     createSectionHeader(frame, MultiBot.L("tips.quests.compheader"))
     if #completeEntries == 0 then
@@ -193,9 +201,19 @@ function MultiBot.InitializeQuestAllFrame()
     content:AddChild(scroll)
 
     window.frame:HookScript("OnHide", function()
-        MultiBot.BotQuestsAll = {}
-        MultiBot.BotQuestsCompleted = {}
-        MultiBot.BotQuestsIncompleted = {}
+        local allStore = getBotQuestsAllStore()
+        local completedStore = getBotQuestsCompletedStore()
+        local incompletedStore = getBotQuestsIncompletedStore()
+
+        if wipe then
+            wipe(allStore)
+            wipe(completedStore)
+            wipe(incompletedStore)
+        else
+            for key in pairs(allStore) do allStore[key] = nil end
+            for key in pairs(completedStore) do completedStore[key] = nil end
+            for key in pairs(incompletedStore) do incompletedStore[key] = nil end
+        end
         clearList(QuestAllFrame)
     end)
 

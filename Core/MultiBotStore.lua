@@ -191,6 +191,47 @@ function Store.EnsureBotsStore()
   return profile.bots
 end
 
+function Store.GetRuntimeTable(fieldName)
+  if type(fieldName) ~= "string" or fieldName == "" then
+    return nil
+  end
+
+  local value = MultiBot[fieldName]
+  if type(value) ~= "table" then
+    return nil
+  end
+
+  return value
+end
+
+function Store.EnsureRuntimeTable(fieldName)
+  if type(fieldName) ~= "string" or fieldName == "" then
+    return nil
+  end
+
+  MultiBot[fieldName] = MultiBot[fieldName] or {}
+  return MultiBot[fieldName]
+end
+
+function Store.EnsureTableField(parent, fieldName, defaultValue)
+  if type(parent) ~= "table" then
+    return nil
+  end
+  if type(fieldName) ~= "string" or fieldName == "" then
+    return nil
+  end
+
+  if parent[fieldName] == nil then
+    if defaultValue == nil then
+      parent[fieldName] = {}
+    else
+      parent[fieldName] = defaultValue
+    end
+  end
+
+  return parent[fieldName]
+end
+
 function Store.GetMainBarStore()
   local ui = Store.GetUIStore()
   if type(ui) ~= "table" then
