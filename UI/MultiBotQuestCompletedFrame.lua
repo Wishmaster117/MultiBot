@@ -26,9 +26,38 @@ local function clearList(self)
     end
 end
 
+local function normalizeBotName(botName)
+    if type(botName) ~= "string" then
+        return nil
+    end
+    return botName:gsub("%-.+$", ""):lower()
+end
+
+local function resolveBotQuestBucket(store, botName)
+    if type(store) ~= "table" or type(botName) ~= "string" then
+        return EMPTY_TABLE
+    end
+
+    if type(store[botName]) == "table" then
+        return store[botName]
+    end
+
+    local normalizedTarget = normalizeBotName(botName)
+    for storedBotName, quests in pairs(store) do
+        if type(storedBotName) == "string" and type(quests) == "table" then
+            if storedBotName:lower() == botName:lower() or normalizeBotName(storedBotName) == normalizedTarget then
+                return quests
+            end
+        end
+    end
+
+    return EMPTY_TABLE
+end
+
 function MultiBot.BuildBotCompletedList(botName)
+    local frame = MultiBot.InitializeQuestCompletedFrame()
     local completedStore = getBotQuestsCompletedStore()
-    local entries = Shared.SortQuestEntries((completedStore and completedStore[botName]) or EMPTY_TABLE)
+    local entries = Shared.SortQuestEntries(resolveBotQuestBucket(completedStore, botName))
 
     frame:Show()
     Shared.RenderQuestEntries(frame, entries, {

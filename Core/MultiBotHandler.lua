@@ -870,12 +870,19 @@ local function scheduleQuestListBuild(delay, modeValue, groupedMode, groupedBuil
 	end)
 end
 
-local function finalizeQuestSection(author, awaitingTable, popup, modeValue, groupedMode, groupedBuilder, singleBuilder)
+local function finalizeQuestSection(author, awaitingTable, popup, modeValue, groupedMode, groupedBuilder, singleBuilder, singleAuthor)
 	awaitingTable[author] = nil
 	showPopupIfHidden(popup)
-	scheduleQuestListBuild(0.1, modeValue, groupedMode, groupedBuilder, singleBuilder, author)
+	scheduleQuestListBuild(0.1, modeValue, groupedMode, groupedBuilder, singleBuilder, singleAuthor or author)
 end
 
+local function refreshQuestSectionProgress(author, modeValue, groupedMode, groupedBuilder, singleBuilder, singleAuthor)
+	if modeValue == groupedMode then
+		return
+	end
+	scheduleQuestListBuild(0.05, modeValue, groupedMode, groupedBuilder, singleBuilder, singleAuthor or author)
+end
+ 
 local function HandleQuestResponse(rawMsg, author)
 	if MultiBot._awaitingQuestsAll or MultiBot._blockOtherQuests then
 		if MultiBot.dprint then
@@ -898,6 +905,10 @@ local function HandleQuestResponse(rawMsg, author)
 
 	if MultiBot.Store.EnsureRuntimeTable("_awaitingQuestsIncompleted")[author] then
 		FillQuestTable("BotQuestsIncompleted", author, rawMsg)
+		local incRenderAuthor = author
+		if MultiBot._lastIncMode == "WHISPER" and type(MultiBot._lastIncWhisperBot) == "string" and MultiBot._lastIncWhisperBot ~= "" then
+			incRenderAuthor = MultiBot._lastIncWhisperBot
+		end
 		if rawMsg:find(QUEST_LINE_MARKERS.summary, 1, true) then
 			finalizeQuestSection(
 				author,
@@ -906,7 +917,17 @@ local function HandleQuestResponse(rawMsg, author)
 				MultiBot._lastIncMode,
 				"GROUP",
 				MultiBot.BuildAggregatedQuestList,
-				MultiBot.BuildBotQuestList
+				MultiBot.BuildBotQuestList,
+				incRenderAuthor
+			)
+		else
+			refreshQuestSectionProgress(
+				author,
+				MultiBot._lastIncMode,
+				"GROUP",
+				MultiBot.BuildAggregatedQuestList,
+				MultiBot.BuildBotQuestList,
+				incRenderAuthor
 			)
 		end
 		return
@@ -920,6 +941,10 @@ local function HandleQuestResponse(rawMsg, author)
 
 	if MultiBot.Store.EnsureRuntimeTable("_awaitingQuestsCompleted")[author] then
 		FillQuestTable("BotQuestsCompleted", author, rawMsg)
+		local compRenderAuthor = author
+		if MultiBot._lastCompMode == "WHISPER" and type(MultiBot._lastCompWhisperBot) == "string" and MultiBot._lastCompWhisperBot ~= "" then
+			compRenderAuthor = MultiBot._lastCompWhisperBot
+		end
 		if rawMsg:find(QUEST_LINE_MARKERS.summary, 1, true) then
 			finalizeQuestSection(
 				author,
@@ -928,7 +953,17 @@ local function HandleQuestResponse(rawMsg, author)
 				MultiBot._lastCompMode,
 				"GROUP",
 				MultiBot.BuildAggregatedCompletedList,
-				MultiBot.BuildBotCompletedList
+				MultiBot.BuildBotCompletedList,
+				compRenderAuthor
+			)
+		else
+			refreshQuestSectionProgress(
+				author,
+				MultiBot._lastCompMode,
+				"GROUP",
+				MultiBot.BuildAggregatedCompletedList,
+				MultiBot.BuildBotCompletedList,
+				compRenderAuthor
 			)
 		end
 		return
