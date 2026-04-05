@@ -1,6 +1,7 @@
 TODO
 
 * Milestone 10 voir pourquoi les quetes incompletes ne s'affichent pas par bot
+* Placer les quickshaman et quickhunter dans un meilleur endroit par défaut quand ils sont chargés pour la première fois
 * Uniformiser le template des frame quetes comme celle de Itemus
 * Uniformiser le template de la frame reward comme celle de itemus
 * Raidus doit se rafraichir à l'ouverture et fermeture

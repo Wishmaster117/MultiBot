@@ -343,7 +343,7 @@ end
 function MultiBot.GetMinimapConfig()
   local minimap = MultiBot.Store and MultiBot.Store.GetUIChildStore and MultiBot.Store.GetUIChildStore("minimap")
   local legacy = getLegacyMinimapConfig(false)
-  
+
   if not minimap and shouldSyncLegacyUiState(MINIMAP_CONFIG_MIGRATION_KEY, MINIMAP_CONFIG_MIGRATION_VERSION) and legacy then
     minimap = MultiBot.Store and MultiBot.Store.EnsureUIChildStore and MultiBot.Store.EnsureUIChildStore("minimap")
   end

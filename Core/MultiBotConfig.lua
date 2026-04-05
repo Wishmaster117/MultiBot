@@ -369,5 +369,5 @@ function MultiBot.SetMainBarAutoHideDelay(value)
   if MultiBot.RefreshMainBarAutoHideState then
     MultiBot.RefreshMainBarAutoHideState()
   end
-  return config.ui.mainBar.autoHideDelay
+  return mainBar.autoHideDelay
 end

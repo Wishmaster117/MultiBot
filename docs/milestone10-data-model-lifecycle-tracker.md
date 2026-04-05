@@ -23,15 +23,15 @@ Référence roadmap : `ROADMAP.md` (D3 Milestone 10).
 
 ### 2.1 Stores prioritaires (bloquants M10)
 
-- [ ] `db.profile.ui` (positions, états visuels, préférences UI ACE3)
-- [ ] Stores runtime bots (cache roster, états temporaires, indexation runtime)
-- [ ] Caches UI rapides (popups, sélections courantes, pagination, données de session)
+- [x] `db.profile.ui` (positions, états visuels, préférences UI ACE3) *(Audit 2026-04-05: accès convergés sur `Get/EnsureUI*` + fallback legacy borné).*
+- [x] Stores runtime bots (cache roster, états temporaires, indexation runtime) *(Audit 2026-04-05: chemins Core refactorés sur `Get/EnsureBotsStore`, validation centralisée).*
+- [x] Caches UI rapides (popups, sélections courantes, pagination, données de session) *(Audit 2026-04-05: chemins Quests/SpellBook/Reward alignés sur `GetRuntimeTable`/`EnsureRuntimeTable`).*
 
 ### 2.2 Stores secondaires (si touchés par PR M10)
 
-- [ ] Mémoire quick-bar / classes / contextes spécifiques
-- [ ] Buffers de parsing whisper/chat
-- [ ] Structures de mapping temporaires (lookup tables)
+- [x] Mémoire quick-bar / classes / contextes spécifiques *(Audit 2026-04-05: tables runtime à forte fréquence passées par helpers store ou wrappers dédiés `Core/MultiBotEngine.lua`).*
+- [x] Buffers de parsing whisper/chat *(Audit 2026-04-05: buffers Quests/whisper initialisés explicitement via `EnsureRuntimeTable`/`EnsureTableField` dans `Core/MultiBotHandler.lua`).*
+- [x] Structures de mapping temporaires (lookup tables) *(Audit 2026-04-05: initialisations ad-hoc supprimées sur les flux ciblés M10, mapping runtime centralisé).*
 
 ---
 
@@ -59,7 +59,7 @@ Référence roadmap : `ROADMAP.md` (D3 Milestone 10).
 ## Phase B — API de store centralisée
 
 - [x] Définir une API unifiée de store (naming stable + responsabilités claires). *(PR1: `Core/MultiBotStore.lua`)*
-- [ ] Séparer explicitement :
+- [x] Séparer explicitement :
   - [x] `get*` (lecture pure, jamais de création), *(PR1: `GetProfileStore`, `GetUIStore`, `GetMainBarStore`)*
   - [x] `ensure*` / `getOrCreate*` (création explicite), *(PR1+PR3: `EnsureProfileStore`, `EnsureUIStore`, `EnsureMainBarStore`, `EnsureMigrationStore`, `EnsureBotsStore`, `EnsureFavoritesStore`)*
   - [x] `normalize*` (coercion/shape), *(PR1: `NormalizeMainBarSettings`)*
@@ -85,10 +85,10 @@ Référence roadmap : `ROADMAP.md` (D3 Milestone 10).
 
 ### Vagues de migration recommandées
 
-1. [ ] Core runtime (init/handler/engine)
-2. [ ] UI haute fréquence (main frame, quick interactions)
-3. [ ] Features secondaires (popups/outils auxiliaires)
-4. [ ] Stratégies/classes si elles touchent des stores normalisés
+1. [x] Core runtime (init/handler/engine) *(PR1-PR5).*
+2. [x] UI haute fréquence (main frame, quick interactions) *(PR2-PR5).*
+3. [x] Features secondaires (popups/outils auxiliaires) *(PR4-PR5).*
+4. [x] Stratégies/classes si elles touchent des stores normalisés *(Aucun reliquat M10 bloquant détecté à l’audit 2026-04-05).*
 
 ---
 
@@ -146,6 +146,7 @@ Référence roadmap : `ROADMAP.md` (D3 Milestone 10).
 
 ### Entrées
 
+- 2026-04-05 — Audit transversal M10 (Core/UI/Features) — validation des cases d’inventaire encore ouvertes (stores prioritaires + secondaires), et clarification des risques résiduels.
 - 2026-04-04 — PR1/commit courant — `db.profile.ui.mainBar` — Ajout `MultiBot.Store` + migration lecture/écriture/normalisation mainBar dans `Core/MultiBotConfig.lua`.
 - 2026-04-04 — PR2/commit courant — `db.profile.ui` (minimap, strata, mainVisible, quickFramePositions, quickFrameVisibility, hunterPetStance, shamanTotems) — Migration des accès `Core/MultiBot.lua` vers API `MultiBot.Store`.
 - 2026-04-04 — PR3/commit courant — stores runtime (`bots`, `favorites`, `migrations`, `layout/mainBar`) — Centralisation des accès/validations dans `MultiBot.Store` et migration des call sites Core.
@@ -159,12 +160,12 @@ Référence roadmap : `ROADMAP.md` (D3 Milestone 10).
 
 ### Décisions
 
-- _AAAA-MM-JJ_ — _Décision architecture_ — _Impact_
+- 2026-04-05 — Clôturer les cases d’inventaire M10 restées ouvertes — Le suivi distingue désormais explicitement “scope M10 clôturé” et “risques fonctionnels post-M10”.
 
 ### Risques ouverts
 
-- [ ] _Risque 1_
-- [ ] _Risque 2_
+- [ ] Régression fonctionnelle Quests signalée dans `TODO.md` (affichage des quêtes incomplètes par bot à reconfirmer in-game).
+- [ ] Divergence documentaire potentielle si la roadmap globale (`ROADMAP.md`) n’est pas synchronisée avec ce tracker M10.
 
 ---
 

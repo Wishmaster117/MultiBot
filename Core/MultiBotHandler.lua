@@ -882,7 +882,7 @@ local function refreshQuestSectionProgress(author, modeValue, groupedMode, group
 	end
 	scheduleQuestListBuild(0.05, modeValue, groupedMode, groupedBuilder, singleBuilder, singleAuthor or author)
 end
- 
+
 local function HandleQuestResponse(rawMsg, author)
 	if MultiBot._awaitingQuestsAll or MultiBot._blockOtherQuests then
 		if MultiBot.dprint then
