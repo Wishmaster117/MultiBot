@@ -346,6 +346,13 @@ local function cleanupLegacySpecDropdownStoreIfEmpty()
 end
 
 local function getSpecDropdownStore()
+    if MultiBot.Store and MultiBot.Store.EnsureUIChildStore then
+        local store = MultiBot.Store.EnsureUIChildStore("specDropdownPositions")
+        if store then
+            return store
+        end
+    end
+
     local profile = MultiBot.db and MultiBot.db.profile
     if profile then
         profile.ui = profile.ui or {}

@@ -86,11 +86,14 @@ function AceUI.RegisterWindowEscapeClose(window, namePrefix)
 end
 
 local function getUiProfileStore()
+    if MultiBot.Store and MultiBot.Store.EnsureUIStore then
+        return MultiBot.Store.EnsureUIStore()
+    end
+
     local profile = MultiBot.db and MultiBot.db.profile
     if not profile then
         return nil
     end
-
     profile.ui = profile.ui or {}
     return profile.ui
 end

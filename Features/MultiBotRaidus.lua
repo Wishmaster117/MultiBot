@@ -640,6 +640,13 @@ local getRaidusLayoutKey
 local getLegacyRaidusLayoutStore
 
 local function getRaidusLayoutStore(createLegacyIfMissing)
+    if MultiBot.Store and MultiBot.Store.EnsureUIChildStore then
+        local store = MultiBot.Store.EnsureUIChildStore("raidusLayouts")
+        if store then
+            return store
+        end
+    end
+
     local profile = MultiBot.db and MultiBot.db.profile
     if profile then
         profile.ui = profile.ui or {}

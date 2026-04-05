@@ -60,15 +60,22 @@ local function bindTalentFramePosition(window, persistenceKey)
         return
     end
 
-    local profile = MultiBot.db and MultiBot.db.profile
-    if not profile then
-        return
+    local positions = nil
+    if MultiBot.Store and MultiBot.Store.EnsureUIChildStore then
+        positions = MultiBot.Store.EnsureUIChildStore("popupPositions")
     end
 
-    profile.ui = profile.ui or {}
-    profile.ui.popupPositions = profile.ui.popupPositions or {}
+    if not positions then
+        local profile = MultiBot.db and MultiBot.db.profile
+        if not profile then
+            return
+        end
 
-    local positions = profile.ui.popupPositions
+        profile.ui = profile.ui or {}
+        profile.ui.popupPositions = profile.ui.popupPositions or {}
+        positions = profile.ui.popupPositions
+    end
+
     local saved = positions[persistenceKey]
     if saved and saved.point then
         window.frame:ClearAllPoints()
