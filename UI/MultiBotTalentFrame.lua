@@ -61,8 +61,8 @@ local function bindTalentFramePosition(window, persistenceKey)
     end
 
     local positions = nil
-    if MultiBot.Store and MultiBot.Store.EnsureUIChildStore then
-        positions = MultiBot.Store.EnsureUIChildStore("popupPositions")
+    if MultiBot.Store and MultiBot.Store.GetUIChildStore then
+        positions = MultiBot.Store.GetUIChildStore("popupPositions")
     end
 
     if not positions then
@@ -71,12 +71,10 @@ local function bindTalentFramePosition(window, persistenceKey)
             return
         end
 
-        profile.ui = profile.ui or {}
-        profile.ui.popupPositions = profile.ui.popupPositions or {}
-        positions = profile.ui.popupPositions
+        positions = profile.ui and profile.ui.popupPositions
     end
 
-    local saved = positions[persistenceKey]
+    local saved = positions and positions[persistenceKey]
     if saved and saved.point then
         window.frame:ClearAllPoints()
         window.frame:SetPoint(saved.point, UIParent, saved.point, saved.x or 0, saved.y or 0)
@@ -90,7 +88,20 @@ local function bindTalentFramePosition(window, persistenceKey)
     window.frame:HookScript("OnDragStop", function(frame)
         local point, _, _, x, y = frame:GetPoint(1)
         if point then
-            positions[persistenceKey] = { point = point, x = x or 0, y = y or 0 }
+            local writablePositions = nil
+            if MultiBot.Store and MultiBot.Store.EnsureUIChildStore then
+                writablePositions = MultiBot.Store.EnsureUIChildStore("popupPositions")
+            else
+                local profile = MultiBot.db and MultiBot.db.profile
+                if profile then
+                    profile.ui = profile.ui or {}
+                    profile.ui.popupPositions = profile.ui.popupPositions or {}
+                    writablePositions = profile.ui.popupPositions
+                end
+            end
+            if writablePositions then
+                writablePositions[persistenceKey] = { point = point, x = x or 0, y = y or 0 }
+            end
         end
     end)
 end

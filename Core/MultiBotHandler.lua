@@ -184,11 +184,23 @@ MultiBot.SetSavedMainBarValue = function(key, value)
 	return setSavedMainBarValue(key, value)
 end
 
-local function getLayoutProfileStore()
-	if not (MultiBot.Store and MultiBot.Store.EnsureUIChildStore) then
+local function getLayoutProfileStore(createIfMissing)
+	if not MultiBot.Store then
 		return nil
 	end
-	return MultiBot.Store.EnsureUIChildStore("layout")
+
+	if createIfMissing then
+		if type(MultiBot.Store.EnsureUIChildStore) == "function" then
+			return MultiBot.Store.EnsureUIChildStore("layout")
+		end
+		return nil
+	end
+
+	if type(MultiBot.Store.GetUIChildStore) == "function" then
+		return MultiBot.Store.GetUIChildStore("layout")
+	end
+
+	return nil
 end
 
 local function migrateLegacyLayoutStateIfNeeded(profileStore)
@@ -215,23 +227,31 @@ end
 
 local function getSavedLayoutValue(key)
 	local legacy = getLegacyStateStore(false)
-	local profileStore = getLayoutProfileStore()
+	local profileStore = getLayoutProfileStore(false)
 	if profileStore then
 		migrateLegacyLayoutStateIfNeeded(profileStore)
 	end
 
 	local value = profileStore and profileStore[key] or (legacy and legacy[key])
-	if profileStore and value == nil and MultiBot.ShouldSyncLegacyState(LAYOUT_MIGRATION_KEY, LAYOUT_MIGRATION_VERSION) then
+	if value == nil and MultiBot.ShouldSyncLegacyState(LAYOUT_MIGRATION_KEY, LAYOUT_MIGRATION_VERSION) then
 		value = legacy and legacy[key]
 		if value ~= nil then
-			profileStore[key] = value
+			if not profileStore then
+				profileStore = getLayoutProfileStore(true)
+				if profileStore then
+					migrateLegacyLayoutStateIfNeeded(profileStore)
+				end
+			end
+			if profileStore then
+				profileStore[key] = value
+			end
 		end
 	end
 	return value
 end
 
 local function setSavedLayoutValue(key, value)
-	local profileStore = getLayoutProfileStore()
+	local profileStore = getLayoutProfileStore(true)
 	if profileStore then
 		migrateLegacyLayoutStateIfNeeded(profileStore)
 		profileStore[key] = value

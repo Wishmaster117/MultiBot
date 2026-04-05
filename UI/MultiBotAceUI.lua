@@ -85,14 +85,22 @@ function AceUI.RegisterWindowEscapeClose(window, namePrefix)
     table.insert(UISpecialFrames, frameName)
 end
 
-local function getUiProfileStore()
-    if MultiBot.Store and MultiBot.Store.EnsureUIStore then
-        return MultiBot.Store.EnsureUIStore()
+local function getUiProfileStore(createIfMissing)
+    if MultiBot.Store then
+        if createIfMissing and type(MultiBot.Store.EnsureUIStore) == "function" then
+            return MultiBot.Store.EnsureUIStore()
+        end
+        if not createIfMissing and type(MultiBot.Store.GetUIStore) == "function" then
+            return MultiBot.Store.GetUIStore()
+        end
     end
 
     local profile = MultiBot.db and MultiBot.db.profile
     if not profile then
         return nil
+    end
+    if not createIfMissing then
+        return type(profile.ui) == "table" and profile.ui or nil
     end
     profile.ui = profile.ui or {}
     return profile.ui
@@ -103,14 +111,9 @@ function AceUI.BindWindowPosition(window, persistenceKey)
         return
     end
 
-    local uiStore = getUiProfileStore()
-    if not uiStore then
-        return
-    end
-
-    uiStore.popupPositions = uiStore.popupPositions or {}
-    local positions = uiStore.popupPositions
-    local saved = positions[persistenceKey]
+    local uiStore = getUiProfileStore(false)
+    local positions = (uiStore and type(uiStore.popupPositions) == "table") and uiStore.popupPositions or nil
+    local saved = positions and positions[persistenceKey]
     if saved and saved.point then
         window.frame:ClearAllPoints()
         window.frame:SetPoint(saved.point, UIParent, saved.point, saved.x or 0, saved.y or 0)
@@ -124,7 +127,12 @@ function AceUI.BindWindowPosition(window, persistenceKey)
     window.frame:HookScript("OnDragStop", function(frame)
         local point, _, _, x, y = frame:GetPoint(1)
         if point then
-            positions[persistenceKey] = { point = point, x = x or 0, y = y or 0 }
+            local writableUiStore = getUiProfileStore(true)
+            if not writableUiStore then
+                return
+            end
+            writableUiStore.popupPositions = writableUiStore.popupPositions or {}
+            writableUiStore.popupPositions[persistenceKey] = { point = point, x = x or 0, y = y or 0 }
         end
     end)
 end
