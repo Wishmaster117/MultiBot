@@ -59,7 +59,7 @@ local function prepareTooltipAboveOutfits(owner, anchor)
 end
 
 local function getWindowTitle(botName)
-  local base = MultiBot.L("info.outfits.window_title", "Outfits")
+  local base = outfitL("window_title")
   if type(botName) == "string" and botName ~= "" then
     return base .. " - " .. botName
   end
@@ -560,9 +560,6 @@ function OutfitUI:IsVisible()
     return self.frame and self.frame.IsVisible and self.frame:IsVisible() or false
 end
 
-local INV_SLOT_MAINHAND = 16
-local INV_SLOT_OFFHAND  = 17
-
 local function getItemEquipLoc(link)
     if not link or link == "" then
         return nil
@@ -761,9 +758,9 @@ function OutfitUI:RenderEntryList()
             if mouseButton == "RightButton" then
                 local enabled = toggleFavorite(self.botName or "", clicked.entry.name)
                 if enabled then
-                    self:SetStatus(outfitL("pinned", "Pinned outfit to the top."))
+                    self:SetStatus(outfitL("pinned"))
                 else
-                    self:SetStatus(outfitL("unpinned", "Removed outfit pin."))
+                    self:SetStatus(outfitL("unpinned"))
                 end
                 sortEntriesForBot(self.botName or "", self.entries)
                 self:RenderEntryList()
@@ -795,7 +792,7 @@ function OutfitUI:RenderSelectedOutfit()
             local prefix = isFavorite(self.botName or "", selected.name) and "★ " or ""
             self.selectedNameText:SetText(prefix .. selected.name)
         else
-            self.selectedNameText:SetText(outfitL("none_selected", "No outfit selected"))
+            self.selectedNameText:SetText(outfitL("none_selected"))
         end
     end
 
@@ -833,10 +830,10 @@ function OutfitUI:RenderSelectedOutfit()
 
     if self.emptyItemsText then
         if selected and #items == 0 then
-            self.emptyItemsText:SetText(outfitL("empty", "No items saved in this outfit."))
+            self.emptyItemsText:SetText(outfitL("empty"))
             self.emptyItemsText:Show()
         elseif not selected then
-            self.emptyItemsText:SetText(outfitL("select_left", "Select an outfit on the left."))
+            self.emptyItemsText:SetText(outfitL("select_left"))
             self.emptyItemsText:Show()
         else
             self.emptyItemsText:Hide()
@@ -848,10 +845,10 @@ function OutfitUI:RenderSelectedOutfit()
     if self.pinButton then
         if hasSelection then
             self.pinButton:Enable()
-            self.pinButton:SetText(isFavorite(self.botName or "", selected.name) and outfitL("unpin", "Unpin") or outfitL("pin", "Pin"))
+            self.pinButton:SetText(isFavorite(self.botName or "", selected.name) and outfitL("unpin") or outfitL("pin"))
         else
             self.pinButton:Disable()
-            self.pinButton:SetText(outfitL("pin", "Pin"))
+            self.pinButton:SetText(outfitL("pin"))
         end
     end
 
@@ -907,9 +904,9 @@ function OutfitUI:FinishList(botName)
     self:RenderSelectedOutfit()
 
     if #self.entries == 0 then
-        self:SetStatus(outfitL("no_outfits", "No outfits found."))
+        self:SetStatus(outfitL("no_outfits"))
     else
-        self:SetStatus(outfitL("loaded", "Loaded from bot."))
+        self:SetStatus(outfitL("loaded"))
     end
 end
 
@@ -920,7 +917,7 @@ function OutfitUI:RequestList(botName)
 
     if self:IsCommandBusy(botName) then
         self.pendingRefresh = true
-        self:SetStatus(outfitL("busy_wait", "Outfit action in progress... refresh queued."))
+        self:SetStatus(outfitL("busy_wait"))
         return false
     end
 
@@ -937,7 +934,7 @@ function OutfitUI:RequestList(botName)
     self.pendingBot = botName
     self:RenderEntryList()
     self:RenderSelectedOutfit()
-    self:SetStatus(outfitL("loading", "Loading outfits from bot..."))
+    self:SetStatus(outfitL("loading"))
 
     local waitButton = getUnitWaitButton(botName)
     if waitButton then
@@ -1008,7 +1005,7 @@ function OutfitUI:RunCommand(commandSuffix, statusText, refreshDelay, persistDel
         local twoHand = botHasTwoHandEquipped(botName)
         if twoHand == true or twoHand == nil then
             commandSuffix = string.gsub(commandSuffix, "%s*equip%s*$", " replace")
-            statusText = outfitL("equip_auto_replace", "Weapon swap requires Replace. Sending Replace instead.")
+            statusText = outfitL("equip_auto_replace")
             if not refreshDelay or refreshDelay <= 0 then
                 refreshDelay = OUTFIT_REPLACE_REFRESH_DELAY
             end
@@ -1027,7 +1024,7 @@ function OutfitUI:RunCommand(commandSuffix, statusText, refreshDelay, persistDel
 
     if self:IsCommandBusy(botName) then
         self.pendingRefresh = true
-        self:SetStatus(outfitL("busy_wait", "Outfit action in progress... refresh queued."))
+        self:SetStatus(outfitL("busy_wait"))
         return false
     end
 
@@ -1064,7 +1061,7 @@ end
 
 function OutfitUI:CreateFromCurrent()
     if type(MultiBot.ShowPrompt) ~= "function" then
-        UIErrorsFrame:AddMessage(outfitL("prompt_missing", "Prompt dialog is not available."), 1, 0.2, 0.2, 1)
+        UIErrorsFrame:AddMessage(outfitL("prompt_missing"), 1, 0.2, 0.2, 1)
         return
     end
 
@@ -1073,7 +1070,7 @@ function OutfitUI:CreateFromCurrent()
         anchorFrame = MultiBot.outfits.window.frame
     end
 
-    MultiBot.ShowPrompt(outfitL("new_title", "Save current outfit as"), function(value)
+    MultiBot.ShowPrompt(outfitL("new_title"), function(value)
         local outfitName = trim(value)
         if outfitName == "" then
             return
@@ -1081,7 +1078,7 @@ function OutfitUI:CreateFromCurrent()
 
         self.selectedName = outfitName
         setLastSelected(self.botName or "", outfitName)
-        self:RunCommand(outfitName .. " update", outfitL("created", "Saved current equipment into the outfit."), 0.35, OUTFIT_PERSIST_FLUSH_DELAY)
+        self:RunCommand(outfitName .. " update", outfitL("created"), 0.35, OUTFIT_PERSIST_FLUSH_DELAY)
     end, "", anchorFrame)
 end
 
@@ -1093,9 +1090,9 @@ function OutfitUI:PinSelected()
 
     local enabled = toggleFavorite(self.botName or "", selected.name)
     if enabled then
-        self:SetStatus(outfitL("pinned", "Pinned outfit to the top."))
+        self:SetStatus(outfitL("pinned"))
     else
-        self:SetStatus(outfitL("unpinned", "Removed outfit pin."))
+        self:SetStatus(outfitL("unpinned"))
     end
     sortEntriesForBot(self.botName or "", self.entries)
     self:RenderEntryList()
@@ -1118,12 +1115,12 @@ function OutfitUI:EquipSelected(replaceCurrent)
 
     if replaceCurrent or forceReplace then
         if forceReplace then
-            self:SetStatus(outfitL("equip_auto_replace", "Weapon swap requires Replace. Sending Replace instead."))
+            self:SetStatus(outfitL("equip_auto_replace"))
         end
 
-        self:RunCommand(selected.name .. " replace", outfitL("replace_sent", "Replace sent. Bags must have enough free space."), OUTFIT_REPLACE_REFRESH_DELAY)
+        self:RunCommand(selected.name .. " replace", outfitL("replace_sent"), OUTFIT_REPLACE_REFRESH_DELAY)
     else
-        self:RunCommand(selected.name .. " equip", outfitL("equip_sent", "Equip sent to bot."), OUTFIT_EQUIP_REFRESH_DELAY)
+        self:RunCommand(selected.name .. " equip", outfitL("equip_sent"), OUTFIT_EQUIP_REFRESH_DELAY)
     end
 end
 
@@ -1134,7 +1131,7 @@ function OutfitUI:UpdateSelected()
     end
 
     setLastSelected(self.botName or "", selected.name)
-    self:RunCommand(selected.name .. " update", outfitL("updated", "Updated outfit from current gear."), OUTFIT_UPDATE_REFRESH_DELAY)
+    self:RunCommand(selected.name .. " update", outfitL("updated"), OUTFIT_UPDATE_REFRESH_DELAY)
 end
 
 function OutfitUI:ResetSelected()
@@ -1143,7 +1140,7 @@ function OutfitUI:ResetSelected()
         return
     end
 
-    self:RunCommand(selected.name .. " reset", outfitL("reset_sent", "Reset sent to bot."), OUTFIT_RESET_REFRESH_DELAY)
+    self:RunCommand(selected.name .. " reset", outfitL("reset_sent"), OUTFIT_RESET_REFRESH_DELAY)
 end
 
 function MultiBot.InitializeOutfitFrame()
@@ -1151,7 +1148,7 @@ function MultiBot.InitializeOutfitFrame()
         return MultiBot.outfits
     end
 
-    local aceGUI = MultiBot.ResolveAceGUI and MultiBot.ResolveAceGUI("AceGUI-3.0 is required for Outfits") or nil
+    local aceGUI = MultiBot.ResolveAceGUI and MultiBot.ResolveAceGUI(outfitL("acegui_required")) or nil
     if not aceGUI then
         return nil
     end
@@ -1213,17 +1210,17 @@ function MultiBot.InitializeOutfitFrame()
     statusText:SetPoint("BOTTOMLEFT", root, "BOTTOMLEFT", OUTFIT_PANEL_INSET + 2, OUTFIT_PANEL_INSET + 12)
     statusText:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -OUTFIT_PANEL_INSET - 2, OUTFIT_PANEL_INSET + 12)
     statusText:SetJustifyH("LEFT")
-    statusText:SetText(outfitL("idle", "Open Outfits to load a bot set list."))
+    statusText:SetText(outfitL("idle"))
 
     local hintText = root:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
     hintText:SetPoint("BOTTOMLEFT", root, "BOTTOMLEFT", OUTFIT_PANEL_INSET + 2, OUTFIT_PANEL_INSET)
     hintText:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -OUTFIT_PANEL_INSET - 2, OUTFIT_PANEL_INSET)
     hintText:SetJustifyH("LEFT")
-    hintText:SetText(outfitL("replace_warning", "Replace may fail if bags are full."))
+    hintText:SetText(outfitL("replace_warning"))
 
     local leftTitle = leftPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     leftTitle:SetPoint("TOPLEFT", leftPanel, "TOPLEFT", 8, -8)
-    leftTitle:SetText(outfitL("list", "Outfits"))
+    leftTitle:SetText(outfitL("list"))
 
     local listScroll = CreateFrame("ScrollFrame", OUTFIT_LIST_SCROLL_NAME, leftPanel, "UIPanelScrollFrameTemplate")
     listScroll:SetPoint("TOPLEFT", leftPanel, "TOPLEFT", 8, -26)
@@ -1234,17 +1231,17 @@ function MultiBot.InitializeOutfitFrame()
     listChild:SetHeight(OUTFIT_LIST_BUTTON_HEIGHT)
     listScroll:SetScrollChild(listChild)
 
-    local refreshButton = createActionButton(leftPanel, 50, outfitL("refresh", "Refresh"), "BOTTOMLEFT", leftPanel, "BOTTOMLEFT", 8, 8, function()
+    local refreshButton = createActionButton(leftPanel, 50, outfitL("refresh"), "BOTTOMLEFT", leftPanel, "BOTTOMLEFT", 8, 8, function()
         if OutfitUI.botName then
             OutfitUI:RequestList(OutfitUI.botName)
         end
     end)
 
-    local newButton = createActionButton(leftPanel, 50, outfitL("new", "New"), "LEFT", refreshButton, "RIGHT", 5, 0, function()
+    local newButton = createActionButton(leftPanel, 50, outfitL("new"), "LEFT", refreshButton, "RIGHT", 5, 0, function()
         OutfitUI:CreateFromCurrent()
     end)
 
-    local pinButton = createActionButton(leftPanel, 50, outfitL("pin", "Pin"), "LEFT", newButton, "RIGHT", 5, 0, function()
+    local pinButton = createActionButton(leftPanel, 50, outfitL("pin"), "LEFT", newButton, "RIGHT", 5, 0, function()
         OutfitUI:PinSelected()
     end)
 
@@ -1252,9 +1249,9 @@ function MultiBot.InitializeOutfitFrame()
     selectedNameText:SetPoint("TOPLEFT", rightPanel, "TOPLEFT", 10, -10)
     selectedNameText:SetPoint("TOPRIGHT", rightPanel, "TOPRIGHT", -10, -10)
     selectedNameText:SetJustifyH("LEFT")
-    selectedNameText:SetText(outfitL("none_selected", "No outfit selected"))
+    selectedNameText:SetText(outfitL("none_selected"))
 
-    local equipButton = createActionButton(rightPanel, 72, outfitL("equip", "Equip"), "TOPLEFT", selectedNameText, "BOTTOMLEFT", 0, -10, function()
+    local equipButton = createActionButton(rightPanel, 72, outfitL("equip"), "TOPLEFT", selectedNameText, "BOTTOMLEFT", 0, -10, function()
         OutfitUI:EquipSelected(false)
     end)
     equipButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
@@ -1266,22 +1263,22 @@ function MultiBot.InitializeOutfitFrame()
             return
         end
 
-        GameTooltip:SetText(outfitTip("equip", "Left click: Equip\nRight click: Replace"), 1, 1, 1, true)
+        GameTooltip:SetText(outfitTip("equip"), 1, 1, 1, true)
         GameTooltip:Show()
     end)
     equipButton:SetScript("OnLeave", function()
         if GameTooltip and GameTooltip.Hide then GameTooltip:Hide() end
     end)
 
-    local replaceButton = createActionButton(rightPanel, 72, outfitL("replace", "Replace"), "LEFT", equipButton, "RIGHT", 6, 0, function()
+    local replaceButton = createActionButton(rightPanel, 72, outfitL("replace"), "LEFT", equipButton, "RIGHT", 6, 0, function()
         OutfitUI:EquipSelected(true)
     end)
 
-    local updateButton = createActionButton(rightPanel, 72, outfitL("update", "Update"), "LEFT", replaceButton, "RIGHT", 6, 0, function()
+    local updateButton = createActionButton(rightPanel, 72, outfitL("update"), "LEFT", replaceButton, "RIGHT", 6, 0, function()
         OutfitUI:UpdateSelected()
     end)
 
-    local resetButton = createActionButton(rightPanel, 72, outfitL("reset", "Reset"), "LEFT", updateButton, "RIGHT", 6, 0, function()
+    local resetButton = createActionButton(rightPanel, 72, outfitL("reset"), "LEFT", updateButton, "RIGHT", 6, 0, function()
         OutfitUI:ResetSelected()
     end)
 
@@ -1298,7 +1295,7 @@ function MultiBot.InitializeOutfitFrame()
     emptyItemsText:SetPoint("TOPLEFT", itemsChild, "TOPLEFT", 2, -4)
     emptyItemsText:SetPoint("TOPRIGHT", itemsChild, "TOPRIGHT", -2, -4)
     emptyItemsText:SetJustifyH("LEFT")
-    emptyItemsText:SetText(outfitL("select_left", "Select an outfit on the left."))
+    emptyItemsText:SetText(outfitL("select_left"))
 
     local outfits = {
         __aceInitialized = true,
