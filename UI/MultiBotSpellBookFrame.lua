@@ -61,7 +61,18 @@ local SPELLBOOK_UI_DEFAULTS = {
     TEXT_DRAW_SUBLEVEL = 5,
 }
 
-MultiBot.SpellBookUISettings = MultiBot.SpellBookUISettings or {}
+local function ensureSpellBookUIStore()
+	if MultiBot.Store and MultiBot.Store.EnsureRuntimeTable then
+		return MultiBot.Store.EnsureRuntimeTable("SpellBookUISettings")
+	end
+
+	if type(MultiBot.SpellBookUISettings) ~= "table" then
+		MultiBot.SpellBookUISettings = {}
+	end
+	return MultiBot.SpellBookUISettings
+end
+
+MultiBot.SpellBookUISettings = ensureSpellBookUIStore()
 for tKey, tValue in pairs(SPELLBOOK_UI_DEFAULTS) do
 	if(MultiBot.SpellBookUISettings[tKey] == nil) then
 		MultiBot.SpellBookUISettings[tKey] = tValue
@@ -69,7 +80,16 @@ for tKey, tValue in pairs(SPELLBOOK_UI_DEFAULTS) do
 end
 
 local function getSpellBookUI()
-	return MultiBot.SpellBookUISettings or {}
+	local store = MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("SpellBookUISettings")
+	if type(store) == "table" then
+		return store
+	end
+
+	if type(MultiBot.SpellBookUISettings) == "table" then
+		return MultiBot.SpellBookUISettings
+	end
+
+	return SPELLBOOK_UI_DEFAULTS
 end
 
 local function getSpellBookDefaultPageLabel()

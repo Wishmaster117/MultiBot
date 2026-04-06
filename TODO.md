@@ -1,5 +1,5 @@
 TODO
-
+* faire en sorte que la croix de fermeture de quickshamant et quickhunter reste à la même place quand on clique dessus pour les fermer
 * Uniformiser le template des frame quetes comme celle de Itemus
 * Uniformiser le template de la frame reward comme celle de itemus
 * Raidus doit se rafraichir à l'ouverture et fermeture
@@ -11,3 +11,4 @@ TODO
 * faire en sorte que les menus déroulants de la main barre se ferment quand on on ouvre un autre
 * revoir le fichiers UI/MultiBotTalent, la partie des glyphes et des talents car il y'a eu des modifications dans le fichiers .conf de multibot
 * pourquoi les glyphes sont longues a afficher?
+* implémenter RTI

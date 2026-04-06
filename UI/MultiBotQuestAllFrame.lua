@@ -1,12 +1,40 @@
 if not MultiBot then return end
 
-local Shared = MultiBot.QuestUIShared or {}
-local QuestAllFrame = MultiBot.QuestAllFrame or {}
+local EMPTY_TABLE = {}
+local Shared = MultiBot.QuestUIShared
+if type(Shared) ~= "table" then
+    Shared = {}
+end
+
+local QuestAllFrame = MultiBot.QuestAllFrame
+if type(QuestAllFrame) ~= "table" then
+    QuestAllFrame = {}
+end
 MultiBot.QuestAllFrame = QuestAllFrame
 
-MultiBot.BotQuestsAll = MultiBot.BotQuestsAll or {}
-MultiBot.BotQuestsCompleted = MultiBot.BotQuestsCompleted or {}
-MultiBot.BotQuestsIncompleted = MultiBot.BotQuestsIncompleted or {}
+local function getBotQuestsAllStore()
+    local store = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsAll")) or MultiBot.BotQuestsAll
+    if not store and MultiBot.Store and MultiBot.Store.RecordReadMiss then
+        MultiBot.Store.RecordReadMiss("QuestAll", "BotQuestsAll")
+    end
+    return store or EMPTY_TABLE
+end
+
+local function getBotQuestsCompletedStore()
+    local store = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsCompleted")) or MultiBot.BotQuestsCompleted
+    if not store and MultiBot.Store and MultiBot.Store.RecordReadMiss then
+        MultiBot.Store.RecordReadMiss("QuestAll", "BotQuestsCompleted")
+    end
+    return store or EMPTY_TABLE
+end
+
+local function getBotQuestsIncompletedStore()
+    local store = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsIncompleted")) or MultiBot.BotQuestsIncompleted
+    if not store and MultiBot.Store and MultiBot.Store.RecordReadMiss then
+        MultiBot.Store.RecordReadMiss("QuestAll", "BotQuestsIncompleted")
+    end
+    return store or EMPTY_TABLE
+end
 
 local function clearList(self)
     if self.scroll then
@@ -83,7 +111,8 @@ function MultiBot.BuildBotAllList(botName)
     local frame = MultiBot.InitializeQuestAllFrame()
     clearList(frame)
 
-    local quests = MultiBot.BotQuestsAll[botName] or {}
+    local questsStore = getBotQuestsAllStore()
+    local quests = (questsStore and questsStore[botName]) or EMPTY_TABLE
     for _, link in ipairs(quests) do
         local questID = tonumber(link:match("|Hquest:(%d+):"))
         local localizedName = questID and Shared.GetLocalizedQuestName(questID, link) or link
@@ -105,8 +134,8 @@ function MultiBot.BuildAggregatedAllList()
     local frame = MultiBot.InitializeQuestAllFrame()
     clearList(frame)
 
-    local completeEntries = Shared.BuildAggregatedQuestEntries(MultiBot.BotQuestsCompleted)
-    local incompleteEntries = Shared.BuildAggregatedQuestEntries(MultiBot.BotQuestsIncompleted)
+    local completeEntries = Shared.BuildAggregatedQuestEntries(getBotQuestsCompletedStore())
+    local incompleteEntries = Shared.BuildAggregatedQuestEntries(getBotQuestsIncompletedStore())
 
     createSectionHeader(frame, MultiBot.L("tips.quests.compheader"))
     if #completeEntries == 0 then
@@ -193,9 +222,15 @@ function MultiBot.InitializeQuestAllFrame()
     content:AddChild(scroll)
 
     window.frame:HookScript("OnHide", function()
-        MultiBot.BotQuestsAll = {}
-        MultiBot.BotQuestsCompleted = {}
-        MultiBot.BotQuestsIncompleted = {}
+        local allStore = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsAll")) or MultiBot.BotQuestsAll
+        local completedStore = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsCompleted")) or MultiBot.BotQuestsCompleted
+        local incompletedStore = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsIncompleted")) or MultiBot.BotQuestsIncompleted
+
+        if MultiBot.Store and MultiBot.Store.ClearTable then
+            MultiBot.Store.ClearTable(allStore)
+            MultiBot.Store.ClearTable(completedStore)
+            MultiBot.Store.ClearTable(incompletedStore)
+        end
         clearList(QuestAllFrame)
     end)
 

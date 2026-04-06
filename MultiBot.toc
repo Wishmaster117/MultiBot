@@ -1,5 +1,5 @@
 ## Interface: 30300
-## Version: 2.0.0
+## Version: 3.0.0
 ## Title: MultiBot
 ## Notes: User Interface for Playerbot
 ## Author: Nico Löbbert
@@ -7,7 +7,7 @@
 ## SavedVariables: MultiBotGlobalSave
 ## X-Maintainer: Wishmaster117 aka TheWarlock
 ## X-Contributors: Wishmaster117 aka TheWarlock
-## X-Contact: admin@azerothdevs.com
+## X-Contact: plexalexdcnh@gmail.com
 ## X-ProjectURL: https://www.azerothdevs.com
 
 Libs\LibStub\LibStub.lua
@@ -25,6 +25,7 @@ Libs\LibDropdown-1.0\LibDropdown-1.0.lua
 
 
 Core\MultiBot.lua
+Core\MultiBotStore.lua
 Core\MultiBotConfig.lua
 Core\MultiBotLocale.lua
 Core\MultiBotDebug.lua
@@ -63,6 +64,7 @@ UI\MultiBotStats.lua
 UI\MultiBotSpell.lua
 UI\MultiBotSpellBookFrame.lua
 UI\MultiBotRewardFrame.lua
+UI\MultiBotOutfitUI.lua
 UI\MultiBotInventoryFrame.lua
 UI\MultiBotInventoryItem.lua
 UI\MultiBotInspectUI.lua

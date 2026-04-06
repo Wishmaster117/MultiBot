@@ -226,14 +226,32 @@ end
 MultiBot.rewardEnsureState = function()
 	if(MultiBot.reward == nil) then return nil end
 
-	MultiBot.reward.rewards = MultiBot.reward.rewards or {}
-	MultiBot.reward.units = MultiBot.reward.units or {}
-	MultiBot.reward.pageSize = MultiBot.reward.pageSize or MB_REWARD_PAGE_SIZE
-	MultiBot.reward.now = MultiBot.reward.now or 1
-	MultiBot.reward.max = MultiBot.reward.max or 1
-	MultiBot.reward.from = MultiBot.reward.from or 1
-	MultiBot.reward.to = MultiBot.reward.to or MultiBot.reward.pageSize
-	MultiBot.reward.classIconSize = MultiBot.reward.classIconSize or 16
+	if MultiBot.Store and MultiBot.Store.EnsureTableField then
+		MultiBot.Store.EnsureTableField(MultiBot.reward, "rewards", {})
+		MultiBot.Store.EnsureTableField(MultiBot.reward, "units", {})
+		MultiBot.Store.EnsureTableField(MultiBot.reward, "pageSize", MB_REWARD_PAGE_SIZE)
+		MultiBot.Store.EnsureTableField(MultiBot.reward, "now", 1)
+		MultiBot.Store.EnsureTableField(MultiBot.reward, "max", 1)
+		MultiBot.Store.EnsureTableField(MultiBot.reward, "from", 1)
+		MultiBot.Store.EnsureTableField(MultiBot.reward, "to", MultiBot.reward.pageSize)
+		MultiBot.Store.EnsureTableField(MultiBot.reward, "classIconSize", 16)
+	else
+		local function ensureField(target, key, defaultValue)
+			if target[key] == nil then
+				target[key] = defaultValue
+			end
+			return target[key]
+		end
+
+		ensureField(MultiBot.reward, "rewards", {})
+		ensureField(MultiBot.reward, "units", {})
+		ensureField(MultiBot.reward, "pageSize", MB_REWARD_PAGE_SIZE)
+		ensureField(MultiBot.reward, "now", 1)
+		ensureField(MultiBot.reward, "max", 1)
+		ensureField(MultiBot.reward, "from", 1)
+		ensureField(MultiBot.reward, "to", MultiBot.reward.pageSize)
+		ensureField(MultiBot.reward, "classIconSize", 16)
+	end
 
 	return MultiBot.reward
 end

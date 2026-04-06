@@ -3,6 +3,44 @@ if not MultiBot then return end
 local QuestsMenu = MultiBot.QuestsMenu or {}
 MultiBot.QuestsMenu = QuestsMenu
 
+local function ensureRuntimeTable(key)
+    if MultiBot.Store and MultiBot.Store.EnsureRuntimeTable then
+        return MultiBot.Store.EnsureRuntimeTable(key)
+    end
+    MultiBot[key] = type(MultiBot[key]) == "table" and MultiBot[key] or {}
+    return MultiBot[key]
+end
+
+local function setRuntimeFlag(key, value)
+    if MultiBot.Store and MultiBot.Store.SetRuntimeValue then
+        MultiBot.Store.SetRuntimeValue(key, value)
+        return
+    end
+    MultiBot[key] = value
+end
+
+local function clearTableInPlace(tbl)
+    if type(tbl) ~= "table" then
+        return
+    end
+    if MultiBot.Store and MultiBot.Store.ClearTable then
+        MultiBot.Store.ClearTable(tbl)
+        return
+    end
+    for key in pairs(tbl) do
+        tbl[key] = nil
+    end
+end
+
+local function getTargetBotOrError()
+    local botName = UnitName("target")
+    if botName and UnitIsPlayer("target") then
+        return botName
+    end
+    UIErrorsFrame:AddMessage(MultiBot.L("tips.quests.questcomperror"), 1, 0.2, 0.2, 1)
+    return nil
+end
+
 local function setSubButtonsVisible(buttonA, buttonB, visible)
     if visible then
         buttonA:doShow()
@@ -63,7 +101,7 @@ local function registerExpandableGroup(rootButton, buttonA, buttonB)
 end
 
 local function sendIncomplete(method)
-    MultiBot._awaitingQuestsAll = false
+    setRuntimeFlag("_awaitingQuestsAll", false)
     MultiBot._lastIncMode = method
 
     local frame = MultiBot.InitializeQuestIncompleteFrame and MultiBot.InitializeQuestIncompleteFrame()
@@ -72,13 +110,14 @@ local function sendIncomplete(method)
     end
 
     if method == "WHISPER" then
-        local bot = UnitName("target")
-        if not bot or not UnitIsPlayer("target") then
-            UIErrorsFrame:AddMessage(MultiBot.L("tips.quests.questcomperror"), 1, 0.2, 0.2, 1)
+        local bot = getTargetBotOrError()
+        if not bot then
             return
         end
 
-        MultiBot.BotQuestsIncompleted[bot] = {}
+        MultiBot._lastIncWhisperBot = bot
+        ensureRuntimeTable("_awaitingQuestsIncompleted")[bot] = true
+        ensureRuntimeTable("BotQuestsIncompleted")[bot] = {}
         MultiBot.ActionToTarget("quests incompleted", bot)
         frame:Show()
         MultiBot.TimerAfter(0.5, function()
@@ -89,13 +128,13 @@ local function sendIncomplete(method)
         return
     end
 
-    MultiBot.BotQuestsIncompleted = {}
+    clearTableInPlace(ensureRuntimeTable("BotQuestsIncompleted"))
     MultiBot.ActionToGroup("quests incompleted")
     frame:Show()
 end
 
 local function sendCompleted(method)
-    MultiBot._awaitingQuestsAll = false
+    setRuntimeFlag("_awaitingQuestsAll", false)
     MultiBot._lastCompMode = method
 
     local frame = MultiBot.InitializeQuestCompletedFrame and MultiBot.InitializeQuestCompletedFrame()
@@ -104,13 +143,14 @@ local function sendCompleted(method)
     end
 
     if method == "WHISPER" then
-        local bot = UnitName("target")
-        if not bot or not UnitIsPlayer("target") then
-            UIErrorsFrame:AddMessage(MultiBot.L("tips.quests.questcomperror"), 1, 0.2, 0.2, 1)
+        local bot = getTargetBotOrError()
+        if not bot then
             return
         end
 
-        MultiBot.BotQuestsCompleted[bot] = {}
+        MultiBot._lastCompWhisperBot = bot
+        ensureRuntimeTable("_awaitingQuestsCompleted")[bot] = true
+        ensureRuntimeTable("BotQuestsCompleted")[bot] = {}
         MultiBot.ActionToTarget("quests completed", bot)
         frame:Show()
         MultiBot.TimerAfter(0.5, function()
@@ -121,7 +161,7 @@ local function sendCompleted(method)
         return
     end
 
-    MultiBot.BotQuestsCompleted = {}
+    clearTableInPlace(ensureRuntimeTable("BotQuestsCompleted"))
     MultiBot.ActionToGroup("quests completed")
     frame:Show()
 end
@@ -133,28 +173,28 @@ local function sendAll(method)
     end
 
     MultiBot._lastAllMode = method
-    MultiBot._awaitingQuestsAll = true
-    MultiBot._blockOtherQuests = true
-    MultiBot.BotQuestsAll = {}
-    MultiBot._awaitingQuestsAllBots = {}
+    setRuntimeFlag("_awaitingQuestsAll", true)
+    setRuntimeFlag("_blockOtherQuests", true)
+    clearTableInPlace(ensureRuntimeTable("BotQuestsAll"))
+    local awaitingBots = ensureRuntimeTable("_awaitingQuestsAllBots")
+    clearTableInPlace(awaitingBots)
 
     if method == "GROUP" then
         for index = 1, GetNumPartyMembers() do
             local botName = UnitName("party" .. index)
             if botName then
-                MultiBot._awaitingQuestsAllBots[botName] = false
+                awaitingBots[botName] = false
             end
         end
         MultiBot.ActionToGroup("quests all")
     else
-        local bot = UnitName("target")
-        if not bot or not UnitIsPlayer("target") then
-            UIErrorsFrame:AddMessage(MultiBot.L("tips.quests.questcomperror"), 1, 0.2, 0.2, 1)
-            MultiBot._awaitingQuestsAll = false
-            MultiBot._blockOtherQuests = false
+        local bot = getTargetBotOrError()
+        if not bot then
+            setRuntimeFlag("_awaitingQuestsAll", false)
+            setRuntimeFlag("_blockOtherQuests", false)
             return
         end
-        MultiBot._awaitingQuestsAllBots[bot] = false
+        awaitingBots[bot] = false
         MultiBot.ActionToTarget("quests all", bot)
     end
 

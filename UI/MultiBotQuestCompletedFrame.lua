@@ -1,10 +1,24 @@
 if not MultiBot then return end
 
-local Shared = MultiBot.QuestUIShared or {}
-local QuestCompletedFrame = MultiBot.QuestCompletedFrame or {}
+local EMPTY_TABLE = {}
+local Shared = MultiBot.QuestUIShared
+if type(Shared) ~= "table" then
+    Shared = {}
+end
+
+local QuestCompletedFrame = MultiBot.QuestCompletedFrame
+if type(QuestCompletedFrame) ~= "table" then
+    QuestCompletedFrame = {}
+end
 MultiBot.QuestCompletedFrame = QuestCompletedFrame
 
-MultiBot.BotQuestsCompleted = MultiBot.BotQuestsCompleted or {}
+local function getBotQuestsCompletedStore()
+    local store = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsCompleted")) or MultiBot.BotQuestsCompleted
+    if not store and MultiBot.Store and MultiBot.Store.RecordReadMiss then
+        MultiBot.Store.RecordReadMiss("QuestCompleted", "BotQuestsCompleted")
+    end
+    return store or EMPTY_TABLE
+end
 
 local function clearList(self)
     if self.scroll then
@@ -12,9 +26,38 @@ local function clearList(self)
     end
 end
 
+local function normalizeBotName(botName)
+    if type(botName) ~= "string" then
+        return nil
+    end
+    return botName:gsub("%-.+$", ""):lower()
+end
+
+local function resolveBotQuestBucket(store, botName)
+    if type(store) ~= "table" or type(botName) ~= "string" then
+        return EMPTY_TABLE
+    end
+
+    if type(store[botName]) == "table" then
+        return store[botName]
+    end
+
+    local normalizedTarget = normalizeBotName(botName)
+    for storedBotName, quests in pairs(store) do
+        if type(storedBotName) == "string" and type(quests) == "table" then
+            if storedBotName:lower() == botName:lower() or normalizeBotName(storedBotName) == normalizedTarget then
+                return quests
+            end
+        end
+    end
+
+    return EMPTY_TABLE
+end
+
 function MultiBot.BuildBotCompletedList(botName)
     local frame = MultiBot.InitializeQuestCompletedFrame()
-    local entries = Shared.SortQuestEntries(MultiBot.BotQuestsCompleted[botName] or {})
+    local completedStore = getBotQuestsCompletedStore()
+    local entries = Shared.SortQuestEntries(resolveBotQuestBucket(completedStore, botName))
 
     frame:Show()
     Shared.RenderQuestEntries(frame, entries, {
@@ -24,7 +67,7 @@ end
 
 function MultiBot.BuildAggregatedCompletedList()
     local frame = MultiBot.InitializeQuestCompletedFrame()
-    local entries = Shared.BuildAggregatedQuestEntries(MultiBot.BotQuestsCompleted)
+    local entries = Shared.BuildAggregatedQuestEntries(getBotQuestsCompletedStore())
 
     frame:Show()
     Shared.RenderQuestEntries(frame, entries, {
@@ -81,7 +124,10 @@ function MultiBot.InitializeQuestCompletedFrame()
     content:AddChild(scroll)
 
     window.frame:HookScript("OnHide", function()
-        MultiBot.BotQuestsCompleted = {}
+        local store = (MultiBot.Store and MultiBot.Store.GetRuntimeTable and MultiBot.Store.GetRuntimeTable("BotQuestsCompleted")) or MultiBot.BotQuestsCompleted
+        if MultiBot.Store and MultiBot.Store.ClearTable then
+            MultiBot.Store.ClearTable(store)
+        end
         clearList(QuestCompletedFrame)
     end)
 

@@ -37,7 +37,7 @@ globals = {
 	"GetMinimapShape", "GetMinimapShape", "PanelTemplates_TabResize", "GetGuildRosterShowOffline", "SetGuildRosterShowOffline", "IsInGuild", "GetGuildInfo", "SetGuildRosterShowOffline", "PLAYER", "INVENTORY_TOOLTIP",
 	"BAGSLOT", "UNKNOWN", "UnitIsDead", "ShowPrompt", "_MB_GetOrCreateShamanPos", "ensureHiddenTooltip", "MB_TAB_TITLE_DEFAULT", "SPELLBOOK", "MB_PAGE_DEFAULT", "SPELLBOOK_END_NON_SPELL_STREAK", "sendInventoryItemCommand",
 	"RAID_CLASS_COLORS", "INSPECT", "MB_INVENTORY_LABEL", "LOADING", "ITEM", "ITEMS", "SEARCH", "NO_QUESTS_LABEL", "QUESTS_LABEL", "QUEST_LOG", "UnitIsUnit", "ITEM_STARTS_QUEST", "TRACKER_HEADER_QUESTS",
-	"GetItemInfoInstant", "LE_ITEM_CLASS_QUESTITEM"
+	"GetItemInfoInstant", "LE_ITEM_CLASS_QUESTITEM", "config", "INV_SLOT_MAINHAND", "INV_SLOT_OFFHAND", "LoadAddOn", "HandleModifiedItemClick", 
 }
 
 read_globals = {

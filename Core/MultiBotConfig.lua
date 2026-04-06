@@ -54,61 +54,69 @@ local function getLegacyThrottleValue(name)
   return MultiBotDB and MultiBotDB.throttle and MultiBotDB.throttle[name]
 end
 
+local ensureTableField
+
 local function migrateLegacyConfigIntoProfile(profile)
   if type(profile) ~= "table" then return end
 
-  profile.timers = profile.timers or {}
+  local timers = ensureTableField(profile, "timers")
   for key, defaultValue in pairs(DEFAULTS) do
     local legacyValue = getLegacyTimerValue(key)
     if type(legacyValue) == "number" and legacyValue > 0 then
-      profile.timers[key] = legacyValue
-    elseif type(profile.timers[key]) ~= "number" or profile.timers[key] <= 0 then
-      profile.timers[key] = defaultValue
+      timers[key] = legacyValue
+    elseif type(timers[key]) ~= "number" or timers[key] <= 0 then
+      timers[key] = defaultValue
     end
   end
 
-  profile.throttle = profile.throttle or {}
+  local throttle = ensureTableField(profile, "throttle")
   for key, defaultValue in pairs(THROTTLE_DEFAULTS) do
     local legacyValue = getLegacyThrottleValue(key)
     if type(legacyValue) == "number" and legacyValue > 0 then
-      profile.throttle[key] = legacyValue
-    elseif type(profile.throttle[key]) ~= "number" or profile.throttle[key] <= 0 then
-      profile.throttle[key] = defaultValue
+      throttle[key] = legacyValue
+    elseif type(throttle[key]) ~= "number" or throttle[key] <= 0 then
+      throttle[key] = defaultValue
     end
   end
 
-  profile.ui = profile.ui or {}
-  profile.ui.mainBar = profile.ui.mainBar or {}
-  if type(profile.ui.mainBar.moveLocked) ~= "boolean" then
-    profile.ui.mainBar.moveLocked = UI_DEFAULTS.mainBar.moveLocked
+  local ui = ensureTableField(profile, "ui")
+  local mainBar = ensureTableField(ui, "mainBar")
+  if MultiBot.Store and MultiBot.Store.NormalizeMainBarSettings then
+    MultiBot.Store.NormalizeMainBarSettings(mainBar, UI_DEFAULTS.mainBar)
+    return
   end
-  if type(profile.ui.mainBar.disableAutoCollapse) ~= "boolean" then
-    profile.ui.mainBar.disableAutoCollapse = UI_DEFAULTS.mainBar.disableAutoCollapse
+  if type(mainBar.moveLocked) ~= "boolean" then
+    mainBar.moveLocked = UI_DEFAULTS.mainBar.moveLocked
   end
-  if type(profile.ui.mainBar.autoHideEnabled) ~= "boolean" then
-    profile.ui.mainBar.autoHideEnabled = UI_DEFAULTS.mainBar.autoHideEnabled
+  if type(mainBar.disableAutoCollapse) ~= "boolean" then
+    mainBar.disableAutoCollapse = UI_DEFAULTS.mainBar.disableAutoCollapse
   end
-  if type(profile.ui.mainBar.autoHideDelay) ~= "number" or profile.ui.mainBar.autoHideDelay <= 0 then
-    profile.ui.mainBar.autoHideDelay = UI_DEFAULTS.mainBar.autoHideDelay
+  if type(mainBar.autoHideEnabled) ~= "boolean" then
+    mainBar.autoHideEnabled = UI_DEFAULTS.mainBar.autoHideEnabled
+  end
+  if type(mainBar.autoHideDelay) ~= "number" or mainBar.autoHideDelay <= 0 then
+    mainBar.autoHideDelay = UI_DEFAULTS.mainBar.autoHideDelay
   end
 end
 
 local function getConfigStore(createIfMissing)
-  if MultiBot.db and MultiBot.db.profile then
-    return MultiBot.db.profile
+  if createIfMissing then
+    return MultiBot.Store and MultiBot.Store.EnsureProfileStore and MultiBot.Store.EnsureProfileStore()
   end
+  return MultiBot.Store and MultiBot.Store.GetProfileStore and MultiBot.Store.GetProfileStore()
+end
 
-  local legacy = _G.MultiBotDB
-  if type(legacy) ~= "table" then
-    if not createIfMissing then
-      return nil
-    end
-
-    legacy = {}
-    _G.MultiBotDB = legacy
+ensureTableField = function(parent, key)
+  if type(parent) ~= "table" or type(key) ~= "string" or key == "" then
+    return nil
   end
-
-  return legacy
+  if MultiBot.Store and MultiBot.Store.EnsureTableField then
+    return MultiBot.Store.EnsureTableField(parent, key, {})
+  end
+  if type(parent[key]) ~= "table" then
+    parent[key] = {}
+  end
+  return parent[key]
 end
 
 function MultiBot.Config_InitDB()
@@ -132,34 +140,40 @@ function MultiBot.Config_Ensure()
 
   local config = getConfigStore(true)
 
-  config.timers = config.timers or {}
+  local timers = ensureTableField(config, "timers")
   for key, defaultValue in pairs(DEFAULTS) do
-    if type(config.timers[key]) ~= "number" or config.timers[key] <= 0 then
-      config.timers[key] = defaultValue
+    if type(timers[key]) ~= "number" or timers[key] <= 0 then
+      timers[key] = defaultValue
     end
   end
 
-  config.throttle = config.throttle or {}
-  if type(config.throttle.rate) ~= "number" or config.throttle.rate <= 0 then
-    config.throttle.rate = THROTTLE_DEFAULTS.rate
+  local throttle = ensureTableField(config, "throttle")
+  if type(throttle.rate) ~= "number" or throttle.rate <= 0 then
+    throttle.rate = THROTTLE_DEFAULTS.rate
   end
-  if type(config.throttle.burst) ~= "number" or config.throttle.burst <= 0 then
-    config.throttle.burst = THROTTLE_DEFAULTS.burst
+  if type(throttle.burst) ~= "number" or throttle.burst <= 0 then
+    throttle.burst = THROTTLE_DEFAULTS.burst
   end
 
-  config.ui = config.ui or {}
-  config.ui.mainBar = config.ui.mainBar or {}
-  if type(config.ui.mainBar.moveLocked) ~= "boolean" then
-    config.ui.mainBar.moveLocked = UI_DEFAULTS.mainBar.moveLocked
+  local mainBar = MultiBot.Store and MultiBot.Store.EnsureMainBarStore and MultiBot.Store.EnsureMainBarStore()
+  if mainBar and MultiBot.Store.NormalizeMainBarSettings then
+    MultiBot.Store.NormalizeMainBarSettings(mainBar, UI_DEFAULTS.mainBar)
+    return
   end
-  if type(config.ui.mainBar.disableAutoCollapse) ~= "boolean" then
-    config.ui.mainBar.disableAutoCollapse = UI_DEFAULTS.mainBar.disableAutoCollapse
+
+  local ui = ensureTableField(config, "ui")
+  local legacyMainBar = ensureTableField(ui, "mainBar")
+  if type(legacyMainBar.moveLocked) ~= "boolean" then
+    legacyMainBar.moveLocked = UI_DEFAULTS.mainBar.moveLocked
   end
-  if type(config.ui.mainBar.autoHideEnabled) ~= "boolean" then
-    config.ui.mainBar.autoHideEnabled = UI_DEFAULTS.mainBar.autoHideEnabled
+  if type(legacyMainBar.disableAutoCollapse) ~= "boolean" then
+    legacyMainBar.disableAutoCollapse = UI_DEFAULTS.mainBar.disableAutoCollapse
   end
-  if type(config.ui.mainBar.autoHideDelay) ~= "number" or config.ui.mainBar.autoHideDelay <= 0 then
-    config.ui.mainBar.autoHideDelay = UI_DEFAULTS.mainBar.autoHideDelay
+  if type(legacyMainBar.autoHideEnabled) ~= "boolean" then
+    legacyMainBar.autoHideEnabled = UI_DEFAULTS.mainBar.autoHideEnabled
+  end
+  if type(legacyMainBar.autoHideDelay) ~= "number" or legacyMainBar.autoHideDelay <= 0 then
+    legacyMainBar.autoHideDelay = UI_DEFAULTS.mainBar.autoHideDelay
   end
 end
 
@@ -170,7 +184,10 @@ function MultiBot.ApplyTimersToRuntime()
   if not config then
     return
   end
-  for key, value in pairs(config.timers or {}) do
+  if type(config.timers) ~= "table" then
+    return
+  end
+  for key, value in pairs(config.timers) do
     MultiBot.timer[key] = MultiBot.timer[key] or { elapsed = 0, interval = value }
     MultiBot.timer[key].interval = value
   end
@@ -208,8 +225,8 @@ function MultiBot.SetTimer(name, value)
   if value > 600 then value = 600 end
 
   local config = getConfigStore(true)
-  config.timers = config.timers or {}
-  config.timers[name] = value
+  local timers = ensureTableField(config, "timers")
+  timers[name] = value
 
   if MultiBot and MultiBot.timer and MultiBot.timer[name] then
     MultiBot.timer[name].interval = value
@@ -235,11 +252,11 @@ function MultiBot.SetThrottleRate(value)
   if value > 50 then value = 50 end
 
   local config = getConfigStore(true)
-  config.throttle = config.throttle or {}
-  config.throttle.rate = value
+  local throttle = ensureTableField(config, "throttle")
+  throttle.rate = value
 
   if MultiBot._ThrottleStats then
-    MultiBot._ThrottleStats(config.throttle.rate, MultiBot.GetThrottleBurst())
+    MultiBot._ThrottleStats(throttle.rate, MultiBot.GetThrottleBurst())
   end
 end
 
@@ -249,17 +266,17 @@ function MultiBot.SetThrottleBurst(value)
   if value > 100 then value = 100 end
 
   local config = getConfigStore(true)
-  config.throttle = config.throttle or {}
-  config.throttle.burst = value
+  local throttle = ensureTableField(config, "throttle")
+  throttle.burst = value
 
   if MultiBot._ThrottleStats then
-    MultiBot._ThrottleStats(MultiBot.GetThrottleRate(), config.throttle.burst)
+    MultiBot._ThrottleStats(MultiBot.GetThrottleRate(), throttle.burst)
   end
 end
 
 function MultiBot.GetMainBarMoveLocked()
-  local config = getConfigStore(false)
-  local value = config and config.ui and config.ui.mainBar and config.ui.mainBar.moveLocked
+  local mainBar = MultiBot.Store and MultiBot.Store.GetMainBarStore and MultiBot.Store.GetMainBarStore()
+  local value = mainBar and mainBar.moveLocked
   if type(value) == "boolean" then
     return value
   end
@@ -268,19 +285,20 @@ function MultiBot.GetMainBarMoveLocked()
 end
 
 function MultiBot.SetMainBarMoveLocked(value)
-  local config = getConfigStore(true)
-  config.ui = config.ui or {}
-  config.ui.mainBar = config.ui.mainBar or {}
-  config.ui.mainBar.moveLocked = value and true or false
-  if MultiBot.ApplyMainBarMoveLockState then
-    MultiBot.ApplyMainBarMoveLockState(config.ui.mainBar.moveLocked)
+  local mainBar = MultiBot.Store and MultiBot.Store.EnsureMainBarStore and MultiBot.Store.EnsureMainBarStore()
+  if not mainBar then
+    return UI_DEFAULTS.mainBar.moveLocked
   end
-  return config.ui.mainBar.moveLocked
+  mainBar.moveLocked = value and true or false
+  if MultiBot.ApplyMainBarMoveLockState then
+    MultiBot.ApplyMainBarMoveLockState(mainBar.moveLocked)
+  end
+  return mainBar.moveLocked
 end
 
 function MultiBot.GetDisableAutoCollapse()
-  local config = getConfigStore(false)
-  local value = config and config.ui and config.ui.mainBar and config.ui.mainBar.disableAutoCollapse
+  local mainBar = MultiBot.Store and MultiBot.Store.GetMainBarStore and MultiBot.Store.GetMainBarStore()
+  local value = mainBar and mainBar.disableAutoCollapse
   if type(value) == "boolean" then
     return value
   end
@@ -289,11 +307,12 @@ function MultiBot.GetDisableAutoCollapse()
 end
 
 function MultiBot.SetDisableAutoCollapse(value)
-  local config = getConfigStore(true)
-  config.ui = config.ui or {}
-  config.ui.mainBar = config.ui.mainBar or {}
-  config.ui.mainBar.disableAutoCollapse = value and true or false
-  return config.ui.mainBar.disableAutoCollapse
+  local mainBar = MultiBot.Store and MultiBot.Store.EnsureMainBarStore and MultiBot.Store.EnsureMainBarStore()
+  if not mainBar then
+    return UI_DEFAULTS.mainBar.disableAutoCollapse
+  end
+  mainBar.disableAutoCollapse = value and true or false
+  return mainBar.disableAutoCollapse
 end
 
 local function normalizeMainBarAutoHideDelay(value)
@@ -310,8 +329,8 @@ local function normalizeMainBarAutoHideDelay(value)
 end
 
 function MultiBot.GetMainBarAutoHideEnabled()
-  local config = getConfigStore(false)
-  local value = config and config.ui and config.ui.mainBar and config.ui.mainBar.autoHideEnabled
+  local mainBar = MultiBot.Store and MultiBot.Store.GetMainBarStore and MultiBot.Store.GetMainBarStore()
+  local value = mainBar and mainBar.autoHideEnabled
   if type(value) == "boolean" then
     return value
   end
@@ -320,19 +339,20 @@ function MultiBot.GetMainBarAutoHideEnabled()
 end
 
 function MultiBot.SetMainBarAutoHideEnabled(value)
-  local config = getConfigStore(true)
-  config.ui = config.ui or {}
-  config.ui.mainBar = config.ui.mainBar or {}
-  config.ui.mainBar.autoHideEnabled = value and true or false
+  local mainBar = MultiBot.Store and MultiBot.Store.EnsureMainBarStore and MultiBot.Store.EnsureMainBarStore()
+  if not mainBar then
+    return UI_DEFAULTS.mainBar.autoHideEnabled
+  end
+  mainBar.autoHideEnabled = value and true or false
   if MultiBot.RefreshMainBarAutoHideState then
     MultiBot.RefreshMainBarAutoHideState()
   end
-  return config.ui.mainBar.autoHideEnabled
+  return mainBar.autoHideEnabled
 end
 
 function MultiBot.GetMainBarAutoHideDelay()
-  local config = getConfigStore(false)
-  local value = config and config.ui and config.ui.mainBar and config.ui.mainBar.autoHideDelay
+  local mainBar = MultiBot.Store and MultiBot.Store.GetMainBarStore and MultiBot.Store.GetMainBarStore()
+  local value = mainBar and mainBar.autoHideDelay
   if type(value) == "number" and value > 0 then
     return normalizeMainBarAutoHideDelay(value)
   end
@@ -341,12 +361,13 @@ function MultiBot.GetMainBarAutoHideDelay()
 end
 
 function MultiBot.SetMainBarAutoHideDelay(value)
-  local config = getConfigStore(true)
-  config.ui = config.ui or {}
-  config.ui.mainBar = config.ui.mainBar or {}
-  config.ui.mainBar.autoHideDelay = normalizeMainBarAutoHideDelay(value)
+  local mainBar = MultiBot.Store and MultiBot.Store.EnsureMainBarStore and MultiBot.Store.EnsureMainBarStore()
+  if not mainBar then
+    return UI_DEFAULTS.mainBar.autoHideDelay
+  end
+  mainBar.autoHideDelay = normalizeMainBarAutoHideDelay(value)
   if MultiBot.RefreshMainBarAutoHideState then
     MultiBot.RefreshMainBarAutoHideState()
   end
-  return config.ui.mainBar.autoHideDelay
+  return mainBar.autoHideDelay
 end

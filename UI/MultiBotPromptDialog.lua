@@ -5,8 +5,39 @@ local PROMPT
 local PROMPT_WINDOW_WIDTH = 280
 local PROMPT_WINDOW_HEIGHT = 108
 local PROMPT_OK_BUTTON_WIDTH = 100
+local PROMPT_ANCHOR_GAP = 12
 
-function ShowPrompt(title, onOk, defaultText)
+local function PositionPromptBesideFrame(anchorFrame)
+    if not PROMPT or not PROMPT.window or not PROMPT.window.frame or not anchorFrame then
+        return
+    end
+
+    local promptFrame = PROMPT.window.frame
+    if not promptFrame.ClearAllPoints or not promptFrame.SetPoint then
+        return
+    end
+
+    promptFrame:ClearAllPoints()
+
+    local parentWidth = UIParent and UIParent.GetWidth and UIParent:GetWidth() or 0
+    local anchorRight = anchorFrame.GetRight and anchorFrame:GetRight() or nil
+    local promptWidth = promptFrame.GetWidth and promptFrame:GetWidth() or PROMPT_WINDOW_WIDTH
+
+    local placeLeft = false
+    if parentWidth and parentWidth > 0 and anchorRight then
+        if (anchorRight + PROMPT_ANCHOR_GAP + promptWidth) > (parentWidth - 8) then
+            placeLeft = true
+        end
+    end
+
+    if placeLeft then
+        promptFrame:SetPoint("TOPRIGHT", anchorFrame, "TOPLEFT", -PROMPT_ANCHOR_GAP, 0)
+    else
+        promptFrame:SetPoint("TOPLEFT", anchorFrame, "TOPRIGHT", PROMPT_ANCHOR_GAP, 0)
+    end
+end
+
+function ShowPrompt(title, onOk, defaultText, anchorFrame)
     local aceGUI = MultiBot.ResolveAceGUI and MultiBot.ResolveAceGUI("AceGUI-3.0 is required for MBUniversalPrompt") or nil
     if not aceGUI then
         return
@@ -30,6 +61,7 @@ function ShowPrompt(title, onOk, defaultText)
         if MultiBot.SetAceWindowCloseToHide then MultiBot.SetAceWindowCloseToHide(window) end
         if MultiBot.RegisterAceWindowEscapeClose then MultiBot.RegisterAceWindowEscapeClose(window, "UniversalPrompt") end
         if MultiBot.BindAceWindowPosition then MultiBot.BindAceWindowPosition(window, "universal_prompt") end
+        window.frame:SetClampedToScreen(true)
 
         local edit = aceGUI:Create("EditBox")
         edit:SetLabel("")
@@ -54,6 +86,10 @@ function ShowPrompt(title, onOk, defaultText)
 
     PROMPT.window:SetTitle(title or "Enter Value")
     PROMPT.window:Show()
+
+    if anchorFrame then
+        PositionPromptBesideFrame(anchorFrame)
+    end
     PROMPT.edit:SetText(defaultText or "")
 
     local editBox = PROMPT.edit and PROMPT.edit.editbox

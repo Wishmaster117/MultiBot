@@ -140,14 +140,30 @@ MultiBot.addEvery = function(pFrame, pCombat, pNormal)
 		if(pButton.state) then
 			MultiBot.inventory:Hide()
 			pButton.setDisable()
+			if(MultiBot.SyncToolWindowButtons) then
+				MultiBot.SyncToolWindowButtons(nil, nil)
+			end
 			return
 		end
 
 		if(MultiBot.RequestBotInventory and MultiBot.RequestBotInventory(pButton.getName())) then
+			if(MultiBot.SyncToolWindowButtons) then
+				MultiBot.SyncToolWindowButtons(pButton.getName(), "Inventory")
+			end
 			return
 		end
 
 		pButton.setEnable()
+		if(MultiBot.SyncToolWindowButtons) then
+			MultiBot.SyncToolWindowButtons(pButton.getName(), "Inventory")
+		end
+	end
+
+	pFrame.addButton("Outfits", 364, 0, "inv_chest_chain_15", MultiBot.L("tips.every.outfits", "Outfits")).setDisable()
+	.doLeft = function(pButton)
+		if(MultiBot.OpenBotOutfits) then
+			MultiBot.OpenBotOutfits(pButton.getName(), pButton)
+		end
 	end
 
 	pFrame.addButton("Spellbook", 274, 0, "inv_misc_book_09", MultiBot.L("tips.every.spellbook")).setDisable()

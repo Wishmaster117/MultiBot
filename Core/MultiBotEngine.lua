@@ -675,11 +675,42 @@ MultiBot.OnOffSwitch = function(pButton)
 	return true
 end
 
+local function _mbEnsureRuntimeTable(key)
+	if MultiBot.Store and MultiBot.Store.EnsureRuntimeTable then
+		return MultiBot.Store.EnsureRuntimeTable(key)
+	end
+	MultiBot[key] = MultiBot[key] or {}
+	return MultiBot[key]
+end
+
+local function _mbGetRuntimeTable(key)
+	if MultiBot.Store and MultiBot.Store.GetRuntimeTable then
+		return MultiBot.Store.GetRuntimeTable(key)
+	end
+	local value = MultiBot[key]
+	if type(value) ~= "table" then
+		return nil
+	end
+	return value
+end
+
+local function _mbEnsureTableField(parent, key, defaultValue)
+	if MultiBot.Store and MultiBot.Store.EnsureTableField then
+		return MultiBot.Store.EnsureTableField(parent, key, defaultValue)
+	end
+	if parent[key] == nil then
+		parent[key] = defaultValue ~= nil and defaultValue or {}
+	end
+	return parent[key]
+end
+
+local _MB_EMPTY_TABLE = {}
+
 -- CLICK BLOCKER --
 -- Fond invisible placé sous les barres de boutons (et leurs zones extensibles) afin
 -- d'empêcher les clics de "traverser" l'UI dans les espaces entre boutons.
 
-MultiBot._clickBlockerQueue = MultiBot._clickBlockerQueue or {}
+MultiBot._clickBlockerQueue = _mbEnsureRuntimeTable("_clickBlockerQueue")
 
 local function _mbQueueClickBlockerUpdate(f)
 	if(not f or not f.clickBlocker) then return end
@@ -1453,10 +1484,10 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 		return nil
 	end
 
-	MultiBot._mbShiftSwapGlobal = MultiBot._mbShiftSwapGlobal or {}
-	MultiBot._mbRegisteredButtonLayoutKeys = MultiBot._mbRegisteredButtonLayoutKeys or {}
-	MultiBot._mbRegisteredButtonLayoutKeys["ButtonLayout:" .. contextKey] = true
-	local state = MultiBot._mbShiftSwapGlobal[contextKey]
+	local shiftSwapGlobal = _mbEnsureRuntimeTable("_mbShiftSwapGlobal")
+	local registeredLayoutKeys = _mbEnsureRuntimeTable("_mbRegisteredButtonLayoutKeys")
+	registeredLayoutKeys["ButtonLayout:" .. contextKey] = true
+	local state = shiftSwapGlobal[contextKey]
 	if(not state) then
 		local saveKey = "ButtonLayout:" .. contextKey
 		local saved = MultiBot.GetSavedLayoutValue and MultiBot.GetSavedLayoutValue(saveKey) or nil
@@ -1467,7 +1498,7 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 			entries = {},
 			byName = {},
 		}
-		MultiBot._mbShiftSwapGlobal[contextKey] = state
+		shiftSwapGlobal[contextKey] = state
 	end
 
 	local function persist()
@@ -1495,7 +1526,7 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 	end
 
 	local function applySelectionVisuals()
-		for _, entryRec in ipairs(state.entries or {}) do
+		for _, entryRec in ipairs(state.entries or _MB_EMPTY_TABLE) do
 			clearVisualState(entryRec)
 		end
 
@@ -1650,16 +1681,17 @@ function MultiBot.BindShiftRightSwapButtons(host, contextKey, entries)
 end
 
 function MultiBot.ResetButtonLayoutContext(contextKey, clearPersistedValue)
-	if(not contextKey or not MultiBot._mbShiftSwapGlobal) then
+	local shiftSwapGlobal = _mbGetRuntimeTable("_mbShiftSwapGlobal")
+	if(not contextKey or not shiftSwapGlobal) then
 		return false
 	end
 
-	local state = MultiBot._mbShiftSwapGlobal[contextKey]
+	local state = shiftSwapGlobal[contextKey]
 	if(not state) then
 		return false
 	end
 
-	for _, entryRec in ipairs(state.entries or {}) do
+	for _, entryRec in ipairs(state.entries or _MB_EMPTY_TABLE) do
 		local button = entryRec and entryRec.button
 		local defaultX = entryRec and entryRec.defaultX
 		local defaultY = entryRec and entryRec.defaultY
@@ -1679,11 +1711,12 @@ function MultiBot.ResetButtonLayoutContext(contextKey, clearPersistedValue)
 end
 
 function MultiBot.ApplySavedButtonLayout(contextKey)
-	if(not contextKey or not MultiBot._mbShiftSwapGlobal) then
+	local shiftSwapGlobal = _mbGetRuntimeTable("_mbShiftSwapGlobal")
+	if(not contextKey or not shiftSwapGlobal) then
 		return false
 	end
 
-	local state = MultiBot._mbShiftSwapGlobal[contextKey]
+	local state = shiftSwapGlobal[contextKey]
 	if(not state) then
 		return false
 	end
@@ -1691,7 +1724,7 @@ function MultiBot.ApplySavedButtonLayout(contextKey)
 	local raw = MultiBot.GetSavedLayoutValue and MultiBot.GetSavedLayoutValue(state.saveKey) or nil
 	state.parsed = _mbParseButtonLayout(raw)
 
-	for _, entryRec in ipairs(state.entries or {}) do
+	for _, entryRec in ipairs(state.entries or _MB_EMPTY_TABLE) do
 		local button = entryRec and entryRec.button
 		local id = entryRec and (entryRec.id or entryRec.name)
 		local savedPoint = id and state.parsed and state.parsed[id] or nil
@@ -1833,8 +1866,7 @@ MultiBot.addSelf = function(pClass, pName)
    btn = units.addButton(pName, 0, 0, "inv_misc_head_clockworkgnome_01", MultiBot.L("tips.unit.selfbot"))
   end
   -- Assurer la présence dans les index (sans doublons)
-  MultiBot.index.classes.players[tClass] = MultiBot.index.classes.players[tClass] or {}
-  local byClass = MultiBot.index.classes.players[tClass]
+  local byClass = _mbEnsureTableField(MultiBot.index.classes.players, tClass, {})
   local found = false
   for i=1,#byClass do if byClass[i] == pName then found = true; break end end
   if not found then table.insert(byClass, pName) end
@@ -1863,8 +1895,7 @@ MultiBot.addPlayer = function(pClass, pName)
     if btn.icon and tTexture then btn.icon:SetTexture(MultiBot.SafeTexturePath(tTexture)) end
   end
   -- Assurer la présence dans les index (sans doublons)
-  MultiBot.index.classes.players[tClass] = MultiBot.index.classes.players[tClass] or {}
-  local byClass = MultiBot.index.classes.players[tClass]
+  local byClass = _mbEnsureTableField(MultiBot.index.classes.players, tClass, {})
   local found = false
   for i=1,#byClass do if byClass[i] == pName then found = true; break end end
   if not found then table.insert(byClass, pName) end
