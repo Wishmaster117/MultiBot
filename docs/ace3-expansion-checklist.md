@@ -49,14 +49,14 @@ Checklist for the full addon-wide ACE3 expansion after M7 completion.
 
 ## Milestone 10 — Data model and table lifecycle hardening
 
-- [ ] Centralize store accessors for profile/runtime tables.
-- [ ] Remove duplicate validation/bootstrap snippets.
-- [ ] Ensure read accessors are non-creating by default.
-- [ ] Add cleanup for empty transient buckets where needed.
+- [x] Centralize store accessors for profile/runtime tables.
+- [x] Remove duplicate validation/bootstrap snippets.
+- [x] Ensure read accessors are non-creating by default.
+- [x] Add cleanup for empty transient buckets where needed.
 
 ## Milestone 11 — Scheduler/timers convergence
 
-- [ ] Inventory all `OnUpdate` loops and elapsed timers.
+- [x] Inventory all `OnUpdate` loops and elapsed timers. *(2026-04-05: cartographie initiale livrée dans `docs/milestone11-scheduler-inventory.md`.)*
 - [ ] Classify each loop (hot path/local, safe-to-centralize, keep-as-is).
 - [ ] Migrate safe loops to a shared scheduler approach.
 - [ ] Remove duplicate periodic loops after parity validation.

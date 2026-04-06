@@ -1884,6 +1884,10 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 			return
 		end
 
+		if(tButton.waitFor == "OUTFITS" and MultiBot.HandleOutfitChatLine and MultiBot.HandleOutfitChatLine(tButton, arg1, arg2)) then
+			return
+		end
+
 		-- Inventory --
 
 		if(tButton.waitFor == "INVENTORY" and MultiBot.isInside(arg1, "Inventory", "背包")) then
