@@ -8,7 +8,13 @@ local OUTFIT_LIST_WIDTH = 170
 local OUTFIT_STATUS_HEIGHT = 30
 local OUTFIT_BUTTON_HEIGHT = 22
 local OUTFIT_LIST_BUTTON_HEIGHT = 20
+local OUTFIT_BUTTON_TEXT_PADDING = 24
+local OUTFIT_BUTTON_ROW_GAP = 6
+local OUTFIT_LEFT_BUTTONS_AREA_HEIGHT = 60
 local OUTFIT_ITEM_SIZE = 32
+local OUTFIT_FAVORITE_ICON_SIZE = 10
+local OUTFIT_FAVORITE_ICON_GAP = 4
+local OUTFIT_FAVORITE_ICON_TEXTURE = "Interface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1"
 local OUTFIT_ITEM_SPACING_X = 38
 local OUTFIT_ITEM_SPACING_Y = 38
 local OUTFIT_ITEMS_PER_ROW = 6
@@ -19,7 +25,6 @@ local OUTFIT_REPLACE_REFRESH_DELAY = 1.75
 local OUTFIT_INSPECT_GAP = 12
 local OUTFIT_PERSIST_FLUSH_DELAY = 0.25
 local INV_SLOT_MAINHAND = INV_SLOT_MAINHAND or 16
-local INV_SLOT_OFFHAND  = INV_SLOT_OFFHAND  or 17
 
 local OUTFIT_LIST_SCROLL_NAME = "MultiBotOutfitListScrollFrame"
 local OUTFIT_ITEMS_SCROLL_NAME = "MultiBotOutfitItemsScrollFrame"
@@ -273,56 +278,6 @@ local function placeOutfitsToRightOfInspect()
     outfitFrame:SetPoint("TOPLEFT", InspectFrame, "TOPRIGHT", OUTFIT_INSPECT_GAP, 0)
 end
 
-local function ensureInspectUI()
-    if InspectFrame then
-        return true
-    end
-
-    if LoadAddOn then
-        pcall(LoadAddOn, "Blizzard_InspectUI")
-    end
-
-    return InspectFrame ~= nil
-end
-
-local function openInspectForBot(botName)
-    if not botName or botName == "" or not MultiBot.toUnit then
-        return
-    end
-
-    local unit = MultiBot.toUnit(botName)
-    if not unit or not UnitExists(unit) then
-        return
-    end
-
-    if not ensureInspectUI() then
-        return
-    end
-
-    InspectUnit(unit)
-
-    if InspectFrame and ShowUIPanel and not InspectFrame:IsShown() then
-        ShowUIPanel(InspectFrame)
-    end
-end
-
-local function closeInspectForBot(botName)
-    if not botName or botName == "" or not InspectFrame or not InspectFrame:IsShown() then
-        return
-    end
-
-    local inspectedName = nil
-    if InspectFrame.unit and UnitExists(InspectFrame.unit) then
-        inspectedName = UnitName(InspectFrame.unit)
-    end
-
-    if inspectedName and inspectedName ~= botName then
-        return
-    end
-
-    if HideUIPanel then HideUIPanel(InspectFrame) else InspectFrame:Hide() end
-end
-
 local function getUnitWaitButton(botName)
     local units = getUnitsRoot()
     return units and units.buttons and units.buttons[botName] or nil
@@ -416,7 +371,7 @@ function MultiBot.SyncToolWindowButtons(activeBotName, activeKey)
          end
      end
  end
- 
+
 local OutfitUI = MultiBot.OutfitUI or {}
 OutfitUI.entries = OutfitUI.entries or {}
 OutfitUI.selectedName = OutfitUI.selectedName or nil
@@ -440,14 +395,65 @@ local function sortEntriesForBot(botName, entries)
     end)
 end
 
-local function createActionButton(parent, width, text, anchor, relativeTo, relativePoint, offsetX, offsetY, onClick)
+local function setActionButtonText(button, text)
+    if not button then
+        return
+    end
+
+    button:SetText(text or "")
+
+    local fontString = (button.GetFontString and button:GetFontString()) or button.Text
+    local textWidth = 0
+    if fontString and fontString.GetStringWidth then
+        textWidth = fontString:GetStringWidth() or 0
+    end
+
+    local minWidth = button.minAutoWidth or 0
+    local padding = button.autoWidthPadding or OUTFIT_BUTTON_TEXT_PADDING
+    button:SetWidth(math.max(minWidth, math.ceil(textWidth + padding)))
+end
+
+local function createActionButton(parent, minWidth, text, anchor, relativeTo, relativePoint, offsetX, offsetY, onClick)
     local button = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
-    button:SetWidth(width)
+    button.minAutoWidth = minWidth or 0
+    button.autoWidthPadding = OUTFIT_BUTTON_TEXT_PADDING
     button:SetHeight(OUTFIT_BUTTON_HEIGHT)
     button:SetPoint(anchor, relativeTo, relativePoint, offsetX, offsetY)
-    button:SetText(text)
+    setActionButtonText(button, text)
     button:SetScript("OnClick", onClick)
     return button
+end
+
+local function layoutButtonRowCentered(container, buttons, gap)
+    if not container or type(buttons) ~= "table" or #buttons == 0 then
+        return
+    end
+
+    local spacing = gap or 0
+    local totalWidth = 0
+
+    for index, button in ipairs(buttons) do
+        if button then
+            totalWidth = totalWidth + (button:GetWidth() or 0)
+            if index > 1 then
+                totalWidth = totalWidth + spacing
+            end
+        end
+    end
+
+    container:SetWidth(totalWidth)
+    container:SetHeight(OUTFIT_BUTTON_HEIGHT)
+
+    local previous = nil
+    for _, button in ipairs(buttons) do
+        button:ClearAllPoints()
+        if not previous then
+            button:SetPoint("LEFT", container, "LEFT", 0, 0)
+        else
+            button:SetPoint("LEFT", previous, "RIGHT", spacing, 0)
+        end
+        previous = button
+    end
 end
 
 local function createOutfitEntryButton(parent)
@@ -463,8 +469,16 @@ local function createOutfitEntryButton(parent)
     selected:Hide()
     button.selectedTexture = selected
 
+    local favoriteIcon = button:CreateTexture(nil, "OVERLAY")
+    favoriteIcon:SetTexture(OUTFIT_FAVORITE_ICON_TEXTURE)
+    favoriteIcon:SetWidth(OUTFIT_FAVORITE_ICON_SIZE)
+    favoriteIcon:SetHeight(OUTFIT_FAVORITE_ICON_SIZE)
+    favoriteIcon:SetPoint("LEFT", button, "LEFT", 4, 0)
+    favoriteIcon:Hide()
+    button.favoriteIcon = favoriteIcon
+
     local text = button:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    text:SetPoint("LEFT", button, "LEFT", 4, 0)
+    text:SetPoint("LEFT", button, "LEFT", 4 + OUTFIT_FAVORITE_ICON_SIZE + OUTFIT_FAVORITE_ICON_GAP, 0)
     text:SetPoint("RIGHT", button, "RIGHT", -4, 0)
     text:SetJustifyH("LEFT")
     button.text = text
@@ -747,7 +761,13 @@ function OutfitUI:RenderEntryList()
         button:SetPoint("TOPLEFT", self.listChild, "TOPLEFT", 0, -((index - 1) * OUTFIT_LIST_BUTTON_HEIGHT))
         button:SetPoint("TOPRIGHT", self.listChild, "TOPRIGHT", 0, -((index - 1) * OUTFIT_LIST_BUTTON_HEIGHT))
         button.entry = entry
-        button.text:SetText((isFavorite(self.botName or "", entry.name) and "★ " or "") .. entry.name)
+
+        local favorite = isFavorite(self.botName or "", entry.name)
+        if button.favoriteIcon then
+            if favorite then button.favoriteIcon:Show() else button.favoriteIcon:Hide() end
+        end
+
+        button.text:SetText(entry.name)
         if entry.name == self.selectedName then
             button.selectedTexture:Show()
         else
@@ -789,9 +809,17 @@ function OutfitUI:RenderSelectedOutfit()
 
     if self.selectedNameText then
         if selected then
-            local prefix = isFavorite(self.botName or "", selected.name) and "★ " or ""
-            self.selectedNameText:SetText(prefix .. selected.name)
+            local favorite = isFavorite(self.botName or "", selected.name)
+            if self.selectedFavoriteIcon then
+                if favorite then
+                    self.selectedFavoriteIcon:Show()
+                else
+                    self.selectedFavoriteIcon:Hide()
+                end
+            end
+            self.selectedNameText:SetText(selected.name)
         else
+            if self.selectedFavoriteIcon then self.selectedFavoriteIcon:Hide() end
             self.selectedNameText:SetText(outfitL("none_selected"))
         end
     end
@@ -845,10 +873,10 @@ function OutfitUI:RenderSelectedOutfit()
     if self.pinButton then
         if hasSelection then
             self.pinButton:Enable()
-            self.pinButton:SetText(isFavorite(self.botName or "", selected.name) and outfitL("unpin") or outfitL("pin"))
+            setActionButtonText(self.pinButton, isFavorite(self.botName or "", selected.name) and outfitL("unpin") or outfitL("pin"))
         else
             self.pinButton:Disable()
-            self.pinButton:SetText(outfitL("pin"))
+            setActionButtonText(self.pinButton, outfitL("pin"))
         end
     end
 
@@ -1183,7 +1211,6 @@ function MultiBot.InitializeOutfitFrame()
     window.frame:HookScript("OnHide", function()
         syncOutfitButtonState(false)
         closeInspectForBot(MultiBot.outfits and MultiBot.outfits.name or nil)
-        closeInspectForBot(MultiBot.outfits and MultiBot.outfits.name or nil)
         MultiBot.SyncToolWindowButtons(nil, nil)
     end)
 
@@ -1224,26 +1251,39 @@ function MultiBot.InitializeOutfitFrame()
 
     local listScroll = CreateFrame("ScrollFrame", OUTFIT_LIST_SCROLL_NAME, leftPanel, "UIPanelScrollFrameTemplate")
     listScroll:SetPoint("TOPLEFT", leftPanel, "TOPLEFT", 8, -26)
-    listScroll:SetPoint("BOTTOMRIGHT", leftPanel, "BOTTOMRIGHT", -26, 34)
+    listScroll:SetPoint("BOTTOMRIGHT", leftPanel, "BOTTOMRIGHT", -26, OUTFIT_LEFT_BUTTONS_AREA_HEIGHT)
 
     local listChild = CreateFrame("Frame", "MultiBotOutfitListScrollChild", listScroll)
     listChild:SetWidth(OUTFIT_LIST_WIDTH - 34)
     listChild:SetHeight(OUTFIT_LIST_BUTTON_HEIGHT)
     listScroll:SetScrollChild(listChild)
 
-    local refreshButton = createActionButton(leftPanel, 50, outfitL("refresh"), "BOTTOMLEFT", leftPanel, "BOTTOMLEFT", 8, 8, function()
+    local refreshButton = createActionButton(leftPanel, 0, outfitL("refresh"), "BOTTOMLEFT", leftPanel, "BOTTOMLEFT", 8, 8, function()
         if OutfitUI.botName then
             OutfitUI:RequestList(OutfitUI.botName)
         end
     end)
 
-    local newButton = createActionButton(leftPanel, 50, outfitL("new"), "LEFT", refreshButton, "RIGHT", 5, 0, function()
+    local newButton = createActionButton(leftPanel, 0, outfitL("new"), "LEFT", refreshButton, "RIGHT", OUTFIT_BUTTON_ROW_GAP, 0, function()
         OutfitUI:CreateFromCurrent()
     end)
 
-    local pinButton = createActionButton(leftPanel, 50, outfitL("pin"), "LEFT", newButton, "RIGHT", 5, 0, function()
+    local pinButton = createActionButton(leftPanel, 0, outfitL("pin"), "BOTTOM", leftPanel, "BOTTOM", 0, 8, function()
         OutfitUI:PinSelected()
     end)
+
+    do
+        local topRowWidth = refreshButton:GetWidth() + OUTFIT_BUTTON_ROW_GAP + newButton:GetWidth()
+        local topRowOffsetX = math.floor((OUTFIT_LIST_WIDTH - topRowWidth) / 2)
+
+        refreshButton:ClearAllPoints()
+        refreshButton:SetPoint("BOTTOMLEFT", leftPanel, "BOTTOMLEFT", topRowOffsetX, 8 + OUTFIT_BUTTON_HEIGHT + 4)
+
+        newButton:ClearAllPoints()
+        newButton:SetPoint("LEFT", refreshButton, "RIGHT", OUTFIT_BUTTON_ROW_GAP, 0)
+    end
+
+    local rightButtonsRow = CreateFrame("Frame", nil, rightPanel)
 
     local selectedNameText = rightPanel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     selectedNameText:SetPoint("TOPLEFT", rightPanel, "TOPLEFT", 10, -10)
@@ -1251,7 +1291,20 @@ function MultiBot.InitializeOutfitFrame()
     selectedNameText:SetJustifyH("LEFT")
     selectedNameText:SetText(outfitL("none_selected"))
 
-    local equipButton = createActionButton(rightPanel, 72, outfitL("equip"), "TOPLEFT", selectedNameText, "BOTTOMLEFT", 0, -10, function()
+    local selectedFavoriteIcon = rightPanel:CreateTexture(nil, "OVERLAY")
+    selectedFavoriteIcon:SetTexture(OUTFIT_FAVORITE_ICON_TEXTURE)
+    selectedFavoriteIcon:SetWidth(OUTFIT_FAVORITE_ICON_SIZE)
+    selectedFavoriteIcon:SetHeight(OUTFIT_FAVORITE_ICON_SIZE)
+    selectedFavoriteIcon:SetPoint("LEFT", rightPanel, "TOPLEFT", 10, -18)
+    selectedFavoriteIcon:Hide()
+
+    selectedNameText:ClearAllPoints()
+    selectedNameText:SetPoint("TOPLEFT", rightPanel, "TOPLEFT", 10 + OUTFIT_FAVORITE_ICON_SIZE + OUTFIT_FAVORITE_ICON_GAP, -10)
+    selectedNameText:SetPoint("TOPRIGHT", rightPanel, "TOPRIGHT", -10, -10)
+
+    rightButtonsRow:SetPoint("TOP", selectedNameText, "BOTTOM", 0, -10)
+
+    local equipButton = createActionButton(rightButtonsRow, 0, outfitL("equip"), "LEFT", rightButtonsRow, "LEFT", 0, 0, function()
         OutfitUI:EquipSelected(false)
     end)
     equipButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
@@ -1270,17 +1323,19 @@ function MultiBot.InitializeOutfitFrame()
         if GameTooltip and GameTooltip.Hide then GameTooltip:Hide() end
     end)
 
-    local replaceButton = createActionButton(rightPanel, 72, outfitL("replace"), "LEFT", equipButton, "RIGHT", 6, 0, function()
+    local replaceButton = createActionButton(rightButtonsRow, 0, outfitL("replace"), "LEFT", equipButton, "RIGHT", OUTFIT_BUTTON_ROW_GAP, 0, function()
         OutfitUI:EquipSelected(true)
     end)
 
-    local updateButton = createActionButton(rightPanel, 72, outfitL("update"), "LEFT", replaceButton, "RIGHT", 6, 0, function()
+    local updateButton = createActionButton(rightButtonsRow, 0, outfitL("update"), "LEFT", replaceButton, "RIGHT", OUTFIT_BUTTON_ROW_GAP, 0, function()
         OutfitUI:UpdateSelected()
     end)
 
-    local resetButton = createActionButton(rightPanel, 72, outfitL("reset"), "LEFT", updateButton, "RIGHT", 6, 0, function()
+    local resetButton = createActionButton(rightButtonsRow, 0, outfitL("reset"), "LEFT", updateButton, "RIGHT", OUTFIT_BUTTON_ROW_GAP, 0, function()
         OutfitUI:ResetSelected()
     end)
+
+    layoutButtonRowCentered(rightButtonsRow, { equipButton, replaceButton, updateButton, resetButton }, OUTFIT_BUTTON_ROW_GAP)
 
     local itemsScroll = CreateFrame("ScrollFrame", OUTFIT_ITEMS_SCROLL_NAME, rightPanel, "UIPanelScrollFrameTemplate")
     itemsScroll:SetPoint("TOPLEFT", equipButton, "BOTTOMLEFT", 0, -12)
@@ -1343,6 +1398,7 @@ function MultiBot.InitializeOutfitFrame()
     OutfitUI.itemsChild = itemsChild
     OutfitUI.selectedNameText = selectedNameText
     OutfitUI.emptyItemsText = emptyItemsText
+    OutfitUI.selectedFavoriteIcon = selectedFavoriteIcon
     OutfitUI.refreshButton = refreshButton
     OutfitUI.newButton = newButton
     OutfitUI.pinButton = pinButton
@@ -1371,12 +1427,10 @@ function MultiBot.OpenBotOutfits(botName, sourceButton)
 
     if outfits:IsVisible() and outfits.name == botName then
         closeInspectForBot(botName)
-        closeInspectForBot(botName)
         outfits:Hide()
         return true
     end
 
-    openInspectForBot(botName)
     openInspectForBot(botName)
     outfits:setBotName(botName)
     outfits:Show()

@@ -1,9 +1,4 @@
 TODO
-
-* Deplacer la position de la main barre par defaut pour visualiser le nouveau bouton outfits
-* Colorer le bouton outfit quand actif
-* Faire les variables multi pour outfits
-* Placer les quickshaman et quickhunter dans un meilleur endroit par défaut quand ils sont chargés pour la première fois
 * faire en sorte que la croix de fermeture de quickshamant et quickhunter reste à la même place quand on clique dessus pour les fermer
 * Uniformiser le template des frame quetes comme celle de Itemus
 * Uniformiser le template de la frame reward comme celle de itemus

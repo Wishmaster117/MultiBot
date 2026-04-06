@@ -10,7 +10,7 @@ local WINDOW_HEIGHT = ROW_HEIGHT
 local WINDOW_PADDING_X = 0
 local WINDOW_PADDING_Y = 0
 local WINDOW_TITLE = "Quick Hunter"
-local WINDOW_DEFAULT_POINT = { point = "CENTER", relPoint = "CENTER", x = -820, y = 300 }
+local WINDOW_DEFAULT_POINT = { point = "TOP", relPoint = "TOP", x = -76.67194107900505, y = -29.34896683789212 }
 local ICON_FALLBACK = "Interface\\Icons\\INV_Misc_QuestionMark"
 local HANDLE_WIDTH = 12
 local HANDLE_HEIGHT = 18
