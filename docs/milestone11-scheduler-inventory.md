@@ -64,3 +64,81 @@ Objectif: établir la cartographie complète des mécanismes temporels avant con
 ## 5) Sortie attendue pour la prochaine sous-étape M11
 
 À partir de cet inventaire, la prochaine passe consiste à produire la **classification détaillée** (hot/local vs centralisable) avec décision par item (garder/migrer), puis plan PR séquencé de convergence.
+
+## 6) Classification détaillée M11 (décision par item)
+
+### 6.1 Boucles périodiques (`OnUpdate`)
+
+| ID | Décision | Cible | Justification | Action PR |
+|---|---|---|---|---|
+| P1 (`Core/MultiBotHandler.lua`) | **Garder local** | `OnUpdate` existant | Boucle coeur automation avec gating d'intervalles; sensible latence/perf et ordre d'exécution | Documenter owner + vérifier bornes d'intervalle |
+| P2 (`Core/MultiBotThrottle.lua`) | **Garder local** | `OnUpdate` token-bucket | Chemin critique anti-spam, nécessite débit frame-level et burst contrôlé | Ajouter garde-fous (visibilité queue / logs debug) sans changer l'algorithme |
+| P3 (`UI/MultiBotMainUI.lua`) | **Garder local (M11)** | `OnUpdate` UI | Autohide dépend d'états souris/hover quasi-temps-réel; risque UX si timer discret | Encapsuler logique dans helper dédié + point de config unique |
+| P4 (`Features/MultiBotRaidus.lua`) | **Migrer** | `MultiBot.TimerAfter` one-shot | Timeout visuel simple (extinction feedback), pas besoin de polling | Remplacer frame dédiée par one-shot annulable |
+| P5 (`Features/MultiBotRaidus.lua`) | **Garder local** | `OnUpdate` animation | Pulse visuel court piloté à la frame; adaptation fluide | Isoler driver animation pour lisibilité/tests manuels |
+| P6 (`UI/MultiBotSpecUI.lua`) | **Migrer** | Chaînage `MultiBot.TimerAfter` | Séquence asynchrone bornée (0.2s) déjà naturellement one-shot | Convertir en pipeline one-shot sans frame persistante |
+| P7 (`UI/MultiBotMinimap.lua`) | **Garder local** | `OnUpdate` pendant drag | Interaction directe utilisateur, seulement actif pendant drag | Aucun changement fonctionnel; documenter cycle start/stop |
+| P8 (`UI/MultiBotHunterQuickFrame.lua`) | **Migrer** | `MultiBot.TimerAfter(0, ...)` | Initialisation différée one-frame, exact match du besoin | Supprimer hook one-shot `OnUpdate` |
+| P9 (`Core/MultiBotEngine.lua`) | **Migrer** | helper `NextTick` (sur `TimerAfter`) | Coalescence « frame suivante » assimilable à microtask | Créer utilitaire central `MultiBot.NextTick` + adoption |
+| P10 (`Core/MultiBotAsync.lua`) | **Garder local (base)** | Wrapper central | Point d'abstraction/fallback legacy indispensable à M11 | Renforcer contrat API (doc + invariants) |
+| P11 (`Core/MultiBot.lua`) | **Migrer** | `MultiBot.TimerAfter` | Duplication locale historique, augmente divergence comportementale | Supprimer fallback inline, appeler wrapper unique |
+
+### 6.2 Timers différés (`MultiBot.TimerAfter`)
+
+| Famille | Décision | Détails |
+|---|---|---|
+| Quests/parsing/UI sync | **Conserver via wrapper unique** | Garder `MultiBot.TimerAfter`; normaliser annulation et idempotence des refresh |
+| Roster/login/retry | **Conserver via wrapper unique** | Uniformiser backoff léger (délais constants actuels) sans changer la logique métier |
+| Unités/guild roster | **Conserver via wrapper unique** | Encadrer retries max et early-exit si données déjà présentes |
+| UI spécialisées (Spec/Talent/Quick/Inventory/Spell) | **Conserver via wrapper unique** | Éviter `OnUpdate` temporaires si one-shot suffit |
+| Engine (refresh inventaire) | **Conserver via wrapper unique** | Introduire `NextTick` pour les cas « prochaine frame » |
+
+## 7) Plan PR séquencé de convergence M11
+
+### PR-M11-1 — Fondations scheduler unifié
+- **But**: verrouiller un point d'entrée unique.
+- **Changements**:
+  - Ajouter `MultiBot.NextTick(callback)` dans `Core/MultiBotAsync.lua` (implémenté via `MultiBot.TimerAfter(0, callback)` avec garde `type(callback) == "function"`).
+  - Documenter le contrat: `TimerAfter`/`NextTick` sont les seules APIs de délai autorisées.
+- **Critères d'acceptation**:
+  - Aucune régression d'init/login.
+  - Aucun appel direct nouveau à `C_Timer.After` hors `Core/MultiBotAsync.lua`.
+
+### PR-M11-2 — Suppression des duplications runtime
+- **But**: converger les one-shots historiques runtime.
+- **Changements**:
+  - Migrer P11 (`Core/MultiBot.lua`) vers `MultiBot.TimerAfter`.
+  - Migrer P9 (`Core/MultiBotEngine.lua`) vers `MultiBot.NextTick`.
+- **Critères d'acceptation**:
+  - Comportement inchangé sur détection GM / refresh click-blocker.
+  - Pas de double déclenchement observé.
+
+### PR-M11-3 — Migration safe UI one-shot
+- **But**: retirer les `OnUpdate` temporaires qui ne sont pas des animations continues.
+- **Changements**:
+  - Migrer P4 (`Features/MultiBotRaidus.lua`) vers one-shot timer.
+  - Migrer P6 (`UI/MultiBotSpecUI.lua`) vers chaînage `TimerAfter`.
+  - Migrer P8 (`UI/MultiBotHunterQuickFrame.lua`) vers `TimerAfter(0, ...)`.
+- **Critères d'acceptation**:
+  - Feedback visuel conservé (durées identiques).
+  - Aucune frame/ticker orpheline après fermeture UI.
+
+### PR-M11-4 — Stabilisation hot paths conservés
+- **But**: figer explicitement ce qui reste en `OnUpdate` local.
+- **Changements**:
+  - Ajouter commentaires d'ownership et raison de conservation pour P1/P2/P3/P5/P7/P10.
+  - Harmoniser constantes d'intervalle/nommage là où pertinent (sans changer les valeurs).
+- **Critères d'acceptation**:
+  - Débit/latence identiques en usage normal.
+  - Aucun changement fonctionnel attendu.
+
+## 8) Règles de validation M11
+
+- Interdit: création de nouveaux wrappers locaux de délai (`C_Timer_After`, frames one-shot ad-hoc) hors `Core/MultiBotAsync.lua`.
+- Autorisé:
+  - `OnUpdate` local pour **hot path** runtime et interactions/animations frame-level.
+  - `MultiBot.TimerAfter` / `MultiBot.NextTick` pour tout délai one-shot.
+- Chaque migration doit vérifier:
+  1. absence de régression UX (autohide, drag, pulse),
+  2. absence de double exécution,
+  3. absence de ticker/frame non libéré.

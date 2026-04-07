@@ -124,8 +124,10 @@ end
 
 local function layoutVisibleUnits(unitsButton, unitsFrame, display, fromIndex, toIndex)
     local visibleCount = 0
+    local startIndex = fromIndex or 1
+    local endIndex = toIndex or 0
 
-    for index = fromIndex or 1, toIndex or 0 do
+    for index = 1, #display do
         local name = display[index]
         local unitButton = name and unitsFrame.buttons[name]
         local unitFrame = name and unitsFrame.frames[name]
@@ -137,7 +139,7 @@ local function layoutVisibleUnits(unitsButton, unitsFrame, display, fromIndex, t
         end
     end
 
-    for index = fromIndex, toIndex do
+    for index = startIndex, endIndex do
         local name = display[index]
         local unitButton = name and unitsFrame.buttons[name]
         local unitFrame = name and unitsFrame.frames[name]
@@ -154,8 +156,8 @@ local function layoutVisibleUnits(unitsButton, unitsFrame, display, fromIndex, t
         end
     end
 
-    unitsButton.from = fromIndex
-    unitsButton.to = toIndex
+    unitsButton.from = startIndex
+    unitsButton.to = endIndex
     unitsFrame.frames.Control.setPoint(-2, (unitsFrame.size + 2) * visibleCount)
 end
 

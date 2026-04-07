@@ -598,6 +598,176 @@ MultiBot.RestoreCollapsedUnitBarsFromDropdown = function(targetFrame)
 	end
 
 	targetFrame._mbCollapsedBars = nil
+	targetFrame._mbCollapsedAutoRestoreNonce = nil
+	if type(MultiBot._pendingCollapsedRestoreOwners) == "table" then
+		MultiBot._pendingCollapsedRestoreOwners[targetFrame] = nil
+	end
+end
+
+local function ResolveOwnerUnitBar(targetFrame, unitsFrame)
+	if not targetFrame or not unitsFrame then
+		return nil
+	end
+
+	local ownerBar = targetFrame.parent
+	while ownerBar and ownerBar.parent and ownerBar.parent ~= unitsFrame do
+		ownerBar = ownerBar.parent
+	end
+
+	if not ownerBar or ownerBar.parent ~= unitsFrame then
+		return nil
+	end
+
+	return ownerBar
+end
+
+local function IsFrameDescendantOf(frame, ancestor)
+	if not frame or not ancestor then
+		return false
+	end
+
+	local current = frame
+	while current do
+		if current == ancestor then
+			return true
+		end
+		if type(current.GetParent) == "function" then
+			current = current:GetParent()
+		else
+			current = current.parent
+		end
+	end
+
+	return false
+end
+
+MultiBot.RestoreAllPendingCollapsedUnitBars = function()
+	local pendingOwners = MultiBot._pendingCollapsedRestoreOwners
+	if type(pendingOwners) ~= "table" then
+		return 0
+	end
+
+	local restored = 0
+	for ownerBar in pairs(pendingOwners) do
+		if ownerBar and type(ownerBar._mbCollapsedBars) == "table" and #ownerBar._mbCollapsedBars > 0 then
+			if MultiBot.RestoreCollapsedUnitBarsFromDropdown then
+				MultiBot.RestoreCollapsedUnitBarsFromDropdown(ownerBar)
+			end
+			restored = restored + 1
+		end
+		pendingOwners[ownerBar] = nil
+	end
+
+	return restored
+end
+
+local function EnsureCollapsedBarsOutsideClickRestoreHook()
+	if MultiBot._outsideCollapsedRestoreHooked then
+		return
+	end
+
+	local clickRoot = WorldFrame or UIParent
+	if not clickRoot or not clickRoot.HookScript then
+		return
+	end
+
+	clickRoot:HookScript("OnMouseDown", function()
+		local unitsFrame = MultiBot.frames
+			and MultiBot.frames["MultiBar"]
+			and MultiBot.frames["MultiBar"].frames
+			and MultiBot.frames["MultiBar"].frames["Units"]
+		if not unitsFrame then
+			return
+		end
+
+		local mouseFocus = GetMouseFocus and GetMouseFocus() or nil
+		if IsFrameDescendantOf(mouseFocus, unitsFrame) then
+			return
+		end
+
+		if MultiBot.RestoreAllPendingCollapsedUnitBars then
+			MultiBot.RestoreAllPendingCollapsedUnitBars()
+		end
+	end)
+
+	MultiBot._outsideCollapsedRestoreHooked = true
+end
+
+MultiBot.TransferCollapsedUnitBarsToOwner = function(targetFrame)
+	if not targetFrame or type(targetFrame._mbCollapsedBars) ~= "table" then
+		return false
+	end
+
+	local unitsFrame = MultiBot.frames
+		and MultiBot.frames["MultiBar"]
+		and MultiBot.frames["MultiBar"].frames
+		and MultiBot.frames["MultiBar"].frames["Units"]
+	if not unitsFrame or not unitsFrame.frames then
+		return false
+	end
+
+	local ownerBar = ResolveOwnerUnitBar(targetFrame, unitsFrame)
+	if not ownerBar then
+		return false
+	end
+
+	ownerBar._mbCollapsedBars = ownerBar._mbCollapsedBars or {}
+	local existing = {}
+	for index = 1, #ownerBar._mbCollapsedBars do
+		existing[ownerBar._mbCollapsedBars[index]] = true
+	end
+
+	for index = 1, #targetFrame._mbCollapsedBars do
+		local frame = targetFrame._mbCollapsedBars[index]
+		if frame and not existing[frame] then
+			table.insert(ownerBar._mbCollapsedBars, frame)
+			existing[frame] = true
+		end
+	end
+
+	targetFrame._mbCollapsedBars = nil
+
+	if #ownerBar._mbCollapsedBars > 0 and MultiBot.ArmCollapsedUnitBarsAutoRestore then
+		MultiBot.ArmCollapsedUnitBarsAutoRestore(ownerBar)
+	end
+
+	return true
+end
+
+local COLLAPSED_RESTORE_DELAY_SECONDS = 10.0
+
+MultiBot.ArmCollapsedUnitBarsAutoRestore = function(ownerBar, delaySeconds)
+	if not ownerBar or type(ownerBar._mbCollapsedBars) ~= "table" or #ownerBar._mbCollapsedBars == 0 then
+		return false
+	end
+
+	MultiBot._pendingCollapsedRestoreOwners = MultiBot._pendingCollapsedRestoreOwners or {}
+	MultiBot._pendingCollapsedRestoreOwners[ownerBar] = true
+	EnsureCollapsedBarsOutsideClickRestoreHook()
+
+	ownerBar._mbCollapsedAutoRestoreNonce = (ownerBar._mbCollapsedAutoRestoreNonce or 0) + 1
+	local nonce = ownerBar._mbCollapsedAutoRestoreNonce
+	local delay = delaySeconds
+	if type(delay) ~= "number" or delay <= 0 then
+		delay = COLLAPSED_RESTORE_DELAY_SECONDS
+	end
+
+	MultiBot.TimerAfter(delay, function()
+		if not ownerBar then
+			return
+		end
+		if ownerBar._mbCollapsedAutoRestoreNonce ~= nonce then
+			return
+		end
+		if type(ownerBar._mbCollapsedBars) ~= "table" or #ownerBar._mbCollapsedBars == 0 then
+			return
+		end
+		if ownerBar.IsShown and ownerBar:IsShown() and MultiBot.RestoreCollapsedUnitBarsFromDropdown then
+			MultiBot.RestoreCollapsedUnitBarsFromDropdown(ownerBar)
+		end
+	end)
+
+	return true
 end
 
 MultiBot.CollapseOtherUnitBarsForDropdown = function(targetFrame)
@@ -625,12 +795,8 @@ MultiBot.CollapseOtherUnitBarsForDropdown = function(targetFrame)
 		return
 	end
 
-	local ownerBar = targetFrame.parent
-	while ownerBar and ownerBar.parent and ownerBar.parent ~= unitsFrame do
-		ownerBar = ownerBar.parent
-	end
-
-	if not ownerBar or ownerBar.parent ~= unitsFrame then
+	local ownerBar = ResolveOwnerUnitBar(targetFrame, unitsFrame)
+	if not ownerBar then
 		return
 	end
 
@@ -1196,7 +1362,9 @@ MultiBot.newButton = function(pParent, pX, pY, pSize, pTexture, pTip, oTemplate)
 		end
 
 		if button.parent and button.parent._mbDropdownManaged then
-			if MultiBot.RestoreCollapsedUnitBarsFromDropdown then
+			if MultiBot.TransferCollapsedUnitBarsToOwner then
+				MultiBot.TransferCollapsedUnitBarsToOwner(button.parent)
+			elseif MultiBot.RestoreCollapsedUnitBarsFromDropdown then
 				MultiBot.RestoreCollapsedUnitBarsFromDropdown(button.parent)
 			end
 			button.parent:Hide()
