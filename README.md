@@ -1,7 +1,8 @@
 <img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/3ac43983-8767-4dd6-9a17-4548ede1e9d3" />
 
 # Breaking News
-Work on porting MultiBot to ACE3 has started! You can test it by grabbing the feature/ace3-migration branch. It’s about 11% complete, so the addon is still running in a hybrid mode, but we’re already seeing noticeable gains in smoothness.
+Work on porting MultiBot to ACE3 has started! You can test it by grabbing the https://github.com/Wishmaster117/MultiBot/tree/feature/ace3-migration branch. It’s about 80% complete, so the addon is still running in a hybrid mode, but we’re already seeing noticeable gains in smoothness.
+Branch updates are made incrementally as I move forward with the project.
 
 # MultiBot
 User interface for AzerothCore-Module "Playerbots" by Playerbots team https://github.com/mod-playerbots/mod-playerbots.<br>
@@ -26,16 +27,6 @@ To allow the community to benefit from the additional features and improvements 
 > **All credit for the original addon goes to Macx-Lio.** I do not claim ownership of this project — I’m simply maintaining a working version until development resumes on the main repository.
 
 Thank you for understanding.
-
----
-
-# Comming soon
-
-Port Multibot to ACE 3
-
-If you want to test the aCE3 version, use this branch: https://github.com/Wishmaster117/MultiBot/tree/feature/ace3-migration .
-Keep in mind that the addon is fully functional, but since I am currently migrating it, it still operates in a hybrid state.
-Branch updates are made incrementally as I move forward with the project.
 
 ---
 
