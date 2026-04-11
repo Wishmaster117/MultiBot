@@ -1,7 +1,7 @@
 <img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/3ac43983-8767-4dd6-9a17-4548ede1e9d3" />
 
 # Breaking News
-Work on porting MultiBot to ACE3 has started! You can test it by grabbing the https://github.com/Wishmaster117/MultiBot/tree/feature/ace3-migration branch. It’s about 80% complete, so the addon is still running in a hybrid mode, but we’re already seeing noticeable gains in smoothness.
+Work on porting MultiBot to ACE3 has started! You can test it by grabbing the https://github.com/Wishmaster117/MultiBot/tree/feature/ace3-migration branch. It’s about 90% complete, so the addon is still running in a hybrid mode, but we’re already seeing noticeable gains in smoothness.
 Branch updates are made incrementally as I move forward with the project.
 
 # MultiBot
