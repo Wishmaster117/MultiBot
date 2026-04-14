@@ -122,13 +122,15 @@ local function getDisplayableUnits(unitsFrame, sourceTable)
     return display
 end
 
-local function layoutVisibleUnits(unitsButton, unitsFrame, display, fromIndex, toIndex)
-    local visibleCount = 0
-    local startIndex = fromIndex or 1
-    local endIndex = toIndex or 0
+local function hideTrackedVisibleUnits(unitsButton, unitsFrame)
+    local visibleNames = unitsButton and unitsButton._visibleNames
+    if type(visibleNames) ~= "table" then
+        unitsButton._visibleNames = {}
+        return
+    end
 
-    for index = 1, #display do
-        local name = display[index]
+    for index = 1, #visibleNames do
+        local name = visibleNames[index]
         local unitButton = name and unitsFrame.buttons[name]
         local unitFrame = name and unitsFrame.frames[name]
         if unitFrame then
@@ -138,6 +140,16 @@ local function layoutVisibleUnits(unitsButton, unitsFrame, display, fromIndex, t
             unitButton:Hide()
         end
     end
+
+    unitsButton._visibleNames = {}
+end
+
+local function layoutVisibleUnits(unitsButton, unitsFrame, display, fromIndex, toIndex)
+    local visibleCount = 0
+    local startIndex = fromIndex or 1
+    local endIndex = toIndex or 0
+
+    local newVisible = {}
 
     for index = startIndex, endIndex do
         local name = display[index]
@@ -153,12 +165,14 @@ local function layoutVisibleUnits(unitsButton, unitsFrame, display, fromIndex, t
                 unitFrame:Show()
             end
             unitButton:Show()
+            table.insert(newVisible, name)			
         end
     end
 
     unitsButton.from = startIndex
     unitsButton.to = endIndex
     unitsFrame.frames.Control.setPoint(-2, (unitsFrame.size + 2) * visibleCount)
+    unitsButton._visibleNames = newVisible	
 end
 
 local function refreshUnitsDisplay(unitsButton, requestedRoster, requestedFilter)
@@ -206,6 +220,7 @@ local function refreshUnitsDisplay(unitsButton, requestedRoster, requestedFilter
     unitsButton.to = UNITS_PAGE_SIZE
 
     local toIndex = math.min(unitsButton.limit, UNITS_PAGE_SIZE)
+    hideTrackedVisibleUnits(unitsButton, unitsFrame)	
     layoutVisibleUnits(unitsButton, unitsFrame, display, 1, toIndex)
 
     if unitsButton.limit < UNITS_PAGE_SIZE + 1 then
@@ -616,6 +631,7 @@ local function createBrowseButton(controlFrame)
             end
 
             local display = getDisplayableUnits(unitsFrame, sourceTable)
+            hideTrackedVisibleUnits(unitsButton, unitsFrame)			
             layoutVisibleUnits(unitsButton, unitsFrame, display, fromIndex, math.min(toIndex, #display))
         end
 end

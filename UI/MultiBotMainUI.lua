@@ -145,8 +145,21 @@ local function refreshLeftLayout()
         else
             leftRoot.buttons["ExpandFollow"]:Hide()
             leftRoot.buttons["ExpandStay"]:Hide()
-            leftRoot.buttons["Follow"]:Show()
-            leftRoot.buttons["Stay"]:Show()
+
+            local followButton = leftRoot.buttons["Follow"]
+            local stayButton = leftRoot.buttons["Stay"]
+            local followShown = followButton and followButton:IsShown()
+            local stayShown = stayButton and stayButton:IsShown()
+
+            -- Garder Follow/Stay mutuellement exclusifs en layout collapsed.
+            -- On préserve l'état courant; en cas d'état ambigu, on retombe sur Stay visible.
+            if followShown and not stayShown then
+                followButton:Show()
+                stayButton:Hide()
+            else
+                stayButton:Show()
+                followButton:Hide()
+            end
         end
     end)
 end
@@ -362,6 +375,8 @@ local function isMouseOverFrameNode(node)
     return false
 end
 
+local syncMainBarDetectorPosition
+
 local function hideMainBarForAutoHide(state)
     if state.hidden then
         return
@@ -370,6 +385,10 @@ local function hideMainBarForAutoHide(state)
     local multiBar = state.multiBar
     if not multiBar then
         return
+    end
+
+    if syncMainBarDetectorPosition then
+        syncMainBarDetectorPosition(state)
     end
 
     multiBar:Hide()
@@ -400,7 +419,7 @@ local function markMainBarInteraction(state)
     showMainBarFromAutoHide(state)
 end
 
-local function syncMainBarDetectorPosition(state)
+syncMainBarDetectorPosition = function(state)
     local detector = state and state.detector
     local multiBar = state and state.multiBar
     if not detector or not multiBar then
@@ -502,6 +521,31 @@ function MultiBot.InitializeMainUI(tMultiBar)
     detector:EnableMouse(true)
     detector:Hide()
     autoHideState.detector = detector
+
+    -- Resync hotspot on every programmatic bar move (layout restore, RTSC restore, reset coords, etc.).
+    if autoHideState.multiBar
+        and type(autoHideState.multiBar.setPoint) == "function"
+        and not autoHideState.multiBar.__mbAutoHideSetPointHooked
+    then
+        local originalSetPoint = autoHideState.multiBar.setPoint
+        autoHideState.multiBar.setPoint = function(...)
+            originalSetPoint(...)
+            syncMainBarDetectorPosition(autoHideState)
+            markMainBarInteraction(autoHideState)
+        end
+        autoHideState.multiBar.__mbAutoHideSetPointHooked = true
+    end
+
+    -- If hidden/shown by external paths, keep detector aligned.
+    if autoHideState.multiBar
+        and autoHideState.multiBar.HookScript
+        and not autoHideState.multiBar.__mbAutoHideOnHideHooked
+    then
+        autoHideState.multiBar:HookScript("OnHide", function()
+            syncMainBarDetectorPosition(autoHideState)
+        end)
+        autoHideState.multiBar.__mbAutoHideOnHideHooked = true
+    end
 
     detector:SetScript("OnEnter", function()
         markMainBarInteraction(autoHideState)

@@ -32,6 +32,19 @@ local function clearTableInPlace(tbl)
     end
 end
 
+local function resetQuestResultFrame(frame, loadingText)
+    if type(frame) ~= "table" then
+        return
+    end
+
+    if frame.scroll and frame.scroll.ReleaseChildren then
+        frame.scroll:ReleaseChildren()
+    end
+    if frame.summary and frame.summary.SetText then
+        frame.summary:SetText(loadingText or "")
+    end
+end
+
 local function getTargetBotOrError()
     local botName = UnitName("target")
     if botName and UnitIsPlayer("target") then
@@ -118,6 +131,7 @@ local function sendIncomplete(method)
         MultiBot._lastIncWhisperBot = bot
         ensureRuntimeTable("_awaitingQuestsIncompleted")[bot] = true
         ensureRuntimeTable("BotQuestsIncompleted")[bot] = {}
+        resetQuestResultFrame(frame, MultiBot.L("tips.quests.incomplist") or "")		
         MultiBot.ActionToTarget("quests incompleted", bot)
         frame:Show()
         MultiBot.TimerAfter(0.5, function()
@@ -129,6 +143,7 @@ local function sendIncomplete(method)
     end
 
     clearTableInPlace(ensureRuntimeTable("BotQuestsIncompleted"))
+    resetQuestResultFrame(frame, MultiBot.L("tips.quests.incomplist") or "")	
     MultiBot.ActionToGroup("quests incompleted")
     frame:Show()
 end
@@ -151,6 +166,7 @@ local function sendCompleted(method)
         MultiBot._lastCompWhisperBot = bot
         ensureRuntimeTable("_awaitingQuestsCompleted")[bot] = true
         ensureRuntimeTable("BotQuestsCompleted")[bot] = {}
+        resetQuestResultFrame(frame, MultiBot.L("tips.quests.complist") or "")		
         MultiBot.ActionToTarget("quests completed", bot)
         frame:Show()
         MultiBot.TimerAfter(0.5, function()
@@ -162,6 +178,7 @@ local function sendCompleted(method)
     end
 
     clearTableInPlace(ensureRuntimeTable("BotQuestsCompleted"))
+    resetQuestResultFrame(frame, MultiBot.L("tips.quests.complist") or "")	
     MultiBot.ActionToGroup("quests completed")
     frame:Show()
 end
@@ -215,8 +232,8 @@ function MultiBot.InitializeQuestsMenu(tRight)
     MultiBot.InitializeQuestIncompleteFrame()
     MultiBot.InitializeQuestCompletedFrame()
     MultiBot.InitializeQuestAllFrame()
-    if MultiBot.InitializeGameObjectResultsFrame then MultiBot.InitializeGameObjectResultsFrame() end
-    if MultiBot.InitializeGameObjectCopyFrame then MultiBot.InitializeGameObjectCopyFrame() end
+    --if MultiBot.InitializeGameObjectResultsFrame then MultiBot.InitializeGameObjectResultsFrame() end
+    --if MultiBot.InitializeGameObjectCopyFrame then MultiBot.InitializeGameObjectCopyFrame() end
 
     local button = tRight.addButton("Quests Menu", 0, 0, "achievement_quests_completed_06", MultiBot.L("tips.quests.main"))
     local menu = tRight.addFrame("QuestMenu", -2, 64)
