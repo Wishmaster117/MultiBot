@@ -45,7 +45,7 @@ function MultiBot.Throttle_Init()
   f:Show()
   f:SetScript("OnUpdate", function(_, dt)
     perfCount("throttle.onupdate.calls")
-    perfDuration("throttle.onupdate.elapsed", tonumber(dt) or 0)  
+    perfDuration("throttle.onupdate.elapsed", tonumber(dt) or 0)
     tokens = math.min(BURST, tokens + RATE_PER_SEC * dt)
     while tokens >= 1 and #queue > 0 do
       local item = table.remove(queue, 1)

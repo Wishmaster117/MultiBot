@@ -169,7 +169,7 @@ function Debug.Toggle(subsystem)
   end
 
   local flags = ensureFlagsStore()
-  local nextValue = not (flags[normalized] == true)
+  local nextValue = flags[normalized] ~= true
   flags[normalized] = nextValue
 
   if normalized == "core" then

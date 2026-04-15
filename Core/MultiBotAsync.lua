@@ -33,7 +33,7 @@ if type(sharedTimerAfter) ~= "function" then
     end
 
     sharedTimerAfter = function(delay, callback)
-        perfCount("scheduler.timerafter.calls")	
+        perfCount("scheduler.timerafter.calls")
         if type(callback) ~= "function" then
             return nil
         end
