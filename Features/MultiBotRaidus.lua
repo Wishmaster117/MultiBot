@@ -541,7 +541,7 @@ local function playRaidusDropPulse(slotFrame)
     driver.elapsed = 0
     driver:Show()
     -- M11 ownership: keep this OnUpdate local.
-    -- Reason: pulse scale animation is frame-driven and intentionally not timer-based.	
+    -- Reason: pulse scale animation is frame-driven and intentionally not timer-based.
     driver:SetScript("OnUpdate", function(self, elapsed)
         self.elapsed = self.elapsed + elapsed
         local progress = self.elapsed / RAIDUS_DROP_ANIM_DURATION

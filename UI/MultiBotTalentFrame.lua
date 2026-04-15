@@ -1922,7 +1922,7 @@ function MultiBot.InitializeTalentFrameModule()
             end,
             resolveTalent = MultiBot.talent.buildActiveTalentsResolver(activeGroup),
             onSuccess = function()
-                MultiBot.talent.__talentsTabApplyMode = MultiBot.talent.hasUnspentTalentPoints() and "apply" or "copy"	
+                MultiBot.talent.__talentsTabApplyMode = MultiBot.talent.hasUnspentTalentPoints() and "apply" or "copy"
                 MultiBot.talent.activateTalentsTabContext()
 			MultiBot.auto.talent = false
             end,
