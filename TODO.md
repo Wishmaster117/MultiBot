@@ -13,3 +13,71 @@ TODO
 * pourquoi les glyphes sont longues a afficher?
 * implémenter RTI
 * trouver un moyen de charger tous les skins des pets hunter
+* tester nouvelle commande /mbdebug : "[MB] Usage: /mbdebug list | /mbdebug on <subsystem> | /mbdebug off <subsystem> | /mbdebug toggle <subsystem> | /mbdebug all on|off | /mbdebug counters [reset]"
+
+Comment tester en jeu (plan concret)
+1) Préparer une baseline (debug OFF)
+Recharge l’UI (/reload).
+
+Vérifie que tout est OFF:
+
+/mbdebug list → perf=off attendu.
+
+Joue 2-3 minutes normalement (ouvrir/fermer UI, inviter bots, quelques whispers bots).
+
+2) Activer la collecte perf
+Active seulement la perf:
+
+/mbdebug on perf
+
+Remets les compteurs à zéro:
+
+/mbdebug counters reset
+
+3) Exécuter les scénarios ciblés M12-2
+Cycle événementiel/roster
+
+Ouvre MultiBot, fais un refresh de roster, invite/retire 2-3 bots.
+
+Whisper flow
+
+Déclenche des commandes whisper classiques (stats, co ?, etc.) via flux normal addon.
+
+Scheduler
+
+Ouvre/ferme des écrans qui déclenchent des TimerAfter/NextTick (inventory/reward/spellbook selon ton flow habituel).
+
+Throttle
+
+Lance plusieurs commandes successives pour remplir la queue (ex: actions groupées sur bots).
+
+4) Lire les compteurs
+/mbdebug counters
+
+Tu dois voir évoluer des clés de ce type:
+
+events.total, events.chat_msg_whisper
+
+handler.onupdate.calls, handler.onupdate.elapsed
+
+scheduler.timerafter.calls, scheduler.nexttick.calls
+
+throttle.enqueued, throttle.sent, throttle.onupdate.calls
+
+5) Vérifs de non-régression
+Désactive perf:
+
+/mbdebug off perf
+
+Rejoue rapidement les mêmes actions.
+
+Vérifie:
+
+pas de spam chat supplémentaire,
+
+pas de comportement différent côté gameplay/UI,
+
+pas de latence perceptible nouvelle.
+
+6) Reset pour itération suivante
+/mbdebug counters reset

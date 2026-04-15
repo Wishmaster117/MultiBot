@@ -1285,13 +1285,35 @@ local function MB_tostring(v)
   return tostring(v)
 end
 function MultiBot.dprint(...)
-  if not MultiBot.debug then return end
+  local debugApi = MultiBot.Debug
+  if type(debugApi) == "table" and type(debugApi.IsEnabled) == "function" then
+    if not debugApi.IsEnabled("core") then
+      return
+    end
+    MultiBot.debug = true
+  elseif not MultiBot.debug then
+    return
+  end
+
   local parts = {}
   for i=1,select("#", ...) do
     parts[#parts+1] = MB_tostring(select(i, ...))
   end
+
+  local message = "|cffff7f00[MultiBot]|r " .. table.concat(parts, " ")
+  if type(debugApi) == "table" and type(debugApi.PrintRateLimited) == "function" then
+    local rateKey = "core.dprint." .. string.lower(tostring(select(1, ...) or "generic"))
+    debugApi.PrintRateLimited(rateKey, 0.2, "core", message)
+    return
+  end
+
+  if type(debugApi) == "table" and type(debugApi.Print) == "function" then
+    debugApi.Print("core", message)
+    return
+  end
+
   if DEFAULT_CHAT_FRAME and DEFAULT_CHAT_FRAME.AddMessage then
-    DEFAULT_CHAT_FRAME:AddMessage("|cffff7f00[MultiBot]|r ".. table.concat(parts, " "))
+    DEFAULT_CHAT_FRAME:AddMessage(message)
   else
     print("[MultiBot] ".. table.concat(parts, " "))
   end
