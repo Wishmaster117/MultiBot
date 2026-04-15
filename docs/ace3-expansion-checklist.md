@@ -63,10 +63,13 @@ Checklist for the full addon-wide ACE3 expansion after M7 completion.
 
 ## Milestone 12 — Observability and perf guardrails
 
-- [ ] Add subsystem debug toggles (off by default).
-- [ ] Add lightweight counters around high-frequency handlers.
-- [ ] Ensure diagnostics do not spam chat/log by default.
-- [ ] Validate no notable overhead in normal mode.
+- Tracker détaillé: `docs/milestone12-observability-perf-tracker.md`.
+- Mode d'emploi debug: `docs/m12-debug-mode-emploi.md`.
+
+- [x] Add subsystem debug toggles (off by default). *(PR-M12-1: `MultiBot.Debug` flags + `/mbdebug` command control.)*
+- [x] Add lightweight counters around high-frequency handlers. *(PR-M12-2: counters `events/handler/scheduler/throttle` gated by `perf`.)*
+- [x] Ensure diagnostics do not spam chat/log by default. *(PR-M12-3: `PrintRateLimited` + `dprint` throttlé par clé.)*
+- [x] Validate no notable overhead in normal mode. *(PR-M12-4: baseline/debug OFF protocol + validation manuelle.)*
 
 ## Milestone 13 — Release hardening and fallback closure
 

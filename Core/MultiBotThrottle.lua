@@ -10,6 +10,24 @@ end
 function MultiBot.Throttle_Init()
   if MultiBot._throttleInited then return end
 
+  local function perfCount(counterName, delta)
+    local debugApi = MultiBot and MultiBot.Debug
+    if type(debugApi) ~= "table" or type(debugApi.IncrementCounter) ~= "function" or type(debugApi.IsPerfEnabled) ~= "function" or not debugApi.IsPerfEnabled() then
+      return
+    end
+
+    debugApi.IncrementCounter(counterName, delta)
+  end
+
+  local function perfDuration(counterName, elapsed)
+    local debugApi = MultiBot and MultiBot.Debug
+    if type(debugApi) ~= "table" or type(debugApi.AddDuration) ~= "function" or type(debugApi.IsPerfEnabled) ~= "function" or not debugApi.IsPerfEnabled() then
+      return
+    end
+
+    debugApi.AddDuration(counterName, elapsed)
+  end
+
   local orig_SendChatMessage = SendChatMessage
 
   -- Read configured throttle values through centralized config helpers.
@@ -26,11 +44,14 @@ function MultiBot.Throttle_Init()
   local f = CreateFrame("Frame")
   f:Show()
   f:SetScript("OnUpdate", function(_, dt)
+    perfCount("throttle.onupdate.calls")
+    perfDuration("throttle.onupdate.elapsed", tonumber(dt) or 0)
     tokens = math.min(BURST, tokens + RATE_PER_SEC * dt)
     while tokens >= 1 and #queue > 0 do
       local item = table.remove(queue, 1)
       -- IMPORTANT: passer la borne haute à unpack (Lua 5.1)
       orig_SendChatMessage(unpack(item.args, 1, item.args.n))
+      perfCount("throttle.sent")
       tokens = tokens - 1
 
       -- Debug optionnel: ne log que les messages de test [MB_TEST]
@@ -45,6 +66,8 @@ function MultiBot.Throttle_Init()
   -- Surcharge globale (enfile tous les envois)
   SendChatMessage = function(msg, chatType, language, target)
     queue[#queue+1] = { args = pack(msg, chatType, language, target) }
+    perfCount("throttle.enqueued")
+    perfCount("throttle.queue.size_total", #queue)
   end
 
   -- API interne pour MAJ live depuis les sliders

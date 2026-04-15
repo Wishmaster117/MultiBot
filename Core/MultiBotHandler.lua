@@ -2,7 +2,27 @@
 -- M11 ownership: keep this OnUpdate local.
 -- Reason: automation core hot path (invite/talent/stats/sort) depends on frame-level cadence.
 
+local function perfCount(counterName, delta)
+	local debugApi = MultiBot and MultiBot.Debug
+	if type(debugApi) ~= "table" or type(debugApi.IncrementCounter) ~= "function" or type(debugApi.IsPerfEnabled) ~= "function" or not debugApi.IsPerfEnabled() then
+		return
+	end
+
+	debugApi.IncrementCounter(counterName, delta)
+end
+
+local function perfDuration(counterName, elapsed)
+	local debugApi = MultiBot and MultiBot.Debug
+	if type(debugApi) ~= "table" or type(debugApi.AddDuration) ~= "function" or type(debugApi.IsPerfEnabled) ~= "function" or not debugApi.IsPerfEnabled() then
+		return
+	end
+
+	debugApi.AddDuration(counterName, elapsed)
+end
+
 function MultiBot.HandleOnUpdate(pElapsed)
+	perfCount("handler.onupdate.calls")
+	perfDuration("handler.onupdate.elapsed", tonumber(pElapsed) or 0)
 	if(MultiBot.auto.invite) then MultiBot.timer.invite.elapsed = MultiBot.timer.invite.elapsed + pElapsed end
 	if(MultiBot.auto.talent) then MultiBot.timer.talent.elapsed = MultiBot.timer.talent.elapsed + pElapsed end
 	if(MultiBot.auto.stats) then MultiBot.timer.stats.elapsed = MultiBot.timer.stats.elapsed + pElapsed end
@@ -1198,6 +1218,10 @@ end
 
 function MultiBot.HandleMultiBotEvent(event, ...)
 	local arg1, arg2 = ...
+	perfCount("events.total")
+	if type(event) == "string" then
+		perfCount("events." .. string.lower(event))
+	end
 	if(event == "PLAYER_LOGOUT") then
 		saveBoundFramePoints()
 		savePortalMemory()
@@ -1610,6 +1634,7 @@ function MultiBot.HandleMultiBotEvent(event, ...)
 
 	-- CHAT:WHISPER --
 	if(event == "CHAT_MSG_WHISPER") then
+		perfCount("events.chat_msg_whisper")
 
 		-- Glyphs start
 		local rawMsg, author = arg1, arg2
@@ -2240,6 +2265,107 @@ local function MainBarLayoutResetCommand()
   printToChat("[MB] Reset layout échoué.")
 end
 
+local function normalizeDebugToken(value)
+  if type(value) ~= "string" then
+    return nil
+  end
+
+  local cleaned = value:lower():gsub("^%s+", ""):gsub("%s+$", "")
+  if cleaned == "" then
+    return nil
+  end
+
+  return cleaned
+end
+
+local function parseDebugCommandArgs(msg)
+  local action, subsystem = string.match(tostring(msg or ""), "^%s*(%S*)%s*(.-)%s*$")
+  return normalizeDebugToken(action), normalizeDebugToken(subsystem)
+end
+
+local function DebugCommand(msg)
+  local debugApi = MultiBot.Debug
+  if type(debugApi) ~= "table" then
+    printToChat("[MB] Debug API indisponible.")
+    return
+  end
+
+  local action, subsystem = parseDebugCommandArgs(msg)
+  if not action or action == "list" then
+    local text = (type(debugApi.ListFlagsText) == "function") and debugApi.ListFlagsText() or ""
+    printToChat("[MB] Debug flags: " .. (text ~= "" and text or "(none)"))
+    return
+  end
+
+  if action == "all" then
+    if type(debugApi.SetAllEnabled) ~= "function" then
+      printToChat("[MB] Action indisponible: all")
+      return
+    end
+
+    debugApi.SetAllEnabled(subsystem == "on")
+    printToChat("[MB] Debug all => " .. ((subsystem == "on") and "on" or "off"))
+    return
+  end
+
+  if action == "counters" then
+    if type(debugApi.FormatCounters) ~= "function" then
+      printToChat("[MB] Action indisponible: counters")
+      return
+    end
+
+    if subsystem == "reset" and type(debugApi.ResetCounters) == "function" then
+      debugApi.ResetCounters()
+      printToChat("[MB] Compteurs perf réinitialisés.")
+      return
+    end
+
+    printToChat("[MB] Perf counters: " .. debugApi.FormatCounters(25))
+    return
+  end
+
+  if not subsystem then
+    printToChat("[MB] Usage: /mbdebug list | /mbdebug on <subsystem> | /mbdebug off <subsystem> | /mbdebug toggle <subsystem> | /mbdebug all on|off | /mbdebug counters [reset]")
+    return
+  end
+
+  if action == "on" then
+    if debugApi.SetEnabled and debugApi.SetEnabled(subsystem, true) then
+      printToChat("[MB] Debug " .. subsystem .. " => on")
+    else
+      printToChat("[MB] Sous-système invalide: " .. subsystem)
+    end
+    return
+  end
+
+  if action == "off" then
+    if debugApi.SetEnabled and debugApi.SetEnabled(subsystem, false) then
+      printToChat("[MB] Debug " .. subsystem .. " => off")
+    else
+      printToChat("[MB] Sous-système invalide: " .. subsystem)
+    end
+    return
+  end
+
+  if action == "toggle" then
+    if not debugApi.Toggle then
+      printToChat("[MB] Action indisponible: toggle")
+      return
+    end
+
+    local value = debugApi.Toggle(subsystem)
+    if value == nil then
+      printToChat("[MB] Sous-système invalide: " .. subsystem)
+      return
+    end
+
+    printToChat("[MB] Debug " .. subsystem .. " => " .. (value and "on" or "off"))
+    return
+  end
+
+  printToChat("[MB] Action inconnue: " .. action)
+end
+
 local COMMAND_DEFINITIONS = {
   { "MULTIBOT", ToggleMultiBotUI, { "multibot", "mbot", "mb" } },
   { "MBFAKEGM", FakeGMCommand, { "mbfakegm" } },
@@ -2252,6 +2378,7 @@ local COMMAND_DEFINITIONS = {
   { "MBLAYOUTSHOWPAYLOAD", MainBarLayoutShowPayloadCommand, { "mblayoutshowpayload", "mblp" } },
   { "MBLAYOUTDELETE", MainBarLayoutDeleteCommand, { "mblayoutdelete", "mbldel" } },
   { "MBLAYOUTRESET", MainBarLayoutResetCommand, { "mblayoutreset", "mblreset" } },
+  { "MBDEBUG", DebugCommand, { "mbdebug" } },
 }
 
 for _, def in ipairs(COMMAND_DEFINITIONS) do
