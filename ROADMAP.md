@@ -37,8 +37,8 @@
   - Remaining UI literal cleanup is completed for Milestone 9 scope (GM shortcut labels, Raidus group title formatting, shared UI defaults for page/title labels) while preserving technical/protocol identifiers (e.g. internal "Inventory" button/event keys).
 - **Milestone 10 (Data model and table lifecycle hardening):** Completed.
   - Runtime/profile stores are centralized via `MultiBot.Store` with explicit `get*` vs `ensure*` semantics and read-path hardening validated in tracker `docs/milestone10-data-model-lifecycle-tracker.md`.
-- **Milestone 11 (Scheduler/timers convergence):** Planned.
-  - Route scattered timers/OnUpdate loops to a constrained scheduler strategy (AceTimer where appropriate, existing loops retained when safer).
+- **Milestone 11 (Scheduler/timers convergence):** Completed.
+  - Scattered one-shot timers were converged to `MultiBot.TimerAfter` / `MultiBot.NextTick`, while hot-path `OnUpdate` loops were intentionally retained and documented.
 - **Milestone 12 (Observability, diagnostics and perf guardrails):** Planned.
   - Add lightweight debug/perf toggles and migration diagnostics to validate behavior without chat spam.
 - **Milestone 13 (Release hardening and deprecation window close):** Planned.
@@ -143,9 +143,9 @@
 - Store normalization helpers are reused across modules.
 
 ### D4. Milestone 11 — Scheduler/timers convergence
-1. Inventory `OnUpdate`, elapsed counters, delayed whisper/refresh loops.
-2. Migrate safe candidates to a centralized scheduler strategy (AceTimer where applicable).
-3. Keep ultra-hot paths local if conversion adds risk/regression.
+1. Inventory `OnUpdate`, elapsed counters, delayed whisper/refresh loops. ✅
+2. Migrate safe candidates to a centralized scheduler strategy (`MultiBot.TimerAfter` / `MultiBot.NextTick`). ✅
+3. Keep ultra-hot paths local if conversion adds risk/regression. ✅
 
 **Exit criteria**
 - Timer responsibilities are documented and mapped to one owner per feature.

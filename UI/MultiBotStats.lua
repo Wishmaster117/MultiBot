@@ -185,7 +185,7 @@ function MultiBot.InitializeStatsUI()
 	end
 
 	local statsFrame = MultiBot.newFrame(MultiBot, STATS_ROOT_X, STATS_ROOT_Y, STATS_ROOT_SIZE)
-	applySavedStatsPoint(statsFrame)	
+	applySavedStatsPoint(statsFrame)
 	statsFrame:SetMovable(true)
 	statsFrame:Hide()
 

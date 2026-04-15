@@ -90,6 +90,8 @@ do
     highlight:SetAllPoints(button)
 
     button:SetScript("OnDragStart", function(self)
+      -- M11 ownership: keep this OnUpdate local.
+      -- Reason: angle update must follow cursor every frame while dragging.
       self:SetScript("OnUpdate", saveAngleFromCursor)
     end)
 

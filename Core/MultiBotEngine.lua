@@ -881,19 +881,11 @@ MultiBot._clickBlockerQueue = _mbEnsureRuntimeTable("_clickBlockerQueue")
 local function _mbQueueClickBlockerUpdate(f)
 	if(not f or not f.clickBlocker) then return end
 	MultiBot._clickBlockerQueue[f] = true
+	if MultiBot._clickBlockerFlushQueued then return end
+	MultiBot._clickBlockerFlushQueued = true
 
-	if(not MultiBot._clickBlockerTicker) then
-		MultiBot._clickBlockerTicker = CreateFrame("Frame", nil, UIParent)
-		MultiBot._clickBlockerTicker.running = false
-	end
-
-	local t = MultiBot._clickBlockerTicker
-	if(t.running) then return end
-
-	t.running = true
-	t:SetScript("OnUpdate", function(self)
-		self:SetScript("OnUpdate", nil)
-		self.running = false
+	local function flushQueue()
+		MultiBot._clickBlockerFlushQueued = false
 
 		local queue = MultiBot._clickBlockerQueue
 		MultiBot._clickBlockerQueue = {}
@@ -902,7 +894,19 @@ local function _mbQueueClickBlockerUpdate(f)
 				MultiBot.UpdateClickBlocker(frame)
 			end
 		end
-	end)
+	end
+
+	local nextTick = MultiBot.NextTick
+	if type(nextTick) == "function" then
+		nextTick(flushQueue)
+	else
+		local timerAfter = MultiBot.TimerAfter or _G.TimerAfter
+		if type(timerAfter) == "function" then
+			timerAfter(0, flushQueue)
+		else
+			flushQueue()
+		end
+	end
 end
 
 -- Demande une mise à jour pour le frame et tous ses parents MultiBot.newFrame (cascade).

@@ -1922,7 +1922,7 @@ function MultiBot.InitializeTalentFrameModule()
             end,
             resolveTalent = MultiBot.talent.buildActiveTalentsResolver(activeGroup),
             onSuccess = function()
-                MultiBot.talent.__talentsTabApplyMode = MultiBot.talent.hasUnspentTalentPoints() and "apply" or "copy"			
+                MultiBot.talent.__talentsTabApplyMode = MultiBot.talent.hasUnspentTalentPoints() and "apply" or "copy"
                 MultiBot.talent.activateTalentsTabContext()
 			MultiBot.auto.talent = false
             end,
@@ -1947,8 +1947,8 @@ function MultiBot.InitializeTalentFrameModule()
     end
 
     MultiBot.talent.setTalents = function()
-        MultiBot.talent.__talentsTabApplyMode = nil	
-        MultiBot.talent.__talentsApplyPending = false	
+        MultiBot.talent.__talentsTabApplyMode = nil
+        MultiBot.talent.__talentsApplyPending = false
         MultiBot.talent.renderTalentBuild(MultiBot.talent.getTalentsBuildOptions())
     end
 
@@ -2401,7 +2401,7 @@ function MultiBot.InitializeTalentFrameModule()
         end
 
         MultiBot.talent.refreshApplyTabVisibility()
-        return applied		
+        return applied
     end
 
     function MultiBot.talent.onCopyTabClick()

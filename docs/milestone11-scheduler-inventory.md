@@ -97,6 +97,7 @@ Objectif: établir la cartographie complète des mécanismes temporels avant con
 
 ### PR-M11-1 — Fondations scheduler unifié
 - **But**: verrouiller un point d'entrée unique.
+- **Statut**: ✅ Implémenté le 2026-04-15.
 - **Changements**:
   - Ajouter `MultiBot.NextTick(callback)` dans `Core/MultiBotAsync.lua` (implémenté via `MultiBot.TimerAfter(0, callback)` avec garde `type(callback) == "function"`).
   - Documenter le contrat: `TimerAfter`/`NextTick` sont les seules APIs de délai autorisées.
@@ -106,6 +107,7 @@ Objectif: établir la cartographie complète des mécanismes temporels avant con
 
 ### PR-M11-2 — Suppression des duplications runtime
 - **But**: converger les one-shots historiques runtime.
+- **Statut**: ✅ Implémenté le 2026-04-15.
 - **Changements**:
   - Migrer P11 (`Core/MultiBot.lua`) vers `MultiBot.TimerAfter`.
   - Migrer P9 (`Core/MultiBotEngine.lua`) vers `MultiBot.NextTick`.
@@ -115,6 +117,7 @@ Objectif: établir la cartographie complète des mécanismes temporels avant con
 
 ### PR-M11-3 — Migration safe UI one-shot
 - **But**: retirer les `OnUpdate` temporaires qui ne sont pas des animations continues.
+- **Statut**: ✅ Implémenté le 2026-04-15.
 - **Changements**:
   - Migrer P4 (`Features/MultiBotRaidus.lua`) vers one-shot timer.
   - Migrer P6 (`UI/MultiBotSpecUI.lua`) vers chaînage `TimerAfter`.
@@ -125,6 +128,7 @@ Objectif: établir la cartographie complète des mécanismes temporels avant con
 
 ### PR-M11-4 — Stabilisation hot paths conservés
 - **But**: figer explicitement ce qui reste en `OnUpdate` local.
+- **Statut**: ✅ Implémenté le 2026-04-15.
 - **Changements**:
   - Ajouter commentaires d'ownership et raison de conservation pour P1/P2/P3/P5/P7/P10.
   - Harmoniser constantes d'intervalle/nommage là où pertinent (sans changer les valeurs).
@@ -142,3 +146,15 @@ Objectif: établir la cartographie complète des mécanismes temporels avant con
   1. absence de régression UX (autohide, drag, pulse),
   2. absence de double exécution,
   3. absence de ticker/frame non libéré.
+
+## 9) État de clôture M11
+
+- **Statut global**: ✅ **Terminé** (2026-04-15).
+- **Livré**:
+  - PR-M11-1 (fondations scheduler unifié) ✅
+  - PR-M11-2 (suppression duplications runtime) ✅
+  - PR-M11-3 (migration UI one-shot safe) ✅
+  - PR-M11-4 (stabilisation hot paths conservés) ✅
+- **Décision finale**:
+  - Conserver `OnUpdate` local uniquement pour hot paths / interactions / animations frame-level.
+  - Utiliser `MultiBot.TimerAfter` / `MultiBot.NextTick` pour tous les délais one-shot.

@@ -876,16 +876,19 @@ function HunterQuick:EnsureSearchFrame()
         preview:SetUnit("none")
         preview:ClearModel()
         preview:Show()
-        preview:SetScript("OnUpdate", function(model)
-            model:SetScript("OnUpdate", nil)
-            model:SetModelScale(previewScale)
-            model:SetFacing(previewFacing)
+        MultiBot.TimerAfter(0, function()
+            if not preview:IsShown() or currentEntry ~= entryId then
+                return
+            end
+
+            preview:SetModelScale(previewScale)
+            preview:SetFacing(previewFacing)
 
             local displayNumber = tonumber(displayId)
-            if displayNumber and displayNumber > 0 and type(model.SetDisplayInfo) == "function" then
-                model:SetDisplayInfo(displayNumber)
+            if displayNumber and displayNumber > 0 and type(preview.SetDisplayInfo) == "function" then
+                preview:SetDisplayInfo(displayNumber)
             else
-                model:SetCreature(entryId)
+                preview:SetCreature(entryId)
             end
         end)
     end
