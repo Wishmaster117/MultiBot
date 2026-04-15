@@ -131,7 +131,7 @@ local function sendIncomplete(method)
         MultiBot._lastIncWhisperBot = bot
         ensureRuntimeTable("_awaitingQuestsIncompleted")[bot] = true
         ensureRuntimeTable("BotQuestsIncompleted")[bot] = {}
-        resetQuestResultFrame(frame, MultiBot.L("tips.quests.incomplist") or "")		
+        resetQuestResultFrame(frame, MultiBot.L("tips.quests.incomplist") or "")
         MultiBot.ActionToTarget("quests incompleted", bot)
         frame:Show()
         MultiBot.TimerAfter(0.5, function()
@@ -143,7 +143,7 @@ local function sendIncomplete(method)
     end
 
     clearTableInPlace(ensureRuntimeTable("BotQuestsIncompleted"))
-    resetQuestResultFrame(frame, MultiBot.L("tips.quests.incomplist") or "")	
+    resetQuestResultFrame(frame, MultiBot.L("tips.quests.incomplist") or "")
     MultiBot.ActionToGroup("quests incompleted")
     frame:Show()
 end
@@ -166,7 +166,7 @@ local function sendCompleted(method)
         MultiBot._lastCompWhisperBot = bot
         ensureRuntimeTable("_awaitingQuestsCompleted")[bot] = true
         ensureRuntimeTable("BotQuestsCompleted")[bot] = {}
-        resetQuestResultFrame(frame, MultiBot.L("tips.quests.complist") or "")		
+        resetQuestResultFrame(frame, MultiBot.L("tips.quests.complist") or "")
         MultiBot.ActionToTarget("quests completed", bot)
         frame:Show()
         MultiBot.TimerAfter(0.5, function()
@@ -178,7 +178,7 @@ local function sendCompleted(method)
     end
 
     clearTableInPlace(ensureRuntimeTable("BotQuestsCompleted"))
-    resetQuestResultFrame(frame, MultiBot.L("tips.quests.complist") or "")	
+    resetQuestResultFrame(frame, MultiBot.L("tips.quests.complist") or "")
     MultiBot.ActionToGroup("quests completed")
     frame:Show()
 end

@@ -1198,15 +1198,12 @@ function MultiBot.GM_DetectFromSystem(msg)
     end
     --if MultiBot.RaidPool then MultiBot.RaidPool("player") end
     if MultiBot.RaidPool then
-      -- petit helper timer si absent
-      C_Timer_After = C_Timer_After or function(sec, func)
-        local f, t = CreateFrame("Frame"), 0
-        f:SetScript("OnUpdate", function(_, dt)
-          t = t + dt
-          if t >= sec then f:SetScript("OnUpdate", nil); func() end
-        end)
+      local timerAfter = MultiBot.TimerAfter or _G.TimerAfter
+      if type(timerAfter) == "function" then
+        timerAfter(0.2, function() MultiBot.RaidPool("player") end)
+      else
+        MultiBot.RaidPool("player")
       end
-      C_Timer_After(0.2, function() MultiBot.RaidPool("player") end)
     end
     return true
   end

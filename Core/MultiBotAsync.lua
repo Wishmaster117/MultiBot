@@ -25,6 +25,8 @@ if type(sharedTimerAfter) ~= "function" then
             return C_Timer.After(waitTime, callback)
         end
 
+        -- M11 ownership: keep this fallback OnUpdate local to the scheduler wrapper only.
+        -- Reason: legacy compatibility when C_Timer.After is unavailable.
         local timerFrame = CreateFrame("Frame")
         local elapsed = 0
 
@@ -44,3 +46,13 @@ end
 
 MultiBot.TimerAfter = sharedTimerAfter
 _G.TimerAfter = sharedTimerAfter
+
+-- M11 scheduler contract:
+-- TimerAfter/NextTick are the only delay APIs that should be used outside this file.
+function MultiBot.NextTick(callback)
+    if type(callback) ~= "function" then
+        return nil
+    end
+
+    return sharedTimerAfter(0, callback)
+end

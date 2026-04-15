@@ -57,9 +57,9 @@ Checklist for the full addon-wide ACE3 expansion after M7 completion.
 ## Milestone 11 — Scheduler/timers convergence
 
 - [x] Inventory all `OnUpdate` loops and elapsed timers. *(2026-04-05: cartographie initiale livrée dans `docs/milestone11-scheduler-inventory.md`.)*
-- [ ] Classify each loop (hot path/local, safe-to-centralize, keep-as-is).
-- [ ] Migrate safe loops to a shared scheduler approach.
-- [ ] Remove duplicate periodic loops after parity validation.
+- [x] Classify each loop (hot path/local, safe-to-centralize, keep-as-is).
+- [x] Migrate safe loops to a shared scheduler approach.
+- [x] Remove duplicate one-shot loops after parity validation.
 
 ## Milestone 12 — Observability and perf guardrails
 

@@ -1,4 +1,6 @@
 -- TIMER --
+-- M11 ownership: keep this OnUpdate local.
+-- Reason: automation core hot path (invite/talent/stats/sort) depends on frame-level cadence.
 
 function MultiBot.HandleOnUpdate(pElapsed)
 	if(MultiBot.auto.invite) then MultiBot.timer.invite.elapsed = MultiBot.timer.invite.elapsed + pElapsed end

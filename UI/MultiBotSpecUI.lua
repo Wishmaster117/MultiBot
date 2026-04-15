@@ -282,20 +282,11 @@ function Spec:RequestList(bot, wrapper)
     -- 1) on demande d'abord la spé courante
     SendChatMessage("talents", "WHISPER", nil, bot)
     -- 2) on attend ~0.2s puis on enchaîne sur la liste
-    local t = self._timerFrame or CreateFrame("Frame")
-    self._timerFrame = t
-    t.elapsed = 0
-    t:SetScript("OnUpdate", function(timerFrame, delta)
-        timerFrame.elapsed = timerFrame.elapsed + delta
-        if timerFrame.elapsed >= 0.2 then
-            -- si on est toujours sur le même bot, on demande la liste
-            if Spec.pending and Spec.pending.bot == bot then
-                SendChatMessage("talents spec list", "WHISPER", nil, bot)
-                -- print("|cffffff00[SpecDEBUG]|r Message talents spec list envoyé!!!!!!!!!!!!!!!!!")
-            end
-            -- on désactive l’OnUpdate et reset le timer
-            timerFrame:SetScript("OnUpdate", nil)
-            timerFrame.elapsed = 0
+    MultiBot.TimerAfter(0.2, function()
+        -- si on est toujours sur le même bot, on demande la liste
+        if Spec.pending and Spec.pending.bot == bot then
+            SendChatMessage("talents spec list", "WHISPER", nil, bot)
+            -- print("|cffffff00[SpecDEBUG]|r Message talents spec list envoyé!!!!!!!!!!!!!!!!!")
         end
     end)
 end

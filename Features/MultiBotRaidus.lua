@@ -485,23 +485,17 @@ local RAIDUS_FEEDBACK_ANCHOR = "TOPLEFT"
 local RAIDUS_FEEDBACK_OFFSET_X = 26
 local RAIDUS_FEEDBACK_OFFSET_Y = 14
 
-local raidusFeedbackTimer = CreateFrame("Frame")
-raidusFeedbackTimer:Hide()
-raidusFeedbackTimer.remaining = 0
-raidusFeedbackTimer:SetScript("OnUpdate", function(self, elapsed)
-    self.remaining = self.remaining - elapsed
-    if self.remaining > 0 then
+local raidusFeedbackToken = 0
+local function clearRaidusDropFeedback(token)
+    if token ~= raidusFeedbackToken then
         return
     end
-
     local feedbackText = MultiBot.raidus and MultiBot.raidus.texts and MultiBot.raidus.texts["DropFeedback"]
     if feedbackText then
         feedbackText:SetText("")
         feedbackText:Hide()
     end
-
-    self:Hide()
-end)
+end
 
 local function showRaidusDropFeedback(message)
     if not MultiBot.raidus then
@@ -520,8 +514,16 @@ local function showRaidusDropFeedback(message)
         MultiBot.raidus.addText("DropFeedback", "|cffb8b8b8" .. text .. "|r", RAIDUS_FEEDBACK_ANCHOR, RAIDUS_FEEDBACK_OFFSET_X, RAIDUS_FEEDBACK_OFFSET_Y, 15)
     end
 
-    raidusFeedbackTimer.remaining = RAIDUS_FEEDBACK_DURATION
-    raidusFeedbackTimer:Show()
+    raidusFeedbackToken = raidusFeedbackToken + 1
+    local token = raidusFeedbackToken
+    local timerAfter = MultiBot.TimerAfter or _G.TimerAfter
+    if type(timerAfter) == "function" then
+        timerAfter(RAIDUS_FEEDBACK_DURATION, function()
+            clearRaidusDropFeedback(token)
+        end)
+    else
+        clearRaidusDropFeedback(token)
+    end
 end
 
 local function playRaidusDropPulse(slotFrame)
@@ -538,6 +540,8 @@ local function playRaidusDropPulse(slotFrame)
 
     driver.elapsed = 0
     driver:Show()
+    -- M11 ownership: keep this OnUpdate local.
+    -- Reason: pulse scale animation is frame-driven and intentionally not timer-based.	
     driver:SetScript("OnUpdate", function(self, elapsed)
         self.elapsed = self.elapsed + elapsed
         local progress = self.elapsed / RAIDUS_DROP_ANIM_DURATION

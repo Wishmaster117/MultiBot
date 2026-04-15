@@ -20,6 +20,8 @@ function MultiBot.Throttle_Init()
   local tokens = BURST
   local queue = {}
 
+  -- M11 ownership: keep this OnUpdate local.
+  -- Reason: token-bucket anti-spam requires frame-level refill/flush behavior.
   -- Frame de vidage
   local f = CreateFrame("Frame")
   f:Show()

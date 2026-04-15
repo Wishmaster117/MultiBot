@@ -115,7 +115,7 @@ Inventory of addon UI frame construction points found via `CreateFrame(...)` sca
   File: `Core/MultiBotInit.lua`.
 
 - [-] **Event/timer/dispatch helper frames** (`CreateFrame("Frame")` without visible UI).
-  Files: `Core/MultiBot.lua`, `Core/MultiBotThrottle.lua`, `Core/MultiBotHandler.lua`, `UI/MultiBotSpecUI.lua` (timer frame), `Core/MultiBotInit.lua` (misc helper frame usages).
+  Files: `Core/MultiBotThrottle.lua`, `Core/MultiBotHandler.lua`, `Core/MultiBotAsync.lua` (legacy fallback scheduler), `Core/MultiBotInit.lua` (misc helper frame usages).
 
 - [-] **Engine widget factory primitives** in `Core/MultiBotEngine.lua` (button/check/model constructors for core UI system).
   These are shared low-level primitives and should be migrated only when the owning screen is migrated.

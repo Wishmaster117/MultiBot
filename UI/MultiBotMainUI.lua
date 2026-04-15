@@ -628,6 +628,8 @@ function MultiBot.InitializeMainUI(tMultiBar)
     end)
 
     if autoHideState.multiBar and autoHideState.multiBar.HookScript then
+        -- M11 ownership: keep this OnUpdate local for autohide.
+        -- Reason: hover/mouse interaction needs near real-time polling to preserve UX.	
         autoHideState.multiBar:HookScript("OnUpdate", function(_, elapsed)
             autoHideState.elapsed = autoHideState.elapsed + elapsed
             if autoHideState.elapsed < MAINBAR_AUTOHIDE_UPDATE_INTERVAL then
