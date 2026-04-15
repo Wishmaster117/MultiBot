@@ -664,9 +664,16 @@ function MultiBot.InitializeTalentFrameModule()
         return (tonumber(MultiBot.talent.points) or 0) > 0
     end
 
+    function MultiBot.talent.hasPendingTalentsApplyChange()
+        return MultiBot.talent.__talentsApplyPending == true
+    end
+
     function MultiBot.talent.hasTalentsApplySelection()
         return MultiBot.talent.getActiveTabState() == MultiBot.TalentTabStates.TALENTS
-            and MultiBot.talent.hasUnspentTalentPoints()
+            and (
+                MultiBot.talent.hasUnspentTalentPoints()
+                or MultiBot.talent.hasPendingTalentsApplyChange()
+            )
     end
 
     function MultiBot.talent.isTalentEditingEnabledForCurrentTab()
@@ -752,7 +759,24 @@ function MultiBot.InitializeTalentFrameModule()
             return
         end
 
-        local shouldShow = MultiBot.talent.canApplySelectionForState(MultiBot.talent.getActiveTabState())
+        local activeState = MultiBot.talent.getActiveTabState()
+        if activeState == MultiBot.TalentTabStates.TALENTS then
+            if MultiBot.talent.__talentsTabApplyMode == nil then
+                MultiBot.talent.__talentsTabApplyMode = MultiBot.talent.hasUnspentTalentPoints() and "apply" or "copy"
+            end
+
+            if MultiBot.talent.__talentsTabApplyMode == "apply" then
+                MultiBot.talent.setCopyTabMode(false, false)
+                MultiBot.talent.applyTabBtn.doShow()
+                MultiBot.talent.setBottomTabVisualState(MultiBot.TalentTabKeys.APPLY, true, MultiBot.TalentTabLabels.APPLY)
+            else
+                MultiBot.talent.setCopyTabMode(true, true)
+                MultiBot.talent.applyTabBtn.doHide()
+            end
+            return
+        end
+
+        local shouldShow = MultiBot.talent.canApplySelectionForState(activeState)
         if shouldShow then
             MultiBot.talent.applyTabBtn.doShow()
             MultiBot.talent.setBottomTabVisualState(MultiBot.TalentTabKeys.APPLY, true, MultiBot.TalentTabLabels.APPLY)
@@ -1617,6 +1641,9 @@ function MultiBot.InitializeTalentFrameModule()
         MultiBot.talent.updateTalentPoints(-1)
         MultiBot.talent.applyTalentRankDelta(pButton, tTab, 1)
 
+        if MultiBot.talent.getActiveTabState() == MultiBot.TalentTabStates.TALENTS then
+            MultiBot.talent.__talentsApplyPending = true
+        end
         MultiBot.talent.updateTalentValueFrame(pButton, tValue, false)
         MultiBot.talent.setTalentValueVisibility(tValue, true)
 
@@ -1642,6 +1669,9 @@ function MultiBot.InitializeTalentFrameModule()
         MultiBot.talent.updateTalentPoints(1)
         MultiBot.talent.applyTalentRankDelta(pButton, tTab, -1)
 
+        if MultiBot.talent.getActiveTabState() == MultiBot.TalentTabStates.TALENTS then
+            MultiBot.talent.__talentsApplyPending = true
+        end
         MultiBot.talent.updateTalentValueFrame(pButton, tValue, true)
         local shouldShowValue = not (MultiBot.talent.points == 0 and pButton.value == 0)
         MultiBot.talent.setTalentValueVisibility(tValue, shouldShowValue)
@@ -1892,8 +1922,9 @@ function MultiBot.InitializeTalentFrameModule()
             end,
             resolveTalent = MultiBot.talent.buildActiveTalentsResolver(activeGroup),
             onSuccess = function()
+                MultiBot.talent.__talentsTabApplyMode = MultiBot.talent.hasUnspentTalentPoints() and "apply" or "copy"			
                 MultiBot.talent.activateTalentsTabContext()
-		MultiBot.auto.talent = false
+			MultiBot.auto.talent = false
             end,
         })
     end
@@ -1916,6 +1947,8 @@ function MultiBot.InitializeTalentFrameModule()
     end
 
     MultiBot.talent.setTalents = function()
+        MultiBot.talent.__talentsTabApplyMode = nil	
+        MultiBot.talent.__talentsApplyPending = false	
         MultiBot.talent.renderTalentBuild(MultiBot.talent.getTalentsBuildOptions())
     end
 
@@ -2361,8 +2394,14 @@ function MultiBot.InitializeTalentFrameModule()
     end
 
     function MultiBot.talent.runApplyTabAction()
-        MultiBot.talent.applyActiveTabSelection()
+        local activeState = MultiBot.talent.getActiveTabState()
+        local applied = MultiBot.talent.applyActiveTabSelection()
+        if applied and activeState == MultiBot.TalentTabStates.TALENTS then
+            MultiBot.talent.__talentsApplyPending = false
+        end
+
         MultiBot.talent.refreshApplyTabVisibility()
+        return applied		
     end
 
     function MultiBot.talent.onCopyTabClick()

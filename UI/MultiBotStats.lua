@@ -1,3 +1,22 @@
+local function applySavedStatsPoint(frame)
+	if not frame then
+		return
+	end
+
+	local savedPoint = MultiBot.GetSavedLayoutValue and MultiBot.GetSavedLayoutValue("StatsPoint") or nil
+	if type(savedPoint) ~= "string" or savedPoint == "" then
+		return
+	end
+
+	local pointX, pointY = string.match(savedPoint, "^%s*(-?%d+)%s*,%s*(-?%d+)%s*$")
+	pointX = tonumber(pointX)
+	pointY = tonumber(pointY)
+	if pointX and pointY then
+		frame:ClearAllPoints()
+		frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", pointX, pointY)
+	end
+end
+
 local function shortLabel(key, fallback)
 	return MultiBot.L("info.shorts." .. key, fallback)
 end
@@ -166,8 +185,10 @@ function MultiBot.InitializeStatsUI()
 	end
 
 	local statsFrame = MultiBot.newFrame(MultiBot, STATS_ROOT_X, STATS_ROOT_Y, STATS_ROOT_SIZE)
+	applySavedStatsPoint(statsFrame)	
 	statsFrame:SetMovable(true)
 	statsFrame:Hide()
+
 	statsFrame.movButton("Move", STATS_MOVE_BUTTON_X, STATS_MOVE_BUTTON_Y, STATS_MOVE_BUTTON_WIDTH, MultiBot.L("tips.move.stats"))
 
 	for _, slot in ipairs(STATS_PARTY_SLOTS) do
