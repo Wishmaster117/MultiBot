@@ -112,3 +112,17 @@ Ce milestone ne change pas le gameplay: il ajoute des **outils de visibilité** 
 ### Décisions
 - 2026-04-15 — Prioriser des primitives centralisées avant toute instrumentation dispersée.
 - 2026-04-15 — Conserver un fallback rétrocompatible (`MultiBot.debug`) mais aligner la source de vérité sur les flags `MultiBot.Debug`.
+
+
+## 9) État de clôture M12
+
+- **Statut global**: ✅ **Terminé** (2026-04-15).
+- **Livré**:
+  - PR-M12-1 (fondation observabilité) ✅
+  - PR-M12-2 (compteurs perf légers) ✅
+  - PR-M12-3 (gating anti-spam + hygiène runtime) ✅
+  - PR-M12-4 (validation finale + mode d'emploi) ✅
+- **Documentation associée**:
+  - `docs/m12-debug-mode-emploi.md`
+  - `docs/ace3-expansion-checklist.md`
+  - `ROADMAP.md` (D5 statut complété)

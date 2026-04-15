@@ -63,6 +63,7 @@ Checklist for the full addon-wide ACE3 expansion after M7 completion.
 
 ## Milestone 12 — Observability and perf guardrails
 
+- Statut: ✅ Completed (2026-04-15).
 - Tracker détaillé: `docs/milestone12-observability-perf-tracker.md`.
 - Mode d'emploi debug: `docs/m12-debug-mode-emploi.md`.
 

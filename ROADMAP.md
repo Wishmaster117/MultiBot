@@ -39,8 +39,8 @@
   - Runtime/profile stores are centralized via `MultiBot.Store` with explicit `get*` vs `ensure*` semantics and read-path hardening validated in tracker `docs/milestone10-data-model-lifecycle-tracker.md`.
 - **Milestone 11 (Scheduler/timers convergence):** Completed.
   - Scattered one-shot timers were converged to `MultiBot.TimerAfter` / `MultiBot.NextTick`, while hot-path `OnUpdate` loops were intentionally retained and documented.
-- **Milestone 12 (Observability, diagnostics and perf guardrails):** Planned.
-  - Add lightweight debug/perf toggles and migration diagnostics to validate behavior without chat spam.
+- **Milestone 12 (Observability, diagnostics and perf guardrails):** Completed.
+  - Structured debug toggles, lightweight perf counters, anti-spam diagnostics gating, and operator documentation are completed (`Core/MultiBotDebug.lua`, `/mbdebug`, `docs/milestone12-observability-perf-tracker.md`, `docs/m12-debug-mode-emploi.md`).
 - **Milestone 13 (Release hardening and deprecation window close):** Planned.
   - Close migration fallback window, document upgrade path, and freeze compatibility guarantees for release.
 
@@ -152,13 +152,18 @@
 - Duplicate periodic loops are reduced without behavior drift.
 
 ### D5. Milestone 12 — Observability and performance guardrails
-1. Add structured debug toggles (off by default) for migration/state transitions.
-2. Add lightweight perf counters around roster refresh and high-frequency handlers.
-3. Gate diagnostics to avoid chat spam and runtime overhead in normal mode.
+1. Add structured debug toggles (off by default) for migration/state transitions. ✅
+2. Add lightweight perf counters around roster refresh and high-frequency handlers. ✅
+3. Gate diagnostics to avoid chat spam and runtime overhead in normal mode. ✅
 
 **Exit criteria**
-- Debug instrumentation can be enabled per subsystem.
-- No measurable baseline degradation with diagnostics disabled.
+- Debug instrumentation can be enabled per subsystem. ✅
+- No measurable baseline degradation with diagnostics disabled. ✅
+
+**Status**
+- Milestone 12 completed on 2026-04-15.
+- Implementation/validation tracking: `docs/milestone12-observability-perf-tracker.md`.
+- Operator guide: `docs/m12-debug-mode-emploi.md`.
 
 ### D6. Milestone 13 — Release hardening and migration window close
 1. Define deprecation policy for remaining legacy fallback paths.
