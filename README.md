@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚠️ MultiBot-Standalone is Deprecated ⚠️
+# ⚠️ MultiBot is Deprecated ⚠️
 
 ### This repository is no longer the recommended installation source.
 
