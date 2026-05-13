@@ -129,6 +129,9 @@ MultiBot:SetScript("OnEvent", function()
 			local tPoint = MultiBot.doSplit(MultiBotSave["MultiBarPoint"], ", ")
 			MultiBot.frames["MultiBar"].setPoint(tonumber(tPoint[1]), tonumber(tPoint[2]))
 		end]]--
+	if(event == "ADDON_LOADED" and arg1 == "Masque") then
+		if MultiBot.InitializeMasque then MultiBot.InitializeMasque() end
+	end
     if(event == "ADDON_LOADED" and arg1 == "MultiBot") then
 	-- print("MultiBot: ADDON_LOADED fired")
 	-- print("BuildOptionsPanel type:", type(MultiBot.BuildOptionsPanel))
@@ -136,6 +139,9 @@ MultiBot:SetScript("OnEvent", function()
         -- Initialize Favorites (per-character) and build first index
         if MultiBot.EnsureFavorites then MultiBot.EnsureFavorites() end
         if MultiBot.UpdateFavoritesIndex then MultiBot.UpdateFavoritesIndex() end
+
+        -- Initialize Masque support
+        if MultiBot.InitializeMasque then MultiBot.InitializeMasque() end
 
         -- [AJOUT] init config + applique timers + enregistre le panneau d'options
         if MultiBot.Config_Ensure then MultiBot.Config_Ensure() end
