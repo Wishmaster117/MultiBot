@@ -107,6 +107,21 @@ if GetLocale() == "enGB" then
 
 	MultiBot.info.wait = "Bot invitation is in progress. Please wait."
 
+	MultiBot.info.creator.title = "AddClass Bots Creator"
+	MultiBot.info.creator.classlabel = "Class:"
+	MultiBot.info.creator.genderlabel = "Gender"
+	MultiBot.info.creator.speclabel = "Specialization"
+	MultiBot.info.creator.selectclass = "Select a class"
+	MultiBot.info.creator.selectgender = "Select a gender"
+	MultiBot.info.creator.selectspec = "Select a specialization"
+	MultiBot.info.creator.specRandom = "Random"
+	MultiBot.info.creator.create = "Create"
+	MultiBot.info.creator.inspect = "Inspect"
+	MultiBot.info.creator.init = "Auto-Init"
+	MultiBot.info.creator.genderMale = "Male"
+	MultiBot.info.creator.genderFemale = "Female"
+	MultiBot.info.creator.genderRandom = "Random"
+
 	MultiBot.info.starting = "Inviting Bots to group..."
 
 	MultiBot.info.stats = "Auto-Stats is for Parties, not Raids."
@@ -491,62 +506,27 @@ if GetLocale() == "enGB" then
 		.. "|cffff0000Left-click to show or hide the Options|r\n"
 		.. "|cff999999(Executed by: System)|r"
 
-	MultiBot.tips.creator.warrior = "Create Warrior RandomBot\n|cffffffff"
-		.. "|cffff0000Left-click to choose your Warrior's gender.|r\n"
-		.. "|cff999999(Executed by: System)|r"
+	MultiBot.tips.creator.warrior = "Create Warrior Bot\n|cffffffff|r"
 
-	MultiBot.tips.creator.warlock = "Create Warlock RandomBot\n|cffffffff"
-		.. "|cffff0000Left-click to choose your Warlock's gender.|r\n"
-		.. "|cff999999(Executed by: System)|r"
+	MultiBot.tips.creator.warlock = "Create Warlock Bot\n|cffffffff|r"
 
-	MultiBot.tips.creator.shaman = "Create Shaman RandomBot\n|cffffffff"
-		.. "|cffff0000Left-click to choose your Shaman's gender.|r\n"
-		.. "|cff999999(Executed by: System)|r"
+	MultiBot.tips.creator.shaman = "Create Shaman RandomBot\n|cffffffff|r"
 
-	MultiBot.tips.creator.rogue = "Create Rogue RandomBot\n|cffffffff"
-		.. "|cffff0000Left-click to choose your Rogue's gender.|r\n"
-		.. "|cff999999(Executed by: System)|r"
+	MultiBot.tips.creator.rogue = "Create Rogue RandomBot\n|cffffffff|r"
 
-	MultiBot.tips.creator.priest = "Create Priest RandomBot\n|cffffffff"
-		.. "|cffff0000Left-click to choose your Priest's gender.|r\n"
-		.. "|cff999999(Executed by: System)|r"
+	MultiBot.tips.creator.priest = "Create Priest RandomBot\n|cffffffff|r"
 
-	MultiBot.tips.creator.paladin = "Create Paladin RandomBot\n|cffffffff"
-		.. "|cffff0000Left-click to choose your Paladin's gender|r\n"
-		.. "|cff999999(Executed by: System)|r"
+	MultiBot.tips.creator.paladin = "Create Paladin RandomBot\n|cffffffff|r"
 
-	MultiBot.tips.creator.mage = "Create Shaman RandomBot\n|cffffffff"
-		.. "|cffff0000Left-click to choose your Mage's gender.|r\n"
-		.. "|cff999999(Executed by: System)|r"
+	MultiBot.tips.creator.mage = "Create Shaman RandomBot\n|cffffffff|r"
 
-	MultiBot.tips.creator.hunter = "Create Hunter RandomBot\n|cffffffff"
-		.. "|cffff0000Left-click to choose your Hunter's gender.|r\n"
-		.. "|cff999999(Executed by: System)|r"
+	MultiBot.tips.creator.hunter = "Create Hunter RandomBot\n|cffffffff|r"
 
-	MultiBot.tips.creator.druid = "Create Druid RandomBot\n|cffffffff"
-		.. "|cffff0000Left-click to choose your Druid's gender.|r\n"
-		.. "|cff999999(Executed by: System)|r"
+	MultiBot.tips.creator.druid = "Create Druid RandomBot\n|cffffffff|r"
 
-	MultiBot.tips.creator.deathknight = "Create Death Knight RandomBot\n|cffffffff"
-		.. "|cffff0000Left-click to choose your Death Knight's gender.|r\n"
-		.. "|cff999999(Executed by: System)|r"
+	MultiBot.tips.creator.deathknight = "Create Death Knight RandomBot\n|cffffffff|r"
 
 	MultiBot.tips.creator.notarget = "I don't have a target."
-
-	MultiBot.tips.creator.gendermale = "Creates a male companion.\n|cffffffff"
-		.. "Strong, bold, and always ready for battle... or ale.|r\n\n"
-		.. "|cffff0000Left-click to Create|r\n"
-		.. "|cff999999(Executed by: System)|r"
-
-	MultiBot.tips.creator.genderfemale = "Creates a female companion.\n|cffffffff"
-		.. "Graceful, fierce, and not to be underestimated.|r\n\n"
-		.. "|cffff0000Left-click to Create|r\n"
-		.. "|cff999999(Executed by: System)|r"
-
-	MultiBot.tips.creator.genderrandom = "Creates a Bot with a random gender.\n|cffffffff"
-		.. "The winds of fate shall decide!|r\n\n"
-		.. "|cffff0000Left-click to Create|r\n"
-		.. "|cff999999(Executed by: System)|r"
 
 	MultiBot.tips.creator.inspect = "Inspect Target\n|cffffffff"
 		.. "Opens the Inspect window of your Target.|r\n\n"
