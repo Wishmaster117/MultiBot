@@ -50,14 +50,15 @@
 
 ## 📌 What happened?
 
-`MultiBot-Standalone` was originally a combined repository containing both:
+`MultiBot-Standalone`  was originally built around Playerbots chat parsing.
 
-- the **MultiBot client addon**
-- the **AzerothCore bridge module**
+In this first version, the addon communicates with bots by sending commands through the normal in-game chat system, then reads and parses the bot replies to update the UI.
 
-To make installation, updates, automation, and maintenance easier for end users, the project has now been split into two separate repositories.
+This approach works, but it has a major drawback: many bot actions generate visible chat messages, which can quickly become noisy when controlling several bots.
 
-This repository is kept only as a historical/legacy combined source.
+For this reason, I later started experimenting with a bridge-based version of MultiBot, where an AzerothCore module handles communication with Playerbots more directly. The goal of that approach is to reduce visible chat spam and make bot interactions cleaner for the user.
+
+This repository remains the original chat-parsing version of MultiBot.
 
 ---
 
